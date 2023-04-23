@@ -14,7 +14,7 @@ model admin {
   phone_number String?    @unique @db.VarChar(20)
   first_name   String     @db.VarChar(100)
   last_name    String     @db.VarChar(100)
-  other_name   String?  @db.VarChar(100)
+  other_name   String?    @db.VarChar(100)
   password     String
   created_at   DateTime   @default(now())
   updated_at   DateTime   @updatedAt
@@ -35,8 +35,96 @@ model profile {
   country      String?  @db.VarChar(50)
   country_code String?  @db.VarChar(5)
   admin_id     String?  @unique
+  provider_id  String?  @unique
+  patient_id   String?  @unique
 
-  admin admin? @relation(fields: [admin_id], references: [id])
+  admin    admin?    @relation(fields: [admin_id], references: [id])
+  provider provider? @relation(fields: [provider_id], references: [id])
+  patient  patient? @relation(fields: [patient_id], references: [id])
+}
+
+model provider {
+  id           String   @id @unique @default(uuid())
+  email        String   @unique @db.VarChar(60)
+  username     String   @unique @db.VarChar(60)
+  phone_number String?  @unique @db.VarChar(20)
+  first_name   String   @db.VarChar(100)
+  last_name    String   @db.VarChar(100)
+  other_name   String?  @db.VarChar(100)
+  password     String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  department department
+  profile    profile?
+  roles      provider_role[]
+}
+
+model provider_role {
+  id          String           @id @unique @default(uuid())
+  role        care_giver_roles
+  provider_id String
+
+  provider provider? @relation(fields: [provider_id], references: [id])
+}
+
+model patient {
+  id            String   @id @unique @default(uuid())
+  id_number     String
+  id_type       String
+  employer      String
+  position      String
+  is_admitted   Boolean @default(true)
+  email        String   @unique @db.VarChar(60)
+  username     String   @unique @db.VarChar(60)
+  phone_number String?  @unique @db.VarChar(20)
+  first_name   String   @db.VarChar(100)
+  last_name    String   @db.VarChar(100)
+  other_name   String?  @db.VarChar(100)
+
+  profile    profile?
+}
+
+model allergies {
+  id            String   @id @unique @default(uuid())
+  patient_id    String
+  allergy       String
+
+  patient patient? @relation(fields: [patient_id], references: [id])
+}
+
+enum unit {
+  BURN
+  CARDIOLOGY
+  CORONARY_CARE
+  DAY_SURGERY
+  DIALYSIS
+  EMERGENCY_ROOM
+  GASTROENTEROLOGY
+  Gynecology
+  Geriatric
+  INTENSIVE_CARE_UNIT
+  LABOUR_AND_DELIVERY
+  MEDICINE
+  Nephrology
+  Neurology
+  Neonatal_Intensive_Care_Unit
+  OPERATING_ROOM
+  OUTPATIENT
+  INPATIENT
+  Orthopedic
+  Palliative_Care
+  PRE_ADMISSION
+  PEDIATRIC
+  Pediatric_Intensive_Care
+  POSTPARTUM
+  PSYCHIATRY
+  PULMONARY
+  RECOVERY
+  REHABILITATION
+  SPECIALTY
+  SURGERY
+  UROLOGY
 }
 
 enum admin_role {
@@ -44,4 +132,108 @@ enum admin_role {
   SUPER_ADMIN
   RECORDS
   CASHIER
+}
+
+enum care_giver_roles {
+  DENTAL_ASSISTANT
+  NURSING_ASSISTANT
+  MEDICAL_ASSISTANT
+  PHYSICIAN_ASSISTANT
+  PHYSICAL_THERAPY_ASSISTANT
+
+  MRI_TECHNICIAN
+  PHARMACY_TECHNICIAN
+  VETERINARY_TECHNICIAN
+  LABORATORY_TECHNICIAN
+  CARDIOVASCULAR_TECHNICIAN
+  RADIOLOGIC_TECHNICIAN
+  MEDICAL_TECHNICIAN
+
+  PHYSIOTHERAPIST
+  MASSAGE_THERAPIST
+  RESPIRATORY_THERAPIST
+  OCCUPATIONAL_THERAPIST
+  PHYSICAL_THERAPIST
+
+  DENTAL_HYGIENIST
+  PSYCHIATRIC_AIDE
+  NURSE_ANESTHETIST
+  DISPENSING_OPTICIAN
+  FAMILY_PRACTITIONER
+  MEDICAL_SONOGRAPHER
+  SURGICAL_TECHNOLOGIST
+  MEDICAL_EQUIPMENT_MANAGER
+
+  NURSE
+  DOCTOR
+  DENTIST
+  SURGEON
+  DIETITIAN
+  PHYSICIAN
+  THERAPIST
+  DIETICIAN
+  PHARMACIST
+  PODIATRISTS
+  OPTOMETRIST
+  RADIOLOGIST
+  PHLEBOTOMIST
+  VETERINARIAN
+  PEDIATRICIAN
+  CHIROPRACTOR
+  PSYCHIATRIST
+  OBSTETRICIAN
+  ANESTHESIOLOGIST
+}
+
+enum department {
+  EMERGENCY
+  ADMISSIONS
+  ANESTHETICS
+  BREAST_SCREENING
+  BURN_CENTER
+  CARDIOLOGY
+  CENTRAL_STERILE_SERVICES_DEPARTMENT
+  CHAPLAINCY
+  CORONARY_CARE_UNIT
+  CRITICAL_CARE
+  DIAGNOSTIC_IMAGING
+  DISCHARGE_LOUNGE
+  ELDERLY_SERVICES
+  FINANCE_DEPARTMENT
+  GASTROENTEROLOGY
+  GENERAL_SERVICES
+  GENERAL_SURGERY
+  GYNECOLOGY
+  HEMATOLOGY
+  HEALTH_AND_SAFETY
+  INTENSIVE_CARE_UNIT
+  HUMAN_RESOURCES
+  INFECTION_CONTROL
+  INFORMATION_MANAGEMENT
+  MATERNITY
+  MEDICAL_RECORDS
+  MICROBIOLOGY
+  NEONATAL
+  NEPHROLOGY
+  NEUROLOGY
+  NUTRITION_AND_DIETETICS
+  OCCUPATIONAL_THERAPY
+  ONCOLOGY
+  OPHTHALMOLOGY
+  ORTHOPEDICS
+  OTOLARYNGOLOGY
+  PAIN_MANAGEMENT
+  PATIENT_ACCOUNTS
+  PATIENT_SERVICES
+  PHARMACY
+  PHYSIOTHERAPY
+  PURCHASING_AND_SUPPLIES
+  RADIOLOGY
+  RADIOTHERAPY
+  RENAL
+  RHEUMATOLOGY
+  SEXUAL_HEALTH
+  SOCIAL_WORK
+  UROLOGY
+  OTHERS
 }

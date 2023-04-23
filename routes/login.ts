@@ -1,7 +1,7 @@
 import express = require("express");
 import {getAdminBaseData} from "../datastore/user";
 import {generateJSONTokenCredentials, validatePassword, verifyJSONToken} from "../helpers/utils";
-import {sendTextEmail} from "../messaging/email";
+
 require('dotenv').config()
 const loginRouter = express.Router();
 
@@ -18,7 +18,6 @@ loginRouter.get(`/admin/login`, async (req, res) => {
 
     jwtSignData = generateJSONTokenCredentials(jwtData)
     responseMessage= 'Login Successful'
-    sendTextEmail('zalajobi@gmail.com', "Hello World!", "Welcome Here")
   }
 
   res.status(200).json({
