@@ -1,8 +1,18 @@
 import express = require("express");
-import {generateJSONTokenCredentials, generatePasswordHash, validatePassword, verifyJSONToken} from "../helpers/utils";
-import {getAdminBaseData, updateAdminPassword} from "../datastore/user";
+import {
+  generateCode,
+  generateJSONTokenCredentials,
+  generatePasswordHash,
+  validatePassword,
+  verifyJSONToken
+} from "../helpers/utils";
+import {getAdminBaseData, getAdminData, updateAdminData, updateAdminPassword} from "../datastore/user";
 import {sendResetPasswordEmail} from "../messaging/email";
 import {JWTDataProps} from "../types/jwt";
+import {twilioSendSMSMessage} from "../messaging/twilio";
+import { admin } from '@prisma/client'
+
+// type AdminUserType = Jsonify<admin>
 
 
 const passwordRouter = express.Router();
@@ -57,6 +67,40 @@ passwordRouter.put(`/admin/change_password`, async (req, res) => {
 
   res.json(
     message
+  )
+})
+
+// Verify Admin Email, Username data, and send
+passwordRouter.post(`/admin/password/reset/user_verification/sms-code`, async (req, res) => {
+  let message = 'Passcode is send to the admin registered phone number', success = true
+  const user = await getAdminData(req.body.email) as admin
+
+  if (user) {
+    const passwordResetCode = generateCode()
+    await twilioSendSMSMessage(user?.phone_number ?? '', `Your Temporary Code Is ${passwordResetCode}`)
+
+    const updateUser = {
+      ...user,
+      password_reset_code: passwordResetCode,
+      password_reset_request_timestamp: new Date()
+    }
+
+    const updatedUser = await updateAdminData(updateUser, user.id)
+
+    if (!updateUser) {
+      message = "Error occurred while sending passcode"
+      success = false
+    }
+  } else {
+    message = "No User is registered with the provided Email or Username"
+    success = false
+  }
+
+  res.json(
+    {
+      message,
+      success
+    }
   )
 })
 
