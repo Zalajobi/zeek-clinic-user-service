@@ -1,17 +1,12 @@
 import express = require("express");
 import {getAdminBaseData} from "../datastore/user";
-import {generateJSONTokenCredentials, validatePassword, verifyJSONToken} from "../helpers/utils";
-import {twilioSendAudioMessage, twilioSendSMSMessage} from "../messaging/twilio";
+import {generateJSONTokenCredentials, validatePassword} from "../helpers/utils";
 
 require('dotenv').config()
 const loginRouter = express.Router();
-// 2349048258830
-// 2347053980998
 
 loginRouter.post(`/admin/login`, async (req, res) => {
-  // await twilioSendSMSMessage('+2349048258830', "Welcome to Zeek Clinic - Password Reset SMS Testing - Twilio")
-  // await twilioSendAudioMessage('+2349048258830', "Hello Mariam")
-  let responseMessage = 'Incorrect Credentials', jwtSignData = null
+  let responseMessage = 'Incorrect Credentials', jwtSignData = null, success = false
   const admin = await getAdminBaseData(req.body.email)
 
   if (validatePassword(req.body.password, admin?.password ?? '')) {
@@ -23,11 +18,15 @@ loginRouter.post(`/admin/login`, async (req, res) => {
 
     jwtSignData = generateJSONTokenCredentials(jwtData)
     responseMessage= 'Login Successful'
+    success = true
   }
 
   res.status(200).json({
-    "message": responseMessage,
-    token: jwtSignData
+    message: responseMessage,
+    data: {
+      token: jwtSignData
+    },
+    success
   })
 })
 

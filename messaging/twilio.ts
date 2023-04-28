@@ -20,3 +20,15 @@ export const twilioSendAudioMessage = async (to:string, message:string) => {
   })
   return call
 }
+
+export const twilioSendWhatsAppMessage = async (to:string, message : string) => {
+  const whatsApp = await twilioClient.messages.create({
+    from: `whatsapp:${process.env.TWILLIO_PHONE_NUMBER}`,
+    body: message,
+    to: `whatsapp:${to}`
+  })
+
+  console.log(whatsApp.sid)
+
+  return whatsApp
+}
