@@ -30,7 +30,7 @@ passwordRouter.post(`/admin/password/reset-request`, async (req, res) => {
   const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.first_name ?? '')
   if (passwordResetEmailResponse.accepted.length !== 0) {
     res.status(200).json({
-      message: `Password reset link sent to ${req.body.email}`,
+      message: `Password reset link sent to ${user?.email ?? ''}`,
       data: null,
       success
     })
