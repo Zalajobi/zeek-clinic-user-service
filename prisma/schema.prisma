@@ -8,18 +8,20 @@ generator client {
 }
 
 model admin {
-  id           String     @id @unique @default(uuid())
-  email        String     @unique @db.VarChar(60)
-  username     String     @unique @db.VarChar(60)
-  phone_number String?    @unique @db.VarChar(20)
-  first_name   String     @db.VarChar(100)
-  last_name    String     @db.VarChar(100)
-  other_name   String?    @db.VarChar(100)
-  password     String
-  created_at   DateTime   @default(now())
-  updated_at   DateTime   @updatedAt
-  profile      profile?
-  role         admin_role @default(ADMIN)
+  id                               String     @id @unique @default(uuid())
+  email                            String     @unique @db.VarChar(60)
+  username                         String     @unique @db.VarChar(60)
+  phone_number                     String?    @unique @db.VarChar(20)
+  first_name                       String     @db.VarChar(100)
+  last_name                        String     @db.VarChar(100)
+  other_name                       String?    @db.VarChar(100)
+  password                         String
+  created_at                       DateTime   @default(now())
+  updated_at                       DateTime   @updatedAt
+  profile                          profile?
+  role                             admin_role @default(ADMIN)
+  password_reset_code              String?    @db.VarChar(6)
+  password_reset_request_timestamp DateTime?
 }
 
 model profile {
@@ -40,7 +42,7 @@ model profile {
 
   admin    admin?    @relation(fields: [admin_id], references: [id])
   provider provider? @relation(fields: [provider_id], references: [id])
-  patient  patient? @relation(fields: [patient_id], references: [id])
+  patient  patient?  @relation(fields: [patient_id], references: [id])
 }
 
 model provider {
@@ -69,26 +71,27 @@ model provider_role {
 }
 
 model patient {
-  id            String   @id @unique @default(uuid())
-  id_number     String
-  id_type       String
-  employer      String
-  position      String
-  is_admitted   Boolean @default(true)
-  email        String   @unique @db.VarChar(60)
-  username     String   @unique @db.VarChar(60)
-  phone_number String?  @unique @db.VarChar(20)
-  first_name   String   @db.VarChar(100)
-  last_name    String   @db.VarChar(100)
-  other_name   String?  @db.VarChar(100)
+  id           String  @id @unique @default(uuid())
+  id_number    String
+  id_type      String
+  employer     String
+  position     String
+  is_admitted  Boolean @default(true)
+  email        String  @unique @db.VarChar(60)
+  username     String  @unique @db.VarChar(60)
+  phone_number String? @unique @db.VarChar(20)
+  first_name   String  @db.VarChar(100)
+  last_name    String  @db.VarChar(100)
+  other_name   String? @db.VarChar(100)
 
-  profile    profile?
+  profile   profile?
+  allergies allergies[]
 }
 
 model allergies {
-  id            String   @id @unique @default(uuid())
-  patient_id    String
-  allergy       String
+  id         String @id @unique @default(uuid())
+  patient_id String
+  allergy    String
 
   patient patient? @relation(fields: [patient_id], references: [id])
 }
