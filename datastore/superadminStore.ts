@@ -31,3 +31,7 @@ export const createSuperAdmin = async (data:CreateUserProps) => {
 
   return null
 }
+
+// export const getAvailableRoles = async () => {
+//   const roles = await prisma.admin_role.findMany({})
+// }
