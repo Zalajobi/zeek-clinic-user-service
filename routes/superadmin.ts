@@ -1,6 +1,6 @@
 import express = require("express");
-import {generatePasswordHash} from "../helpers/utils";
-import {createSuperAdmin} from "../datastore/superadminStore";
+import {generateJSONTokenCredentials, generatePasswordHash, validatePassword, verifyJSONToken} from "../helpers/utils";
+import {createSuperAdmin, getSuperadminBaseData, verifySuperadminUser} from "../datastore/superadminStore";
 import {sendSignupCompleteProfileEmail} from "../messaging/email";
 import { admin_role, department } from '@prisma/client'
 
@@ -44,18 +44,71 @@ superadminRouter.post('/super-admin/create/new_user', async (req, res) => {
   }
 })
 
-
 superadminRouter.get('/super-admin/create/roles_and_departments', async(req, res) => {
-  let success = false, adminRoles = [], adminDept = [];
-
+  let success = false;
   try {
-    res.json({
-      message: 'Roles and departments data fetch successful',
-      success: true,
-      data: {
-        role: admin_role,
-        department,
+    const adminData = await verifySuperadminUser(req?.headers?.token as string)
+
+    if (adminData) {
+      res.json({
+        message: 'Roles and departments data fetch successful',
+        success: true,
+        data: {
+          role: admin_role,
+          department,
+        }
+      })
+    }
+    else {
+      res.json({
+        message: 'Unauthorised request',
+        success,
+        data: null
+      })
+    }
+  } catch(e) {
+    if (typeof e === "string") {
+      res.json({
+        message: e.toUpperCase(),
+        data: null,
+        success
+      })
+    } else if (e instanceof Error) {
+      res.json({
+        message: e.message,
+        data: null,
+        success
+      })
+    }
+  }
+})
+
+superadminRouter.post('/super-admin/auth/login', async (req, res) => {
+  let responseMessage = 'Incorrect Credentials', jwtSignData = null, success = false
+
+  // console.log(req.headers.token)
+  try {
+    const admin = await getSuperadminBaseData(req.body.email)
+
+    console.log(admin)
+
+    if (validatePassword(req.body.password, admin?.password ?? '')) {
+      const jwtData = {
+        id: admin?.id ?? '',
+        email: admin?.email ?? '',
       }
+
+      jwtSignData = generateJSONTokenCredentials(jwtData)
+      responseMessage= 'Login Successful'
+      success = true
+    }
+
+    res.json({
+      message: responseMessage,
+      data: {
+        token: jwtSignData
+      },
+      success
     })
   } catch(e) {
     if (typeof e === "string") {

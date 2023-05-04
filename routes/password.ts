@@ -12,9 +12,6 @@ import {JWTDataProps} from "../types/jwt";
 import {twilioSendAudioMessage, twilioSendSMSMessage, twilioSendWhatsAppMessage} from "../messaging/twilio";
 import { admin } from '@prisma/client'
 
-// type AdminUserType = Jsonify<admin>
-
-
 const passwordRouter = express.Router();
 
 // Send  Email With Temporary Token For Password Reset
@@ -31,7 +28,7 @@ passwordRouter.post(`/admin/password/reset-request`, async (req, res) => {
 
       const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.first_name ?? '')
       if (passwordResetEmailResponse.accepted.length !== 0) {
-        res.status(200).json({
+        res.json({
           message: `Password reset link sent to ${user?.email ?? ''}`,
           data: null,
           success: true

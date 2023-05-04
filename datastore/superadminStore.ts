@@ -1,5 +1,7 @@
 import {CreateUserProps} from "../types/user";
 import prisma from "../lib/prisma";
+import {verifyJSONToken} from "../helpers/utils";
+import {JWTDataProps} from "../types/jwt";
 
 export const createSuperAdmin = async (data:CreateUserProps) => {
   const isUnique = await prisma.super_admin.findFirst({
@@ -32,6 +34,46 @@ export const createSuperAdmin = async (data:CreateUserProps) => {
   return null
 }
 
-// export const getAvailableRoles = async () => {
-//   const roles = await prisma.admin_role.findMany({})
-// }
+export const getSuperadminBaseData = async (value:string) => {
+  return await prisma.super_admin.findFirst({
+    where: {
+      OR: [
+        {
+          email: value
+        },
+        {
+          username: value
+        },
+        // {
+        //   phone_number: value
+        // },
+        {
+          id: value
+        }
+      ]
+    },
+    select: {
+      email: true,
+      password: true,
+      id: true,
+      first_name: true,
+      phone_number: true
+    }
+  })
+}
+
+
+export const verifySuperadminUser = async (token:string) => {
+  const { id } = await <JWTDataProps><unknown>verifyJSONToken(token)
+
+  return await prisma.super_admin.findFirst({
+    where: {
+      id
+    },
+    select: {
+      id: true,
+      email: true
+    }
+  })
+}
+
