@@ -1,8 +1,14 @@
 import express = require("express");
-import {generateJSONTokenCredentials, generatePasswordHash, validatePassword, verifyJSONToken} from "../helpers/utils";
+import {
+  generateJSONTokenCredentials,
+  generatePasswordHash,
+  generateTemporaryPassword,
+  validatePassword,
+  verifyJSONToken
+} from "../helpers/utils";
 import {createSuperAdmin, getSuperadminBaseData, verifySuperadminUser} from "../datastore/superadminStore";
 import {sendSignupCompleteProfileEmail} from "../messaging/email";
-import { admin_role, department } from '@prisma/client'
+import {admin, admin_role, department} from '@prisma/client'
 
 const superadminRouter = express.Router();
 
@@ -80,6 +86,43 @@ superadminRouter.get('/super-admin/create/roles_and_departments', async(req, res
         success
       })
     }
+  }
+})
+
+superadminRouter.post('/super-admin/create/admin', async (req, res) => {
+  let message = 'Unauthorized Request', success = false
+
+  try {
+    const adminUser = await verifySuperadminUser(req?.headers?.token as string)
+    if (!adminUser)
+      res.json({
+        message,
+        data: null,
+        success
+      })
+
+    const password = generateTemporaryPassword();
+
+    const newAdminData = {
+      ...req.body,
+      password
+    }
+
+    console.log(newAdminData)
+
+    res.json({
+      message: 'Admin user created successfully',
+      data: null,
+      success: true
+    })
+
+  } catch (e) {
+    console.log('EMPTY')
+    res.json({
+      message: 'Error Creating Admin',
+      data: null,
+      success
+    })
   }
 })
 

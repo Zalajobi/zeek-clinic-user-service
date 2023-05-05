@@ -15,9 +15,6 @@ model super_admin {
   first_name   String   @db.VarChar(100)
   last_name    String   @db.VarChar(100)
   other_name   String?  @db.VarChar(100)
-  country      String?  @db.VarChar(50)
-  state        String?  @db.VarChar(100)
-  zip_code     String?  @db.VarChar(10)
   password     String
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
@@ -49,6 +46,7 @@ model profile {
   address      String?  @db.VarChar(255)
   address_two  String?  @db.VarChar(255)
   state        String?  @db.VarChar(100)
+  city         String?  @db.VarChar(100)
   zip_code     String?  @db.VarChar(10)
   country      String?  @db.VarChar(50)
   country_code String?  @db.VarChar(5)
