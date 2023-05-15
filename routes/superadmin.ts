@@ -125,7 +125,6 @@ superadminRouter.post('/super-admin/create/admin', async (req, res) => {
     })
 
   } catch (e) {
-    console.log('EMPTY')
     res.json({
       message: 'Error Creating Admin',
       data: null,
@@ -137,11 +136,8 @@ superadminRouter.post('/super-admin/create/admin', async (req, res) => {
 superadminRouter.post('/super-admin/auth/login', async (req, res) => {
   let responseMessage = 'Incorrect Credentials', jwtSignData = null, success = false
 
-  // console.log(req.headers.token)
   try {
     const admin = await getSuperadminBaseData(req.body.email)
-
-    console.log(admin)
 
     if (validatePassword(req.body.password, admin?.password ?? '')) {
       const jwtData = {
@@ -153,6 +149,7 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
       responseMessage= 'Login Successful'
       success = true
     }
+    console.log('Success Login');
 
     res.json({
       message: responseMessage,

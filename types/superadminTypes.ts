@@ -3,11 +3,11 @@ import {admin_role, department} from '@prisma/client'
 export type SuperadminCreateAdmin = {
   address_two: string;
   address: string;
-  bio: string;
+  bio?: string;
   title: string;
-  dob: string;
+  dob?: string;
   gender: string;
-  department: department;
+  department?: department;
   role: admin_role;
   zip_code: string;
   phone_number: string;
@@ -21,4 +21,5 @@ export type SuperadminCreateAdmin = {
   email: string;
   country_code: string;
   password: string;
+  call_code?: string
 }
