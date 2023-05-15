@@ -1,4 +1,5 @@
-import { admin_role } from '@prisma/client'
+import { admin_role, admin, profile } from '@prisma/client'
+import {Jsonify} from "type-fest";
 
 export interface CreateUserProps {
   email: string
@@ -31,3 +32,13 @@ export interface JWTDataProps {
   email?: string
 }
 
+
+export type AdminType = Jsonify<admin>
+
+export type ProfileType = Jsonify<profile>
+
+export type AdminDataProp = Jsonify<
+  admin & {
+  profile: ProfileType
+}
+  >

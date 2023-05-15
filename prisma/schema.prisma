@@ -24,10 +24,6 @@ model admin {
   id                               String     @id @unique @default(uuid())
   email                            String     @unique @db.VarChar(60)
   username                         String     @unique @db.VarChar(60)
-  phone_number                     String?    @unique @db.VarChar(20)
-  first_name                       String     @db.VarChar(100)
-  last_name                        String     @db.VarChar(100)
-  other_name                       String?    @db.VarChar(100)
   password                         String
   created_at                       DateTime   @default(now())
   updated_at                       DateTime   @updatedAt
@@ -42,6 +38,10 @@ model profile {
   gender       String   @db.VarChar(100)
   dob          DateTime
   title        String?  @db.VarChar(100)
+  first_name                       String     @db.VarChar(100)
+  last_name                        String     @db.VarChar(100)
+  other_name                       String?    @db.VarChar(100)
+  phone_number                     String?    @unique @db.VarChar(20)
   bio          String?  @db.VarChar(255)
   address      String?  @db.VarChar(255)
   address_two  String?  @db.VarChar(255)
