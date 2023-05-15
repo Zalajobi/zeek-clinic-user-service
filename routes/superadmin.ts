@@ -6,9 +6,15 @@ import {
   validatePassword,
   verifyJSONToken
 } from "../helpers/utils";
-import {createSuperAdmin, getSuperadminBaseData, verifySuperadminUser} from "../datastore/superadminStore";
+import {
+  adminCreateNewUser,
+  createSuperAdmin,
+  getSuperadminBaseData,
+  verifySuperadminUser
+} from "../datastore/superadminStore";
 import {sendSignupCompleteProfileEmail} from "../messaging/email";
 import {admin, admin_role, department} from '@prisma/client'
+import {SuperadminCreateAdmin} from "../types/superadminTypes";
 
 const superadminRouter = express.Router();
 
@@ -108,7 +114,9 @@ superadminRouter.post('/super-admin/create/admin', async (req, res) => {
       password
     }
 
-    console.log(newAdminData)
+    const newUser = adminCreateNewUser(newAdminData as SuperadminCreateAdmin)
+
+    // console.log(newAdminData)
 
     res.json({
       message: 'Admin user created successfully',

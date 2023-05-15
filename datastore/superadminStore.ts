@@ -1,7 +1,8 @@
-import {CreateUserProps} from "../types/user";
+import {CreateProfileProps, CreateUserProps} from "../types/user";
 import prisma from "../lib/prisma";
 import {verifyJSONToken} from "../helpers/utils";
 import {JWTDataProps} from "../types/jwt";
+import {SuperadminCreateAdmin} from "../types/superadminTypes";
 
 export const createSuperAdmin = async (data:CreateUserProps) => {
   const isUnique = await prisma.super_admin.findFirst({
@@ -77,3 +78,23 @@ export const verifySuperadminUser = async (token:string) => {
   })
 }
 
+export const adminCreateNewUser = async (data:SuperadminCreateAdmin) => {
+  const {address_two, address, bio, title, dob, gender, department, zip_code, city, state, country, country_code, ...adminData} = data
+
+  adminData.phone_number = `+${data.country_code}${data.phone_number}`
+
+  const admin = await prisma.admin.create({
+    data: adminData
+  })
+
+
+  console.log(admin)
+}
+
+// export const superadminRegisterNewAdmin = async (userData:CreateUserProps, profileData?:CreateProfileProps) => {
+//   const createNewUser = await prisma.admin.create({
+//     data: {
+//       userData
+//     }
+//   })
+// }
