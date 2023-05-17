@@ -34,29 +34,29 @@ model admin {
 }
 
 model profile {
-  id           String   @id @unique @default(uuid())
-  gender       String   @db.VarChar(100)
-  dob          DateTime
-  title        String?  @db.VarChar(100)
-  first_name                       String     @db.VarChar(100)
-  last_name                        String     @db.VarChar(100)
-  other_name                       String?    @db.VarChar(100)
-  phone_number                     String?    @unique @db.VarChar(20)
-  bio          String?  @db.VarChar(1000)
-  address      String?  @db.VarChar(255)
-  address_two  String?  @db.VarChar(255)
-  state        String?  @db.VarChar(100)
-  city         String?  @db.VarChar(100)
-  zip_code     String?  @db.VarChar(10)
-  country      String?  @db.VarChar(50)
-  country_code String?  @db.VarChar(5)
-  admin_id     String?  @unique
-  provider_id  String?  @unique
-  patient_id   String?  @unique
+  id                String        @id @unique @default(uuid())
+  gender            String        @db.VarChar(100)
+  dob               DateTime
+  title             String?       @db.VarChar(100)
+  first_name        String        @db.VarChar(100)
+  last_name         String        @db.VarChar(100)
+  other_name        String?       @db.VarChar(100)
+  phone_number      String?       @unique @db.VarChar(20)
+  bio               String?       @db.VarChar(1000)
+  address           String?       @db.VarChar(255)
+  address_two       String?       @db.VarChar(255)
+  state             String?       @db.VarChar(100)
+  city              String?       @db.VarChar(100)
+  zip_code          String?       @db.VarChar(10)
+  country           String?       @db.VarChar(50)
+  country_code      String?       @db.VarChar(5)
+  admin_id          String?       @unique
+  provider_id       String?       @unique
+  patient_id        String?       @unique
 
-  admin    admin?    @relation(fields: [admin_id], references: [id])
-  provider provider? @relation(fields: [provider_id], references: [id])
-  patient  patient?  @relation(fields: [patient_id], references: [id])
+  admin             admin?        @relation(fields: [admin_id], references: [id])
+  provider          provider?     @relation(fields: [provider_id], references: [id])
+  patient           patient?      @relation(fields: [patient_id], references: [id])
 }
 
 model provider {
