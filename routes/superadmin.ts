@@ -107,16 +107,17 @@ superadminRouter.post('/super-admin/create/admin', async (req, res) => {
         success
       })
 
-    const password = generateTemporaryPassword();
+    const tempPassword = generateTemporaryPassword()
+    console.log(tempPassword)
+
+    const password = generatePasswordHash(tempPassword);
 
     const newAdminData = {
       ...req.body,
       password
     }
 
-    const newUser = adminCreateNewUser(newAdminData as SuperadminCreateAdmin)
-
-    // console.log(newAdminData)
+    adminCreateNewUser(newAdminData as SuperadminCreateAdmin)
 
     res.json({
       message: 'Admin user created successfully',

@@ -88,11 +88,13 @@ export const adminCreateNewUser = async (data:SuperadminCreateAdmin) => {
   const {email, username, password, role, ...profileData} = data
   profileData.phone_number = `+${data.call_code}${data.phone_number}`
 
+  console.log(profileData.phone_number)
+
   delete profileData['department']
   delete profileData['call_code']
   delete profileData['dob']
 
-  const profile = await prisma.profile.create({
+  await prisma.profile.create({
     data: {
       ...profileData,
       admin_id: admin?.id,
@@ -100,16 +102,5 @@ export const adminCreateNewUser = async (data:SuperadminCreateAdmin) => {
     }
   })
 
-  console.log(admin)
-  console.log(profile)
-
   return admin;
 }
-
-// export const superadminRegisterNewAdmin = async (userData:CreateUserProps, profileData?:CreateProfileProps) => {
-//   const createNewUser = await prisma.admin.create({
-//     data: {
-//       userData
-//     }
-//   })
-// }
