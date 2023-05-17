@@ -1,5 +1,6 @@
 import prisma from "../lib/prisma";
 import {CreateUserProps} from "../types/user";
+import { admin } from '@prisma/client'
 
 export const createAdmin = async (data:CreateUserProps) => {
   const isUnique = await prisma.admin.findFirst({
@@ -11,9 +12,9 @@ export const createAdmin = async (data:CreateUserProps) => {
         {
           username: data.email
         },
-        {
-          phone_number: data.email
-        }
+        // {
+        //   phone_number: data.email
+        // }
       ]
     }
   })
@@ -42,9 +43,6 @@ export const getAdminBaseData = async (value:string) => {
         {
           username: value
         },
-        // {
-        //   phone_number: value
-        // },
         {
           id: value
         }
@@ -55,7 +53,29 @@ export const getAdminBaseData = async (value:string) => {
       password: true,
       role: true,
       id: true,
-      first_name: true
+      // phone_number: true,
+      profile: true,
+    }
+  })
+}
+
+export const getAdminData = async (value:string) => {
+  return await prisma.admin.findFirst({
+    where: {
+      OR: [
+        {
+          email: value
+        },
+        {
+          username: value
+        },
+        {
+          id: value
+        }
+      ]
+    },
+    include: {
+      profile: true
     }
   })
 }
@@ -68,5 +88,15 @@ export const updateAdminPassword = async (id:string, password:string) => {
     data: {
       password
     }
+  })
+}
+
+
+export const updateAdminData = async (data:admin, id:string) => {
+  return await prisma.admin.update({
+    where : {
+      id
+    },
+    data
   })
 }

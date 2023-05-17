@@ -7,38 +7,56 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model admin {
-  id           String     @id @unique @default(uuid())
-  email        String     @unique @db.VarChar(60)
-  username     String     @unique @db.VarChar(60)
-  phone_number String?    @unique @db.VarChar(20)
-  first_name   String     @db.VarChar(100)
-  last_name    String     @db.VarChar(100)
-  other_name   String?    @db.VarChar(100)
+model super_admin {
+  id           String   @id @unique @default(uuid())
+  email        String   @unique @db.VarChar(60)
+  username     String   @unique @db.VarChar(60)
+  phone_number String?  @unique @db.VarChar(20)
+  first_name   String   @db.VarChar(100)
+  last_name    String   @db.VarChar(100)
+  other_name   String?  @db.VarChar(100)
   password     String
-  created_at   DateTime   @default(now())
-  updated_at   DateTime   @updatedAt
-  profile      profile?
-  role         admin_role @default(ADMIN)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}
+
+model admin {
+  id                               String     @id @unique @default(uuid())
+  email                            String     @unique @db.VarChar(60)
+  username                         String     @unique @db.VarChar(60)
+  password                         String
+  created_at                       DateTime   @default(now())
+  updated_at                       DateTime   @updatedAt
+  profile                          profile?
+  role                             admin_role @default(ADMIN)
+  password_reset_code              String?    @db.VarChar(6)
+  password_reset_request_timestamp DateTime?
 }
 
 model profile {
-  id           String   @id @unique @default(uuid())
-  gender       String   @db.VarChar(100)
-  dob          DateTime
-  title        String?  @db.VarChar(100)
-  bio          String?  @db.VarChar(255)
-  address      String?  @db.VarChar(255)
-  address_two  String?  @db.VarChar(255)
-  state        String?  @db.VarChar(100)
-  zip_code     String?  @db.VarChar(10)
-  country      String?  @db.VarChar(50)
-  country_code String?  @db.VarChar(5)
-  admin_id     String?  @unique
-  provider_id  String?  @unique
+  id                String        @id @unique @default(uuid())
+  gender            String        @db.VarChar(100)
+  dob               DateTime
+  title             String?       @db.VarChar(100)
+  first_name        String        @db.VarChar(100)
+  last_name         String        @db.VarChar(100)
+  other_name        String?       @db.VarChar(100)
+  phone_number      String?       @unique @db.VarChar(20)
+  bio               String?       @db.VarChar(1000)
+  address           String?       @db.VarChar(255)
+  address_two       String?       @db.VarChar(255)
+  state             String?       @db.VarChar(100)
+  city              String?       @db.VarChar(100)
+  zip_code          String?       @db.VarChar(10)
+  country           String?       @db.VarChar(50)
+  country_code      String?       @db.VarChar(5)
+  admin_id          String?       @unique
+  provider_id       String?       @unique
+  patient_id        String?       @unique
 
-  admin    admin?    @relation(fields: [admin_id], references: [id])
-  provider provider? @relation(fields: [provider_id], references: [id])
+  admin             admin?        @relation(fields: [admin_id], references: [id])
+  provider          provider?     @relation(fields: [provider_id], references: [id])
+  patient           patient?      @relation(fields: [patient_id], references: [id])
 }
 
 model provider {
@@ -64,6 +82,66 @@ model provider_role {
   provider_id String
 
   provider provider? @relation(fields: [provider_id], references: [id])
+}
+
+model patient {
+  id           String  @id @unique @default(uuid())
+  id_number    String
+  id_type      String
+  employer     String
+  position     String
+  is_admitted  Boolean @default(true)
+  email        String  @unique @db.VarChar(60)
+  username     String  @unique @db.VarChar(60)
+  phone_number String? @unique @db.VarChar(20)
+  first_name   String  @db.VarChar(100)
+  last_name    String  @db.VarChar(100)
+  other_name   String? @db.VarChar(100)
+
+  profile   profile?
+  allergies allergies[]
+}
+
+model allergies {
+  id         String @id @unique @default(uuid())
+  patient_id String
+  allergy    String
+
+  patient patient? @relation(fields: [patient_id], references: [id])
+}
+
+enum unit {
+  BURN
+  CARDIOLOGY
+  CORONARY_CARE
+  DAY_SURGERY
+  DIALYSIS
+  EMERGENCY_ROOM
+  GASTROENTEROLOGY
+  Gynecology
+  Geriatric
+  INTENSIVE_CARE_UNIT
+  LABOUR_AND_DELIVERY
+  MEDICINE
+  Nephrology
+  Neurology
+  Neonatal_Intensive_Care_Unit
+  OPERATING_ROOM
+  OUTPATIENT
+  INPATIENT
+  Orthopedic
+  Palliative_Care
+  PRE_ADMISSION
+  PEDIATRIC
+  Pediatric_Intensive_Care
+  POSTPARTUM
+  PSYCHIATRY
+  PULMONARY
+  RECOVERY
+  REHABILITATION
+  SPECIALTY
+  SURGERY
+  UROLOGY
 }
 
 enum admin_role {
