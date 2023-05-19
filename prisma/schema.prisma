@@ -53,6 +53,7 @@ model profile {
   admin_id          String?       @unique
   provider_id       String?       @unique
   patient_id        String?       @unique
+  profile_img_url   String?
 
   admin             admin?        @relation(fields: [admin_id], references: [id])
   provider          provider?     @relation(fields: [provider_id], references: [id])

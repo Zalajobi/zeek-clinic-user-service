@@ -79,7 +79,7 @@ export const verifySuperadminUser = async (token:string) => {
 }
 
 export const adminCreateNewUser = async (data:SuperadminCreateAdmin) => {
-  const {address_two, address, bio, title, dob, gender, department, zip_code, city, state, country, country_code, first_name, other_name, last_name, phone_number, call_code, ...adminData} = data
+  const {address_two, address, bio, title, dob, gender, department, zip_code, city, state, country, country_code, first_name, other_name, last_name, phone_number, call_code, profile_img_url, ...adminData} = data
   const {email, username, password, role, ...profileData} = data
   profileData.phone_number = `+${data.call_code}${data.phone_number}`
 
@@ -101,10 +101,8 @@ export const adminCreateNewUser = async (data:SuperadminCreateAdmin) => {
     }
   })
 
-  if (is_unique) {
-    console.log('Admin with email/username/phone number already exists')
+  if (is_unique)
     return false
-  }
 
   const admin = await prisma.admin.create({
     data: adminData

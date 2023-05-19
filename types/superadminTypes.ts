@@ -22,4 +22,5 @@ export type SuperadminCreateAdmin = {
   country_code: string;
   password: string;
   call_code?: string
+  profile_img_url?: string
 }
