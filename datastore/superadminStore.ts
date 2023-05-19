@@ -79,20 +79,40 @@ export const verifySuperadminUser = async (token:string) => {
 }
 
 export const adminCreateNewUser = async (data:SuperadminCreateAdmin) => {
-  const {address_two, address, bio, title, dob, gender, department, zip_code, city, state, country, country_code, first_name, other_name, last_name, phone_number, call_code, ...adminData} = data
+  const {address_two, address, bio, title, dob, gender, department, zip_code, city, state, country, country_code, first_name, other_name, last_name, phone_number, call_code, profile_img_url, ...adminData} = data
+  const {email, username, password, role, ...profileData} = data
+  profileData.phone_number = `+${data.call_code}${data.phone_number}`
+
+  const is_unique = await prisma.admin.findFirst({
+    where: {
+      OR: [
+        {
+          profile: {
+            phone_number: profileData.phone_number
+          }
+        },
+        {
+          email: data?.email
+        },
+        {
+          username: data?.username
+        }
+      ]
+    }
+  })
+
+  if (is_unique)
+    return false
 
   const admin = await prisma.admin.create({
     data: adminData
   })
 
-  const {email, username, password, role, ...profileData} = data
-  profileData.phone_number = `+${data.call_code}${data.phone_number}`
-
   delete profileData['department']
   delete profileData['call_code']
   delete profileData['dob']
 
-  const profile = await prisma.profile.create({
+  await prisma.profile.create({
     data: {
       ...profileData,
       admin_id: admin?.id,
@@ -100,16 +120,5 @@ export const adminCreateNewUser = async (data:SuperadminCreateAdmin) => {
     }
   })
 
-  console.log(admin)
-  console.log(profile)
-
-  return admin;
+  return true;
 }
-
-// export const superadminRegisterNewAdmin = async (userData:CreateUserProps, profileData?:CreateProfileProps) => {
-//   const createNewUser = await prisma.admin.create({
-//     data: {
-//       userData
-//     }
-//   })
-// }

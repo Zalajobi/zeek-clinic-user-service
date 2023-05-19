@@ -96,7 +96,7 @@ superadminRouter.get('/super-admin/create/roles_and_departments', async(req, res
 })
 
 superadminRouter.post('/super-admin/create/admin', async (req, res) => {
-  let message = 'Unauthorized Request', success = false
+  let message = 'Unauthorized Request';
 
   try {
     const adminUser = await verifySuperadminUser(req?.headers?.token as string)
@@ -104,31 +104,30 @@ superadminRouter.post('/super-admin/create/admin', async (req, res) => {
       res.json({
         message,
         data: null,
-        success
+        success: false
       })
 
-    const password = generateTemporaryPassword();
+    const tempPassword = generateTemporaryPassword()
+    const password = generatePasswordHash(tempPassword);
 
     const newAdminData = {
       ...req.body,
       password
     }
 
-    const newUser = adminCreateNewUser(newAdminData as SuperadminCreateAdmin)
-
-    // console.log(newAdminData)
+    const newUserStatus = await adminCreateNewUser(newAdminData as SuperadminCreateAdmin)
 
     res.json({
-      message: 'Admin user created successfully',
+      message: newUserStatus ? 'Admin user created successfully' : 'Admin with email/username/phone number already exists',
       data: null,
-      success: true
+      success: newUserStatus ? true : false
     })
 
   } catch (e) {
     res.json({
       message: 'Error Creating Admin',
       data: null,
-      success
+      success: false
     })
   }
 })
@@ -149,7 +148,6 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
       responseMessage= 'Login Successful'
       success = true
     }
-    console.log('Success Login');
 
     res.json({
       message: responseMessage,
