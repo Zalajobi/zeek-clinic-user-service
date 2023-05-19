@@ -41,7 +41,7 @@ superadminRouter.post('/super-admin/create/new_user', async (req, res) => {
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, success, null, 200)
+    JsonResponse(res, message, success, null, 403)
   }
 })
 
@@ -62,7 +62,7 @@ superadminRouter.get('/super-admin/create/roles_and_departments', async(req, res
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, success, null, 200)
+    JsonResponse(res, message, success, null, 403)
   }
 })
 
@@ -99,7 +99,7 @@ superadminRouter.post('/super-admin/create/admin', async (req, res) => {
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, false, null, 200)
+    JsonResponse(res, message, false, null, 403)
   }
 })
 
@@ -129,7 +129,7 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, success, null, 200)
+    JsonResponse(res, message, success, null, 403)
   }
 })
 
@@ -139,7 +139,7 @@ superadminRouter.get('/super-admin/profile/get-data', async(req, res) => {
     const adminData = await verifySuperadminUser(req?.headers?.token as string)
 
     if (!adminData)
-      JsonResponse(res, 'Not Authorized', false, null, 403)
+      JsonResponse(res, 'Not Authorized', false, null, 401)
 
     const data = await getSuperadminBaseData(adminData?.id as string)
     JsonResponse(res, 'Authorized', true, data, 200)
@@ -149,7 +149,7 @@ superadminRouter.get('/super-admin/profile/get-data', async(req, res) => {
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, success, null, 200)
+    JsonResponse(res, message, success, null, 403)
   }
 })
 
