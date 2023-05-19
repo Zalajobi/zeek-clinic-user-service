@@ -3,18 +3,18 @@ import {
   generateJSONTokenCredentials,
   generatePasswordHash,
   generateTemporaryPassword,
-  validatePassword,
-  verifyJSONToken
+  validatePassword
 } from "../helpers/utils";
 import {
   adminCreateNewUser,
-  createSuperAdmin,
-  getSuperadminBaseData,
+  createSuperAdmin, getSuperadminBaseData,
+  getSuperadminLoginData,
   verifySuperadminUser
 } from "../datastore/superadminStore";
 import {sendSignupCompleteProfileEmail} from "../messaging/email";
 import {admin, admin_role, department} from '@prisma/client'
 import {SuperadminCreateAdmin} from "../types/superadminTypes";
+import {JsonResponse} from "../util/responses";
 
 const superadminRouter = express.Router();
 
@@ -136,7 +136,7 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
   let responseMessage = 'Incorrect Credentials', jwtSignData = null, success = false
 
   try {
-    const admin = await getSuperadminBaseData(req.body.email)
+    const admin = await getSuperadminLoginData(req.body.email)
 
     if (validatePassword(req.body.password, admin?.password ?? '')) {
       const jwtData = {
@@ -169,6 +169,26 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
         data: null,
         success
       })
+    }
+  }
+})
+
+superadminRouter.get('/super-admin/profile/get-data', async(req, res) => {
+  let success = false;
+  try {
+    const adminData = await verifySuperadminUser(req?.headers?.token as string)
+
+    if (!adminData)
+      JsonResponse(res, 'Not Authorized', false, null, 403)
+
+    const data = await getSuperadminBaseData(adminData?.id as string)
+    JsonResponse(res, 'Authorized', true, data, 200)
+
+  } catch(e) {
+    if (typeof e === "string") {
+      JsonResponse(res, e.toUpperCase() as string, success, null, 404)
+    } else if (e instanceof Error) {
+      JsonResponse(res, e.message  as string, success, null, 404)
     }
   }
 })
