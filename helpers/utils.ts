@@ -21,6 +21,9 @@ export const generateJSONTokenCredentials = (data:JWTDataProps, exp=Math.floor(D
 
 export const verifyJSONToken = (bearerToken:string) => {
   return jwt.verify(bearerToken, process.env.JWT_SECRET_KEY as string, (err:any, user:any) => {
+
+    console.log(user)
+    console.log(err)
     if (err)
       return null
 
