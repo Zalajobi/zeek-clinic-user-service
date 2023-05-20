@@ -12,9 +12,9 @@ export const createAdmin = async (data:CreateUserProps) => {
         {
           username: data.email
         },
-        {
-          phone_number: data.email
-        }
+        // {
+        //   phone_number: data.email
+        // }
       ]
     }
   })
@@ -43,9 +43,6 @@ export const getAdminBaseData = async (value:string) => {
         {
           username: value
         },
-        // {
-        //   phone_number: value
-        // },
         {
           id: value
         }
@@ -56,8 +53,8 @@ export const getAdminBaseData = async (value:string) => {
       password: true,
       role: true,
       id: true,
-      first_name: true,
-      phone_number: true
+      // phone_number: true,
+      profile: true,
     }
   })
 }
@@ -76,6 +73,9 @@ export const getAdminData = async (value:string) => {
           id: value
         }
       ]
+    },
+    include: {
+      profile: true
     }
   })
 }

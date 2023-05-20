@@ -12,9 +12,6 @@ import {JWTDataProps} from "../types/jwt";
 import {twilioSendAudioMessage, twilioSendSMSMessage, twilioSendWhatsAppMessage} from "../messaging/twilio";
 import { admin } from '@prisma/client'
 
-// type AdminUserType = Jsonify<admin>
-
-
 const passwordRouter = express.Router();
 
 // Send  Email With Temporary Token For Password Reset
@@ -29,9 +26,9 @@ passwordRouter.post(`/admin/password/reset-request`, async (req, res) => {
         role: user?.role ?? ''
       }, Math.floor(Date.now() / 1000) + (60 * 10))
 
-      const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.first_name ?? '')
+      const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.profile?.first_name ?? '')
       if (passwordResetEmailResponse.accepted.length !== 0) {
-        res.status(200).json({
+        res.json({
           message: `Password reset link sent to ${user?.email ?? ''}`,
           data: null,
           success: true
@@ -182,11 +179,11 @@ passwordRouter.post(`/admin/password/reset/user_verification/sms`, async (req, r
   let message = 'Passcode is send to the admin registered phone number', success = true
 
   try {
-    const user = await getAdminData(req.body.email) as admin
+    const user = await getAdminData(req.body.email)
 
     if (user) {
       const passwordResetCode = generateCode()
-      await twilioSendSMSMessage(user?.phone_number ?? '', `Your Temporary Code Is ${passwordResetCode}`)
+      await twilioSendSMSMessage(user?.profile?.phone_number ?? '', `Your Temporary Code Is ${passwordResetCode}`)
 
       const updateUser = {
         ...user,
@@ -233,14 +230,15 @@ passwordRouter.post(`/admin/password/reset/user_verification/direct-call`, async
   let message = 'Passcode is send to the admin registered phone number', success = true
 
   try {
-    const user = await getAdminData(req.body.email) as admin
+    const user = await getAdminData(req.body.email)
 
     if (user) {
       const passwordResetCode = generateCode()
-      await twilioSendAudioMessage(user?.phone_number ?? '', `Your Temporary Code Is ${passwordResetCode}`)
+      await twilioSendAudioMessage(user?.profile?.phone_number ?? '', `Your Temporary Code Is ${passwordResetCode}`)
 
       const updateUser = {
         ...user,
+        created_at: new Date(user?.created_at),
         password_reset_code: passwordResetCode,
         password_reset_request_timestamp: new Date()
       }
@@ -284,11 +282,11 @@ passwordRouter.post(`/admin/password/reset/user_verification/whatsApp`, async (r
   let message = 'Passcode is send to the admin registered phone number', success = true
 
   try {
-    const user = await getAdminData(req.body.email) as admin
+    const user = await getAdminData(req.body.email)
 
     if (user) {
       const passwordResetCode = generateCode()
-      await twilioSendWhatsAppMessage(user?.phone_number ?? '', `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`)
+      await twilioSendWhatsAppMessage(user?.profile?.phone_number ?? '', `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`)
 
       const updateUser = {
         ...user,

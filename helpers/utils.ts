@@ -39,3 +39,7 @@ export const generateCode = (length:number = 6) => {
   }
   return result;
 }
+
+export const generateTemporaryPassword = () => {
+  return crypto.randomBytes(5).toString('hex').toUpperCase();
+}

@@ -21,7 +21,7 @@ loginRouter.post(`/admin/login`, async (req, res) => {
     success = true
   }
 
-  res.status(200).json({
+  res.json({
     message: responseMessage,
     data: {
       token: jwtSignData
