@@ -1,8 +1,8 @@
 import express = require("express");
-import {createAdmin} from "../datastore/user";
+import {createAdmin} from "../datastore/userStore";
 import {generatePasswordHash} from "../helpers/utils";
 import {sendSignupCompleteProfileEmail} from "../messaging/email";
-import {createProvider} from "../datastore/provider";
+import {createProvider} from "../datastore/providerStore";
 import {JsonResponse} from "../util/responses";
 
 

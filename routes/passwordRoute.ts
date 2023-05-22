@@ -6,7 +6,7 @@ import {
   validatePassword,
   verifyJSONToken
 } from "../helpers/utils";
-import {getAdminBaseData, getAdminData, updateAdminData, updateAdminPassword} from "../datastore/user";
+import {getAdminBaseData, getAdminData, updateAdminData, updateAdminPassword} from "../datastore/userStore";
 import {sendResetPasswordEmail} from "../messaging/email";
 import {JWTDataProps} from "../types/jwt";
 import {twilioSendAudioMessage, twilioSendSMSMessage, twilioSendWhatsAppMessage} from "../messaging/twilio";

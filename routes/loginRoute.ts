@@ -1,5 +1,5 @@
 import express = require("express");
-import {getAdminBaseData} from "../datastore/user";
+import {getAdminBaseData} from "../datastore/userStore";
 import {generateJSONTokenCredentials, validatePassword} from "../helpers/utils";
 import {JsonResponse} from "../util/responses";
 
