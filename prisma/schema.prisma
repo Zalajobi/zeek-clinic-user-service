@@ -34,47 +34,45 @@ model admin {
 }
 
 model profile {
-  id                String        @id @unique @default(uuid())
-  gender            String        @db.VarChar(100)
-  dob               DateTime
-  title             String?       @db.VarChar(100)
-  first_name        String        @db.VarChar(100)
-  last_name         String        @db.VarChar(100)
-  other_name        String?       @db.VarChar(100)
-  phone_number      String?       @unique @db.VarChar(20)
-  bio               String?       @db.VarChar(1000)
-  address           String?       @db.VarChar(255)
-  address_two       String?       @db.VarChar(255)
-  state             String?       @db.VarChar(100)
-  city              String?       @db.VarChar(100)
-  zip_code          String?       @db.VarChar(10)
-  country           String?       @db.VarChar(50)
-  country_code      String?       @db.VarChar(5)
-  admin_id          String?       @unique
-  provider_id       String?       @unique
-  patient_id        String?       @unique
-  profile_img_url   String?
+  id              String   @id @unique @default(uuid())
+  admin_id        String?  @unique
+  provider_id     String?  @unique
+  patient_id      String?  @unique
+  gender          String   @db.VarChar(100)
+  dob             DateTime
+  title           String?  @db.VarChar(100)
+  first_name      String   @db.VarChar(100)
+  last_name       String   @db.VarChar(100)
+  other_name      String?  @db.VarChar(100)
+  phone_number    String?  @unique @db.VarChar(20)
+  bio             String?  @db.VarChar(1000)
+  address         String?  @db.VarChar(255)
+  address_two     String?  @db.VarChar(255)
+  state           String?  @db.VarChar(100)
+  city            String?  @db.VarChar(100)
+  zip_code        String?  @db.VarChar(10)
+  country         String?  @db.VarChar(50)
+  country_code    String?  @db.VarChar(5)
+  profile_img_url String?
 
-  admin             admin?        @relation(fields: [admin_id], references: [id])
-  provider          provider?     @relation(fields: [provider_id], references: [id])
-  patient           patient?      @relation(fields: [patient_id], references: [id])
+  admin    admin?    @relation(fields: [admin_id], references: [id])
+  provider provider? @relation(fields: [provider_id], references: [id])
+  patient  patient?  @relation(fields: [patient_id], references: [id])
 }
 
 model provider {
-  id           String   @id @unique @default(uuid())
-  email        String   @unique @db.VarChar(60)
-  username     String   @unique @db.VarChar(60)
-  phone_number String?  @unique @db.VarChar(20)
-  first_name   String   @db.VarChar(100)
-  last_name    String   @db.VarChar(100)
-  other_name   String?  @db.VarChar(100)
-  password     String
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  id         String   @id @unique @default(uuid())
+  email      String   @unique @db.VarChar(60)
+  username   String   @unique @db.VarChar(60)
+  staff_id   String   @db.VarChar(10)
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   department department
   profile    profile?
   roles      provider_role[]
+  patients   patient[]
 }
 
 model provider_role {
@@ -86,19 +84,17 @@ model provider_role {
 }
 
 model patient {
-  id           String  @id @unique @default(uuid())
-  id_number    String
-  id_type      String
-  employer     String
-  position     String
-  is_admitted  Boolean @default(true)
-  email        String  @unique @db.VarChar(60)
-  username     String  @unique @db.VarChar(60)
-  phone_number String? @unique @db.VarChar(20)
-  first_name   String  @db.VarChar(100)
-  last_name    String  @db.VarChar(100)
-  other_name   String? @db.VarChar(100)
+  id          String  @id @unique @default(uuid())
+  provider_id String  @unique
+  id_number   String
+  id_type     String
+  employer    String
+  position    String
+  is_admitted Boolean @default(true)
+  email       String  @unique @db.VarChar(60)
+  username    String  @unique @db.VarChar(60)
 
+  provider  provider    @relation(fields: [provider_id], references: [id])
   profile   profile?
   allergies allergies[]
 }
