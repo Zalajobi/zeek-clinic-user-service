@@ -113,6 +113,7 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
       const jwtData = {
         id: admin?.id ?? '',
         email: admin?.email ?? '',
+        role: 'SUPER_ADMIN'
       }
 
       jwtSignData = generateJSONTokenCredentials(jwtData, Math.floor(Date.now() / 1000) + (60 * 360))
