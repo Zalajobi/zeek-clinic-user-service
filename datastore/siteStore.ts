@@ -1,9 +1,7 @@
 import prisma from "../lib/prisma";
-import {JWTDataProps} from "../types/jwt";
-import {verifyJSONToken} from "../helpers/utils";
 
-export const verifyAdminStatus = async (token:string) => {
-  const { id } = await <JWTDataProps><unknown>verifyJSONToken(token)
+export const adminCreateSite = async (data:string) => {
+  // const
 
   return await prisma.admin.findFirst({
     where: {

@@ -15,8 +15,8 @@ export const validatePassword = (reqPassword:string, comparePassword:string) => 
 export const generateJSONTokenCredentials = (data:JWTDataProps, exp=Math.floor(Date.now() / 1000) + (60 * 360)) => {
   return jwt.sign({
     data,
-    // exp, // Expire in 6hrs by default
-    expiresIn: '356 days' //Expire in 365 Days - Meant to test
+    exp, // Expire in 6hrs by default
+    // expiresIn: '356 days' //Expire in 365 Days - Meant to test
   }, process.env.JWT_SECRET_KEY as string)
 }
 

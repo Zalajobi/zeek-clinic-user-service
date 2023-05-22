@@ -8,3 +8,8 @@ export type CreateHospitalProps = {
   country: string
   logo: string
 }
+
+
+export type createSiteProps = {
+  hos
+}

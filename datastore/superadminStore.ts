@@ -100,7 +100,8 @@ export const verifySuperadminUser = async (token:string) => {
     },
     select: {
       id: true,
-      email: true
+      email: true,
+      role: true
     }
   })
 }

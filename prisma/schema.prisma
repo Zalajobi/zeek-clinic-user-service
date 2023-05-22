@@ -8,16 +8,17 @@ generator client {
 }
 
 model super_admin {
-  id           String   @id @unique @default(uuid())
-  email        String   @unique @db.VarChar(60)
-  username     String   @unique @db.VarChar(60)
-  phone_number String?  @unique @db.VarChar(20)
-  first_name   String   @db.VarChar(100)
-  last_name    String   @db.VarChar(100)
-  other_name   String?  @db.VarChar(100)
+  id           String     @id @unique @default(uuid())
+  email        String     @unique @db.VarChar(60)
+  username     String     @unique @db.VarChar(60)
+  phone_number String?    @unique @db.VarChar(20)
+  first_name   String     @db.VarChar(100)
+  last_name    String     @db.VarChar(100)
+  other_name   String?    @db.VarChar(100)
+  role         admin_role @default(SUPER_ADMIN)
   password     String
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
 }
 
 model admin {

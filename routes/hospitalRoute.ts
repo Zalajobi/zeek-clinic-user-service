@@ -2,7 +2,7 @@ import express = require("express");
 import signupRouter from "./signnupRoute";
 import {JsonResponse} from "../util/responses";
 import {verifySuperadminUser} from "../datastore/superadminStore";
-import {CreateHospitalProps} from "../types/hospitalTypes";
+import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
 import {createNewHospital} from "../datastore/hospitalStore";
 import {excludeKeys} from "../util";
 
