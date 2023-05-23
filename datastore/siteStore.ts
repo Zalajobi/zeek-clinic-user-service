@@ -1,16 +1,8 @@
 import prisma from "../lib/prisma";
+import {createSiteProps} from "../types/siteAndHospitalTypes";
 
-export const adminCreateSite = async (data:string) => {
-  // const
-
-  return await prisma.admin.findFirst({
-    where: {
-      id
-    },
-    select: {
-      id: true,
-      email: true,
-      role: true
-    }
+export const adminCreateSite = async (data:createSiteProps) => {
+  return await prisma.site.create({
+    data
   })
 }

@@ -2,6 +2,8 @@ import express = require("express");
 import {JsonResponse} from "../util/responses";
 import {verifySuperadminUser} from "../datastore/superadminStore";
 import {verifyAdmin} from "../datastore/adminStore";
+import {adminCreateSite} from "../datastore/siteStore";
+import {createSiteProps} from "../types/siteAndHospitalTypes";
 
 
 const siteRouter = express.Router();
@@ -19,11 +21,13 @@ siteRouter.post('/site/create', async (req, res) => {
       return JsonResponse(res, message, success, null, 401)
 
 
-    if (response[0]?.role === 'HOSPITAL_ADMIN' || response[0]?.role === 'SUPER_ADMIN' || response[1])
+    if (response[0]?.role === 'HOSPITAL_ADMIN' || response[0]?.role === 'SUPER_ADMIN' || response[1]) {
+      const site = await adminCreateSite(req.body as createSiteProps)
+      if (site)
+        return JsonResponse(res, 'New Organization Added', true, null, 200)
+    }
 
-      return JsonResponse(res, 'New Organization Added', true, null, 200)
-
-    return JsonResponse(res, message, true, null, 401)
+    return JsonResponse(res, 'Something went wrong', false, null, 400)
   } catch(error) {
     let message = 'Not Authorized'
     if (error instanceof Error)

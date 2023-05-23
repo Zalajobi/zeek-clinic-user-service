@@ -100,35 +100,35 @@ model hospital {
 }
 
 model site {
-  id                    String      @id @unique @default(uuid())
-  hospital_id           String      @unique
-  name                  String
-  email                 String
-  city                  String
-  state                 String
-  country               String
-  logo                  String?
-  time_zone             String?
-  phone                 String
-  status                site_status @default(PENDING)
-  is_private            Boolean     @default(false)
-  has_appointment       Boolean     @default(false)
-  has_caregiver         Boolean     @default(false)
-  has_clinical          Boolean     @default(false)
-  has_doctor            Boolean     @default(false)
-  has_emergency         Boolean     @default(false)
-  has_laboratory        Boolean     @default(false)
-  has_medical_supply    Boolean     @default(false)
-  has_nursing           Boolean     @default(false)
-  has_inpatient         Boolean     @default(false)
-  has_outpatient        Boolean     @default(false)
-  has_pharmacy          Boolean     @default(false)
-  has_physical_theraphy Boolean     @default(false)
-  has_procedure         Boolean     @default(false)
-  has_radiology         Boolean     @default(false)
-  has_unit              Boolean     @default(false)
-  has_vital             Boolean     @default(false)
-  has_wallet            Boolean     @default(false)
+  id                   String      @id @unique @default(uuid())
+  hospital_id          String      @unique
+  name                 String
+  email                String
+  city                 String
+  state                String
+  country              String
+  logo                 String?
+  time_zone            String?
+  phone                String
+  status               site_status @default(PENDING)
+  is_private           Boolean     @default(false)
+  has_appointment      Boolean     @default(false)
+  has_caregiver        Boolean     @default(false)
+  has_clinical         Boolean     @default(false)
+  has_doctor           Boolean     @default(false)
+  has_emergency        Boolean     @default(false)
+  has_laboratory       Boolean     @default(false)
+  has_medical_supply   Boolean     @default(false)
+  has_nursing          Boolean     @default(false)
+  has_inpatient        Boolean     @default(false)
+  has_outpatient       Boolean     @default(false)
+  has_pharmacy         Boolean     @default(false)
+  has_physical_therapy Boolean     @default(false)
+  has_procedure        Boolean     @default(false)
+  has_radiology        Boolean     @default(false)
+  has_unit             Boolean     @default(false)
+  has_vital            Boolean     @default(false)
+  has_wallet           Boolean     @default(false)
 
   bank_accounts bank_accounts[]
   hospital      hospital?       @relation(fields: [hospital_id], references: [id])
