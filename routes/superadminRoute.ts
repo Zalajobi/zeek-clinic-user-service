@@ -121,7 +121,7 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
       success = true
     }
 
-    JsonResponse(res, responseMessage, success, {
+    return JsonResponse(res, responseMessage, success, {
       token: jwtSignData
     }, 200)
 
@@ -130,7 +130,7 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, success, null, 403)
+    return JsonResponse(res, message, success, null, 403)
   }
 })
 
