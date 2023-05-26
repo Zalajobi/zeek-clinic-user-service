@@ -15,7 +15,7 @@ export const createNewHospital = async (data:CreateHospitalProps) => {
 export const superAdminGetHospitals = async (page: number, perPage: number, query: string, from: string, to: string) => {
   let where:any = {}, hospitalQuery = null
 
-  if (query)
+  if (query) {
     where["OR"] = [
       {
         name: {
@@ -38,6 +38,7 @@ export const superAdminGetHospitals = async (page: number, perPage: number, quer
         }
       },
     ]
+  }
 
   if (from || to) {
     where['created_at'] = {

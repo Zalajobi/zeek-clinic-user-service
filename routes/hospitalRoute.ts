@@ -32,9 +32,14 @@ hospitalRouter.post('/hospital/create', async (req, res) => {
 
 hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
   let message = 'Not Authorised', success = false
-  const { page, per_page, cursor, from_date, to_date, search} = req.query
+  const { page, per_page, from_date, to_date, search} = req.query
 
   try {
+    const user = await verifySuperadminUser(req?.headers?.token as string)
+
+    if (!user)
+      return JsonResponse(res, message, success, null, 401)
+
     const data = await superAdminGetHospitals(
       page as unknown as number,
       per_page as unknown as number,
@@ -49,7 +54,7 @@ hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, false, null, 403)
+    return JsonResponse(res, message, false, null, 401)
   }
 
 })
