@@ -2,7 +2,7 @@ import express = require("express");
 import {JsonResponse} from "../util/responses";
 import {verifySuperadminUser} from "../datastore/superadminStore";
 import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
-import {createNewHospital, superAdminGetHospitals} from "../datastore/hospitalStore";
+import {createNewHospital, selectAllAvailableCountries, superAdminGetHospitals} from "../datastore/hospitalStore";
 
 
 const hospitalRouter = express.Router();
@@ -56,9 +56,32 @@ hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
 
     return JsonResponse(res, message, false, null, 401)
   }
-
 })
 
+hospitalRouter.get('/super-admin/hospitals/countries/distinct', async (req, res) => {
+  let message = 'Not Authorised', success = false
+
+  try {
+    const user = await verifySuperadminUser(req?.headers?.token as string)
+
+    if (!user)
+      return JsonResponse(res, message, success, null, 401)
+
+    const distinctHospitals = await selectAllAvailableCountries()
+
+    if (!distinctHospitals)
+      return JsonResponse(res, 'Something went wrong', success, null, 410)
+    else
+      return JsonResponse(res, 'Get Distinct Success', true, distinctHospitals, 200)
+
+  } catch(error) {
+    let message = 'Not Authorized'
+    if (error instanceof Error)
+      message = error.message
+
+    return JsonResponse(res, message, success, null, 401)
+  }
+})
 
 
 export default hospitalRouter

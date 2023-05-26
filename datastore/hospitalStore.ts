@@ -77,3 +77,12 @@ export const superAdminGetHospitals = async (page: number, perPage: number, quer
     count,
   }
 }
+
+export const selectAllAvailableCountries = async () => {
+  return await prisma.hospital.findMany({
+    distinct: ['country'],
+    select: {
+      country: true
+    }
+  })
+}
