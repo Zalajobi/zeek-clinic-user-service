@@ -23,13 +23,13 @@ signupRouter.post(`/admin/signup`, async (req, res) => {
       responseMessage = 'Error Creating Admin'
     }
 
-    JsonResponse(res, responseMessage, success, null, 200)
+    return JsonResponse(res, responseMessage, success, null, 200)
   } catch(error) {
     let message = 'Not Authorized'
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, success, null, 403)
+    return JsonResponse(res, message, success, null, 403)
   }
 })
 

@@ -3,10 +3,11 @@ export type CreateHospitalProps = {
   email:  string
   phone: string
   address: string
-  city: string
+  city?: string
   state: string
   country: string
   logo: string
+  country_code: string
 }
 
 

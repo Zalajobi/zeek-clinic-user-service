@@ -7,12 +7,36 @@ interface SuperAdminGetHospitalsProps {
 }
 
 export const createNewHospital = async (data:CreateHospitalProps) => {
-  return  await prisma.hospital.create({
+  let isUnique;
+
+  isUnique = await prisma.hospital.findFirst({
+    where: {
+      OR: [
+        {
+          email: data.email
+        },
+
+        {
+          phone: data.phone
+        }
+      ]
+    }
+  })
+
+  if (isUnique)
+    return false
+
+
+  const hospital = await prisma.hospital.create({
     data
   })
+
+  if (hospital) {
+    return true
+  }
 }
 
-export const superAdminGetHospitals = async (page: number, perPage: number, query: string, from: string, to: string) => {
+export const superAdminGetHospitals = async (page: number, perPage: number, query: string, from: string, to: string, country: string) => {
   let where:any = {}, hospitalQuery = null
 
   if (query) {
@@ -39,6 +63,12 @@ export const superAdminGetHospitals = async (page: number, perPage: number, quer
       },
     ]
   }
+
+  if (country)
+    where.country = {
+      contains: country,
+      mode: 'insensitive'
+    }
 
   if (from || to) {
     where['created_at'] = {
@@ -83,6 +113,9 @@ export const selectAllAvailableCountries = async () => {
     distinct: ['country'],
     select: {
       country: true
+    },
+    orderBy : {
+      country: 'asc'
     }
   })
 }
