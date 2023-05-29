@@ -33,7 +33,7 @@ hospitalRouter.post('/hospital/create', async (req, res) => {
 
 hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
   let message = 'Not Authorised', success = false
-  const { page, per_page, from_date, to_date, search, country} = req.query
+  const { page, per_page, from_date, to_date, search, country, status} = req.query
 
   try {
     const user = await verifySuperadminUser(req?.headers?.token as string)
@@ -48,6 +48,7 @@ hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
       from_date as unknown as string,
       to_date as unknown as string,
       country as unknown as string,
+      status as unknown as string,
     )
 
     return JsonResponse(res, 'Success', true, data, 200)

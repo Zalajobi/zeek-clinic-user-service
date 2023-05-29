@@ -36,7 +36,7 @@ export const createNewHospital = async (data:CreateHospitalProps) => {
   }
 }
 
-export const superAdminGetHospitals = async (page: number, perPage: number, query: string, from: string, to: string, country: string) => {
+export const superAdminGetHospitals = async (page: number, perPage: number, query: string, from: string, to: string, country: string, status: string) => {
   let where:any = {}, hospitalQuery = null
 
   if (query) {
@@ -64,11 +64,16 @@ export const superAdminGetHospitals = async (page: number, perPage: number, quer
     ]
   }
 
-  if (country)
+  if (status) {
+    where.status = status
+  }
+
+  if (country) {
     where.country = {
       contains: country,
       mode: 'insensitive'
     }
+  }
 
   if (from || to) {
     where['created_at'] = {
