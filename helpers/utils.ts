@@ -16,6 +16,7 @@ export const generateJSONTokenCredentials = (data:JWTDataProps, exp=Math.floor(D
   return jwt.sign({
     data,
     exp, // Expire in 6hrs by default
+    // expiresIn: '356 days' //Expire in 365 Days - Meant to test
   }, process.env.JWT_SECRET_KEY as string)
 }
 

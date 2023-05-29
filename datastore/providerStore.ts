@@ -14,7 +14,9 @@ export const createProvider = async (data:CreateUserProps, department:string, ro
           username: data.email
         },
         {
-          phone_number: data.email
+          profile: {
+            phone_number: data.email
+          }
         }
       ]
     }

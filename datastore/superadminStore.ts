@@ -1,5 +1,5 @@
-import {CreateProfileProps, CreateUserProps} from "../types/user";
 import prisma from "../lib/prisma";
+import {CreateUserProps} from "../types/user";
 import {verifyJSONToken} from "../helpers/utils";
 import {JWTDataProps} from "../types/jwt";
 import {SuperadminCreateAdmin} from "../types/superadminTypes";
@@ -100,7 +100,8 @@ export const verifySuperadminUser = async (token:string) => {
     },
     select: {
       id: true,
-      email: true
+      email: true,
+      role: true
     }
   })
 }

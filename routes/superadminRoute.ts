@@ -113,14 +113,15 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
       const jwtData = {
         id: admin?.id ?? '',
         email: admin?.email ?? '',
+        role: 'SUPER_ADMIN'
       }
 
-      jwtSignData = generateJSONTokenCredentials(jwtData)
+      jwtSignData = generateJSONTokenCredentials(jwtData, Math.floor(Date.now() / 1000) + (60 * 360))
       responseMessage= 'Login Successful'
       success = true
     }
 
-    JsonResponse(res, responseMessage, success, {
+    return JsonResponse(res, responseMessage, success, {
       token: jwtSignData
     }, 200)
 
@@ -129,7 +130,7 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
     if (error instanceof Error)
       message = error.message
 
-    JsonResponse(res, message, success, null, 403)
+    return JsonResponse(res, message, success, null, 403)
   }
 })
 
