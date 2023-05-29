@@ -14,7 +14,9 @@ export const createProvider = async (data:CreateUserProps, department:string, ro
           username: data.email
         },
         {
-          phone_number: data.email
+          profile: {
+            phone_number: data.email
+          }
         }
       ]
     }
@@ -23,26 +25,26 @@ export const createProvider = async (data:CreateUserProps, department:string, ro
   if (isUnique)
     return ("Provider With Email, Username or Phone Number Already Exist...")
 
-  const user = await prisma.provider.create({
-    data: {
-      ...data,
-      department: getDepartment(department)
-    }
-  })
-
-  if (user) {
-    roles.forEach(info => {
-      transactions.push(prisma.provider_role.create({
-        data: {
-          role: getProviderRole(info),
-          provider_id: user.id
-        }
-      }))
-    })
-
-    await prisma.$transaction(transactions)
-    return user
-  }
+  // const user = await prisma.provider.create({
+  //   data: {
+  //     ...data,
+  //     department: getDepartment(department)
+  //   }
+  // })
+  //
+  // if (user) {
+  //   roles.forEach(info => {
+  //     transactions.push(prisma.provider_role.create({
+  //       data: {
+  //         role: getProviderRole(info),
+  //         provider_id: user.id
+  //       }
+  //     }))
+  //   })
+  //
+  //   await prisma.$transaction(transactions)
+  //   return user
+  // }
 
   return null
 }

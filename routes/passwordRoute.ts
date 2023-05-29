@@ -6,11 +6,11 @@ import {
   validatePassword,
   verifyJSONToken
 } from "../helpers/utils";
-import {getAdminBaseData, getAdminData, updateAdminData, updateAdminPassword} from "../datastore/user";
+import {getAdminBaseData, getAdminData, updateAdminData, updateAdminPassword} from "../datastore/userStore";
 import {sendResetPasswordEmail} from "../messaging/email";
 import {JWTDataProps} from "../types/jwt";
 import {twilioSendAudioMessage, twilioSendSMSMessage, twilioSendWhatsAppMessage} from "../messaging/twilio";
-import { admin } from '@prisma/client'
+import {JsonResponse} from "../util/responses";
 
 const passwordRouter = express.Router();
 
@@ -28,34 +28,18 @@ passwordRouter.post(`/admin/password/reset-request`, async (req, res) => {
 
       const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.profile?.first_name ?? '')
       if (passwordResetEmailResponse.accepted.length !== 0) {
-        res.json({
-          message: `Password reset link sent to ${user?.email ?? ''}`,
-          data: null,
-          success: true
-        })
+        JsonResponse(res, `Password reset link sent to ${user?.email ?? ''}`, true, null, 401)
       }
     }
     else {
-      res.json({
-        message: responseMessage,
-        data: null,
-        success
-      })
+      JsonResponse(res, responseMessage, success, null, 401)
     }
-  } catch(e){
-    if (typeof e === "string") {
-      res.json({
-        message: e.toUpperCase(),
-        data: null,
-        success
-      })
-    } else if (e instanceof Error) {
-      res.json({
-        message: e.message,
-        data: null,
-        success
-      })
-    }
+  } catch(error) {
+    let message = 'Something Went Wrong'
+    if (error instanceof Error)
+      message = error.message
+
+    JsonResponse(res, message, false, null, 403)
   }
 })
 
@@ -66,32 +50,16 @@ passwordRouter.get('/admin/jwt_token/verify', async (req, res) => {
     const verifyToken = <JWTDataProps><unknown>verifyJSONToken(req.query.token as string)
 
     if (verifyToken)
-      res.json({
-        message: 'Token is valid',
-        success: true,
-        data: null
-      })
-  } catch(e) {
-    if (typeof e === "string") {
-      res.json({
-        message: e.toUpperCase(),
-        data: null,
-        success
-      })
-    } else if (e instanceof Error) {
-      res.json({
-        message: e.message,
-        data: null,
-        success
-      })
-    }
-  }
+      JsonResponse(res, 'Token is valid', true, null, 200)
+    else
+      JsonResponse(res, 'Token is invalid', false, null, 401)
+  } catch(error) {
+    let message = 'Something Went Wrong'
+    if (error instanceof Error)
+      message = error.message
 
-  res.json({
-    message,
-    success,
-    data: null
-  })
+    JsonResponse(res, message, false, null, 403)
+  }
 })
 
 // Verify Token with JWT and update Password
@@ -108,35 +76,21 @@ passwordRouter.put(`/admin/reset_password`, async (req, res) => {
       message = "Password Updated"
       success = true
     }
-  } catch(e) {
-    if (typeof e === "string") {
-      res.json({
-        message: e.toUpperCase(),
-        data: null,
-        success
-      })
-    } else if (e instanceof Error) {
-      res.json({
-        message: e.message,
-        data: null,
-        success
-      })
-    }
-  }
 
-  res.json(
-    {
-      message,
-      success,
-      data: null,
-    }
-  )
+    JsonResponse(res, message, success, null, 200)
+  } catch(error) {
+    let message = 'Something Went Wrong'
+    if (error instanceof Error)
+      message = error.message
+
+    JsonResponse(res, message, false, null, 403)
+  }
 })
 
 // Change Password When via password reset token
 passwordRouter.put(`/admin/change_password`, async (req, res) => {
   const { authorization } = req.headers
-  let message = 'Error Updating Password', success = false
+  let message = 'Error Updating Password';
 
   try {
     const verifyToken = <JWTDataProps><unknown>verifyJSONToken(authorization as string)
@@ -151,27 +105,15 @@ passwordRouter.put(`/admin/change_password`, async (req, res) => {
           message = 'Password Updated'
       }
     }
-  } catch(e) {
-    if (typeof e === "string") {
-      res.json({
-        message: e.toUpperCase(),
-        data: null,
-        success
-      })
-    } else if (e instanceof Error) {
-      res.json({
-        message: e.message,
-        data: null,
-        success
-      })
-    }
-  }
 
-  res.json({
-    message,
-    success,
-    data: null
-  })
+    JsonResponse(res, message, true, null, 200)
+  } catch(error) {
+    let message = 'Something Went Wrong'
+    if (error instanceof Error)
+      message = error.message
+
+    JsonResponse(res, message, false, null, 403)
+  }
 })
 
 // Verify Admin Email, Username data, and send SMS to user number
@@ -202,26 +144,13 @@ passwordRouter.post(`/admin/password/reset/user_verification/sms`, async (req, r
       success = false
     }
 
-    res.json(
-      {
-        message,
-        success
-      }
-    )
-  } catch(e) {
-    if (typeof e === "string") {
-      res.json({
-        message: e.toUpperCase(),
-        data: null,
-        success
-      })
-    } else if (e instanceof Error) {
-      res.json({
-        message: e.message,
-        data: null,
-        success
-      })
-    }
+    JsonResponse(res, message, success, null, 200)
+  } catch(error) {
+    let message = 'Something Went Wrong'
+    if (error instanceof Error)
+      message = error.message
+
+    JsonResponse(res, message, false, null, 403)
   }
 })
 
@@ -254,26 +183,13 @@ passwordRouter.post(`/admin/password/reset/user_verification/direct-call`, async
       success = false
     }
 
-    res.json(
-      {
-        message,
-        success
-      }
-    )
-  } catch(e) {
-    if (typeof e === "string") {
-      res.json({
-        message: e.toUpperCase(),
-        data: null,
-        success
-      })
-    } else if (e instanceof Error) {
-      res.json({
-        message: e.message,
-        data: null,
-        success
-      })
-    }
+    JsonResponse(res, message, success, null, 200)
+  } catch(error) {
+    let message = 'Something Went Wrong'
+    if (error instanceof Error)
+      message = error.message
+
+    JsonResponse(res, message, false, null, 403)
   }
 })
 
@@ -305,27 +221,13 @@ passwordRouter.post(`/admin/password/reset/user_verification/whatsApp`, async (r
       success = false
     }
 
-    res.json(
-      {
-        message,
-        success,
-        data: null,
-      }
-    )
-  } catch(e) {
-    if (typeof e === "string") {
-      res.json({
-        message: e.toUpperCase(),
-        data: null,
-        success
-      })
-    } else if (e instanceof Error) {
-      res.json({
-        message: e.message,
-        data: null,
-        success
-      })
-    }
+    JsonResponse(res, message, success, null, 200)
+  } catch(error) {
+    let message = 'Something Went Wrong'
+    if (error instanceof Error)
+      message = error.message
+
+    JsonResponse(res, message, false, null, 403)
   }
 })
 

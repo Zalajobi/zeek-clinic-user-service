@@ -1,5 +1,5 @@
-import {CreateProfileProps, CreateUserProps} from "../types/user";
 import prisma from "../lib/prisma";
+import {CreateUserProps} from "../types/user";
 import {verifyJSONToken} from "../helpers/utils";
 import {JWTDataProps} from "../types/jwt";
 import {SuperadminCreateAdmin} from "../types/superadminTypes";
@@ -35,6 +35,32 @@ export const createSuperAdmin = async (data:CreateUserProps) => {
   return null
 }
 
+export const getSuperadminLoginData = async (value:string) => {
+  return await prisma.super_admin.findFirst({
+    where: {
+      OR: [
+        {
+          email: value
+        },
+        {
+          username: value
+        },
+        {
+          phone_number: value
+        },
+        {
+          id: value
+        }
+      ]
+    },
+    select: {
+      id: true,
+      email: true,
+      password: true
+    }
+  })
+}
+
 export const getSuperadminBaseData = async (value:string) => {
   return await prisma.super_admin.findFirst({
     where: {
@@ -45,24 +71,25 @@ export const getSuperadminBaseData = async (value:string) => {
         {
           username: value
         },
-        // {
-        //   phone_number: value
-        // },
+        {
+          phone_number: value
+        },
         {
           id: value
         }
       ]
     },
     select: {
-      email: true,
-      password: true,
       id: true,
+      email: true,
+      username: true,
+      phone_number: true,
       first_name: true,
-      phone_number: true
+      last_name: true,
+      other_name: true,
     }
   })
 }
-
 
 export const verifySuperadminUser = async (token:string) => {
   const { id } = await <JWTDataProps><unknown>verifyJSONToken(token)
@@ -73,7 +100,8 @@ export const verifySuperadminUser = async (token:string) => {
     },
     select: {
       id: true,
-      email: true
+      email: true,
+      role: true
     }
   })
 }
