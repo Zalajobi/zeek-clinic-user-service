@@ -2,7 +2,7 @@ import express = require("express");
 import {JsonResponse} from "../util/responses";
 import {verifySuperadminUser} from "../datastore/superadminStore";
 import {verifyAdmin} from "../datastore/adminStore";
-import {adminCreateSite} from "../datastore/siteStore";
+import {adminCreateSite, getSiteInformation} from "../datastore/siteStore";
 import {createSiteProps} from "../types/siteAndHospitalTypes";
 
 
@@ -28,6 +28,20 @@ siteRouter.post('/site/create', async (req, res) => {
     }
 
     return JsonResponse(res, 'Something went wrong', false, null, 400)
+  } catch(error) {
+    let message = 'Not Authorized'
+    if (error instanceof Error)
+      message = error.message
+
+    return JsonResponse(res, message, success, null, 403)
+  }
+})
+
+siteRouter.get('/site/get-information', async  (req, res) => {
+  let message = 'Not Authorised', success = false
+
+  try {
+    // const siteData = await getSiteInformation(req.params.hospitalId as string)
   } catch(error) {
     let message = 'Not Authorized'
     if (error instanceof Error)

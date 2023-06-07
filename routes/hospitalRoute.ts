@@ -90,9 +90,27 @@ hospitalRouter.get('/super-admin/hospitals/countries/distinct', async (req, res)
 })
 
 hospitalRouter.get('/hospital/details', async (req, res) => {
-  const hospitalData = await getHospitalDetails(req.query.id as string)
 
-  return JsonResponse(res, 'Hospital data', true, hospitalData, 200)
+  let message = 'Not Authorised', success = false
+
+  try {
+    const adminData = await verifySuperadminUser(req?.headers?.token as string)
+    if (!adminData)
+      return JsonResponse(res, message, success, null, 403)
+
+    const hospitalData = await getHospitalDetails(req.query.id as string)
+
+    if (!hospitalData)
+      return JsonResponse(res, 'Organization not found', success, null, 400)
+
+    return JsonResponse(res, 'Hospital data', true, hospitalData, 200)
+  } catch(error) {
+    let message = 'Not Authorized'
+    if (error instanceof Error)
+      message = error.message
+
+    return JsonResponse(res, message, success, null, 403)
+  }
 })
 
 export default hospitalRouter

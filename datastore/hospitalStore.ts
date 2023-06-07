@@ -126,9 +126,25 @@ export const selectAllAvailableCountries = async () => {
 }
 
 export const getHospitalDetails = async (hospitalId: string) => {
-  return await prisma.hospital.findFirst({
-    where: {
-      id: hospitalId
-    }
-  })
+  const [hospital, sites] = await prisma.$transaction([
+    prisma.hospital.findUnique({
+      where: {
+        id: hospitalId
+      }
+    }),
+
+    prisma.site.findMany({
+      where: {
+        hospital_id: hospitalId
+      },
+      orderBy: {
+        created_at: 'desc'
+      }
+    })
+  ])
+
+  return {
+    hospital,
+    sites
+  }
 }
