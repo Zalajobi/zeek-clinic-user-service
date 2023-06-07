@@ -124,3 +124,11 @@ export const selectAllAvailableCountries = async () => {
     }
   })
 }
+
+export const getHospitalDetails = async (hospitalId: string) => {
+  return await prisma.hospital.findFirst({
+    where: {
+      id: hospitalId
+    }
+  })
+}

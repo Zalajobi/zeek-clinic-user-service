@@ -2,7 +2,12 @@ import express = require("express");
 import {JsonResponse} from "../util/responses";
 import {verifySuperadminUser} from "../datastore/superadminStore";
 import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
-import {createNewHospital, selectAllAvailableCountries, superAdminGetHospitals} from "../datastore/hospitalStore";
+import {
+  createNewHospital,
+  getHospitalDetails,
+  selectAllAvailableCountries,
+  superAdminGetHospitals
+} from "../datastore/hospitalStore";
 
 
 const hospitalRouter = express.Router();
@@ -84,5 +89,10 @@ hospitalRouter.get('/super-admin/hospitals/countries/distinct', async (req, res)
   }
 })
 
+hospitalRouter.get('/hospital/details', async (req, res) => {
+  const hospitalData = await getHospitalDetails(req.query.id as string)
+
+  return JsonResponse(res, 'Hospital data', true, hospitalData, 200)
+})
 
 export default hospitalRouter

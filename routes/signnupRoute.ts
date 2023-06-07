@@ -14,6 +14,8 @@ signupRouter.post(`/admin/signup`, async (req, res) => {
   try {
     const data = req.body
     data.password = generatePasswordHash(req.body.password)
+
+    console.log(data.password)
     const adminUser = await createAdmin(data)
     if (adminUser && typeof adminUser !== 'string') {
       sendSignupCompleteProfileEmail(data?.email, adminUser.id, data.first_name)

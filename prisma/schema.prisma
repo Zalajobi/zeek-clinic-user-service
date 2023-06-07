@@ -93,6 +93,7 @@ model hospital {
   country    String
   logo       String?
   status      hospitalStatus @default(PENDING)
+  zip_code    String?
   country_code  String
 
 

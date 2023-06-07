@@ -6,3 +6,17 @@ export const adminCreateSite = async (data:createSiteProps) => {
     data
   })
 }
+
+
+export const getSiteInformation = async (id: string) => {
+  return await prisma.site.findUnique({
+    where : {
+      id: id
+    },
+
+    include: {
+      hospital: true,
+      bank_accounts: true
+    }
+  })
+}
