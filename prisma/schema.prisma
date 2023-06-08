@@ -106,6 +106,7 @@ model hospital {
 model site {
   id                   String      @id @unique @default(uuid())
   hospital_id          String
+  address              String
   name                 String
   email                String
   city                 String
