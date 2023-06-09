@@ -127,7 +127,7 @@ export const selectAllAvailableCountries = async () => {
 }
 
 export const getHospitalDetails = async (hospitalId: string) => {
-  const [hospital, sites, activeSites, closedSites, pendingSites, deactivatedSites] = await prisma.$transaction([
+  const [hospital, sites, activeSites, closedSites, pendingSites, deactivatedSites, totalSites] = await prisma.$transaction([
     prisma.hospital.findUnique({
       where: {
         id: hospitalId
@@ -138,6 +138,7 @@ export const getHospitalDetails = async (hospitalId: string) => {
       where: {
         hospital_id: hospitalId
       },
+      take: 10,
       orderBy: {
         created_at: 'desc'
       }
@@ -169,7 +170,13 @@ export const getHospitalDetails = async (hospitalId: string) => {
         hospital_id: hospitalId,
         status: 'CLOSED'
       }
-    })
+    }),
+
+    prisma.site.count({
+      where: {
+        hospital_id: hospitalId,
+      }
+    }),
   ])
 
   return {
@@ -181,5 +188,8 @@ export const getHospitalDetails = async (hospitalId: string) => {
       deactivatedSites
     },
     sites,
+    tableData: {
+      sites: totalSites
+    }
   }
 }
