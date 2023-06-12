@@ -12,6 +12,7 @@ export type CreateHospitalProps = {
 
 
 export type createSiteProps = {
+  address: string
   hospital_id: string
   name: string
   email: string
