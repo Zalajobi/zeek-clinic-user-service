@@ -93,6 +93,7 @@ model hospital {
   country    String
   logo       String?
   status      hospitalStatus @default(PENDING)
+  zip_code    String?
   country_code  String
 
 
@@ -104,7 +105,8 @@ model hospital {
 
 model site {
   id                   String      @id @unique @default(uuid())
-  hospital_id          String      @unique
+  hospital_id          String
+  address              String
   name                 String
   email                String
   city                 String
@@ -133,13 +135,16 @@ model site {
   has_vital            Boolean     @default(false)
   has_wallet           Boolean     @default(false)
 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
   bank_accounts bank_accounts[]
   hospital      hospital?       @relation(fields: [hospital_id], references: [id])
 }
 
 model bank_accounts {
   id              String  @id @unique @default(uuid())
-  site_id         String  @unique
+  site_id         String
   bank_name       String
   bank_account    String
   currency        String

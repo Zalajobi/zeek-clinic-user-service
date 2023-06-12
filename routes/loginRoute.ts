@@ -26,7 +26,7 @@ loginRouter.post(`/admin/login`, async (req, res) => {
 
       JsonResponse(res, responseMessage, success, {
         token: jwtSignData
-      }, 403)
+      }, 200)
     }
   } catch(error) {
     let message = 'Not Authorized'
