@@ -8,6 +8,7 @@ import {
   selectAllAvailableCountries,
   superAdminGetHospitals
 } from "../datastore/hospitalStore";
+import {verifyUserPermission} from "../lib/auth";
 
 
 const hospitalRouter = express.Router();
@@ -16,9 +17,9 @@ hospitalRouter.post('/hospital/create', async (req, res) => {
   let message = 'Not Authorised'
 
   try {
-    const user = await verifySuperadminUser(req?.headers?.token as string)
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN'])
 
-    if (!user)
+    if (!verifiedUser)
       return JsonResponse(res, message, false, null, 401)
 
     const hospital = await createNewHospital(req.body as CreateHospitalProps)
@@ -41,9 +42,9 @@ hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
   const { page, per_page, from_date, to_date, search, country, status} = req.query
 
   try {
-    const user = await verifySuperadminUser(req?.headers?.token as string)
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN'])
 
-    if (!user)
+    if (!verifiedUser)
       return JsonResponse(res, message, success, null, 401)
 
     const data = await superAdminGetHospitals(
@@ -69,9 +70,9 @@ hospitalRouter.get('/super-admin/hospitals/countries/distinct', async (req, res)
   let message = 'Not Authorised', success = false
 
   try {
-    const user = await verifySuperadminUser(req?.headers?.token as string)
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN'])
 
-    if (!user)
+    if (!verifiedUser)
       return JsonResponse(res, message, success, null, 401)
 
     const distinctHospitals = await selectAllAvailableCountries()
@@ -94,8 +95,9 @@ hospitalRouter.get('/hospital/details', async (req, res) => {
   let message = 'Not Authorised', success = false
 
   try {
-    const adminData = await verifySuperadminUser(req?.headers?.token as string)
-    if (!adminData)
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN'])
+
+    if (!verifiedUser)
       return JsonResponse(res, message, success, null, 403)
 
     const hospitalData = await getHospitalDetails(req.query.id as string)
