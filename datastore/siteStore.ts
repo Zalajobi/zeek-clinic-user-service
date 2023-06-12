@@ -56,7 +56,10 @@ export const siteTableDatastore = async (page: number, perPage: number, query: s
   }
 
   if (state) {
-    where.state = state
+    where.state = {
+      contains: state,
+      mode: 'insensitive'
+    }
   }
 
   if (country) {
@@ -73,7 +76,7 @@ export const siteTableDatastore = async (page: number, perPage: number, query: s
     }
   }
 
-  if (Number(perPage) === 0) {
+  if (Number(perPage) <= 0) {
     siteQuery = prisma.site.findMany({
       where,
       orderBy: {
@@ -84,7 +87,7 @@ export const siteTableDatastore = async (page: number, perPage: number, query: s
     siteQuery = prisma.site.findMany({
       where,
       take: Number(perPage),
-      skip: Number(perPage * page),
+      skip: perPage * page,
       orderBy: {
         created_at: 'desc',
       }
@@ -106,5 +109,30 @@ export const siteTableDatastore = async (page: number, perPage: number, query: s
 }
 
 export const getDistinctOrganizationSiteCountriesAndStates = async (hospitalId:string) => {
+  const [countries, states] = await prisma.$transaction([
+    prisma.site.findMany({
+      where: {
+        hospital_id: hospitalId
+      },
+      select: {
+        country: true
+      },
+      distinct: ['country']
+    }),
 
+    prisma.site.findMany({
+      where: {
+        hospital_id: hospitalId
+      },
+      select: {
+        state: true
+      },
+      distinct: ['state']
+    })
+  ])
+
+  return {
+    countries,
+    states
+  }
 }
