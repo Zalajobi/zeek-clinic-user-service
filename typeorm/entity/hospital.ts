@@ -95,6 +95,6 @@ export class Hospital {
   updated_at: Date
 
   // Relations
-  @OneToMany(type => Site, site => site.hospital)
+  @OneToMany(type => Site, site => site.hospital, {onDelete: 'CASCADE'})
   sites: Site[]
 }

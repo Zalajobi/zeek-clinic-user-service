@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, PrimaryColumn, ManyToOne } from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, PrimaryColumn, ManyToOne, OneToMany} from "typeorm"
 import {Hospital} from "./hospital";
 import {SiteStatus} from "./enums";
+import {BankAccount} from "./bankAccount";
 
 @Entity()
 export class Site {
@@ -181,4 +182,7 @@ export class Site {
   // Relations
   @ManyToOne(type => Hospital, hospital => hospital.sites)
   hospital: Hospital
+
+  @OneToMany(type => BankAccount, bankAccounts => bankAccounts.site, {onDelete: 'CASCADE'})
+  bankAccounts: BankAccount[];
 }

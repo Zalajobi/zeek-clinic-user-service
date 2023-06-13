@@ -2,6 +2,7 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import {Hospital} from "./typeorm/entity/hospital";
 import {Site} from "./typeorm/entity/site";
+import {BankAccount} from "./typeorm/entity/bankAccount";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
   database: "zeek-clinic-user-service",
   synchronize: true,
   logging: false,
-  entities: [Hospital, Site],
+  entities: [Hospital, Site, BankAccount],
   migrations: [],
   subscribers: [],
 })
