@@ -36,6 +36,7 @@ model admin {
 
 model provider {
   id           String  @id @unique @default(uuid())
+  site_id      String
   email        String  @unique @db.VarChar(60)
   username     String  @unique @db.VarChar(60)
   staff_id     String  @db.VarChar(10)
@@ -50,14 +51,66 @@ model provider {
 
   department department
   profile    profile?
+
+  site      site    @relation(fields: [site_id], references: [id])
+
   roles      provider_role[]
   patients   patient[]
 }
 
+model patient {
+  id          String  @id @unique @default(uuid())
+  site_id     String
+  provider_id String
+  id_number   String
+  id_type     String
+  employer    String?
+  employer_address String?
+  occupation  String?
+  title       String?
+  password    String
+  is_admitted Boolean @default(true)
+  email       String  @unique @db.VarChar(60)
+  username    String  @unique @db.VarChar(60)
+  nationality String?
+  status      patient_status @default(PENDING)
+
+  last_seen   DateTime
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  profile   profile?
+  allergies allergies[]
+  next_of_kins next_of_kin[]
+
+  provider  provider    @relation(fields: [provider_id], references: [id])
+  site      site    @relation(fields: [site_id], references: [id])
+}
+
+model next_of_kin {
+  id          String  @id @unique @default(uuid())
+  patient_id  String
+  name        String
+  phone       String
+  address     String
+  relationship  String
+  gender      String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  patient      patient    @relation(fields: [patient_id], references: [id])
+}
+
 model profile {
   id              String   @id @unique @default(uuid())
+  admin_id        String?  @unique
+  provider_id     String?  @unique
+  patient_id      String?  @unique
   gender          String   @db.VarChar(100)
+  religion        String?
   dob             DateTime
+  profile_img_url String?
   title           String?  @db.VarChar(100)
   first_name      String   @db.VarChar(100)
   last_name       String   @db.VarChar(100)
@@ -71,10 +124,6 @@ model profile {
   zip_code        String?  @db.VarChar(10)
   country         String?  @db.VarChar(50)
   country_code    String?  @db.VarChar(5)
-  admin_id        String?  @unique
-  provider_id     String?  @unique
-  patient_id      String?  @unique
-  profile_img_url String?
 
   admin    admin?    @relation(fields: [admin_id], references: [id])
   provider provider? @relation(fields: [provider_id], references: [id])
@@ -139,6 +188,8 @@ model site {
   updated_at DateTime @updatedAt
 
   bank_accounts bank_accounts[]
+  patients      patient[]
+  providers     provider[]
   hospital      hospital?       @relation(fields: [hospital_id], references: [id])
 }
 
@@ -163,22 +214,6 @@ model provider_role {
   provider_id String
 
   provider provider? @relation(fields: [provider_id], references: [id])
-}
-
-model patient {
-  id          String  @id @unique @default(uuid())
-  provider_id String  @unique
-  id_number   String
-  id_type     String
-  employer    String
-  position    String
-  is_admitted Boolean @default(true)
-  email       String  @unique @db.VarChar(60)
-  username    String  @unique @db.VarChar(60)
-
-  provider  provider    @relation(fields: [provider_id], references: [id])
-  profile   profile?
-  allergies allergies[]
 }
 
 model allergies {
@@ -348,4 +383,13 @@ enum site_status {
   CLOSED
   PENDING
   DEACTIVATE
+}
+
+enum patient_status {
+  ACTIVE
+  PENDING
+  DECEASED
+  IN_PATIENT
+  OUT_PATIENT
+  DISCHARGED
 }

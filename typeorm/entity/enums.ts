@@ -1,0 +1,6 @@
+export enum HospitalStatus {
+  ACTIVE = "ACTIVE",
+  ARCHIVED = "ARCHIVED",
+  PENDING = "PENDING",
+  DEACTIVATED = "DEACTIVATED"
+}
