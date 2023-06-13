@@ -15,6 +15,7 @@ import {sendSignupCompleteProfileEmail} from "../messaging/email";
 import {admin, admin_role, department} from '@prisma/client'
 import {SuperadminCreateAdmin} from "../types/superadminTypes";
 import {JsonResponse} from "../util/responses";
+import {verifyUserPermission} from "../lib/auth";
 
 const superadminRouter = express.Router();
 
@@ -137,13 +138,15 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
 superadminRouter.get('/super-admin/profile/get-data', async(req, res) => {
   let success = false;
   try {
-    const adminData = await verifySuperadminUser(req?.headers?.token as string)
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN'])
 
-    if (!adminData)
+    if (!verifiedUser)
       JsonResponse(res, 'Not Authorized', false, null, 401)
 
-    const data = await getSuperadminBaseData(adminData?.id as string)
-    JsonResponse(res, 'Authorized', true, data, 200)
+    const data = await getSuperadminBaseData(verifiedUser?.id as string)
+
+    if (data)
+      JsonResponse(res, 'Authorized', true, data, 200)
 
   } catch(error) {
     let message = 'Not Authorized'

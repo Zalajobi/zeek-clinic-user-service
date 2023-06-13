@@ -61,23 +61,12 @@ export const getSuperadminLoginData = async (value:string) => {
   })
 }
 
-export const getSuperadminBaseData = async (value:string) => {
-  return await prisma.super_admin.findFirst({
+export const getSuperadminBaseData = async (id:string) => {
+  const superAdminRepository = superAdminRepo()
+
+  return  await superAdminRepository.findOne({
     where: {
-      OR: [
-        {
-          email: value
-        },
-        {
-          username: value
-        },
-        {
-          phone_number: value
-        },
-        {
-          id: value
-        }
-      ]
+      id
     },
     select: {
       id: true,
@@ -86,7 +75,7 @@ export const getSuperadminBaseData = async (value:string) => {
       phone_number: true,
       first_name: true,
       last_name: true,
-      other_name: true,
+      other_name: true
     }
   })
 }
