@@ -9,6 +9,7 @@ import {
   siteTableDatastore
 } from "../datastore/siteStore";
 import {createSiteProps} from "../types/siteAndHospitalTypes";
+import {verifyUserPermission} from "../lib/auth";
 
 
 const siteRouter = express.Router();
@@ -22,15 +23,15 @@ siteRouter.post('/site/create', async (req, res) => {
       verifySuperadminUser(req?.headers?.token as string)
     ])
 
-    if (!response)
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN'])
+
+    if (!verifiedUser)
       return JsonResponse(res, message, success, null, 401)
 
 
-    if (response[0]?.role === 'HOSPITAL_ADMIN' || response[0]?.role === 'SUPER_ADMIN' || response[1]) {
-      const site = await adminCreateSite(req.body as createSiteProps)
-      if (site)
-        return JsonResponse(res, 'New Organization Added', true, null, 200)
-    }
+    const site = await adminCreateSite(req.body as createSiteProps)
+    if (site)
+      return JsonResponse(res, 'New Organization Added', true, null, 200)
 
     return JsonResponse(res, 'Something went wrong', false, null, 400)
   } catch(error) {
@@ -61,12 +62,9 @@ siteRouter.get('/site/get-information', async  (req, res) => {
 siteRouter.get('/site/get-distinct/country-and-state/organization', async (req, res) => {
   let message = 'Not Authorised', success = false
   try {
-    const response = await Promise.all([
-      verifyAdmin(req?.headers?.token as string),
-      verifySuperadminUser(req?.headers?.token as string)
-    ])
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN'])
 
-    if (!response)
+    if (!verifiedUser)
       return JsonResponse(res, message, success, null, 401)
 
     const data = await getDistinctOrganizationSiteCountriesAndStates(req.query.hospital_id as string)
@@ -84,12 +82,9 @@ siteRouter.get('/site/organization/table-filter', async (req, res) => {
   const { page, per_page, from_date, to_date, search, country, status, state, hospital_id } = req.query
 
   try {
-    const response = await Promise.all([
-      verifyAdmin(req?.headers?.token as string),
-      verifySuperadminUser(req?.headers?.token as string)
-    ])
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN'])
 
-    if (!response)
+    if (!verifiedUser)
       return JsonResponse(res, message, success, null, 401)
 
     const data = await siteTableDatastore(
