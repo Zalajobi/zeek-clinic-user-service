@@ -42,7 +42,6 @@ hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
   const { page, per_page, from_date, to_date, search, country, status} = req.query
 
   try {
-    console.log(req?.headers?.token)
     const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN'])
 
     if (!verifiedUser)

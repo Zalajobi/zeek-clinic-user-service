@@ -1,7 +1,6 @@
 import prisma from "../lib/prisma";
 import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
-import {Between, ILike, LessThan, Like, MoreThan} from "typeorm";
 import {HospitalStatus} from "../typeorm/entity/enums";
 
 interface SuperAdminGetHospitalsProps {
@@ -48,64 +47,58 @@ export const superAdminGetHospitals = async (
   from: string,
   to: string,
   country: string,
-  status: HospitalStatus
+  status: string
 ) => {
+  console.log(status)
   let skip = Number(perPage * page), take = Number(perPage), hospital = null
   const fromDate = from ? new Date(from) : new Date('1999-01-01');
   const toDate = to ? new Date(to) : new Date();
 
   const hospitalRepository = hospitalRepo()
 
-  if(Number(perPage) === 0) {
-    hospital = await hospitalRepository
-      .createQueryBuilder('hospital')
-      .where("LOWER(hospital.name) LIKE :name OR LOWER(hospital.email) LIKE :email OR LOWER(hospital.phone) LIKE :phone", {
+  const hospitalQuery = hospitalRepository
+    .createQueryBuilder('hospital')
+    .andWhere("hospital.created_at > :fromDate", {
+      fromDate
+    })
+    .andWhere("hospital.created_at < :toDate", {
+      toDate
+    })
+
+
+  if (query) {
+      hospitalQuery.where("LOWER(hospital.name) LIKE :name OR LOWER(hospital.email) LIKE :email OR LOWER(hospital.phone) LIKE :phone", {
         name: `%${query.toLowerCase()}%`,
         email: `%${query.toLowerCase()}%`,
         phone: `%${query.toLowerCase()}%`,
       })
-      .where("hospital.status = :status", {
-        status
-      })
-      .where("LOWER(hospital.country) LIKE :country", {
-        country: `%${country.toLowerCase()}%`
-      })
-      .where("hospital.created_at > :fromDate", {
-        fromDate
-      })
-      .andWhere("hospital.created_at < :toDate", {
-        toDate
-      })
-      .orderBy({
-        created_at: 'DESC'
-      })
-      .getManyAndCount();
   }
-  else {
-    hospital = await hospitalRepository
-      .createQueryBuilder('hospital')
-      .where("LOWER(hospital.name) LIKE :name OR LOWER(hospital.email) LIKE :email OR LOWER(hospital.phone) LIKE :phone", {
-        name: `%${query.toLowerCase()}%`,
-        email: `%${query.toLowerCase()}%`,
-        phone: `%${query.toLowerCase()}%`,
-      })
-      .where("hospital.status = :status", {
-        status
-      })
-      .where("LOWER(hospital.country) LIKE :country", {
-        country: `%${country.toLowerCase()}%`
-      })
-      .where("hospital.created_at > :fromDate", {
-        fromDate
-      })
-      .andWhere("hospital.created_at < :toDate", {
-        toDate
-      })
+
+  if (country) {
+    hospitalQuery.andWhere("LOWER(hospital.country) LIKE :country", {
+      country: `%${country.toLowerCase()}%`
+    })
+  }
+
+  if (status) {
+    hospitalQuery.andWhere("hospital.status = :status", {
+      status: status as HospitalStatus
+    })
+  }
+
+  if(Number(perPage) === 0) {
+    hospital = await hospitalQuery
+      .orderBy({
+      created_at: 'DESC'
+    })
+      .getManyAndCount();
+  } else  {
+    hospital = await hospitalQuery
+      .orderBy({
+      created_at: 'DESC'
+    })
       .skip(skip)
       .take(take)
-      .orderBy({
-        created_at: 'DESC'
-      })
       .getManyAndCount();
   }
 
