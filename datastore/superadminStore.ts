@@ -3,6 +3,9 @@ import {CreateUserProps} from "../types/user";
 import {verifyJSONToken} from "../helpers/utils";
 import {JWTDataProps} from "../types/jwt";
 import {SuperadminCreateAdmin} from "../types/superadminTypes";
+import {superAdminRepo} from "../typeorm/repositories/superAdminRepository";
+import {AppDataSource} from "../data-source";
+import {SuperAdmin} from "../typeorm/entity/superAdmin";
 
 export const createSuperAdmin = async (data:CreateUserProps) => {
   const isUnique = await prisma.super_admin.findFirst({
@@ -36,27 +39,24 @@ export const createSuperAdmin = async (data:CreateUserProps) => {
 }
 
 export const getSuperadminLoginData = async (value:string) => {
-  return await prisma.super_admin.findFirst({
-    where: {
-      OR: [
-        {
-          email: value
-        },
-        {
-          username: value
-        },
-        {
-          phone_number: value
-        },
-        {
-          id: value
-        }
-      ]
-    },
+  const superAdminRepository = superAdminRepo()
+
+  return await superAdminRepository.findOne({
+    where: [
+      {
+        email: value
+      },
+
+      {
+        username: value
+      }
+    ],
+
     select: {
-      id: true,
       email: true,
-      password: true
+      id: true,
+      password: true,
+      role: true
     }
   })
 }

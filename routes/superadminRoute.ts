@@ -107,20 +107,24 @@ superadminRouter.post('/super-admin/auth/login', async (req, res) => {
   let responseMessage = 'Incorrect Credentials', jwtSignData = null, success = false
 
   try {
+    console.log(req.body.email)
+    console.log(req.body.password)
     const admin = await getSuperadminLoginData(req.body.email)
 
-    if (validatePassword(req.body.password, admin?.password ?? '')) {
-      const jwtData = {
-        id: admin?.id ?? '',
-        email: admin?.email ?? '',
-        role: 'SUPER_ADMIN'
-      }
+    console.log(admin)
 
-      jwtSignData = generateJSONTokenCredentials(jwtData, Math.floor(Date.now() / 1000) + (60 * 360))
-      responseMessage= 'Login Successful'
-      success = true
-    }
-
+    // if (validatePassword(req.body.password, admin?.password ?? '')) {
+    //   const jwtData = {
+    //     id: admin?.id ?? '',
+    //     email: admin?.email ?? '',
+    //     role: 'SUPER_ADMIN'
+    //   }
+    //
+    //   jwtSignData = generateJSONTokenCredentials(jwtData, Math.floor(Date.now() / 1000) + (60 * 360))
+    //   responseMessage= 'Login Successful'
+    //   success = true
+    // }
+    //
     return JsonResponse(res, responseMessage, success, {
       token: jwtSignData
     }, 200)
