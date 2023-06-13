@@ -4,3 +4,10 @@ export enum HospitalStatus {
   PENDING = "PENDING",
   DEACTIVATED = "DEACTIVATED"
 }
+
+export enum SiteStatus {
+  ACTIVE = 'ACTIVE',
+  CLOSED = 'ACTIVE',
+  PENDING = 'ACTIVE',
+  DEACTIVATE = 'ACTIVE',
+}

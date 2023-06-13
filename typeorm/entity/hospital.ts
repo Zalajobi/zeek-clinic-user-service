@@ -1,28 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, PrimaryColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, PrimaryColumn, OneToMany } from "typeorm"
 import {HospitalStatus} from "./enums";
+import {Site} from "./site";
 
 @Entity()
 export class Hospital {
-  constructor() {
-    this.id = '';
-    this.name = '';
-    this.email = '';
-    this.site_count = 0;
-    this.phone = '';
-    this.address = '';
-    this.city = '';
-    this.state = '';
-    this.country = '';
-    this.logo = '';
-    this.status = HospitalStatus.PENDING;
-    this.zip_code = '';
-    this.country_code = '';
-    this.created_at = new Date();
-    this.updated_at = new Date();
-  }
+  // constructor() {
+  //   this.id = uuid();
+  //   this.name = '';
+  //   this.email = '';
+  //   this.site_count = 0;
+  //   this.phone = '';
+  //   this.address = '';
+  //   this.city = '';
+  //   this.state = '';
+  //   this.country = '';
+  //   this.logo = '';
+  //   this.status = HospitalStatus.PENDING;
+  //   this.zip_code = '';
+  //   this.country_code = '';
+  //   this.created_at = new Date();
+  //   this.updated_at = new Date();
+  // }
 
   @PrimaryGeneratedColumn("uuid")
-  @PrimaryColumn()
   id: string
 
   @Column({nullable: false})
@@ -93,4 +93,8 @@ export class Hospital {
 
   @CreateDateColumn()
   updated_at: Date
+
+  // Relations
+  @OneToMany(type => Site, site => site.hospital)
+  sites: Site[]
 }

@@ -24,7 +24,8 @@
     "twilio": "^4.10.0",
     "type-fest": "^3.10.0",
     "typeorm": "^0.3.16",
-    "typescript": "^5.0.3"
+    "typescript": "^5.0.3",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
@@ -32,6 +33,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^20.3.1",
     "@types/nodemailer": "^6.4.7",
+    "@types/uuid": "^9.0.2",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1"
   }
