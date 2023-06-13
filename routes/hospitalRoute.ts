@@ -42,6 +42,7 @@ hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
   const { page, per_page, from_date, to_date, search, country, status} = req.query
 
   try {
+    console.log(req?.headers?.token)
     const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN'])
 
     if (!verifiedUser)
@@ -54,7 +55,7 @@ hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
       from_date as unknown as string,
       to_date as unknown as string,
       country as unknown as string,
-      status as unknown as string,
+      status as any,
     )
 
     return JsonResponse(res, 'Success', true, data, 200)
@@ -78,7 +79,7 @@ hospitalRouter.get('/super-admin/hospitals/countries/distinct', async (req, res)
     const distinctHospitals = await selectAllAvailableCountries()
 
     if (!distinctHospitals)
-      return JsonResponse(res, 'Something went wrong', success, null, 410)
+      return JsonResponse(res, 'Something went wrong', success, null, 401)
     else
       return JsonResponse(res, 'Get Distinct Success', true, distinctHospitals, 200)
 
