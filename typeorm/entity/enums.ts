@@ -11,3 +11,12 @@ export enum SiteStatus {
   PENDING = 'ACTIVE',
   DEACTIVATE = 'ACTIVE',
 }
+
+export enum PrimaryAdminRoles {
+  ADMIN = 'ADMIN',
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  RECORDS = 'RECORDS',
+  CASHIER = 'CASHIER',
+  HOSPITAL_ADMIN = 'HOSPITAL_ADMIN',
+  SITE_ADMIN = 'SITE_ADMIN'
+}
