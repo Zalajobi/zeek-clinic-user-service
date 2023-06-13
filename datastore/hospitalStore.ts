@@ -3,13 +3,6 @@ import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {HospitalStatus} from "../typeorm/entity/enums";
 
-interface SuperAdminGetHospitalsProps {
-  page: number
-  per_page?: number | null
-}
-
-// const hospitalStatusTypes = '' | 'ACTIVE' | 'ARCHIVED' | 'PENDING' | 'DEACTIVATED'
-
 export const createNewHospital = async (data:CreateHospitalProps) => {
   let isUnique;
 
@@ -49,7 +42,6 @@ export const superAdminGetHospitals = async (
   country: string,
   status: string
 ) => {
-  console.log(status)
   let skip = Number(perPage * page), take = Number(perPage), hospital = null
   const fromDate = from ? new Date(from) : new Date('1999-01-01');
   const toDate = to ? new Date(to) : new Date();
