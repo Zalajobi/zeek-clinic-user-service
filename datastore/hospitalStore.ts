@@ -1,4 +1,3 @@
-import prisma from "../lib/prisma";
 import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {HospitalStatus} from "../typeorm/entity/enums";

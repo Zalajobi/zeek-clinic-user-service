@@ -1,5 +1,6 @@
 import prisma from "../lib/prisma";
 import {createSiteProps} from "../types/siteAndHospitalTypes";
+import {siteRepo} from "../typeorm/repositories/siteRepository";
 
 export const adminCreateSite = async (data:createSiteProps) => {
   return await prisma.site.create({
@@ -109,30 +110,34 @@ export const siteTableDatastore = async (page: number, perPage: number, query: s
 }
 
 export const getDistinctOrganizationSiteCountriesAndStates = async (hospitalId:string) => {
-  const [countries, states] = await prisma.$transaction([
-    prisma.site.findMany({
-      where: {
-        hospital_id: hospitalId
-      },
-      select: {
-        country: true
-      },
-      distinct: ['country']
-    }),
+  const siteRepository = siteRepo()
 
-    prisma.site.findMany({
-      where: {
-        hospital_id: hospitalId
-      },
-      select: {
-        state: true
-      },
-      distinct: ['state']
-    })
+  const response = await Promise.all([
+    siteRepository
+      .createQueryBuilder('site')
+      .where("site.hospitalId = :hospitalId", {
+        hospitalId
+      })
+      .select('DISTINCT ("country")')
+      .orderBy({
+        country: 'ASC'
+      })
+      .getRawMany(),
+
+    siteRepository
+      .createQueryBuilder('site')
+      .where("site.hospitalId = :hospitalId", {
+        hospitalId
+      })
+      .select('DISTINCT ("state")')
+      .orderBy({
+        state: 'ASC'
+      })
+      .getRawMany()
   ])
 
   return {
-    countries,
-    states
+    countries: response[0],
+    states: response[1]
   }
 }
