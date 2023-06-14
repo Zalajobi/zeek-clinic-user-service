@@ -1,14 +1,42 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, OneToMany} from "typeorm"
+import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
 import {Hospital} from "./hospital";
-import {SiteStatus} from "./enums";
 import {BankAccount} from "./bankAccount";
+import {createSiteProps} from "../../types/siteAndHospitalTypes";
+import {SiteStatus} from "./enums";
 
 @Entity()
 export class Site {
 
-  // constructor() {
-  //   this.id = uuid();
-  // }
+  constructor(data:createSiteProps) {
+    this.address = data?.address as string
+    this.name = data?.name as string
+    this.email = data?.email as string
+    this.city = data?.city as string
+    this.state = data?.state as string
+    this.country = data?.country as string
+    this.logo = data?.logo as string
+    this.time_zone = data?.time_zone as string
+    this.phone = data?.phone as string
+    this.zip_code = data?.zip_code as string
+    this.is_private = data?.is_private as boolean
+    this.has_appointment = data?.has_appointment as boolean
+    this.has_caregiver = data?.has_caregiver as boolean
+    this.has_clinical = data?.has_clinical as boolean
+    this.has_doctor = data?.has_doctor as boolean
+    this.has_emergency = data?.has_emergency as boolean
+    this.has_laboratory = data?.has_laboratory as boolean
+    this.has_medical_supply = data?.has_medical_supply as boolean
+    this.has_nursing = data?.has_nursing as boolean
+    this.has_inpatient = data?.has_inpatient as boolean
+    this.has_outpatient = data?.has_outpatient as boolean
+    this.has_pharmacy = data?.has_pharmacy as boolean
+    this.has_physical_therapy = data?.has_physical_therapy as boolean
+    this.has_procedure = data?.has_procedure as boolean
+    this.has_radiology = data?.has_radiology as boolean
+    this.has_unit = data?.has_unit as boolean
+    this.has_vital = data?.has_vital as boolean
+    this.has_wallet = data?.has_wallet as boolean
+  }
 
   @PrimaryGeneratedColumn("uuid")
   id: string
@@ -60,10 +88,16 @@ export class Site {
   phone: string
 
   @Column({
-    nullable: false,
+    nullable: false
+  })
+  zip_code: string
+
+  @Column({
+    type: 'enum',
+    enum: SiteStatus,
     default: SiteStatus.PENDING
   })
-  status: string
+  status: SiteStatus
 
   @Column({
     nullable: false,

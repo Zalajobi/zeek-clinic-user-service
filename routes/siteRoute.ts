@@ -5,7 +5,6 @@ import {verifyAdmin} from "../datastore/adminStore";
 import {
   adminCreateSite,
   getDistinctOrganizationSiteCountriesAndStates,
-  getSiteInformation,
   siteTableDatastore
 } from "../datastore/siteStore";
 import {createSiteProps} from "../types/siteAndHospitalTypes";
@@ -18,22 +17,15 @@ siteRouter.post('/site/create', async (req, res) => {
   let message = 'Not Authorised', success = false
 
   try {
-    const response = await Promise.all([
-      verifyAdmin(req?.headers?.token as string),
-      verifySuperadminUser(req?.headers?.token as string)
-    ])
-
     const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN'])
 
     if (!verifiedUser)
       return JsonResponse(res, message, success, null, 401)
 
-
     const site = await adminCreateSite(req.body as createSiteProps)
-    if (site)
-      return JsonResponse(res, 'New Organization Added', true, null, 200)
 
-    return JsonResponse(res, 'Something went wrong', false, null, 400)
+    return JsonResponse(res, site?.message as string, site?.success as boolean, null, site?.success ? 200 : 400)
+
   } catch(error) {
     let message = 'Not Authorized'
     if (error instanceof Error)

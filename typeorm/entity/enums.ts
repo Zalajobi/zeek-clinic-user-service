@@ -7,9 +7,9 @@ export enum HospitalStatus {
 
 export enum SiteStatus {
   ACTIVE = 'ACTIVE',
-  CLOSED = 'ACTIVE',
-  PENDING = 'ACTIVE',
-  DEACTIVATE = 'ACTIVE',
+  CLOSED = 'CLOSED',
+  PENDING = 'PENDING',
+  DEACTIVATE = 'DEACTIVATE',
 }
 
 export enum PrimaryAdminRoles {

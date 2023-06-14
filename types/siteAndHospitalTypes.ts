@@ -23,6 +23,7 @@ export type createSiteProps = {
   logo?: string
   time_zone?: string
   phone: string
+  zip_code?: string
   is_private?: boolean
   has_appointment?: boolean
   has_caregiver?: boolean

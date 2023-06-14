@@ -1,11 +1,46 @@
 import prisma from "../lib/prisma";
 import {createSiteProps} from "../types/siteAndHospitalTypes";
 import {siteRepo} from "../typeorm/repositories/siteRepository";
+import {Site} from "../typeorm/entity/site";
+import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
+import {Hospital} from "../typeorm/entity/hospital";
+import {SiteStatus} from "../typeorm/entity/enums";
 
 export const adminCreateSite = async (data:createSiteProps) => {
-  return await prisma.site.create({
-    data
+  const siteRepository = siteRepo();
+  const hospitalRepository = hospitalRepo();
+
+  const isUnique = await siteRepository.findOneBy(
+    {
+      email: data.email
+    }
+  )
+
+  if (isUnique)
+    return {
+      success: false,
+      message: "Site with email address already exists"
+    }
+
+  const hospital = await hospitalRepository.findOneBy({
+    id: data.hospital_id
   })
+
+  const site = new Site(data as createSiteProps);
+  site.hospital = hospital as Hospital
+
+  await siteRepository.save(site)
+
+  await hospitalRepository.update({
+    id: data.hospital_id
+  }, {
+    site_count: hospital?.site_count as number + 1
+  })
+
+  return {
+    success: true,
+    message: "New Site Created Successfully"
+  }
 }
 
 
