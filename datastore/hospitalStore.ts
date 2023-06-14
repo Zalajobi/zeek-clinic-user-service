@@ -1,6 +1,6 @@
 import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
-import {HospitalStatus} from "../typeorm/entity/enums";
+import {HospitalStatus, SiteStatus} from "../typeorm/entity/enums";
 import {Hospital} from "../typeorm/entity/hospital";
 import {siteRepo} from "../typeorm/repositories/siteRepository";
 
@@ -117,52 +117,40 @@ export const getHospitalDetails = async (hospitalId: string) => {
       }
     }),
 
-    siteRepository
-      .createQueryBuilder("site")
-      .where("site.hospitalId = :hospitalId", {
-        hospitalId
-      })
-      .andWhere("site.status = status", {
-        status: 'ACTIVE'
-      })
-      .getCount(),
+    siteRepository.count({
+      where: {
+        hospitalId: hospitalId,
+        status: SiteStatus.ACTIVE
+      }
+    }),
 
-    siteRepository
-      .createQueryBuilder("site")
-      .where("site.hospitalId = :hospitalId", {
-        hospitalId
-      })
-      .andWhere("site.status = status", {
-        status: 'CLOSED'
-      })
-      .getCount(),
 
-    siteRepository
-      .createQueryBuilder("site")
-      .where("site.hospitalId = :hospitalId", {
-        hospitalId
-      })
-      .andWhere("site.status = status", {
-        status: 'PENDING'
-      })
-      .getCount(),
+    siteRepository.count({
+      where: {
+        hospitalId: hospitalId,
+        status: SiteStatus.CLOSED
+      }
+    }),
 
-    siteRepository
-      .createQueryBuilder("site")
-      .where("site.hospitalId = :hospitalId", {
-        hospitalId
-      })
-      .andWhere("site.status = status", {
-        status: 'DEACTIVATE'
-      })
-      .getCount(),
+    siteRepository.count({
+      where: {
+        hospitalId: hospitalId,
+        status: SiteStatus.PENDING
+      }
+    }),
 
-    siteRepository
-      .createQueryBuilder('site')
-      .where("site.hospitalId = :hospitalId", {
-        hospitalId
-      })
-      .getManyAndCount()
+    siteRepository.count({
+      where: {
+        hospitalId: hospitalId,
+        status: SiteStatus.DEACTIVATE
+      }
+    }),
+
+    siteRepository.findAndCount({
+      where: {
+        hospitalId: hospitalId,
+      }
+    }),
   ])
 
   return {

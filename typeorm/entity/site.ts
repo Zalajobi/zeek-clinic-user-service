@@ -42,6 +42,11 @@ export class Site {
   id: string
 
   @Column({
+    nullable: true
+  })
+  hospitalId: string
+
+  @Column({
     nullable: false
   })
   address: string

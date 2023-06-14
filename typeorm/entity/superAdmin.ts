@@ -38,6 +38,8 @@ export class SuperAdmin {
   other_name: string
 
   @Column({
+    type: 'enum',
+    enum: PrimaryAdminRoles,
     unique: false,
     nullable: false,
     default: PrimaryAdminRoles.SUPER_ADMIN

@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } f
 import {HospitalStatus} from "./enums";
 import {Site} from "./site";
 import {CreateHospitalProps} from "../../types/siteAndHospitalTypes";
+import {JoinColumn} from "typeorm/browser";
 
 @Entity()
 export class Hospital {
@@ -94,5 +95,6 @@ export class Hospital {
 
   // Relations
   @OneToMany(type => Site, site => site.hospital, {onDelete: 'CASCADE'})
+  // @JoinColumn()
   sites: Site[]
 }
