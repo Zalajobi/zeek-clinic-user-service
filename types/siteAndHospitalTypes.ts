@@ -6,8 +6,9 @@ export type CreateHospitalProps = {
   city?: string
   state: string
   country: string
-  logo: string
+  logo?: string
   country_code: string
+  zip_code: string
 }
 
 

@@ -2,31 +2,25 @@ import prisma from "../lib/prisma";
 import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {HospitalStatus} from "../typeorm/entity/enums";
+import {Hospital} from "../typeorm/entity/hospital";
 
 export const createNewHospital = async (data:CreateHospitalProps) => {
+  const hospitalRepository = hospitalRepo()
+
   let isUnique;
 
-  isUnique = await prisma.hospital.findFirst({
-    where: {
-      OR: [
-        {
-          email: data.email
-        },
-
-        {
-          phone: data.phone
-        }
-      ]
-    }
-  })
+  isUnique = await hospitalRepository
+    .createQueryBuilder('hospital')
+    .where("hospital.email = :email OR hospital.phone = :phone", {
+      email: data.email,
+      phone: data.phone
+    })
+    .getOne()
 
   if (isUnique)
     return false
 
-
-  const hospital = await prisma.hospital.create({
-    data
-  })
+  const hospital = await hospitalRepository.save(new Hospital(data as CreateHospitalProps));
 
   if (hospital) {
     return true

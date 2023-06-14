@@ -1,26 +1,24 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm"
 import {HospitalStatus} from "./enums";
 import {Site} from "./site";
+import {CreateHospitalProps} from "../../types/siteAndHospitalTypes";
 
 @Entity()
 export class Hospital {
-  // constructor() {
-  //   this.id = uuid();
-  //   this.name = '';
-  //   this.email = '';
-  //   this.site_count = 0;
-  //   this.phone = '';
-  //   this.address = '';
-  //   this.city = '';
-  //   this.state = '';
-  //   this.country = '';
-  //   this.logo = '';
-  //   this.status = HospitalStatus.PENDING;
-  //   this.zip_code = '';
-  //   this.country_code = '';
-  //   this.created_at = new Date();
-  //   this.updated_at = new Date();
-  // }
+  constructor(data: CreateHospitalProps) {
+    this.name = data?.name as string;
+    this.email = data?.email as string;
+    this.phone = data?.phone as string;
+    this.address = data?.address as string;
+    this.city = data?.city as string;
+    this.state = data?.state as string;
+    this.country = data?.country as string;
+    this.logo = data?.logo as string;
+    this.zip_code = data?.zip_code as string;
+    this.country_code = data?.country_code as string;
+    // this.created_at = new Date();
+    // this.updated_at = new Date();
+  }
 
   @PrimaryGeneratedColumn("uuid")
   id: string
