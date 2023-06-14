@@ -95,7 +95,7 @@ hospitalRouter.get('/hospital/details', async (req, res) => {
   let message = 'Not Authorised', success = false
 
   try {
-    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN'])
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN'])
 
     if (!verifiedUser)
       return JsonResponse(res, message, success, null, 403)

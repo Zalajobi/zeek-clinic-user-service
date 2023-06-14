@@ -3,6 +3,7 @@ import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {HospitalStatus} from "../typeorm/entity/enums";
 import {Hospital} from "../typeorm/entity/hospital";
+import {siteRepo} from "../typeorm/repositories/siteRepository";
 
 export const createNewHospital = async (data:CreateHospitalProps) => {
   const hospitalRepository = hospitalRepo()
@@ -107,69 +108,75 @@ export const selectAllAvailableCountries = async () => {
 }
 
 export const getHospitalDetails = async (hospitalId: string) => {
-  const [hospital, sites, activeSites, closedSites, pendingSites, deactivatedSites, totalSites] = await prisma.$transaction([
-    prisma.hospital.findUnique({
+  const hospitalRepository = hospitalRepo()
+  const siteRepository = siteRepo()
+
+  const response = await Promise.all([
+    hospitalRepository.findOne({
       where: {
         id: hospitalId
       }
     }),
 
-    prisma.site.findMany({
-      where: {
-        hospital_id: hospitalId
-      },
-      take: 10,
-      orderBy: {
-        created_at: 'desc'
-      }
-    }),
-
-    prisma.site.count({
-      where: {
-        hospital_id: hospitalId,
+    siteRepository
+      .createQueryBuilder("site")
+      .where("site.hospitalId = :hospitalId", {
+        hospitalId
+      })
+      .andWhere("site.status = status", {
         status: 'ACTIVE'
-      }
-    }),
+      })
+      .getCount(),
 
-    prisma.site.count({
-      where: {
-        hospital_id: hospitalId,
-        status: 'PENDING'
-      }
-    }),
-
-    prisma.site.count({
-      where: {
-        hospital_id: hospitalId,
-        status: 'DEACTIVATE'
-      }
-    }),
-
-    prisma.site.count({
-      where: {
-        hospital_id: hospitalId,
+    siteRepository
+      .createQueryBuilder("site")
+      .where("site.hospitalId = :hospitalId", {
+        hospitalId
+      })
+      .andWhere("site.status = status", {
         status: 'CLOSED'
-      }
-    }),
+      })
+      .getCount(),
 
-    prisma.site.count({
-      where: {
-        hospital_id: hospitalId,
-      }
-    }),
+    siteRepository
+      .createQueryBuilder("site")
+      .where("site.hospitalId = :hospitalId", {
+        hospitalId
+      })
+      .andWhere("site.status = status", {
+        status: 'PENDING'
+      })
+      .getCount(),
+
+    siteRepository
+      .createQueryBuilder("site")
+      .where("site.hospitalId = :hospitalId", {
+        hospitalId
+      })
+      .andWhere("site.status = status", {
+        status: 'DEACTIVATE'
+      })
+      .getCount(),
+
+    siteRepository
+      .createQueryBuilder('site')
+      .where("site.hospitalId = :hospitalId", {
+        hospitalId
+      })
+      .getManyAndCount()
   ])
 
   return {
     hospital: {
-      ...hospital,
-      activeSites,
-      closedSites,
-      pendingSites,
-      deactivatedSites
+      ...response[0],
+      activeSites: response[1],
+      closedSites: response[2],
+      pendingSites: response[3],
+      deactivatedSites: response[4]
     },
-    sites,
+    sites: response[5][0],
     tableData: {
-      sites: totalSites
+      sites: response[5][1]
     }
   }
 }
