@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
-import {PrimaryAdminRoles} from "./enums";
+import {AdminRoles} from "./enums";
 
 @Entity()
 export class SuperAdmin {
@@ -39,12 +39,12 @@ export class SuperAdmin {
 
   @Column({
     type: 'enum',
-    enum: PrimaryAdminRoles,
+    enum: AdminRoles,
     unique: false,
     nullable: false,
-    default: PrimaryAdminRoles.SUPER_ADMIN
+    default: AdminRoles.SUPER_ADMIN
   })
-  role: PrimaryAdminRoles
+  role: AdminRoles
 
   @Column({
     unique: false

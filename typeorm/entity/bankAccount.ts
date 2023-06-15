@@ -7,6 +7,11 @@ export class BankAccount {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Column({
+    nullable: false
+  })
+  siteId: string
+
   @Column()
   bank_name: string
 
@@ -28,7 +33,6 @@ export class BankAccount {
   @CreateDateColumn()
   updated_at: Date
 
-  // Entity
   @ManyToOne(type => Site, site => site.bankAccounts)
   site: Site;
 }

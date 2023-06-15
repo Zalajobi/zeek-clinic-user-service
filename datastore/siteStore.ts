@@ -4,7 +4,7 @@ import {siteRepo} from "../typeorm/repositories/siteRepository";
 import {Site} from "../typeorm/entity/site";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {Hospital} from "../typeorm/entity/hospital";
-import {HospitalStatus, SiteStatus} from "../typeorm/entity/enums";
+import { SiteStatus } from "../typeorm/entity/enums";
 
 export const adminCreateSite = async (data:createSiteProps) => {
   const siteRepository = siteRepo();

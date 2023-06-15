@@ -4,6 +4,9 @@ import {Hospital} from "./typeorm/entity/hospital";
 import {Site} from "./typeorm/entity/site";
 import {BankAccount} from "./typeorm/entity/bankAccount";
 import {SuperAdmin} from "./typeorm/entity/superAdmin";
+import {Provider} from "./typeorm/entity/providers";
+import {PersonalInformation} from "./typeorm/entity/personaInfo";
+import {Roles} from "./typeorm/entity/roles";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -14,7 +17,7 @@ export const AppDataSource = new DataSource({
   database: "zeek-clinic-user-service",
   synchronize: true,
   logging: false,
-  entities: [Hospital, Site, BankAccount, SuperAdmin],
+  entities: [Hospital, Site, BankAccount, SuperAdmin, Provider, PersonalInformation, Roles, Provider],
   migrations: [],
   subscribers: [],
 })

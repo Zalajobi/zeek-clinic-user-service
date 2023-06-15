@@ -3,6 +3,8 @@ import {Hospital} from "./hospital";
 import {BankAccount} from "./bankAccount";
 import {createSiteProps} from "../../types/siteAndHospitalTypes";
 import {SiteStatus} from "./enums";
+import {Roles} from "./roles";
+import {Provider} from "./providers";
 
 @Entity()
 export class Site {
@@ -224,4 +226,10 @@ export class Site {
 
   @OneToMany(type => BankAccount, bankAccounts => bankAccounts.site, {onDelete: 'CASCADE'})
   bankAccounts: BankAccount[];
+
+  @OneToMany(type => Roles, roles => roles.site, {onDelete: 'CASCADE'})
+  roles: Roles
+
+  @OneToMany(type => Provider, provider => provider.site, {onDelete: 'CASCADE'})
+  providers: Provider
 }

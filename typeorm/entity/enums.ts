@@ -12,11 +12,13 @@ export enum SiteStatus {
   DEACTIVATE = 'DEACTIVATE',
 }
 
-export enum PrimaryAdminRoles {
+export enum AdminRoles {
   ADMIN = 'ADMIN',
   SUPER_ADMIN = 'SUPER_ADMIN',
   RECORDS = 'RECORDS',
   CASHIER = 'CASHIER',
   HOSPITAL_ADMIN = 'HOSPITAL_ADMIN',
-  SITE_ADMIN = 'SITE_ADMIN'
+  SITE_ADMIN = 'SITE_ADMIN',
+  HUMAN_RESOURCES = 'HUMAN_RESOURCES',
+  HMO_ADMIN = 'HMO_ADMIN'
 }
