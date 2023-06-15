@@ -1,7 +1,7 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
 import {Hospital} from "./hospital";
 import {BankAccount} from "./bankAccount";
-import {createSiteProps} from "../../types/siteAndHospitalTypes";
+import {createSiteProps} from "../../types";
 import {SiteStatus} from "./enums";
 import {Roles} from "./roles";
 import {Provider} from "./providers";
@@ -38,6 +38,7 @@ export class Site {
     this.has_unit = data?.has_unit as boolean
     this.has_vital = data?.has_vital as boolean
     this.has_wallet = data?.has_wallet as boolean
+    this.hospitalId = data?.hospital_id as string
   }
 
   @PrimaryGeneratedColumn("uuid")
@@ -228,8 +229,8 @@ export class Site {
   bankAccounts: BankAccount[];
 
   @OneToMany(type => Roles, roles => roles.site, {onDelete: 'CASCADE'})
-  roles: Roles
+  roles: Roles[]
 
   @OneToMany(type => Provider, provider => provider.site, {onDelete: 'CASCADE'})
-  providers: Provider
+  providers: Provider[]
 }

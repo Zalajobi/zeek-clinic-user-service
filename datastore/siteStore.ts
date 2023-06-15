@@ -1,5 +1,5 @@
 import prisma from "../lib/prisma";
-import {createSiteProps} from "../types/siteAndHospitalTypes";
+import {createSiteProps} from "../types";
 import {siteRepo} from "../typeorm/repositories/siteRepository";
 import {Site} from "../typeorm/entity/site";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
@@ -30,10 +30,10 @@ export const adminCreateSite = async (data:createSiteProps) => {
     id: data.hospital_id
   })
 
-  const site = new Site(data as createSiteProps);
-  site.hospital = hospital as Hospital
+  // const site = new Site(data as createSiteProps);
+  // site.hospital = hospital as Hospital
 
-  await siteRepository.save(site)
+  await siteRepository.save(new Site(data as createSiteProps))
 
   await hospitalRepository.update({
     id: data.hospital_id

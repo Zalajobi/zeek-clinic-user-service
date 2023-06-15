@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm"
 import {HospitalStatus} from "./enums";
 import {Site} from "./site";
-import {CreateHospitalProps} from "../../types/siteAndHospitalTypes";
+import {CreateHospitalProps} from "../../types";
 import {JoinColumn} from "typeorm/browser";
 
 @Entity()

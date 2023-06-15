@@ -1,4 +1,4 @@
-import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
+import {CreateHospitalProps} from "../types";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {HospitalStatus, SiteStatus} from "../typeorm/entity/enums";
 import {Hospital} from "../typeorm/entity/hospital";

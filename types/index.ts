@@ -43,3 +43,10 @@ export type createSiteProps = {
   has_vital?: boolean
   has_wallet?: boolean
 }
+
+export type createRoleProps = {
+  siteId: string
+  // hospitalId: string
+  name: string
+  description: string
+}

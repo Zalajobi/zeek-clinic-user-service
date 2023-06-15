@@ -1,13 +1,11 @@
 import express = require("express");
 import {JsonResponse} from "../util/responses";
-import {verifySuperadminUser} from "../datastore/superadminStore";
-import {verifyAdmin} from "../datastore/adminStore";
 import {
   adminCreateSite,
   getDistinctOrganizationSiteCountriesAndStates,
   siteTableDatastore
 } from "../datastore/siteStore";
-import {createSiteProps} from "../types/siteAndHospitalTypes";
+import {createSiteProps} from "../types";
 import {verifyUserPermission} from "../lib/auth";
 
 

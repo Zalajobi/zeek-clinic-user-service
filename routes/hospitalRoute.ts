@@ -1,7 +1,7 @@
 import express = require("express");
 import {JsonResponse} from "../util/responses";
 import {verifySuperadminUser} from "../datastore/superadminStore";
-import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
+import {CreateHospitalProps} from "../types";
 import {
   createNewHospital,
   getHospitalDetails,
