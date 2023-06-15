@@ -8,6 +8,7 @@ import {Provider} from "./typeorm/entity/providers";
 import {PersonalInformation} from "./typeorm/entity/personaInfo";
 import {Roles} from "./typeorm/entity/roles";
 import {Departments} from "./typeorm/entity/departments";
+import {Admin} from "./typeorm/entity/admin";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
   database: "zeek-clinic-user-service",
   synchronize: true,
   logging: false,
-  entities: [Hospital, Site, BankAccount, SuperAdmin, Provider, PersonalInformation, Roles, Provider, Departments],
+  entities: [Hospital, Site, BankAccount, SuperAdmin, Provider, PersonalInformation, Roles, Provider, Departments, Admin],
   migrations: [],
   subscribers: [],
 })

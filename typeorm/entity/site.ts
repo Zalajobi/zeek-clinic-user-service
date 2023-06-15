@@ -6,6 +6,7 @@ import {SiteStatus} from "./enums";
 import {Roles} from "./roles";
 import {Provider} from "./providers";
 import {Departments} from "./departments";
+import {Admin} from "./admin";
 
 @Entity()
 export class Site {
@@ -237,4 +238,7 @@ export class Site {
 
   @OneToMany(type => Provider, provider => provider.site, {onDelete: 'CASCADE'})
   providers: Provider[]
+
+  @OneToMany(type => Admin, admin => admin.site, {onDelete: "CASCADE"})
+  admins: Admin[]
 }

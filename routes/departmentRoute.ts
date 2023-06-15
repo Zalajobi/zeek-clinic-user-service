@@ -12,10 +12,10 @@ departmentRouter.post('/department/create', async (req, res) => {
   try {
     const data = req.body as createDepartmentProps
 
-    // const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN'])
-    //
-    // if (!verifiedUser)
-    //   return JsonResponse(res, message, success, null, 401)
+    const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN'])
+
+    if (!verifiedUser)
+      return JsonResponse(res, message, success, null, 401)
 
     const newRole = await createNewDepartment(data)
 
