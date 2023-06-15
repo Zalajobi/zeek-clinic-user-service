@@ -1,5 +1,6 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm"
+import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
 import {Site} from "./site";
+import {Provider} from "./providers";
 
 @Entity({name: 'roles'})
 export class Roles {
@@ -28,6 +29,9 @@ export class Roles {
   updated_at: Date
 
   // Relations
-  @ManyToOne(type => Site, site => site.roles)
+  @OneToMany(type => Site, site => site.roles)
+  providers: Provider
+
+  @ManyToOne(type => Provider, provider => provider.primary_role)
   site: Site
 }
