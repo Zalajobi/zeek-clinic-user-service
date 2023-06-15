@@ -5,6 +5,7 @@ import {createSiteProps} from "../../types";
 import {SiteStatus} from "./enums";
 import {Roles} from "./roles";
 import {Provider} from "./providers";
+import {Departments} from "./departments";
 
 @Entity()
 export class Site {
@@ -230,6 +231,9 @@ export class Site {
 
   @OneToMany(type => Roles, roles => roles.site, {onDelete: 'CASCADE'})
   roles: Roles[]
+
+  @OneToMany(type => Departments, roles => roles.site, {onDelete: 'CASCADE'})
+  departments: Departments[]
 
   @OneToMany(type => Provider, provider => provider.site, {onDelete: 'CASCADE'})
   providers: Provider[]

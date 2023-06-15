@@ -7,14 +7,8 @@ export const createNewRole = async (data: createRoleProps) => {
 
   const role = await roleRepository.save(new Roles(data))
 
-  if (role)
-    return {
-      success: true,
-      message: 'New Role Created'
-    }
-
   return {
-    success: false,
-    message: 'Something happened. Error happened while creating role'
+    success: role ? true : false,
+    message: role ? 'New Role Created' : 'Something happened. Error happened while creating role',
   }
 }

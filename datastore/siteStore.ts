@@ -26,19 +26,12 @@ export const adminCreateSite = async (data:createSiteProps) => {
       message: "Site with email address or phone number already exists"
     }
 
-  const hospital = await hospitalRepository.findOneBy({
-    id: data.hospital_id
-  })
-
-  // const site = new Site(data as createSiteProps);
-  // site.hospital = hospital as Hospital
-
   await siteRepository.save(new Site(data as createSiteProps))
 
   await hospitalRepository.update({
     id: data.hospital_id
   }, {
-    site_count: hospital?.site_count as number + 1
+    site_count: data?.totalSites + 1
   })
 
   return {

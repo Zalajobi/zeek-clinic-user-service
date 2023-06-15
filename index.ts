@@ -12,6 +12,7 @@ import {SuperAdmin} from "./typeorm/entity/superAdmin";
 import {generatePasswordHash} from "./helpers/utils";
 import {superAdminRepo} from "./typeorm/repositories/superAdminRepository";
 import roleRouter from "./routes/roleRouter";
+import departmentRouter from "./routes/departmentRoute";
 require('dotenv').config()
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(`${process.env.ACCOUNT_BASE_URL}`, superadminRouter)
 app.use(`${process.env.ACCOUNT_BASE_URL}`, hospitalRouter)
 app.use(`${process.env.ACCOUNT_BASE_URL}`, siteRouter)
 app.use(`${process.env.ACCOUNT_BASE_URL}`, roleRouter)
+app.use(`${process.env.ACCOUNT_BASE_URL}`, departmentRouter)
 
 AppDataSource.initialize().then(async () => {
   console.log("Initialising TypeORM...")

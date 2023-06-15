@@ -42,11 +42,17 @@ export type createSiteProps = {
   has_unit?: boolean
   has_vital?: boolean
   has_wallet?: boolean
+  totalSites: number
 }
 
 export type createRoleProps = {
   siteId: string
-  // hospitalId: string
+  name: string
+  description: string
+}
+
+export type createDepartmentProps = {
+  siteId: string
   name: string
   description: string
 }

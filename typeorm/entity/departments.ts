@@ -1,15 +1,14 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
+import {createDepartmentProps} from "../../types";
 import {Site} from "./site";
 import {Provider} from "./providers";
-import {createRoleProps} from "../../types";
 
-@Entity({name: 'roles'})
-export class Roles {
-
-  constructor(data:createRoleProps) {
-    this.description = data?.description as string
+@Entity()
+export class Departments {
+  constructor(data:createDepartmentProps) {
     this.name = data?.name as string
     this.siteId = data?.siteId as string
+    this.description = data?.description as string
   }
 
   @PrimaryGeneratedColumn("uuid")
@@ -23,12 +22,12 @@ export class Roles {
   @Column({
     nullable: false,
   })
-  name: string
+  description: string
 
   @Column({
     nullable: false,
   })
-  description: string
+  name: string
 
   @CreateDateColumn()
   created_at?: Date
@@ -37,9 +36,9 @@ export class Roles {
   updated_at: Date
 
   // Relations
-  @OneToMany(type => Site, site => site.roles)
+  @OneToMany(type => Provider, provider => provider.department)
   providers: Provider[]
 
-  @ManyToOne(type => Site, site => site.roles)
+  @ManyToOne(type => Site, site => site.departments)
   site: Site
 }

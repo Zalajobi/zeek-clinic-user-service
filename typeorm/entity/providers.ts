@@ -1,6 +1,7 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm"
 import {Site} from "./site";
 import {Roles} from "./roles";
+import {Departments} from "./departments";
 
 @Entity()
 export class Provider {
@@ -16,6 +17,11 @@ export class Provider {
     nullable: false
   })
   primaryRoleId: string
+
+  @Column({
+    nullable: false
+  })
+  departmentId: string
 
   @Column({
     unique: true,
@@ -56,6 +62,9 @@ export class Provider {
 
   @ManyToOne(type => Roles, roles => roles.providers)
   primary_role: Roles
+
+  @ManyToOne(type => Departments, department => department.providers)
+  department: Departments
 
   /*
    To Include
