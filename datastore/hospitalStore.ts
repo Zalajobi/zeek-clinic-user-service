@@ -37,10 +37,7 @@ export const superAdminGetHospitals = async (
   status: string
 ) => {
   let skip = Number(perPage * page), take = Number(perPage), hospital = null
-  const fromDate = from ? new Date(from) : new Date('1999-01-01');
-  const toDate = to ? new Date(to) : new Date();
-
-  const hospitalRepository = hospitalRepo()
+  const fromDate = from ? new Date(from) : new Date('1900-01-01'), toDate = to ? new Date(to) : new Date(), hospitalRepository = hospitalRepo();
 
   const hospitalQuery = hospitalRepository
     .createQueryBuilder('hospital')

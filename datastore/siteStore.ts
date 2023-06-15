@@ -4,11 +4,11 @@ import {siteRepo} from "../typeorm/repositories/siteRepository";
 import {Site} from "../typeorm/entity/site";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {Hospital} from "../typeorm/entity/hospital";
+import {HospitalStatus, SiteStatus} from "../typeorm/entity/enums";
 
 export const adminCreateSite = async (data:createSiteProps) => {
   const siteRepository = siteRepo();
   const hospitalRepository = hospitalRepo();
-  console.log("data")
 
   const isUnique = await siteRepository
     .createQueryBuilder("site")
@@ -61,90 +61,82 @@ export const getSiteInformation = async (id: string) => {
   })
 }
 
-export const siteTableDatastore = async (page: number, perPage: number, query: string, from: string, to: string, country: string, status: string, state:string, hospitalId:string) => {
-  let where:any = {}, siteQuery = null
+export const siteTableDatastore = async (
+  page: number,
+  perPage: number,
+  query: string,
+  from: string,
+  to: string,
+  country: string,
+  status: string,
+  state:string,
+  hospitalId:string
+) => {
+  const fromDate = from ? new Date(from) : new Date('1900-01-01'), toDate = to ? new Date(to) : new Date(), siteRepository = siteRepo();
+  let sitePagination = null, skip = Number(perPage * page), take = Number(perPage)
 
-  where.hospital_id = hospitalId
+  const sitePaginationQuery = siteRepository
+    .createQueryBuilder('site')
+    .andWhere("site.created_at > :fromDate", {
+      fromDate
+    })
+    .andWhere("site.created_at < :toDate", {
+      toDate
+    })
 
-  if (query) {
-    where["OR"] = [
-      {
-        name: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
-
-      {
-        email: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
-
-      {
-        phone: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
-    ]
+  if (country) {
+    sitePaginationQuery.
+    andWhere("LOWER(site.country) LIKE :country", {
+      country: `%${country.toLowerCase()}%`,
+    })
   }
 
   if (status) {
-    where.status = status
+    sitePaginationQuery
+      .andWhere("site.status = :status", {
+        status: status as SiteStatus
+      })
   }
 
   if (state) {
-    where.state = {
-      contains: state,
-      mode: 'insensitive'
-    }
+    sitePaginationQuery
+      .andWhere("LOWER(site.state) LIKE :state", {
+        state: `%${state.toLowerCase()}%`,
+      })
   }
 
-  if (country) {
-    where.country = {
-      contains: country,
-      mode: 'insensitive'
-    }
-  }
-
-  if (from || to) {
-    where['created_at'] = {
-      gte: from ?? new Date('1999-01-01'),
-      lte: to ?? new Date()
-    }
-  }
-
-  if (Number(perPage) <= 0) {
-    siteQuery = prisma.site.findMany({
-      where,
-      orderBy: {
-        created_at: 'desc',
-      }
-    })
-  } else {
-    siteQuery = prisma.site.findMany({
-      where,
-      take: Number(perPage),
-      skip: perPage * page,
-      orderBy: {
-        created_at: 'desc',
-      }
+  if (query) {
+    sitePaginationQuery
+      .andWhere("LOWER(site.name) LIKE :name", {
+        name: `%${query.toLowerCase()}%`,
     })
   }
 
-  const [sites, count] = await prisma.$transaction([
-    siteQuery,
-
-    prisma.site.count({
-      where
-    }),
-  ])
+  if(Number(perPage) === 0) {
+    sitePagination = await sitePaginationQuery
+      .andWhere("site.hospitalId = :hospitalId", {
+        hospitalId
+      })
+      .orderBy({
+        created_at: 'DESC'
+      })
+      .getManyAndCount();
+  } else  {
+      sitePagination = await sitePaginationQuery
+        .andWhere("site.hospitalId = :hospitalId", {
+          hospitalId
+        })
+        .orderBy({
+          created_at: 'DESC'
+        })
+        .skip(skip)
+        .take(take)
+        .getManyAndCount();
+    }
 
   return {
-    sites,
-    count,
+    sites: sitePagination[0],
+    count: sitePagination[1],
   }
 }
 
