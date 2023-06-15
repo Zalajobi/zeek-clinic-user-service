@@ -1,12 +1,12 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
 import {Site} from "./site";
 import {Provider} from "./providers";
-import {createRoleProps} from "../../types";
+import {roleModelProps} from "../../types";
 
 @Entity({name: 'roles'})
 export class Roles {
 
-  constructor(data:createRoleProps) {
+  constructor(data:roleModelProps) {
     this.description = data?.description as string
     this.name = data?.name as string
     this.siteId = data?.siteId as string

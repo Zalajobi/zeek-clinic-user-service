@@ -1,7 +1,7 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
 import {Hospital} from "./hospital";
 import {BankAccount} from "./bankAccount";
-import {createSiteProps} from "../../types";
+import {siteModelProps} from "../../types";
 import {SiteStatus} from "./enums";
 import {Roles} from "./roles";
 import {Provider} from "./providers";
@@ -11,7 +11,7 @@ import {Admin} from "./admin";
 @Entity()
 export class Site {
 
-  constructor(data:createSiteProps) {
+  constructor(data:siteModelProps) {
     this.address = data?.address as string
     this.name = data?.name as string
     this.email = data?.email as string

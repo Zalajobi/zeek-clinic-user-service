@@ -1,12 +1,12 @@
 import prisma from "../lib/prisma";
-import {createSiteProps} from "../types";
+import {siteModelProps} from "../types";
 import {siteRepo} from "../typeorm/repositories/siteRepository";
 import {Site} from "../typeorm/entity/site";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {Hospital} from "../typeorm/entity/hospital";
 import { SiteStatus } from "../typeorm/entity/enums";
 
-export const adminCreateSite = async (data:createSiteProps) => {
+export const adminCreateSite = async (data:siteModelProps) => {
   const siteRepository = siteRepo();
   const hospitalRepository = hospitalRepo();
 
@@ -26,7 +26,7 @@ export const adminCreateSite = async (data:createSiteProps) => {
       message: "Site with email address or phone number already exists"
     }
 
-  await siteRepository.save(new Site(data as createSiteProps))
+  await siteRepository.save(new Site(data as siteModelProps))
 
   await hospitalRepository.update({
     id: data.hospital_id

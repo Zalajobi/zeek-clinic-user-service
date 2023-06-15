@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm"
 import {HospitalStatus} from "./enums";
 import {Site} from "./site";
-import {CreateHospitalProps} from "../../types";
+import {hospitalModelProps} from "../../types";
 import {JoinColumn} from "typeorm/browser";
 
 @Entity()
 export class Hospital {
-  constructor(data: CreateHospitalProps) {
+  constructor(data: hospitalModelProps) {
     this.name = data?.name as string;
     this.email = data?.email as string;
     this.phone = data?.phone as string;

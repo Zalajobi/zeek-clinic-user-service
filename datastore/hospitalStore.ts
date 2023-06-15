@@ -1,10 +1,10 @@
-import {CreateHospitalProps} from "../types";
+import {hospitalModelProps} from "../types";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {HospitalStatus, SiteStatus} from "../typeorm/entity/enums";
 import {Hospital} from "../typeorm/entity/hospital";
 import {siteRepo} from "../typeorm/repositories/siteRepository";
 
-export const createNewHospital = async (data:CreateHospitalProps) => {
+export const createNewHospital = async (data:hospitalModelProps) => {
   const hospitalRepository = hospitalRepo()
 
   let isUnique;
@@ -20,7 +20,7 @@ export const createNewHospital = async (data:CreateHospitalProps) => {
   if (isUnique)
     return false
 
-  const hospital = await hospitalRepository.save(new Hospital(data as CreateHospitalProps));
+  const hospital = await hospitalRepository.save(new Hospital(data as hospitalModelProps));
 
   if (hospital) {
     return true

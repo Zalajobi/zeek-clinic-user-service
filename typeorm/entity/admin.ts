@@ -1,9 +1,19 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm"
 import {Site} from "./site";
 import {AdminRoles} from "./enums";
+import {adminModelProps} from "../../types";
 
 @Entity()
 export class Admin {
+  constructor(data:adminModelProps) {
+    this.siteId = data?.siteId as string
+    this.role = data?.role as AdminRoles
+    this.email = data?.email as string
+    this.password = data?.password as string
+    this.username = data?.username as string
+    this.staff_id = data?.staff_id as string
+  }
+
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

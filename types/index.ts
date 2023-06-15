@@ -1,4 +1,6 @@
-export type CreateHospitalProps = {
+import {AdminRoles} from "../typeorm/entity/enums";
+
+export type hospitalModelProps = {
   name: string
   email:  string
   phone: string
@@ -12,7 +14,7 @@ export type CreateHospitalProps = {
 }
 
 
-export type createSiteProps = {
+export type siteModelProps = {
   address: string
   hospital_id: string
   name: string
@@ -45,14 +47,42 @@ export type createSiteProps = {
   totalSites: number
 }
 
-export type createRoleProps = {
+export type roleModelProps = {
   siteId: string
   name: string
   description: string
 }
 
-export type createDepartmentProps = {
+export type departmentModelProps = {
   siteId: string
   name: string
   description: string
+}
+
+export type adminModelProps = {
+  siteId: string
+  role: AdminRoles
+  email: string
+  password: string
+  username: string
+  staff_id: string
+}
+
+export type profileInfoModelProps = {
+  phone?: string
+  first_name: string
+  last_name: string
+  middle_name: string
+  title: string
+  gender: string
+  dob: string
+  address: string
+  city: string
+  state: string
+  country: string
+  zip_code: string
+  nationality: string
+  profile_pic?: string
+  providerId?: string
+  adminId?: string
 }

@@ -1,8 +1,8 @@
 import {departmentRepo} from "../typeorm/repositories/departmentRepository";
-import {createDepartmentProps} from "../types";
+import {departmentModelProps} from "../types";
 import {Departments} from "../typeorm/entity/departments";
 
-export const createNewDepartment = async (data:createDepartmentProps) => {
+export const createNewDepartment = async (data:departmentModelProps) => {
   const deptRepository = departmentRepo()
 
   const department = await deptRepository.save(new Departments(data))

@@ -1,11 +1,11 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
-import {createDepartmentProps} from "../../types";
+import {departmentModelProps} from "../../types";
 import {Site} from "./site";
 import {Provider} from "./providers";
 
 @Entity()
 export class Departments {
-  constructor(data:createDepartmentProps) {
+  constructor(data:departmentModelProps) {
     this.name = data?.name as string
     this.siteId = data?.siteId as string
     this.description = data?.description as string

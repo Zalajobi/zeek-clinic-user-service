@@ -1,7 +1,7 @@
 import express = require("express");
 import {JsonResponse} from "../util/responses";
 import {verifySuperadminUser} from "../datastore/superadminStore";
-import {CreateHospitalProps} from "../types";
+import {hospitalModelProps} from "../types";
 import {
   createNewHospital,
   getHospitalDetails,
@@ -22,7 +22,7 @@ hospitalRouter.post('/hospital/create', async (req, res) => {
     if (!verifiedUser)
       return JsonResponse(res, message, false, null, 401)
 
-    const hospital = await createNewHospital(req.body as CreateHospitalProps)
+    const hospital = await createNewHospital(req.body as hospitalModelProps)
 
     if (!hospital) {
       return JsonResponse(res, 'Email Or Phone Number Already Exists', false, null, 200)

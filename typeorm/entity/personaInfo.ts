@@ -1,17 +1,31 @@
 import {Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm"
 import {Provider} from "./providers";
+import {Admin} from "./admin";
+import {profileInfoModelProps} from "../../types";
 
 @Entity({
   name: 'personal_info'
 })
 export class PersonalInformation {
+
+  constructor(data:profileInfoModelProps) {
+
+  }
+
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({
-    nullable: true
+    nullable: true,
+    unique: true
   })
-  providerId: string
+  providerId?: string
+
+  @Column({
+    nullable: true,
+    unique: true
+  })
+  adminId?: string
 
   @Column({
     // unique: true
@@ -27,6 +41,11 @@ export class PersonalInformation {
     nullable: false
   })
   last_name: string
+
+  @Column({
+    nullable: true
+  })
+  middle_name: string
 
   @Column()
   title: string
@@ -49,13 +68,17 @@ export class PersonalInformation {
   @Column()
   country: string
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   zip_code: string
 
   @Column()
   nationality: string
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   profile_pic: string
 
   @CreateDateColumn()
@@ -67,5 +90,9 @@ export class PersonalInformation {
   // Relations
   @OneToOne(() => Provider)
   @JoinColumn()
-  provider: Provider
+  provider?: Provider
+
+  @OneToOne(() => Provider)
+  @JoinColumn()
+  admin?: Admin
 }

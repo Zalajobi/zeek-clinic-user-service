@@ -5,7 +5,7 @@ import {
   getDistinctOrganizationSiteCountriesAndStates,
   siteTableDatastore
 } from "../datastore/siteStore";
-import {createSiteProps} from "../types";
+import {siteModelProps} from "../types";
 import {verifyUserPermission} from "../lib/auth";
 
 
@@ -20,7 +20,7 @@ siteRouter.post('/site/create', async (req, res) => {
     if (!verifiedUser)
       return JsonResponse(res, message, success, null, 401)
 
-    const site = await adminCreateSite(req.body as createSiteProps)
+    const site = await adminCreateSite(req.body as siteModelProps)
 
     return JsonResponse(res, site?.message as string, site?.success as boolean, null, 200)
 

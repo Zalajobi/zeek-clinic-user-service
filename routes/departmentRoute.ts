@@ -1,6 +1,6 @@
 import express = require("express");
 import {JsonResponse} from "../util/responses";
-import {createDepartmentProps, createRoleProps} from "../types";
+import {departmentModelProps, roleModelProps} from "../types";
 import {verifyUserPermission} from "../lib/auth";
 import {createNewDepartment} from "../datastore/departmentStore";
 
@@ -10,7 +10,7 @@ departmentRouter.post('/department/create', async (req, res) => {
   let message = 'Not Authorised', success = false
 
   try {
-    const data = req.body as createDepartmentProps
+    const data = req.body as departmentModelProps
 
     const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN'])
 
