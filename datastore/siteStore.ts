@@ -4,22 +4,26 @@ import {siteRepo} from "../typeorm/repositories/siteRepository";
 import {Site} from "../typeorm/entity/site";
 import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
 import {Hospital} from "../typeorm/entity/hospital";
-import {SiteStatus} from "../typeorm/entity/enums";
 
 export const adminCreateSite = async (data:createSiteProps) => {
   const siteRepository = siteRepo();
   const hospitalRepository = hospitalRepo();
+  console.log("data")
 
-  const isUnique = await siteRepository.findOneBy(
-    {
-      email: data.email
-    }
-  )
+  const isUnique = await siteRepository
+    .createQueryBuilder("site")
+    .where("LOWER(site.email) LIKE :email", {
+      email: data.email.toLowerCase(),
+    })
+    .orWhere("LOWER(site.phone) = :phone", {
+      phone: data.phone.toLowerCase(),
+    })
+    .getOne()
 
   if (isUnique)
     return {
       success: false,
-      message: "Site with email address already exists"
+      message: "Site with email address or phone number already exists"
     }
 
   const hospital = await hospitalRepository.findOneBy({

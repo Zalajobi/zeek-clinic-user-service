@@ -24,7 +24,7 @@ siteRouter.post('/site/create', async (req, res) => {
 
     const site = await adminCreateSite(req.body as createSiteProps)
 
-    return JsonResponse(res, site?.message as string, site?.success as boolean, null, site?.success ? 200 : 400)
+    return JsonResponse(res, site?.message as string, site?.success as boolean, null, 200)
 
   } catch(error) {
     let message = 'Not Authorized'
@@ -90,8 +90,6 @@ siteRouter.get('/site/organization/table-filter', async (req, res) => {
       state as unknown as string,
       hospital_id as unknown as string,
     )
-
-    // console.log(data)
 
     return JsonResponse(res, 'Success', true, data, 200)
   } catch(error) {
