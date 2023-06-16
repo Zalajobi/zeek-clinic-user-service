@@ -86,10 +86,10 @@ adminRouter.post(`/admin/password/request-password/reset`, async (req, res) => {
         role: user?.role ?? ''
       }, Math.floor(Date.now() / 1000) + (60 * 10))
 
-      // const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.profile?.first_name ?? '')
-      // if (passwordResetEmailResponse.accepted.length !== 0) {
-      //   JsonResponse(res, `Password reset link sent to ${user?.email ?? ''}`, true, null, 401)
-      // }
+      const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.personalInfo?.first_name ?? '')
+      if (passwordResetEmailResponse.accepted.length !== 0) {
+        JsonResponse(res, `Password reset link sent to ${user?.email ?? ''}`, true, null, 401)
+      }
     }
     else {
       JsonResponse(res, responseMessage, success, null, 401)

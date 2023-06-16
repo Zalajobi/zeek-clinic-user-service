@@ -80,7 +80,7 @@ export const getAdminPrimaryInformation = async (value:string) => {
 export const getAdminPrimaryInformationAndProfile = async (value:string) => {
   const adminRepository = adminRepo();
 
-  const admin = await adminRepository
+  return  await adminRepository
     .createQueryBuilder('admin')
     .where("admin.email = :email", {
       email: value
@@ -88,11 +88,8 @@ export const getAdminPrimaryInformationAndProfile = async (value:string) => {
     .orWhere("admin.username = :username", {
       username: value
     })
-    .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
+    .leftJoinAndSelect('admin.personalInfo', 'profile')
+    .select(['admin.password', 'admin.role', 'admin.email', 'admin.id', 'profile.first_name'])
     .getOne()
-
-  console.log(admin)
-
-  return admin
 }
 
