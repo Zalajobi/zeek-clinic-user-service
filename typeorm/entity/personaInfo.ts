@@ -9,7 +9,22 @@ import {profileInfoModelProps} from "../../types";
 export class PersonalInformation {
 
   constructor(data:profileInfoModelProps) {
-
+    this.providerId = data?.providerId as string
+    this.adminId = data?.adminId as string
+    this.phone = data?.phone as string
+    this.first_name = data?.first_name as string
+    this.last_name = data?.last_name as string
+    this.middle_name = data?.middle_name as string
+    this.title = data?.title as string
+    this.gender = data?.gender as string
+    this.dob = new Date(data?.dob as string)
+    this.address = data?.address as string
+    this.city = data?.city as string
+    this.state = data?.state as string
+    this.country = data?.country as string
+    this.zip_code = data?.zip_code as string
+    this.nationality = data?.nationality as string
+    this.profile_pic = data?.profile_pic as string
   }
 
   @PrimaryGeneratedColumn("uuid")
@@ -28,7 +43,7 @@ export class PersonalInformation {
   adminId?: string
 
   @Column({
-    // unique: true
+    unique: true
   })
   phone: string
 
@@ -92,7 +107,7 @@ export class PersonalInformation {
   @JoinColumn()
   provider?: Provider
 
-  @OneToOne(() => Provider)
+  @OneToOne(() => Admin)
   @JoinColumn()
   admin?: Admin
 }

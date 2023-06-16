@@ -66,6 +66,7 @@ export type adminModelProps = {
   password: string
   username: string
   staff_id: string
+  profileData: profileInfoModelProps
 }
 
 export type profileInfoModelProps = {
