@@ -8,7 +8,6 @@ export const generatePasswordHash = (password:string) => {
 
 export const validatePassword = (reqPassword:string, comparePassword:string) => {
   const generatedPasswordHash = crypto.pbkdf2Sync(reqPassword, process.env.PASSWORD_HASH_SECRET!, 1000, 64, 'sha512').toString('hex')
-
   return generatedPasswordHash === comparePassword ? true : false;
 }
 

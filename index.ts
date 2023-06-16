@@ -1,7 +1,6 @@
 import express = require("express");
 import cors = require('cors')
 import "reflect-metadata"
-import loginRouter from "./routes/loginRoute";
 import signupRouter from "./routes/signnupRoute";
 import passwordRouter from "./routes/passwordRoute";
 import superadminRouter from "./routes/superadminRoute";
@@ -20,7 +19,6 @@ const app = express();
 
 app.use(express.json());
 app.use(cors())
-app.use(`${process.env.ACCOUNT_BASE_URL}`, loginRouter)
 app.use(`${process.env.ACCOUNT_BASE_URL}`, signupRouter)
 app.use(`${process.env.ACCOUNT_BASE_URL}`, passwordRouter)
 app.use(`${process.env.ACCOUNT_BASE_URL}`, superadminRouter)

@@ -1,5 +1,11 @@
 import {AdminRoles} from "../typeorm/entity/enums";
 
+export type loginProps = {
+  email: string
+  password: string
+  rememberMe: boolean
+}
+
 export type hospitalModelProps = {
   name: string
   email:  string

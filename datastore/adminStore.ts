@@ -1,7 +1,7 @@
 import prisma from "../lib/prisma";
 import {JWTDataProps} from "../types/jwt";
 import {verifyJSONToken} from "../helpers/utils";
-import {adminModelProps, profileInfoModelProps} from "../types";
+import {adminModelProps} from "../types";
 import {adminRepo} from "../typeorm/repositories/adminRepository";
 import {createNewPersonalInfo, getPersonalInfoByPhone} from "./personalInfoStore";
 import {Admin} from "../typeorm/entity/admin";
@@ -50,4 +50,19 @@ export const createNewAdmin = async (data:adminModelProps) => {
     success: admin && profileInformation ? true : false,
     message: admin && profileInformation ? 'Admin Creation Successful' : 'Something happened. Error happened while creating Admin',
   }
+}
+
+export const verifyAdminLoginCredentials = async (value:string) => {
+  const adminRepository = adminRepo();
+
+  return await adminRepository
+    .createQueryBuilder('admin')
+    .where("admin.email = :email", {
+      email: value
+    })
+    .orWhere("admin.username = :username", {
+      username: value
+    })
+    .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
+    .getOne()
 }
