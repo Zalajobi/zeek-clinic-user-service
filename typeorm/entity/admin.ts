@@ -1,7 +1,8 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm"
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm"
 import {Site} from "./site";
 import {AdminRoles} from "./enums";
 import {adminModelProps} from "../../types";
+import {PersonalInformation} from "./personaInfo";
 
 @Entity()
 export class Admin {
@@ -21,6 +22,11 @@ export class Admin {
     nullable: false
   })
   siteId: string
+
+  @Column({
+    nullable: true
+  })
+  personalInfoId?: string
 
   @Column({
     type: 'enum',
@@ -59,6 +65,10 @@ export class Admin {
   updated_at: Date
 
   // Relations
+  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin)
+  @JoinColumn()
+  personalInfo?: PersonalInformation
+
   @ManyToOne(type => Site, site => site.admins)
   site: Site;
 

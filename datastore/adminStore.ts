@@ -46,6 +46,16 @@ export const createNewAdmin = async (data:adminModelProps) => {
 
   const profileInformation = await createNewPersonalInfo(data.profileData)
 
+  if (admin && profileInformation) {
+    await adminRepository
+      .update({
+        id: admin.id
+      }, {
+        personalInfoId: profileInformation.id
+      })
+
+  }
+
   return {
     success: admin && profileInformation ? true : false,
     message: admin && profileInformation ? 'Admin Creation Successful' : 'Something happened. Error happened while creating Admin',
@@ -66,7 +76,6 @@ export const getAdminPrimaryInformation = async (value:string) => {
     .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
     .getOne()
 }
-
 
 export const getAdminPrimaryInformationAndProfile = async (value:string) => {
   const adminRepository = adminRepo();

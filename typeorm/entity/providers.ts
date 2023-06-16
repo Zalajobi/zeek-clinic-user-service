@@ -65,7 +65,7 @@ export class Provider {
   // Relations
   @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.provider)
   @JoinColumn()
-  personalInfo: PersonalInformation
+  personalInfo?: PersonalInformation
 
   @ManyToOne(type => Site, site => site.roles)
   site: Site;

@@ -104,7 +104,7 @@ export class PersonalInformation {
 
   // Relations
   @OneToOne(() => Provider, (provider) => provider.personalInfo)
-  // @JoinColumn()
+  @JoinColumn()
   provider?: Provider
 
   @OneToOne(() => Admin)
