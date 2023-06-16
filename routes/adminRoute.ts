@@ -1,8 +1,7 @@
 import express = require("express");
 import {JsonResponse} from "../util/responses";
-import {adminModelProps, departmentModelProps, roleModelProps} from "../types";
+import {adminModelProps} from "../types";
 import {verifyUserPermission} from "../lib/auth";
-import {createNewDepartment} from "../datastore/departmentStore";
 import {generatePasswordHash} from "../helpers/utils";
 import {createNewAdmin} from "../datastore/adminStore";
 
@@ -12,8 +11,6 @@ adminRouter.post('/admin/create', async (req, res) => {
   let message = 'Not Authorised', success = false
 
   try {
-    const data = req.body as departmentModelProps
-
     const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN'])
 
     if (!verifiedUser)
