@@ -93,3 +93,38 @@ export const getAdminPrimaryInformationAndProfile = async (value:string) => {
     .getOne()
 }
 
+export const getAdminBaseDataAndProfileDataByAdminId = async (id:string) => {
+  const adminRepository = adminRepo();
+
+  return await adminRepository.findOne({
+    where: {
+      id
+    },
+    select: {
+      email: true,
+      password: true,
+      role: true,
+      id: true,
+      // profile: true,
+    },
+    relations: {
+      personalInfo: true
+    }
+  })
+}
+
+export const updateAdminPasswordByAdminId = async (id:string, password:string) => {
+  console.log("HERE")
+  const adminRepository = adminRepo();
+
+  const admin = await adminRepository.update(
+    {
+      id
+    },{
+      password
+    })
+  console.log(admin)
+
+  return admin
+}
+
