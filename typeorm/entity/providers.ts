@@ -1,7 +1,8 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm"
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm"
 import {Site} from "./site";
 import {Roles} from "./roles";
 import {Departments} from "./departments";
+import {PersonalInformation} from "./personaInfo";
 
 @Entity()
 export class Provider {
@@ -17,6 +18,11 @@ export class Provider {
     nullable: false
   })
   primaryRoleId: string
+
+  @Column({
+    nullable: true
+  })
+  personalInfoId?: string
 
   @Column({
     nullable: false
@@ -57,6 +63,10 @@ export class Provider {
   updated_at: Date
 
   // Relations
+  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.provider)
+  @JoinColumn()
+  personalInfo: PersonalInformation
+
   @ManyToOne(type => Site, site => site.roles)
   site: Site;
 

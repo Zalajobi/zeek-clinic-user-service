@@ -14,35 +14,6 @@ import {JsonResponse} from "../util/responses";
 
 const passwordRouter = express.Router();
 
-// Send  Email With Temporary Token For Password Reset
-passwordRouter.post(`/admin/password/reset-request`, async (req, res) => {
-  let responseMessage = 'User with email or username not found', success = false
-  try {
-    const user = await getAdminBaseData(req.body.email)
-    if (user) {
-      const token = generateJSONTokenCredentials({
-        id: user?.id ?? '',
-        email: user?.email ?? '',
-        role: user?.role ?? ''
-      }, Math.floor(Date.now() / 1000) + (60 * 10))
-
-      const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.profile?.first_name ?? '')
-      if (passwordResetEmailResponse.accepted.length !== 0) {
-        JsonResponse(res, `Password reset link sent to ${user?.email ?? ''}`, true, null, 401)
-      }
-    }
-    else {
-      JsonResponse(res, responseMessage, success, null, 401)
-    }
-  } catch(error) {
-    let message = 'Something Went Wrong'
-    if (error instanceof Error)
-      message = error.message
-
-    JsonResponse(res, message, false, null, 403)
-  }
-})
-
 passwordRouter.get('/admin/jwt_token/verify', async (req, res) => {
   let message = 'Token has expired', success = false
 

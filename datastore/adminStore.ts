@@ -52,7 +52,7 @@ export const createNewAdmin = async (data:adminModelProps) => {
   }
 }
 
-export const verifyAdminLoginCredentials = async (value:string) => {
+export const getAdminPrimaryInformation = async (value:string) => {
   const adminRepository = adminRepo();
 
   return await adminRepository
@@ -66,3 +66,24 @@ export const verifyAdminLoginCredentials = async (value:string) => {
     .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
     .getOne()
 }
+
+
+export const getAdminPrimaryInformationAndProfile = async (value:string) => {
+  const adminRepository = adminRepo();
+
+  const admin = await adminRepository
+    .createQueryBuilder('admin')
+    .where("admin.email = :email", {
+      email: value
+    })
+    .orWhere("admin.username = :username", {
+      username: value
+    })
+    .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
+    .getOne()
+
+  console.log(admin)
+
+  return admin
+}
+

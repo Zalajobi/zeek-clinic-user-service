@@ -3,8 +3,12 @@ import {JsonResponse} from "../util/responses";
 import {adminModelProps} from "../types";
 import {verifyUserPermission} from "../lib/auth";
 import {generateJSONTokenCredentials, generatePasswordHash, validatePassword} from "../helpers/utils";
-import {createNewAdmin, verifyAdminLoginCredentials} from "../datastore/adminStore";
-import {getAdminBaseData} from "../datastore/userStore";
+import {
+  createNewAdmin,
+  getAdminPrimaryInformation,
+  getAdminPrimaryInformationAndProfile
+} from "../datastore/adminStore";
+import {sendResetPasswordEmail} from "../messaging/email";
 
 const adminRouter = express.Router();
 
@@ -36,7 +40,7 @@ adminRouter.post(`/admin/login`, async (req, res) => {
   try {
     const { email, password, rememberMe } = req.body
 
-    const admin = await verifyAdminLoginCredentials(email as string)
+    const admin = await getAdminPrimaryInformation(email as string)
 
     console.log(Math.floor(Date.now() / 1000) + (240 * 360))
 
@@ -67,6 +71,35 @@ adminRouter.post(`/admin/login`, async (req, res) => {
       message = error.message
 
     JsonResponse(res, message, success, null, 403)
+  }
+})
+
+// Send  Email With Temporary Token For Password Reset
+adminRouter.post(`/admin/password/request-password/reset`, async (req, res) => {
+  let responseMessage = 'User with email or username not found', success = false
+  try {
+    const user = await getAdminPrimaryInformationAndProfile(req.body.email)
+    if (user) {
+      const token = generateJSONTokenCredentials({
+        id: user?.id ?? '',
+        email: user?.email ?? '',
+        role: user?.role ?? ''
+      }, Math.floor(Date.now() / 1000) + (60 * 10))
+
+      // const passwordResetEmailResponse = await sendResetPasswordEmail(user?.email ?? '', token, user?.profile?.first_name ?? '')
+      // if (passwordResetEmailResponse.accepted.length !== 0) {
+      //   JsonResponse(res, `Password reset link sent to ${user?.email ?? ''}`, true, null, 401)
+      // }
+    }
+    else {
+      JsonResponse(res, responseMessage, success, null, 401)
+    }
+  } catch(error) {
+    let message = 'Something Went Wrong'
+    if (error instanceof Error)
+      message = error.message
+
+    JsonResponse(res, message, false, null, 403)
   }
 })
 

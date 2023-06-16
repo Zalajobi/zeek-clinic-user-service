@@ -103,8 +103,8 @@ export class PersonalInformation {
   updated_at: Date
 
   // Relations
-  @OneToOne(() => Provider)
-  @JoinColumn()
+  @OneToOne(() => Provider, (provider) => provider.personalInfo)
+  // @JoinColumn()
   provider?: Provider
 
   @OneToOne(() => Admin)
