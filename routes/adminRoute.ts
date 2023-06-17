@@ -10,15 +10,15 @@ import {
   verifyJSONToken
 } from "../helpers/utils";
 import {
-  createNewAdmin, getAdminAndProfileDataByEmailOrUsername, getAdminBaseDataAndProfileDataByAdminId,
+  createNewAdmin,
+  getAdminAndProfileDataByEmailOrUsername,
+  getAdminBaseDataAndProfileDataByAdminId,
   getAdminPrimaryInformation,
   getAdminPrimaryInformationAndProfile, updateAdminData, updateAdminPasswordByAdminId
 } from "../datastore/adminStore";
 import {sendResetPasswordEmail} from "../messaging/email";
 import {JWTDataProps} from "../types/jwt";
-// import {getAdminData, updateAdminData} from "../datastore/userStore";
 import {twilioSendSMSMessage} from "../messaging/twilio";
-import {AdminRoles} from "../typeorm/entity/enums";
 import { AdminEntityObject } from "../typeorm/objectsTypes/admin";
 
 const adminRouter = express.Router();
@@ -51,8 +51,6 @@ adminRouter.post(`/admin/login`, async (req, res) => {
     const { email, password, rememberMe } = req.body
 
     const admin = await getAdminPrimaryInformation(email as string)
-
-    console.log(Math.floor(Date.now() / 1000) + (240 * 360))
 
     if (validatePassword(password as string, admin?.password ?? '' as string)) {
       const jwtData = {
@@ -139,7 +137,6 @@ adminRouter.put(`/admin/password/change_password`, async (req, res) => {
   let message = 'Error Updating Password';
 
   try {
-    console.log("ONE")
     const verifyToken = <JWTDataProps><unknown>verifyJSONToken(authorization as string)
 
     if (verifyToken) {
@@ -184,7 +181,6 @@ adminRouter.post(`/admin/password/reset/user_verification/sms`, async (req, res)
         password_reset_request_timestamp: new Date()
       } as AdminEntityObject
 
-      console.log(adminData)
 
       const updatedUser = await updateAdminData(user.id, updateUser)
 
