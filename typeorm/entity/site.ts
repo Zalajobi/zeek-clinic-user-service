@@ -218,7 +218,7 @@ export class Site {
   has_wallet: boolean
 
   @CreateDateColumn()
-  created_at?: Date
+   created_at: Date
 
   @CreateDateColumn()
   updated_at: Date

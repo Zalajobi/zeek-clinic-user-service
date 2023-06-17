@@ -14,44 +14,6 @@ import {JsonResponse} from "../util/responses";
 
 const passwordRouter = express.Router();
 
-// Verify Admin Email, Username data, and send SMS to user number
-passwordRouter.post(`/admin/password/reset/user_verification/sms`, async (req, res) => {
-  let message = 'Passcode is send to the admin registered phone number', success = true
-
-  try {
-    const user = await getAdminData(req.body.email)
-
-    if (user) {
-      const passwordResetCode = generateCode()
-      await twilioSendSMSMessage(user?.profile?.phone_number ?? '', `Your Temporary Code Is ${passwordResetCode}`)
-
-      const updateUser = {
-        ...user,
-        password_reset_code: passwordResetCode,
-        password_reset_request_timestamp: new Date()
-      }
-
-      const updatedUser = await updateAdminData(updateUser, user.id)
-
-      if (!updatedUser) {
-        message = "Error occurred while sending passcode"
-        success = false
-      }
-    } else {
-      message = "No User is registered with the provided Email or Username"
-      success = false
-    }
-
-    JsonResponse(res, message, success, null, 200)
-  } catch(error) {
-    let message = 'Something Went Wrong'
-    if (error instanceof Error)
-      message = error.message
-
-    JsonResponse(res, message, false, null, 403)
-  }
-})
-
 // Verify Admin Email, Username data, and Call user number
 passwordRouter.post(`/admin/password/reset/user_verification/direct-call`, async (req, res) => {
   let message = 'Passcode is send to the admin registered phone number', success = true

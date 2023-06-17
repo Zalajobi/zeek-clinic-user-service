@@ -58,8 +58,18 @@ export class Admin {
   })
   staff_id: string
 
+  @Column({
+    nullable: true
+  })
+  password_reset_code: string
+
+  @Column({
+    nullable: true
+  })
+  password_reset_request_timestamp: Date
+
   @CreateDateColumn()
-  created_at?: Date
+  created_at: Date
 
   @CreateDateColumn()
   updated_at: Date

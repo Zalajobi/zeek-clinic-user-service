@@ -31,7 +31,7 @@ export class Roles {
   description: string
 
   @CreateDateColumn()
-  created_at?: Date
+   created_at: Date
 
   @CreateDateColumn()
   updated_at: Date

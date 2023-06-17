@@ -88,7 +88,7 @@ export class Hospital {
   country_code?: string
 
   @CreateDateColumn()
-  created_at?: Date
+   created_at: Date
 
   @CreateDateColumn()
   updated_at: Date

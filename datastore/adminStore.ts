@@ -5,6 +5,7 @@ import {adminModelProps} from "../types";
 import {adminRepo} from "../typeorm/repositories/adminRepository";
 import {createNewPersonalInfo, getPersonalInfoByPhone} from "./personalInfoStore";
 import {Admin} from "../typeorm/entity/admin";
+import {AdminEntityObject} from "../typeorm/objectsTypes/admin";
 
 export const verifyAdmin = async (token:string) => {
   const { id } = await <JWTDataProps><unknown>verifyJSONToken(token)
@@ -114,17 +115,42 @@ export const getAdminBaseDataAndProfileDataByAdminId = async (id:string) => {
 }
 
 export const updateAdminPasswordByAdminId = async (id:string, password:string) => {
-  console.log("HERE")
   const adminRepository = adminRepo();
 
-  const admin = await adminRepository.update(
+  return await adminRepository.update(
     {
       id
     },{
       password
     })
-  console.log(admin)
-
-  return admin
 }
 
+export const updateAdminData = async (id:string, data:AdminEntityObject) => {
+  const adminRepository = adminRepo();
+
+  const admin = await adminRepository.update(
+    {
+      id
+    },
+    data
+  )
+
+  console.log(data)
+
+  return data;
+}
+
+export const getAdminAndProfileDataByEmailOrUsername = async (value:string) => {
+  const adminRepository = adminRepo();
+
+  return  await adminRepository
+    .createQueryBuilder('admin')
+    .where("admin.email = :email", {
+      email: value
+    })
+    .orWhere("admin.username = :username", {
+      username: value
+    })
+    .leftJoinAndSelect('admin.personalInfo', 'profile')
+    .getOne()
+}
