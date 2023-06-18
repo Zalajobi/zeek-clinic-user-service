@@ -23,9 +23,9 @@ import { JWTDataProps } from '../types/jwt';
 import {
   twilioSendAudioMessage,
   twilioSendSMSMessage,
+  twilioSendWhatsAppMessage,
 } from '../messaging/twilio';
 import { AdminEntityObject } from '../typeorm/objectsTypes/admin';
-import { getAdminData } from '../datastore/userStore';
 
 const adminRouter = express.Router();
 
@@ -264,6 +264,56 @@ adminRouter.post(
         await twilioSendAudioMessage(
           user?.personalInfo?.phone ?? '',
           `Your Temporary Code Is ${passwordResetCode}`
+        );
+
+        const { personalInfo, ...adminData } = user;
+
+        const updateUser = {
+          ...adminData,
+          password_reset_code: passwordResetCode,
+          password_reset_request_timestamp: new Date(),
+        } as AdminEntityObject;
+
+        const updatedUser = await updateAdminData(user.id, updateUser);
+
+        if (!updatedUser) {
+          message = 'Error occurred while sending passcode';
+          success = false;
+        }
+      } else {
+        message = 'No User is registered with the provided Email or Username';
+        success = false;
+      }
+
+      JsonResponse(res, message, success, null, 200);
+    } catch (error) {
+      let message = 'Something Went Wrong';
+      if (error instanceof Error) message = error.message;
+
+      JsonResponse(res, message, false, null, 403);
+    }
+  }
+);
+
+// Verify Admin Email, Username data, and send code to user WhatsApp
+adminRouter.post(
+  `/admin/password/reset/user_verification/whatsApp`,
+  async (req, res) => {
+    let message = 'Passcode is send to the admin registered phone number',
+      success = true;
+
+    const { email } = req.body;
+
+    try {
+      const user = await getAdminAndProfileDataByEmailOrUsername(
+        email as string
+      );
+
+      if (user) {
+        const passwordResetCode = generateCode();
+        await twilioSendWhatsAppMessage(
+          user?.personalInfo?.phone ?? '',
+          `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`
         );
 
         const { personalInfo, ...adminData } = user;
