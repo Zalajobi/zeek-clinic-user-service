@@ -1,6 +1,3 @@
-import prisma from '../lib/prisma';
-import { JWTDataProps } from '../types/jwt';
-import { verifyJSONToken } from '../helpers/utils';
 import { adminModelProps } from '../types';
 import { adminRepo } from '../typeorm/repositories/adminRepository';
 import {
@@ -8,22 +5,7 @@ import {
   getPersonalInfoByPhone,
 } from './personalInfoStore';
 import { Admin } from '../typeorm/entity/admin';
-import { AdminEntityObject } from '../typeorm/objectsTypes/admin';
-
-export const verifyAdmin = async (token: string) => {
-  const { id } = await (<JWTDataProps>(<unknown>verifyJSONToken(token)));
-
-  return await prisma.admin.findFirst({
-    where: {
-      id,
-    },
-    select: {
-      id: true,
-      email: true,
-      role: true,
-    },
-  });
-};
+import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
 
 export const createNewAdmin = async (data: adminModelProps) => {
   const adminRepository = adminRepo();
@@ -126,6 +108,14 @@ export const getAdminBaseDataAndProfileDataByAdminId = async (id: string) => {
     relations: {
       personalInfo: true,
     },
+  });
+};
+
+export const getOneAdminDataById = async (id: string) => {
+  const adminRepository = adminRepo();
+
+  return <AdminEntityObject>await adminRepository.findOneBy({
+    id,
   });
 };
 

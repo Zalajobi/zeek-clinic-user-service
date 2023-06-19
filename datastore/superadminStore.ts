@@ -6,6 +6,7 @@ import { SuperadminCreateAdmin } from '../types/superadminTypes';
 import { superAdminRepo } from '../typeorm/repositories/superAdminRepository';
 import { AppDataSource } from '../data-source';
 import { SuperAdmin } from '../typeorm/entity/superAdmin';
+import { SuperAdminEntityObject } from '../typeorm/objectsTypes/superadminObjectTypes';
 
 export const createSuperAdmin = async (data: CreateUserProps) => {
   const isUnique = await prisma.super_admin.findFirst({
@@ -39,7 +40,6 @@ export const createSuperAdmin = async (data: CreateUserProps) => {
 };
 
 export const getSuperadminLoginData = async (value: string) => {
-  const superAdminRepository = superAdminRepo();
   const superAdminRepository = superAdminRepo();
 
   return await superAdminRepository.findOne({
@@ -81,18 +81,11 @@ export const getSuperadminBaseData = async (id: string) => {
   });
 };
 
-export const verifySuperadminUser = async (token: string) => {
-  const { id } = await (<JWTDataProps>(<unknown>verifyJSONToken(token)));
+export const getSuperadminDataById = async (id: string) => {
+  const superAdminRepository = superAdminRepo();
 
-  return await prisma.super_admin.findFirst({
-    where: {
-      id,
-    },
-    select: {
-      id: true,
-      email: true,
-      role: true,
-    },
+  return <SuperAdminEntityObject>await superAdminRepository.findOneBy({
+    id,
   });
 };
 

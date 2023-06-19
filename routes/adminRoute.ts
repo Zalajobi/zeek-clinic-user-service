@@ -25,7 +25,7 @@ import {
   twilioSendSMSMessage,
   twilioSendWhatsAppMessage,
 } from '../messaging/twilio';
-import { AdminEntityObject } from '../typeorm/objectsTypes/admin';
+import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
 
 const adminRouter = express.Router();
 
