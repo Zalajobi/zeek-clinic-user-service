@@ -18,13 +18,11 @@ import {
   updateAdminData,
   updateAdminPasswordByAdminId,
 } from '../datastore/adminStore';
-import { sendResetPasswordEmail } from '../messaging/email';
-import { JWTDataProps } from '../types/jwt';
 import {
-  twilioSendAudioMessage,
-  twilioSendSMSMessage,
-  twilioSendWhatsAppMessage,
-} from '../messaging/twilio';
+  sendResetPasswordEmail,
+  sendSignupCompleteProfileEmail,
+} from '../messaging/email';
+import { JWTDataProps } from '../types/jwt';
 import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
 
 const adminRouter = express.Router();
@@ -211,10 +209,10 @@ adminRouter.post(
 
       if (user) {
         const passwordResetCode = generateCode();
-        await twilioSendSMSMessage(
-          user?.personalInfo?.phone ?? '',
-          `Your Temporary Code Is ${passwordResetCode}`
-        );
+        // await twilioSendSMSMessage(
+        //   user?.personalInfo?.phone ?? '',
+        //   `Your Temporary Code Is ${passwordResetCode}`
+        // );
 
         const { personalInfo, ...adminData } = user;
 
@@ -261,10 +259,10 @@ adminRouter.post(
 
       if (user) {
         const passwordResetCode = generateCode();
-        await twilioSendAudioMessage(
-          user?.personalInfo?.phone ?? '',
-          `Your Temporary Code Is ${passwordResetCode}`
-        );
+        // await twilioSendAudioMessage(
+        //   user?.personalInfo?.phone ?? '',
+        //   `Your Temporary Code Is ${passwordResetCode}`
+        // );
 
         const { personalInfo, ...adminData } = user;
 
@@ -311,10 +309,10 @@ adminRouter.post(
 
       if (user) {
         const passwordResetCode = generateCode();
-        await twilioSendWhatsAppMessage(
-          user?.personalInfo?.phone ?? '',
-          `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`
-        );
+        // await twilioSendWhatsAppMessage(
+        //   user?.personalInfo?.phone ?? '',
+        //   `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`
+        // );
 
         const { personalInfo, ...adminData } = user;
 
