@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { PatientStatus } from './enums';
 import { Site } from './site';
@@ -13,6 +14,7 @@ import { PersonalInformation } from './personaInfo';
 import { EmergencyContacts } from './emergencyContacts';
 import { CreatePatientsDataProps } from '../objectsTypes/patientObjectTypes';
 import { Provider } from './providers';
+import { Visits } from './visits';
 
 @Entity()
 export class Patients {
@@ -30,6 +32,7 @@ export class Patients {
     this.employer = data?.employer as string;
     this.employer_name = data?.employer_name as string;
     this.employer_phone = data?.employer_phone as string;
+    this.careGiverId = data?.careGiverId as string;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -104,6 +107,12 @@ export class Patients {
   @Column()
   employer_phone: string;
 
+  @CreateDateColumn()
+  created_at: Date;
+
+  @CreateDateColumn()
+  updated_at: Date;
+
   // Relations
   @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient)
   @JoinColumn()
@@ -111,6 +120,9 @@ export class Patients {
 
   @OneToMany(() => EmergencyContacts, (emergency) => emergency.patient)
   emergencyContacts: EmergencyContacts[];
+
+  @OneToMany(() => Visits, (visits) => visits.patient)
+  visits: Visits[];
 
   @ManyToOne((type) => Site, (site) => site.patients)
   site: Site;
