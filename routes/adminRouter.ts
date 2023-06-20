@@ -24,7 +24,7 @@ import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
 
 const adminRouter = express.Router();
 
-adminRouter.post('/admin/create', async (req, res) => {
+adminRouter.post('/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -47,7 +47,7 @@ adminRouter.post('/admin/create', async (req, res) => {
   }
 });
 
-adminRouter.post(`/admin/login`, async (req, res) => {
+adminRouter.post(`/login`, async (req, res) => {
   let responseMessage = 'Incorrect Credentials',
     jwtSignData = null,
     success = false;
@@ -94,7 +94,7 @@ adminRouter.post(`/admin/login`, async (req, res) => {
 });
 
 // Send  Email With Temporary Token For Password Reset
-adminRouter.post(`/admin/password/request-password/reset`, async (req, res) => {
+adminRouter.post(`/password/request-password/reset`, async (req, res) => {
   let responseMessage = 'User with email or username not found',
     success = false;
   try {
@@ -136,7 +136,7 @@ adminRouter.post(`/admin/password/request-password/reset`, async (req, res) => {
 
 // Verify Token with JWT and update Password
 adminRouter.get(
-  '/admin/password/request-password/jwt_token/verify',
+  '/password/request-password/jwt_token/verify',
   async (req, res) => {
     let message = 'Token has expired',
       success = false;
@@ -158,7 +158,7 @@ adminRouter.get(
 );
 
 // Change Password When via password reset token
-adminRouter.put(`/admin/password/change_password`, async (req, res) => {
+adminRouter.put(`/password/change_password`, async (req, res) => {
   const { authorization } = req.headers,
     { old_password, new_password } = req.body;
   let message = 'Error Updating Password';
@@ -191,58 +191,53 @@ adminRouter.put(`/admin/password/change_password`, async (req, res) => {
 });
 
 // Verify Admin Email, Username data, and send SMS to user number
-adminRouter.post(
-  `/admin/password/reset/user_verification/sms`,
-  async (req, res) => {
-    let message = 'Passcode is send to the admin registered phone number',
-      success = true;
+adminRouter.post(`/password/reset/user_verification/sms`, async (req, res) => {
+  let message = 'Passcode is send to the admin registered phone number',
+    success = true;
 
-    const { email } = req.body;
+  const { email } = req.body;
 
-    try {
-      const user = await getAdminAndProfileDataByEmailOrUsername(
-        email as string
-      );
+  try {
+    const user = await getAdminAndProfileDataByEmailOrUsername(email as string);
 
-      if (user) {
-        const passwordResetCode = generateCode();
-        // await twilioSendSMSMessage(
-        //   user?.personalInfo?.phone ?? '',
-        //   `Your Temporary Code Is ${passwordResetCode}`
-        // );
+    if (user) {
+      const passwordResetCode = generateCode();
+      // await twilioSendSMSMessage(
+      //   user?.personalInfo?.phone ?? '',
+      //   `Your Temporary Code Is ${passwordResetCode}`
+      // );
 
-        const { personalInfo, ...adminData } = user;
+      const { personalInfo, ...adminData } = user;
 
-        const updateUser = {
-          ...adminData,
-          password_reset_code: passwordResetCode,
-          password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+      const updateUser = {
+        ...adminData,
+        password_reset_code: passwordResetCode,
+        password_reset_request_timestamp: new Date(),
+      } as AdminEntityObject;
 
-        const updatedUser = await updateAdminData(user.id, updateUser);
+      const updatedUser = await updateAdminData(user.id, updateUser);
 
-        if (!updatedUser) {
-          message = 'Error occurred while sending passcode';
-          success = false;
-        }
-      } else {
-        message = 'No User is registered with the provided Email or Username';
+      if (!updatedUser) {
+        message = 'Error occurred while sending passcode';
         success = false;
       }
-
-      JsonResponse(res, message, success, null, 200);
-    } catch (error) {
-      let message = 'Something Went Wrong';
-      if (error instanceof Error) message = error.message;
-
-      JsonResponse(res, message, false, null, 403);
+    } else {
+      message = 'No User is registered with the provided Email or Username';
+      success = false;
     }
+
+    JsonResponse(res, message, success, null, 200);
+  } catch (error) {
+    let message = 'Something Went Wrong';
+    if (error instanceof Error) message = error.message;
+
+    JsonResponse(res, message, false, null, 403);
   }
-);
+});
 
 // Verify Admin Email, Username data, and Call user number
 adminRouter.post(
-  `/admin/password/reset/user_verification/direct-call`,
+  `/password/reset/user_verification/direct-call`,
   async (req, res) => {
     let message = 'Passcode is send to the admin registered phone number',
       success = true;
@@ -292,7 +287,7 @@ adminRouter.post(
 
 // Verify Admin Email, Username data, and send code to user WhatsApp
 adminRouter.post(
-  `/admin/password/reset/user_verification/whatsApp`,
+  `/password/reset/user_verification/whatsApp`,
   async (req, res) => {
     let message = 'Passcode is send to the admin registered phone number',
       success = true;

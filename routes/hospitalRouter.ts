@@ -11,7 +11,7 @@ import { verifyUserPermission } from '../lib/auth';
 
 const hospitalRouter = express.Router();
 
-hospitalRouter.post('/hospital/create', async (req, res) => {
+hospitalRouter.post('/create', async (req, res) => {
   let message = 'Not Authorised';
 
   try {
@@ -42,7 +42,7 @@ hospitalRouter.post('/hospital/create', async (req, res) => {
   }
 });
 
-hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
+hospitalRouter.get('/pagination/data', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
   const { page, per_page, from_date, to_date, search, country, status } =
@@ -74,39 +74,36 @@ hospitalRouter.get('/super-admin/hospitals', async (req, res) => {
   }
 });
 
-hospitalRouter.get(
-  '/super-admin/hospitals/countries/distinct',
-  async (req, res) => {
-    let message = 'Not Authorised',
-      success = false;
+hospitalRouter.get('/countries/distinct', async (req, res) => {
+  let message = 'Not Authorised',
+    success = false;
 
-    try {
-      const verifiedUser = await verifyUserPermission(
-        req?.headers?.token as string,
-        ['SUPER_ADMIN']
+  try {
+    const verifiedUser = await verifyUserPermission(
+      req?.headers?.token as string,
+      ['SUPER_ADMIN']
+    );
+
+    if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
+
+    const distinctHospitals = await selectAllAvailableCountries();
+
+    if (!distinctHospitals)
+      return JsonResponse(res, 'Something went wrong', success, null, 401);
+    else
+      return JsonResponse(
+        res,
+        'Get Distinct Success',
+        true,
+        distinctHospitals,
+        200
       );
+  } catch (error) {
+    if (error instanceof Error) message = error.message;
 
-      if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
-
-      const distinctHospitals = await selectAllAvailableCountries();
-
-      if (!distinctHospitals)
-        return JsonResponse(res, 'Something went wrong', success, null, 401);
-      else
-        return JsonResponse(
-          res,
-          'Get Distinct Success',
-          true,
-          distinctHospitals,
-          200
-        );
-    } catch (error) {
-      if (error instanceof Error) message = error.message;
-
-      return JsonResponse(res, message, success, null, 401);
-    }
+    return JsonResponse(res, message, success, null, 401);
   }
-);
+});
 
 hospitalRouter.get('/hospital/details', async (req, res) => {
   let message = 'Not Authorised',
