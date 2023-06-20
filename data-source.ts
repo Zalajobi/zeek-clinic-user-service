@@ -10,6 +10,7 @@ import { Roles } from './typeorm/entity/roles';
 import { Departments } from './typeorm/entity/departments';
 import { Admin } from './typeorm/entity/admin';
 import { Units } from './typeorm/entity/units';
+import { Servicearea } from './typeorm/entity/servicearea';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -32,6 +33,7 @@ export const AppDataSource = new DataSource({
     Departments,
     Admin,
     Units,
+    Servicearea,
   ],
   migrations: [],
   subscribers: [],

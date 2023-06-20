@@ -12,6 +12,8 @@ import { Roles } from './roles';
 import { Departments } from './departments';
 import { PersonalInformation } from './personaInfo';
 import { Units } from './units';
+import { ProviderStatus } from './enums';
+import { Servicearea } from './servicearea';
 
 @Entity()
 export class Provider {
@@ -37,6 +39,16 @@ export class Provider {
     nullable: false,
   })
   departmentId: string;
+
+  @Column({
+    nullable: false,
+  })
+  serviceareaId: string;
+
+  @Column({
+    nullable: false,
+  })
+  unitId: string;
 
   @Column({
     unique: true,
@@ -65,6 +77,26 @@ export class Provider {
   })
   is_consultant: boolean;
 
+  @Column({
+    default: false,
+    nullable: false,
+  })
+  is_specialist: boolean;
+
+  @Column({
+    default: true,
+    nullable: false,
+  })
+  appointments: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: ProviderStatus,
+    default: ProviderStatus.PENDING,
+    nullable: false,
+  })
+  status: ProviderStatus;
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -88,13 +120,6 @@ export class Provider {
   @ManyToOne((type) => Units, (unit) => unit.providers)
   unit: Units;
 
-  /*
-   To Include
-   type
-   department
-   unit
-   appointments
-   role
-
-   */
+  @ManyToOne((type) => Servicearea, (unit) => unit.providers)
+  servicearea: Servicearea;
 }

@@ -12,6 +12,7 @@ import roleRouter from './routes/roleRouter';
 import departmentRouter from './routes/departmentRouter';
 import adminRouter from './routes/adminRouter';
 import unitRouter from './routes/unitRouter';
+import serviceAreaRouter from './routes/serviceAreaRouter';
 require('dotenv').config();
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(`${process.env.ACCOUNT_BASE_URL}/role`, roleRouter);
 app.use(`${process.env.ACCOUNT_BASE_URL}/department`, departmentRouter);
 app.use(`${process.env.ACCOUNT_BASE_URL}/admin`, adminRouter);
 app.use(`${process.env.ACCOUNT_BASE_URL}/unit`, unitRouter);
+app.use(`${process.env.ACCOUNT_BASE_URL}/service-area`, serviceAreaRouter);
 
 AppDataSource.initialize()
   .then(async () => {
