@@ -6,13 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { departmentModelProps } from '../../types';
 import { Provider } from './providers';
 import { Site } from './site';
+import { createUnitDataProps } from '../objectsTypes/unitObjectTypes';
 
 @Entity()
 export class Units {
-  constructor(data: departmentModelProps) {
+  constructor(data: createUnitDataProps) {
     this.name = data?.name as string;
     this.siteId = data?.siteId as string;
     this.description = data?.description as string;
