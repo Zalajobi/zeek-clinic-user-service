@@ -40,3 +40,20 @@ export enum ServiceAreaType {
   EMERGENCY = 'EMERGENCY',
   OTHERS = 'OTHERS',
 }
+
+export enum PatientStatus {
+  ACTIVE = 'ACTIVE',
+  PENDING = 'PENDING',
+  DISCHARGED = 'DISCHARGED',
+  DECEASED = 'DECEASED',
+  INPATIENT = 'INPATIENT',
+  OUTPATIENT = 'OUTPATIENT',
+}
+
+export enum MartialStatus {
+  SINGLE = 'SINGLE',
+  MARRIED = 'MARRIED',
+  ENGAGED = 'ENGAGED',
+  DIVORCED = 'DIVORCED',
+  OTHERS = 'OTHERS',
+}

@@ -16,6 +16,7 @@ import { Departments } from './departments';
 import { Admin } from './admin';
 import { Units } from './units';
 import { Servicearea } from './servicearea';
+import { Patients } from './patient';
 
 @Entity()
 export class Site {
@@ -260,6 +261,11 @@ export class Site {
     onDelete: 'CASCADE',
   })
   providers: Provider[];
+
+  @OneToMany((type) => Patients, (patients) => patients.site, {
+    onDelete: 'CASCADE',
+  })
+  patients: Patients[];
 
   @OneToMany((type) => Admin, (admin) => admin.site, { onDelete: 'CASCADE' })
   admins: Admin[];
