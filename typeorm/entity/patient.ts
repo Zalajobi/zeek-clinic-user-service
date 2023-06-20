@@ -2,20 +2,35 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
   OneToMany,
   ManyToOne,
   OneToOne,
   JoinColumn,
 } from 'typeorm';
 import { PatientStatus } from './enums';
-import { truncate } from 'fs';
 import { Site } from './site';
 import { PersonalInformation } from './personaInfo';
 import { EmergencyContacts } from './emergencyContacts';
+import { CreatePatientsDataProps } from '../objectsTypes/patientObjectTypes';
 
 @Entity()
 export class Patients {
+  constructor(data: CreatePatientsDataProps) {
+    this.siteId = data?.siteId as string;
+    this.personalInfoId = data?.personalInfoId as string;
+    this.departmentId = data?.departmentId as string;
+    this.serviceareaId = data?.serviceareaId as string;
+    this.unitId = data?.unitId as string;
+    this.email = data?.email as string;
+    this.password = data?.password as string;
+    this.status = data?.status as PatientStatus;
+    this.occupation = data?.occupation as string;
+    this.department = data?.department as string;
+    this.employer = data?.employer as string;
+    this.employer_name = data?.employer_name as string;
+    this.employer_phone = data?.employer_phone as string;
+  }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -27,7 +42,7 @@ export class Patients {
   @Column({
     nullable: false,
   })
-  personalInfoId?: string;
+  personalInfoId: string;
 
   @Column({
     nullable: false,
@@ -73,6 +88,15 @@ export class Patients {
     nullable: true,
   })
   department?: string;
+
+  @Column()
+  employer: string;
+
+  @Column()
+  employer_name: string;
+
+  @Column()
+  employer_phone: string;
 
   // Relations
   @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient)

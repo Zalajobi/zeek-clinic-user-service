@@ -2,16 +2,26 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Patients } from './patient';
+import { CreateEmergencyContactsDataProps } from '../objectsTypes/emergencyContactsObjectTypes';
 
 @Entity({
   name: 'emergency_contacts',
 })
 export class EmergencyContacts {
+  constructor(data: CreateEmergencyContactsDataProps) {
+    this.patientId = data?.patientId as string;
+    this.name = data?.name as string;
+    this.phone = data?.phone as string;
+    this.address = data?.address as string;
+    this.relationship = data?.relationship as string;
+    this.gender = data?.gender as string;
+    this.occupation = data?.occupation as string;
+  }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
