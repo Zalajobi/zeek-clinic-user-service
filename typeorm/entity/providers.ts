@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,6 +15,7 @@ import { PersonalInformation } from './personaInfo';
 import { Units } from './units';
 import { ProviderStatus } from './enums';
 import { Servicearea } from './servicearea';
+import { Patients } from './patient';
 
 @Entity()
 export class Provider {
@@ -107,6 +109,9 @@ export class Provider {
   @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.provider)
   @JoinColumn()
   personalInfo?: PersonalInformation;
+
+  @OneToMany((type) => Patients, (patients) => patients.careGiver)
+  patients: Patients[];
 
   @ManyToOne((type) => Site, (site) => site.roles)
   site: Site;

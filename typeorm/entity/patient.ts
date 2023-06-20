@@ -12,6 +12,7 @@ import { Site } from './site';
 import { PersonalInformation } from './personaInfo';
 import { EmergencyContacts } from './emergencyContacts';
 import { CreatePatientsDataProps } from '../objectsTypes/patientObjectTypes';
+import { Provider } from './providers';
 
 @Entity()
 export class Patients {
@@ -58,6 +59,11 @@ export class Patients {
     nullable: false,
   })
   unitId: string;
+
+  @Column({
+    nullable: true,
+  })
+  careGiverId: string;
 
   @Column({
     unique: true,
@@ -108,6 +114,9 @@ export class Patients {
 
   @ManyToOne((type) => Site, (site) => site.patients)
   site: Site;
+
+  @ManyToOne((type) => Provider, (provider) => provider.patients)
+  careGiver: Provider;
 
   /// Add, complains, medications, allergies, diagnosis and visit
 }
