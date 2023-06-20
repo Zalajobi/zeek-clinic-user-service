@@ -1,80 +1,92 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm"
-import {Site} from "./site";
-import {Roles} from "./roles";
-import {Departments} from "./departments";
-import {PersonalInformation} from "./personaInfo";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Site } from './site';
+import { Roles } from './roles';
+import { Departments } from './departments';
+import { PersonalInformation } from './personaInfo';
+import { Units } from './units';
 
 @Entity()
 export class Provider {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  siteId: string
+  siteId: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  primaryRoleId: string
+  primaryRoleId: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
-  personalInfoId?: string
+  personalInfoId?: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  departmentId: string
-
-  @Column({
-    unique: true,
-    nullable: false
-    })
-  email: string
-
-  @Column({
-    nullable: false
-  })
-  password: string
+  departmentId: string;
 
   @Column({
     unique: true,
-    nullable: false
+    nullable: false,
   })
-  username: string
+  email: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  staff_id: string
+  password: string;
 
   @Column({
-    default: false
+    unique: true,
+    nullable: false,
   })
-  is_consultant: boolean
+  username: string;
+
+  @Column({
+    nullable: false,
+  })
+  staff_id: string;
+
+  @Column({
+    default: false,
+  })
+  is_consultant: boolean;
 
   @CreateDateColumn()
-   created_at: Date
+  created_at: Date;
 
   @CreateDateColumn()
-  updated_at: Date
+  updated_at: Date;
 
   // Relations
   @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.provider)
   @JoinColumn()
-  personalInfo?: PersonalInformation
+  personalInfo?: PersonalInformation;
 
-  @ManyToOne(type => Site, site => site.roles)
+  @ManyToOne((type) => Site, (site) => site.roles)
   site: Site;
 
-  @ManyToOne(type => Roles, roles => roles.providers)
-  primary_role: Roles
+  @ManyToOne((type) => Roles, (roles) => roles.providers)
+  primary_role: Roles;
 
-  @ManyToOne(type => Departments, department => department.providers)
-  department: Departments
+  @ManyToOne((type) => Departments, (department) => department.providers)
+  department: Departments;
+
+  @ManyToOne((type) => Units, (unit) => unit.providers)
+  unit: Units;
 
   /*
    To Include

@@ -18,10 +18,7 @@ import {
   updateAdminData,
   updateAdminPasswordByAdminId,
 } from '../datastore/adminStore';
-import {
-  sendResetPasswordEmail,
-  sendSignupCompleteProfileEmail,
-} from '../messaging/email';
+import { sendResetPasswordEmail } from '../messaging/email';
 import { JWTDataProps } from '../types/jwt';
 import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
 
