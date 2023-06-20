@@ -8,7 +8,6 @@ export const generatePasswordHash = (password:string) => {
 
 export const validatePassword = (reqPassword:string, comparePassword:string) => {
   const generatedPasswordHash = crypto.pbkdf2Sync(reqPassword, process.env.PASSWORD_HASH_SECRET!, 1000, 64, 'sha512').toString('hex')
-
   return generatedPasswordHash === comparePassword ? true : false;
 }
 
@@ -16,6 +15,7 @@ export const generateJSONTokenCredentials = (data:JWTDataProps, exp=Math.floor(D
   return jwt.sign({
     data,
     exp, // Expire in 6hrs by default
+    // expiresIn: '356 days' //Expire in 365 Days - Meant to test
   }, process.env.JWT_SECRET_KEY as string)
 }
 
