@@ -2,11 +2,11 @@ import {JWTDataProps} from "../types/jwt";
 import {verifyJSONToken} from "../helpers/utils";
 
 export const verifyUserPermission = async (token:string, roleRequired:string[]) => {
-  const { role } = await <JWTDataProps><unknown>verifyJSONToken(token)
+  const tokenUser = await <JWTDataProps><unknown>verifyJSONToken(token)
 
   for (const item of roleRequired) {
-    if (item === role)
-      return true
+    if (item === tokenUser?.role)
+      return tokenUser
   }
-  return false
+  return null
 }

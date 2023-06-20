@@ -1,195 +1,166 @@
-import prisma from "../lib/prisma";
-import {CreateHospitalProps} from "../types/siteAndHospitalTypes";
+import {hospitalModelProps} from "../types";
+import {hospitalRepo} from "../typeorm/repositories/hospitalRepository";
+import {HospitalStatus, SiteStatus} from "../typeorm/entity/enums";
+import {Hospital} from "../typeorm/entity/hospital";
+import {siteRepo} from "../typeorm/repositories/siteRepository";
 
-interface SuperAdminGetHospitalsProps {
-  page: number
-  per_page?: number | null
-}
+export const createNewHospital = async (data:hospitalModelProps) => {
+  const hospitalRepository = hospitalRepo()
 
-export const createNewHospital = async (data:CreateHospitalProps) => {
   let isUnique;
 
-  isUnique = await prisma.hospital.findFirst({
-    where: {
-      OR: [
-        {
-          email: data.email
-        },
-
-        {
-          phone: data.phone
-        }
-      ]
-    }
-  })
+  isUnique = await hospitalRepository
+    .createQueryBuilder('hospital')
+    .where("hospital.email = :email OR hospital.phone = :phone", {
+      email: data.email,
+      phone: data.phone
+    })
+    .getOne()
 
   if (isUnique)
     return false
 
-
-  const hospital = await prisma.hospital.create({
-    data
-  })
+  const hospital = await hospitalRepository.save(new Hospital(data as hospitalModelProps));
 
   if (hospital) {
     return true
   }
 }
 
-export const superAdminGetHospitals = async (page: number, perPage: number, query: string, from: string, to: string, country: string, status: string) => {
-  let where:any = {}, hospitalQuery = null
+export const superAdminGetHospitals = async (
+  page: number,
+  perPage: number,
+  query: string,
+  from: string,
+  to: string,
+  country: string,
+  status: string
+) => {
+  let skip = Number(perPage * page), take = Number(perPage), hospital = null
+  const fromDate = from ? new Date(from) : new Date('1900-01-01'), toDate = to ? new Date(to) : new Date(), hospitalRepository = hospitalRepo();
+
+  const hospitalQuery = hospitalRepository
+    .createQueryBuilder('hospital')
+    .andWhere("hospital.created_at > :fromDate", {
+      fromDate
+    })
+    .andWhere("hospital.created_at < :toDate", {
+      toDate
+    })
+
 
   if (query) {
-    where["OR"] = [
-      {
-        name: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
-
-      {
-        email: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
-
-      {
-        phone: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
-    ]
-  }
-
-  if (status) {
-    where.status = status
+      hospitalQuery.where("LOWER(hospital.name) LIKE :name OR LOWER(hospital.email) LIKE :email OR LOWER(hospital.phone) LIKE :phone", {
+        name: `%${query.toLowerCase()}%`,
+        email: `%${query.toLowerCase()}%`,
+        phone: `%${query.toLowerCase()}%`,
+      })
   }
 
   if (country) {
-    where.country = {
-      contains: country,
-      mode: 'insensitive'
-    }
-  }
-
-  if (from || to) {
-    where['created_at'] = {
-      gte: from ?? new Date('1999-01-01'),
-      lte: to ?? new Date()
-    }
-  }
-
-  if (Number(perPage) === 0) {
-    hospitalQuery = prisma.hospital.findMany({
-      where,
-      orderBy: {
-        created_at: 'desc',
-      }
-    })
-  } else {
-    hospitalQuery = prisma.hospital.findMany({
-      where,
-      take: Number(perPage),
-      skip: Number(perPage * page),
-      orderBy: {
-        created_at: 'desc',
-      }
+    hospitalQuery.andWhere("LOWER(hospital.country) LIKE :country", {
+      country: `%${country.toLowerCase()}%`
     })
   }
 
-  const [hospitals, count] = await prisma.$transaction([
-    hospitalQuery,
+  if (status) {
+    hospitalQuery.andWhere("hospital.status = :status", {
+      status: status as HospitalStatus
+    })
+  }
 
-    prisma.hospital.count({
-      where
-    }),
-  ])
+  if(Number(perPage) === 0) {
+    hospital = await hospitalQuery
+      .orderBy({
+      created_at: 'DESC'
+    })
+      .getManyAndCount();
+  } else  {
+    hospital = await hospitalQuery
+      .orderBy({
+      created_at: 'DESC'
+    })
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
+  }
 
   return {
-    hospitals,
-    count,
+    hospitals: hospital[0],
+    count: hospital[1],
   }
 }
 
 export const selectAllAvailableCountries = async () => {
-  return await prisma.hospital.findMany({
-    distinct: ['country'],
-    select: {
-      country: true
-    },
-    orderBy : {
-      country: 'asc'
-    }
-  })
+  const hospitalRepository = hospitalRepo()
+
+  return await hospitalRepository
+    .createQueryBuilder('hospital')
+    .select('DISTINCT ("country")')
+    .orderBy({
+      country: 'ASC'
+    })
+    .getRawMany()
 }
 
 export const getHospitalDetails = async (hospitalId: string) => {
-  const [hospital, sites, activeSites, closedSites, pendingSites, deactivatedSites, totalSites] = await prisma.$transaction([
-    prisma.hospital.findUnique({
+  const hospitalRepository = hospitalRepo()
+  const siteRepository = siteRepo()
+
+  const response = await Promise.all([
+    hospitalRepository.findOne({
       where: {
         id: hospitalId
       }
     }),
 
-    prisma.site.findMany({
+    siteRepository.count({
       where: {
-        hospital_id: hospitalId
-      },
-      take: 10,
-      orderBy: {
-        created_at: 'desc'
+        hospitalId: hospitalId,
+        status: SiteStatus.ACTIVE
       }
     }),
 
-    prisma.site.count({
+
+    siteRepository.count({
       where: {
-        hospital_id: hospitalId,
-        status: 'ACTIVE'
+        hospitalId: hospitalId,
+        status: SiteStatus.CLOSED
       }
     }),
 
-    prisma.site.count({
+    siteRepository.count({
       where: {
-        hospital_id: hospitalId,
-        status: 'PENDING'
+        hospitalId: hospitalId,
+        status: SiteStatus.PENDING
       }
     }),
 
-    prisma.site.count({
+    siteRepository.count({
       where: {
-        hospital_id: hospitalId,
-        status: 'DEACTIVATE'
+        hospitalId: hospitalId,
+        status: SiteStatus.DEACTIVATE
       }
     }),
 
-    prisma.site.count({
+    siteRepository.findAndCount({
       where: {
-        hospital_id: hospitalId,
-        status: 'CLOSED'
-      }
-    }),
-
-    prisma.site.count({
-      where: {
-        hospital_id: hospitalId,
+        hospitalId: hospitalId,
       }
     }),
   ])
 
   return {
     hospital: {
-      ...hospital,
-      activeSites,
-      closedSites,
-      pendingSites,
-      deactivatedSites
+      ...response[0],
+      activeSites: response[1],
+      closedSites: response[2],
+      pendingSites: response[3],
+      deactivatedSites: response[4]
     },
-    sites,
+    sites: response[5][0],
     tableData: {
-      sites: totalSites
+      sites: response[5][1]
     }
   }
 }

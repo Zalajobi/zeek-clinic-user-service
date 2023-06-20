@@ -1,14 +1,11 @@
 import express = require("express");
 import {JsonResponse} from "../util/responses";
-import {verifySuperadminUser} from "../datastore/superadminStore";
-import {verifyAdmin} from "../datastore/adminStore";
 import {
   adminCreateSite,
   getDistinctOrganizationSiteCountriesAndStates,
-  getSiteInformation,
   siteTableDatastore
 } from "../datastore/siteStore";
-import {createSiteProps} from "../types/siteAndHospitalTypes";
+import {siteModelProps} from "../types";
 import {verifyUserPermission} from "../lib/auth";
 
 
@@ -18,22 +15,15 @@ siteRouter.post('/site/create', async (req, res) => {
   let message = 'Not Authorised', success = false
 
   try {
-    const response = await Promise.all([
-      verifyAdmin(req?.headers?.token as string),
-      verifySuperadminUser(req?.headers?.token as string)
-    ])
-
     const verifiedUser = await verifyUserPermission(req?.headers?.token as string, ['SUPER_ADMIN', 'HOSPITAL_ADMIN'])
 
     if (!verifiedUser)
       return JsonResponse(res, message, success, null, 401)
 
+    const site = await adminCreateSite(req.body as siteModelProps)
 
-    const site = await adminCreateSite(req.body as createSiteProps)
-    if (site)
-      return JsonResponse(res, 'New Organization Added', true, null, 200)
+    return JsonResponse(res, site?.message as string, site?.success as boolean, null, 200)
 
-    return JsonResponse(res, 'Something went wrong', false, null, 400)
   } catch(error) {
     let message = 'Not Authorized'
     if (error instanceof Error)
@@ -98,8 +88,6 @@ siteRouter.get('/site/organization/table-filter', async (req, res) => {
       state as unknown as string,
       hospital_id as unknown as string,
     )
-
-    // console.log(data)
 
     return JsonResponse(res, 'Success', true, data, 200)
   } catch(error) {

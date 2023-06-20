@@ -1,138 +1,156 @@
-import prisma from "../lib/prisma";
-import {createSiteProps} from "../types/siteAndHospitalTypes";
+import { siteModelProps } from '../types';
+import { siteRepo } from '../typeorm/repositories/siteRepository';
+import { Site } from '../typeorm/entity/site';
+import { hospitalRepo } from '../typeorm/repositories/hospitalRepository';
+import { SiteStatus } from '../typeorm/entity/enums';
 
-export const adminCreateSite = async (data:createSiteProps) => {
-  return await prisma.site.create({
-    data
-  })
-}
+export const adminCreateSite = async (data: siteModelProps) => {
+  const siteRepository = siteRepo();
+  const hospitalRepository = hospitalRepo();
 
+  const isUnique = await siteRepository
+    .createQueryBuilder('site')
+    .where('LOWER(site.email) LIKE :email', {
+      email: data.email.toLowerCase(),
+    })
+    .orWhere('LOWER(site.phone) = :phone', {
+      phone: data.phone.toLowerCase(),
+    })
+    .getOne();
 
-export const getSiteInformation = async (id: string) => {
-  return await prisma.site.findUnique({
-    where : {
-      id: id
+  if (isUnique)
+    return {
+      success: false,
+      message: 'Site with email address or phone number already exists',
+    };
+
+  await siteRepository.save(new Site(data as siteModelProps));
+
+  await hospitalRepository.update(
+    {
+      id: data.hospital_id,
     },
-
-    include: {
-      hospital: true,
-      bank_accounts: true
+    {
+      site_count: data?.totalSites + 1,
     }
-  })
-}
+  );
 
-export const siteTableDatastore = async (page: number, perPage: number, query: string, from: string, to: string, country: string, status: string, state:string, hospitalId:string) => {
-  let where:any = {}, siteQuery = null
+  return {
+    success: true,
+    message: 'New Site Created Successfully',
+  };
+};
 
-  where.hospital_id = hospitalId
+export const siteTableDatastore = async (
+  page: number,
+  perPage: number,
+  query: string,
+  from: string,
+  to: string,
+  country: string,
+  status: string,
+  state: string,
+  hospitalId: string
+) => {
+  const fromDate = from ? new Date(from) : new Date('1900-01-01'),
+    toDate = to ? new Date(to) : new Date(),
+    siteRepository = siteRepo();
+  let sitePagination = null,
+    skip = Number(perPage * page),
+    take = Number(perPage);
 
-  if (query) {
-    where["OR"] = [
-      {
-        name: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
+  const sitePaginationQuery = siteRepository
+    .createQueryBuilder('site')
+    .andWhere('site.created_at > :fromDate', {
+      fromDate,
+    })
+    .andWhere('site.created_at < :toDate', {
+      toDate,
+    });
 
-      {
-        email: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
-
-      {
-        phone: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      },
-    ]
+  if (country) {
+    sitePaginationQuery.andWhere('LOWER(site.country) LIKE :country', {
+      country: `%${country.toLowerCase()}%`,
+    });
   }
 
   if (status) {
-    where.status = status
+    sitePaginationQuery.andWhere('site.status = :status', {
+      status: status as SiteStatus,
+    });
   }
 
   if (state) {
-    where.state = {
-      contains: state,
-      mode: 'insensitive'
-    }
+    sitePaginationQuery.andWhere('LOWER(site.state) LIKE :state', {
+      state: `%${state.toLowerCase()}%`,
+    });
   }
 
-  if (country) {
-    where.country = {
-      contains: country,
-      mode: 'insensitive'
-    }
+  if (query) {
+    sitePaginationQuery.andWhere('LOWER(site.name) LIKE :name', {
+      name: `%${query.toLowerCase()}%`,
+    });
   }
 
-  if (from || to) {
-    where['created_at'] = {
-      gte: from ?? new Date('1999-01-01'),
-      lte: to ?? new Date()
-    }
-  }
-
-  if (Number(perPage) <= 0) {
-    siteQuery = prisma.site.findMany({
-      where,
-      orderBy: {
-        created_at: 'desc',
-      }
-    })
+  if (Number(perPage) === 0) {
+    sitePagination = await sitePaginationQuery
+      .andWhere('site.hospitalId = :hospitalId', {
+        hospitalId,
+      })
+      .orderBy({
+        created_at: 'DESC',
+      })
+      .getManyAndCount();
   } else {
-    siteQuery = prisma.site.findMany({
-      where,
-      take: Number(perPage),
-      skip: perPage * page,
-      orderBy: {
-        created_at: 'desc',
-      }
-    })
+    sitePagination = await sitePaginationQuery
+      .andWhere('site.hospitalId = :hospitalId', {
+        hospitalId,
+      })
+      .orderBy({
+        created_at: 'DESC',
+      })
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
   }
-
-  const [sites, count] = await prisma.$transaction([
-    siteQuery,
-
-    prisma.site.count({
-      where
-    }),
-  ])
 
   return {
-    sites,
-    count,
-  }
-}
+    sites: sitePagination[0],
+    count: sitePagination[1],
+  };
+};
 
-export const getDistinctOrganizationSiteCountriesAndStates = async (hospitalId:string) => {
-  const [countries, states] = await prisma.$transaction([
-    prisma.site.findMany({
-      where: {
-        hospital_id: hospitalId
-      },
-      select: {
-        country: true
-      },
-      distinct: ['country']
-    }),
+export const getDistinctOrganizationSiteCountriesAndStates = async (
+  hospitalId: string
+) => {
+  const siteRepository = siteRepo();
 
-    prisma.site.findMany({
-      where: {
-        hospital_id: hospitalId
-      },
-      select: {
-        state: true
-      },
-      distinct: ['state']
-    })
-  ])
+  const response = await Promise.all([
+    siteRepository
+      .createQueryBuilder('site')
+      .where('site.hospitalId = :hospitalId', {
+        hospitalId,
+      })
+      .select('DISTINCT ("country")')
+      .orderBy({
+        country: 'ASC',
+      })
+      .getRawMany(),
+
+    siteRepository
+      .createQueryBuilder('site')
+      .where('site.hospitalId = :hospitalId', {
+        hospitalId,
+      })
+      .select('DISTINCT ("state")')
+      .orderBy({
+        state: 'ASC',
+      })
+      .getRawMany(),
+  ]);
 
   return {
-    countries,
-    states
-  }
-}
+    countries: response[0],
+    states: response[1],
+  };
+};
