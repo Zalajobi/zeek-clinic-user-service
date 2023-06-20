@@ -233,6 +233,9 @@ export class Site {
   updated_at: Date;
 
   // Relations
+  @OneToMany((type) => Admin, (admin) => admin.site, { onDelete: 'CASCADE' })
+  admins: Admin[];
+
   @ManyToOne((type) => Hospital, (hospital) => hospital.sites)
   hospital: Hospital;
 
@@ -266,7 +269,4 @@ export class Site {
     onDelete: 'CASCADE',
   })
   patients: Patients[];
-
-  @OneToMany((type) => Admin, (admin) => admin.site, { onDelete: 'CASCADE' })
-  admins: Admin[];
 }

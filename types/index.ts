@@ -1,4 +1,4 @@
-import { AdminRoles } from '../typeorm/entity/enums';
+import { AdminRoles, MartialStatus } from '../typeorm/entity/enums';
 
 export type loginProps = {
   email: string;
@@ -92,4 +92,5 @@ export type profileInfoModelProps = {
   religion?: string;
   providerId?: string;
   adminId?: string;
+  marital_status?: MartialStatus;
 };

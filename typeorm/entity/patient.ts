@@ -5,10 +5,14 @@ import {
   CreateDateColumn,
   OneToMany,
   ManyToOne,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { PatientStatus } from './enums';
 import { truncate } from 'fs';
 import { Site } from './site';
+import { PersonalInformation } from './personaInfo';
+import { EmergencyContacts } from './emergencyContacts';
 
 @Entity()
 export class Patients {
@@ -71,6 +75,13 @@ export class Patients {
   department?: string;
 
   // Relations
+  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient)
+  @JoinColumn()
+  personalInfo?: PersonalInformation;
+
+  @OneToMany(() => EmergencyContacts, (emergency) => emergency.patient)
+  emergencyContacts: EmergencyContacts[];
+
   @ManyToOne((type) => Site, (site) => site.patients)
   site: Site;
 

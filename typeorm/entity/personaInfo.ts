@@ -10,6 +10,7 @@ import { Provider } from './providers';
 import { Admin } from './admin';
 import { profileInfoModelProps } from '../../types';
 import { MartialStatus } from './enums';
+import { Patients } from './patient';
 
 @Entity({
   name: 'personal_info',
@@ -33,6 +34,7 @@ export class PersonalInformation {
     this.nationality = data?.nationality as string;
     this.profile_pic = data?.profile_pic as string;
     this.religion = data?.religion as string;
+    this.marital_status = data?.marital_status as MartialStatus;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -127,6 +129,10 @@ export class PersonalInformation {
   @OneToOne(() => Provider, (provider) => provider.personalInfo)
   @JoinColumn()
   provider?: Provider;
+
+  @OneToOne(() => Patients)
+  @JoinColumn()
+  patient?: Patients;
 
   @OneToOne(() => Admin)
   @JoinColumn()

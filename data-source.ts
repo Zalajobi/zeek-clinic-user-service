@@ -12,6 +12,7 @@ import { Admin } from './typeorm/entity/admin';
 import { Units } from './typeorm/entity/units';
 import { Servicearea } from './typeorm/entity/servicearea';
 import { Patients } from './typeorm/entity/patient';
+import { EmergencyContacts } from './typeorm/entity/emergencyContacts';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -35,6 +36,7 @@ export const AppDataSource = new DataSource({
     Units,
     Servicearea,
     Patients,
+    EmergencyContacts,
   ],
   migrations: [
     Hospital,
@@ -49,6 +51,7 @@ export const AppDataSource = new DataSource({
     Units,
     Servicearea,
     Patients,
+    EmergencyContacts,
   ],
   subscribers: [],
 });
