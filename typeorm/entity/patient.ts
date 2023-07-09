@@ -14,7 +14,6 @@ import { PersonalInformation } from './personaInfo';
 import { EmergencyContacts } from './emergencyContacts';
 import { CreatePatientsDataProps } from '../objectsTypes/patientObjectTypes';
 import { Provider } from './providers';
-import { Visits } from './visits';
 
 @Entity()
 export class Patients {
@@ -120,9 +119,6 @@ export class Patients {
 
   @OneToMany(() => EmergencyContacts, (emergency) => emergency.patient)
   emergencyContacts: EmergencyContacts[];
-
-  @OneToMany(() => Visits, (visits) => visits.patient)
-  visits: Visits[];
 
   @ManyToOne((type) => Site, (site) => site.patients)
   site: Site;

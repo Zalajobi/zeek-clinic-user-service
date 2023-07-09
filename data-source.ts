@@ -13,16 +13,14 @@ import { Units } from './typeorm/entity/units';
 import { Servicearea } from './typeorm/entity/servicearea';
 import { Patients } from './typeorm/entity/patient';
 import { EmergencyContacts } from './typeorm/entity/emergencyContacts';
-import { Visits } from './typeorm/entity/visits';
-import { Diagnosis } from './typeorm/entity/diagnosis';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'postgres',
-  database: 'zeek-clinic-user-service',
+  host: process.env.DATABASE_HOST_LOCAL,
+  port: Number(process.env.DATABASE_PORT),
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD_LOCAL,
+  database: process.env.DATABASE_NAME,
   synchronize: true,
   logging: false,
   entities: [
@@ -39,8 +37,6 @@ export const AppDataSource = new DataSource({
     Servicearea,
     Patients,
     EmergencyContacts,
-    Visits,
-    Diagnosis,
   ],
   migrations: [
     Hospital,
@@ -56,8 +52,6 @@ export const AppDataSource = new DataSource({
     Servicearea,
     Patients,
     EmergencyContacts,
-    Visits,
-    Diagnosis,
   ],
   subscribers: [],
 });
