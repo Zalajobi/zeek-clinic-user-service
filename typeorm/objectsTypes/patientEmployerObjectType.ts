@@ -1,5 +1,5 @@
 export interface CreatePatientEmployerProps {
-  occupation: string;
+  occupation?: string;
   department?: string;
   siteId: string;
   company_name: string;

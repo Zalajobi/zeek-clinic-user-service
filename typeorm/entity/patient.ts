@@ -27,7 +27,6 @@ export class Patients {
     this.email = data?.email as string;
     this.password = data?.password as string;
     this.status = data?.status as PatientStatus;
-    this.occupation = data?.occupation as string;
     this.careGiverId = data?.careGiverId as string;
   }
 
@@ -88,11 +87,6 @@ export class Patients {
     nullable: false,
   })
   status: PatientStatus;
-
-  @Column({
-    nullable: true,
-  })
-  occupation?: string;
 
   @CreateDateColumn()
   created_at: Date;
