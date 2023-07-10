@@ -5,7 +5,6 @@ import {
   validatePassword,
 } from '../../helpers/utils';
 import { JsonResponse } from '../../util/responses';
-import superadminRouter from './index';
 
 const superadminPostRequest = Router();
 
