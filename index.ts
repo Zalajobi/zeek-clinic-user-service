@@ -10,19 +10,15 @@ import { generatePasswordHash } from './helpers/utils';
 import { superAdminRepo } from './typeorm/repositories/superAdminRepository';
 import roleRouter from './routes/roleRouter';
 import departmentRouter from './routes/departmentRoute';
-import adminRouter from './routes/adminRoute';
+import adminRouter from './routes/admin';
+import rootRouter from './routes';
 require('dotenv').config();
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(`${process.env.ACCOUNT_BASE_URL}`, superadminRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}`, hospitalRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}`, siteRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}`, roleRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}`, departmentRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}`, adminRouter);
+app.use('/', rootRouter);
 
 AppDataSource.initialize()
   .then(async () => {
