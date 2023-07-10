@@ -16,6 +16,7 @@ import { EmergencyContacts } from './typeorm/entity/emergencyContacts';
 
 // Using environment variables
 import dotenv from 'dotenv';
+import { PatientEmployer } from './typeorm/entity/patientEmployer';
 dotenv.config();
 
 export const AppDataSource = new DataSource({
@@ -41,6 +42,7 @@ export const AppDataSource = new DataSource({
     Servicearea,
     Patients,
     EmergencyContacts,
+    PatientEmployer,
   ],
   migrations: [
     Hospital,
@@ -56,6 +58,7 @@ export const AppDataSource = new DataSource({
     Servicearea,
     Patients,
     EmergencyContacts,
+    PatientEmployer,
   ],
   subscribers: [],
 });

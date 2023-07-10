@@ -1,12 +1,12 @@
-import express = require('express');
-import { JsonResponse } from '../util/responses';
-import { departmentModelProps, roleModelProps } from '../types';
-import { verifyUserPermission } from '../lib/auth';
-import { createNewDepartment } from '../datastore/departmentStore';
+import { Router } from 'express';
+import { departmentModelProps } from '../../types';
+import { verifyUserPermission } from '../../lib/auth';
+import { JsonResponse } from '../../util/responses';
+import { createNewDepartment } from '../../datastore/departmentStore';
 
-const departmentRouter = express.Router();
+const departmentPostRequest = Router();
 
-departmentRouter.post('/create', async (req, res) => {
+departmentPostRequest.post('/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -30,4 +30,4 @@ departmentRouter.post('/create', async (req, res) => {
   }
 });
 
-export default departmentRouter;
+export default departmentPostRequest;
