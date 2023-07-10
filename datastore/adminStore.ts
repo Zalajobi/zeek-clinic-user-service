@@ -54,7 +54,7 @@ export const createNewAdmin = async (data: adminModelProps) => {
   };
 };
 
-export const getAdminPrimaryInformation = async (value: string) => {
+export const getAdminPrimaryLoginInformation = async (value: string) => {
   const adminRepository = adminRepo();
 
   return await adminRepository
@@ -65,7 +65,13 @@ export const getAdminPrimaryInformation = async (value: string) => {
     .orWhere('admin.username = :username', {
       username: value,
     })
-    .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
+    .select([
+      'admin.password',
+      'admin.role',
+      'admin.email',
+      'admin.id',
+      'admin.siteId',
+    ])
     .getOne();
 };
 
@@ -160,5 +166,18 @@ export const getAdminAndProfileDataByEmailOrUsername = async (
       username: value,
     })
     .leftJoinAndSelect('admin.personalInfo', 'profile')
+    .getOne();
+};
+
+export const getAdminHeaderBaseTemplateData = async (id: string) => {
+  const adminRepository = adminRepo();
+
+  return await adminRepository
+    .createQueryBuilder('admin')
+    .where('admin.id = :id', {
+      id,
+    })
+    .leftJoinAndSelect('admin.personalInfo', 'profile')
+    .select(['admin.role', 'profile.first_name', 'profile.last_name'])
     .getOne();
 };

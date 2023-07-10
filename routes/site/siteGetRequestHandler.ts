@@ -5,11 +5,10 @@ import {
   getDistinctOrganizationSiteCountriesAndStates,
   siteTableDatastore,
 } from '../../datastore/siteStore';
-import siteRouter from './index';
 
 const siteGetRequest = Router();
 
-siteRouter.get('/get-information', async (req, res) => {
+siteGetRequest.get('/get-information', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -24,7 +23,7 @@ siteRouter.get('/get-information', async (req, res) => {
 });
 
 // Get All countries and States where an organization has a site. These countries and states are distinct
-siteRouter.get(
+siteGetRequest.get(
   '/get-distinct/country-and-state/organization',
   async (req, res) => {
     let message = 'Not Authorised',
@@ -49,7 +48,7 @@ siteRouter.get(
   }
 );
 
-siteRouter.get('/organization/table-filter', async (req, res) => {
+siteGetRequest.get('/organization/table-filter', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
   const {

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   createNewAdmin,
   getAdminAndProfileDataByEmailOrUsername,
-  getAdminPrimaryInformation,
+  getAdminPrimaryLoginInformation,
   getAdminPrimaryInformationAndProfile,
   updateAdminData,
 } from '../../datastore/adminStore';
@@ -27,7 +27,7 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
   try {
     const { email, password, rememberMe } = req.body;
 
-    const admin = await getAdminPrimaryInformation(email as string);
+    const admin = await getAdminPrimaryLoginInformation(email as string);
 
     if (
       validatePassword(password as string, admin?.password ?? ('' as string))
@@ -36,6 +36,7 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
         id: admin?.id ?? '',
         email: admin?.email ?? '',
         role: admin?.role ?? '',
+        siteId: admin?.siteId,
       };
 
       // if remember me, set the date expiration of the jwt to 1 day
