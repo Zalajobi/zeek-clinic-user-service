@@ -14,6 +14,7 @@ import { PersonalInformation } from './personaInfo';
 import { EmergencyContacts } from './emergencyContacts';
 import { CreatePatientsDataProps } from '../objectsTypes/patientObjectTypes';
 import { Provider } from './providers';
+import { PatientEmployer } from './patientEmployer';
 
 @Entity()
 export class Patients {
@@ -27,10 +28,6 @@ export class Patients {
     this.password = data?.password as string;
     this.status = data?.status as PatientStatus;
     this.occupation = data?.occupation as string;
-    this.department = data?.department as string;
-    this.employer = data?.employer as string;
-    this.employer_name = data?.employer_name as string;
-    this.employer_phone = data?.employer_phone as string;
     this.careGiverId = data?.careGiverId as string;
   }
 
@@ -43,9 +40,14 @@ export class Patients {
   siteId: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
   })
   personalInfoId: string;
+
+  @Column({
+    nullable: true,
+  })
+  employerId: string;
 
   @Column({
     nullable: false,
@@ -92,20 +94,6 @@ export class Patients {
   })
   occupation?: string;
 
-  @Column({
-    nullable: true,
-  })
-  department?: string;
-
-  @Column()
-  employer: string;
-
-  @Column()
-  employer_name: string;
-
-  @Column()
-  employer_phone: string;
-
   @CreateDateColumn()
   created_at: Date;
 
@@ -116,6 +104,10 @@ export class Patients {
   @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient)
   @JoinColumn()
   personalInfo?: PersonalInformation;
+
+  @OneToOne(() => PatientEmployer, (employer) => employer.patient)
+  @JoinColumn()
+  employer?: PatientEmployer;
 
   @OneToMany(() => EmergencyContacts, (emergency) => emergency.patient)
   emergencyContacts: EmergencyContacts[];
