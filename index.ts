@@ -1,16 +1,10 @@
 import express = require('express');
 import cors = require('cors');
 import 'reflect-metadata';
-import superadminRouter from './routes/superadminRoute';
-import hospitalRouter from './routes/hospitalRoute';
-import siteRouter from './routes/siteRoute';
 import { AppDataSource } from './data-source';
 import { SuperAdmin } from './typeorm/entity/superAdmin';
 import { generatePasswordHash } from './helpers/utils';
 import { superAdminRepo } from './typeorm/repositories/superAdminRepository';
-import roleRouter from './routes/roleRouter';
-import departmentRouter from './routes/departmentRoute';
-import adminRouter from './routes/admin';
 import rootRouter from './routes';
 require('dotenv').config();
 
