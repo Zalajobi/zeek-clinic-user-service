@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import superadminRouter from './superadmin';
 import hospitalRouter from './hospital';
-import siteRouter from './site/siteRoute';
+import siteRouter from './site';
 import roleRouter from './roleRouter';
 import departmentRouter from './department';
 import adminRouter from './admin';
@@ -11,7 +11,7 @@ let rootRouter = Router();
 
 rootRouter.use(`${BASE_URL}/super-admin`, superadminRouter);
 rootRouter.use(`${BASE_URL}/hospital`, hospitalRouter);
-rootRouter.use(`${BASE_URL}`, siteRouter);
+rootRouter.use(`${BASE_URL}/site`, siteRouter);
 rootRouter.use(`${BASE_URL}`, roleRouter);
 rootRouter.use(`${BASE_URL}/department`, departmentRouter);
 rootRouter.use(`${BASE_URL}/admin`, adminRouter);
