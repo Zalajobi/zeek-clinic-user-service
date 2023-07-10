@@ -1,12 +1,12 @@
-import express = require('express');
-import { JsonResponse } from '../util/responses';
-import { roleModelProps } from '../types';
-import { verifyUserPermission } from '../lib/auth';
-import { createNewRole } from '../datastore/roleStore';
+import { Router } from 'express';
+import { roleModelProps } from '../../types';
+import { verifyUserPermission } from '../../lib/auth';
+import { JsonResponse } from '../../util/responses';
+import { createNewRole } from '../../datastore/roleStore';
 
-const roleRouter = express.Router();
+const roleGetRequest = Router();
 
-roleRouter.post('/create', async (req, res) => {
+roleGetRequest.post('/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -30,4 +30,4 @@ roleRouter.post('/create', async (req, res) => {
   }
 });
 
-export default roleRouter;
+export default roleGetRequest;

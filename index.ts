@@ -1,32 +1,18 @@
 import express = require('express');
 import cors = require('cors');
 import 'reflect-metadata';
-import superadminRouter from './routes/superadminRouter';
-import hospitalRouter from './routes/hospitalRouter';
-import siteRouter from './routes/siteRouter';
 import { AppDataSource } from './data-source';
 import { SuperAdmin } from './typeorm/entity/superAdmin';
 import { generatePasswordHash } from './helpers/utils';
 import { superAdminRepo } from './typeorm/repositories/superAdminRepository';
-import roleRouter from './routes/roleRouter';
-import departmentRouter from './routes/departmentRouter';
-import adminRouter from './routes/adminRouter';
-import unitRouter from './routes/unitRouter';
-import serviceAreaRouter from './routes/serviceAreaRouter';
+import rootRouter from './routes';
 require('dotenv').config();
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(`${process.env.ACCOUNT_BASE_URL}/super-admin`, superadminRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}/hospital`, hospitalRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}/site`, siteRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}/role`, roleRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}/department`, departmentRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}/admin`, adminRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}/unit`, unitRouter);
-app.use(`${process.env.ACCOUNT_BASE_URL}/service-area`, serviceAreaRouter);
+app.use('/', rootRouter);
 
 AppDataSource.initialize()
   .then(async () => {

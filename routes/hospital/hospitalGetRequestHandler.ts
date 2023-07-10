@@ -1,48 +1,16 @@
-import express = require('express');
-import { JsonResponse } from '../util/responses';
-import { hospitalModelProps } from '../types';
+import { Router } from 'express';
+import { verifyUserPermission } from '../../lib/auth';
+import { JsonResponse } from '../../util/responses';
 import {
-  createNewHospital,
   getHospitalDetails,
   selectAllAvailableCountries,
   superAdminGetHospitals,
-} from '../datastore/hospitalStore';
-import { verifyUserPermission } from '../lib/auth';
+} from '../../datastore/hospitalStore';
+import hospitalRouter from './index';
 
-const hospitalRouter = express.Router();
+const hospitalGetRequest = Router();
 
-hospitalRouter.post('/create', async (req, res) => {
-  let message = 'Not Authorised';
-
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      ['SUPER_ADMIN']
-    );
-
-    if (!verifiedUser) return JsonResponse(res, message, false, null, 401);
-
-    const hospital = await createNewHospital(req.body as hospitalModelProps);
-
-    if (!hospital) {
-      return JsonResponse(
-        res,
-        'Email Or Phone Number Already Exists',
-        false,
-        null,
-        200
-      );
-    }
-
-    return JsonResponse(res, 'New Organization Added', true, null, 200);
-  } catch (error) {
-    if (error instanceof Error) message = error.message;
-
-    return JsonResponse(res, message, false, null, 403);
-  }
-});
-
-hospitalRouter.get('/pagination/data', async (req, res) => {
+hospitalGetRequest.get('/super-admin/get/all/pagination', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
   const { page, per_page, from_date, to_date, search, country, status } =
@@ -74,7 +42,7 @@ hospitalRouter.get('/pagination/data', async (req, res) => {
   }
 });
 
-hospitalRouter.get('/countries/distinct', async (req, res) => {
+hospitalGetRequest.get('/super-admin/countries/distinct', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -105,7 +73,7 @@ hospitalRouter.get('/countries/distinct', async (req, res) => {
   }
 });
 
-hospitalRouter.get('/hospital/details', async (req, res) => {
+hospitalGetRequest.get('/details', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -131,4 +99,4 @@ hospitalRouter.get('/hospital/details', async (req, res) => {
   }
 });
 
-export default hospitalRouter;
+export default hospitalGetRequest;

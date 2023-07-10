@@ -1,45 +1,14 @@
-import express = require('express');
-import { JsonResponse } from '../util/responses';
+import { Router } from 'express';
+import { JsonResponse } from '../../util/responses';
+import { verifyUserPermission } from '../../lib/auth';
 import {
-  adminCreateSite,
   getDistinctOrganizationSiteCountriesAndStates,
   siteTableDatastore,
-} from '../datastore/siteStore';
-import { siteModelProps } from '../types';
-import { verifyUserPermission } from '../lib/auth';
+} from '../../datastore/siteStore';
 
-const siteRouter = express.Router();
+const siteGetRequest = Router();
 
-siteRouter.post('/create', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false;
-
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      ['SUPER_ADMIN', 'HOSPITAL_ADMIN']
-    );
-
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
-
-    const site = await adminCreateSite(req.body as siteModelProps);
-
-    return JsonResponse(
-      res,
-      site?.message as string,
-      site?.success as boolean,
-      null,
-      200
-    );
-  } catch (error) {
-    let message = 'Not Authorized';
-    if (error instanceof Error) message = error.message;
-
-    return JsonResponse(res, message, success, null, 403);
-  }
-});
-
-siteRouter.get('/get-information', async (req, res) => {
+siteGetRequest.get('/get-information', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -54,7 +23,7 @@ siteRouter.get('/get-information', async (req, res) => {
 });
 
 // Get All countries and States where an organization has a site. These countries and states are distinct
-siteRouter.get(
+siteGetRequest.get(
   '/get-distinct/country-and-state/organization',
   async (req, res) => {
     let message = 'Not Authorised',
@@ -79,7 +48,7 @@ siteRouter.get(
   }
 );
 
-siteRouter.get('/organization/table-filter', async (req, res) => {
+siteGetRequest.get('/organization/table-filter', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
   const {
@@ -122,4 +91,4 @@ siteRouter.get('/organization/table-filter', async (req, res) => {
   }
 });
 
-export default siteRouter;
+export default siteGetRequest;
