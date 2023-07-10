@@ -6,6 +6,7 @@ import {
 } from './personalInfoStore';
 import { Admin } from '../typeorm/entity/admin';
 import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
+import email from '../lib/email';
 
 export const createNewAdmin = async (data: adminModelProps) => {
   const adminRepository = adminRepo();
@@ -59,10 +60,8 @@ export const getAdminPrimaryLoginInformation = async (value: string) => {
 
   return await adminRepository
     .createQueryBuilder('admin')
-    .where('admin.email = :email', {
+    .where('admin.email = :email OR admin.username = :username', {
       email: value,
-    })
-    .orWhere('admin.username = :username', {
       username: value,
     })
     .select([
