@@ -14,13 +14,17 @@ import { Servicearea } from './typeorm/entity/servicearea';
 import { Patients } from './typeorm/entity/patient';
 import { EmergencyContacts } from './typeorm/entity/emergencyContacts';
 
+// Using environment variables
+import dotenv from 'dotenv';
+dotenv.config();
+
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DATABASE_HOST_LOCAL,
   port: Number(process.env.DATABASE_PORT),
-  username: process.env.DATABASE_USERNAME,
+  username: process.env.DATABASE_USERNAME_LOCAL,
   password: process.env.DATABASE_PASSWORD_LOCAL,
-  database: process.env.DATABASE_NAME,
+  database: process.env.DATABASE_NAME_LOCAL,
   synchronize: true,
   logging: false,
   entities: [

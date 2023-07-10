@@ -63,6 +63,7 @@ adminRouter.post(`/login`, async (req, res) => {
         id: admin?.id ?? '',
         email: admin?.email ?? '',
         role: admin?.role ?? '',
+        siteId: admin?.siteId ?? '',
       };
 
       // if remember me, set the date expiration of the jwt to 1 day
