@@ -1,17 +1,17 @@
 import express = require('express');
 import { JsonResponse } from '../util/responses';
-import { roleModelProps } from '../types';
 import { verifyUserPermission } from '../lib/auth';
-import { createNewRole } from '../datastore/roleStore';
+import { CreateServiceAreaDataProps } from '../typeorm/objectsTypes/serviceAreaObjectType';
+import { createServiceArea } from '../datastore/serviceAreaStore';
 
-const roleRouter = express.Router();
+const serviceAreaRouter = express.Router();
 
-roleRouter.post('/create', async (req, res) => {
+serviceAreaRouter.post('/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
   try {
-    const data = req.body as roleModelProps;
+    const data = req.body as CreateServiceAreaDataProps;
 
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
@@ -20,9 +20,15 @@ roleRouter.post('/create', async (req, res) => {
 
     if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
 
-    const newRole = await createNewRole(data);
+    const serviceArea = await createServiceArea(data);
 
-    return JsonResponse(res, newRole.message, newRole.success, null, 200);
+    return JsonResponse(
+      res,
+      serviceArea.message,
+      serviceArea.success,
+      null,
+      200
+    );
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
@@ -30,4 +36,4 @@ roleRouter.post('/create', async (req, res) => {
   }
 });
 
-export default roleRouter;
+export default serviceAreaRouter;

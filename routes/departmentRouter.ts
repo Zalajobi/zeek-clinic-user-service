@@ -1,17 +1,17 @@
 import express = require('express');
 import { JsonResponse } from '../util/responses';
-import { roleModelProps } from '../types';
+import { departmentModelProps, roleModelProps } from '../types';
 import { verifyUserPermission } from '../lib/auth';
-import { createNewRole } from '../datastore/roleStore';
+import { createNewDepartment } from '../datastore/departmentStore';
 
-const roleRouter = express.Router();
+const departmentRouter = express.Router();
 
-roleRouter.post('/create', async (req, res) => {
+departmentRouter.post('/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
   try {
-    const data = req.body as roleModelProps;
+    const data = req.body as departmentModelProps;
 
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
@@ -20,7 +20,7 @@ roleRouter.post('/create', async (req, res) => {
 
     if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
 
-    const newRole = await createNewRole(data);
+    const newRole = await createNewDepartment(data);
 
     return JsonResponse(res, newRole.message, newRole.success, null, 200);
   } catch (error) {
@@ -30,4 +30,4 @@ roleRouter.post('/create', async (req, res) => {
   }
 });
 
-export default roleRouter;
+export default departmentRouter;

@@ -1,18 +1,16 @@
 import express = require('express');
-import { JsonResponse } from '../util/responses';
-import { roleModelProps } from '../types';
 import { verifyUserPermission } from '../lib/auth';
-import { createNewRole } from '../datastore/roleStore';
+import { JsonResponse } from '../util/responses';
+import { createNewUnit } from '../datastore/unitStore';
+import { createUnitDataProps } from '../typeorm/objectsTypes/unitObjectTypes';
 
-const roleRouter = express.Router();
+const unitRouter = express.Router();
 
-roleRouter.post('/create', async (req, res) => {
+unitRouter.post('/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
   try {
-    const data = req.body as roleModelProps;
-
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
@@ -20,9 +18,9 @@ roleRouter.post('/create', async (req, res) => {
 
     if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
 
-    const newRole = await createNewRole(data);
+    const unitRes = await createNewUnit(req.body as createUnitDataProps);
 
-    return JsonResponse(res, newRole.message, newRole.success, null, 200);
+    return JsonResponse(res, unitRes.message, unitRes.success, null, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
@@ -30,4 +28,4 @@ roleRouter.post('/create', async (req, res) => {
   }
 });
 
-export default roleRouter;
+export default unitRouter;
