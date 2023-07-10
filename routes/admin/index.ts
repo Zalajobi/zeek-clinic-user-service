@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import adminPostRequestHandler from './postRequestHandler';
-import adminPutRequestHandler from './putRequestHandler';
-import adminGetRequestHandler from './getRequestHandler';
+import adminPostRequestHandler from './adminPostRequestHandler';
+import adminPutRequestHandler from './adminPutRequestHandler';
+import adminGetRequestHandler from './adminGetRequestHandler';
 
 const adminRouter = Router();
 
