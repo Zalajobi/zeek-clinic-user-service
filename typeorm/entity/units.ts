@@ -36,6 +36,18 @@ export class Units {
   })
   name: string;
 
+  @Column({
+    nullable: false,
+    default: 0,
+  })
+  total_beds: number;
+
+  @Column({
+    nullable: false,
+    default: 0,
+  })
+  occupied_beds: number;
+
   @CreateDateColumn()
   created_at: Date;
 
