@@ -19,13 +19,14 @@ adminGetRequestHandler.get(
         (<unknown>verifyJSONToken(req.query.token as string))
       );
 
-      if (verifyToken) JsonResponse(res, 'Token is valid', true, null, 200);
-      else JsonResponse(res, 'Token is invalid', false, null, 401);
+      if (verifyToken)
+        return JsonResponse(res, 'Token is valid', true, null, 200);
+      else return JsonResponse(res, 'Token is invalid', false, null, 401);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonResponse(res, message, false, null, 403);
     }
   }
 );
@@ -48,7 +49,7 @@ adminGetRequestHandler.get('/profile/get-data', async (req, res) => {
       ]
     );
 
-    if (!verifiedUser) JsonResponse(res, message, success, null, 403);
+    if (!verifiedUser) return JsonResponse(res, message, success, null, 403);
 
     const data = await getAdminHeaderBaseTemplateData(
       verifiedUser?.id as string
@@ -56,7 +57,7 @@ adminGetRequestHandler.get('/profile/get-data', async (req, res) => {
 
     if (!data) JsonResponse(res, 'Something Went Wrong', false, null, 403);
 
-    JsonResponse(res, 'Success', true, data, 200);
+    return JsonResponse(res, 'Success', true, data, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 

@@ -56,6 +56,7 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
       success,
       {
         token: jwtSignData,
+        role: admin?.role,
       },
       200
     );
