@@ -16,6 +16,8 @@ export class Units {
     this.name = data?.name as string;
     this.siteId = data?.siteId as string;
     this.description = data?.description as string;
+    this.total_beds = data?.total_beds as number;
+    this.occupied_beds = data?.occupied_beds as number;
   }
 
   @PrimaryGeneratedColumn('uuid')
