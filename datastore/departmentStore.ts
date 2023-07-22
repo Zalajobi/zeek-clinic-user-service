@@ -29,3 +29,19 @@ export const getDepartmentDataBySiteId = async (siteId: string) => {
     },
   });
 };
+
+export const adminCreateProviderGetDepartmentDataBySiteId = async (
+  siteId: string
+) => {
+  const deptRepository = departmentRepo();
+
+  return await deptRepository.find({
+    where: {
+      siteId,
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+};

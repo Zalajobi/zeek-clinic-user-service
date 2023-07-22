@@ -4,6 +4,13 @@ import { verifyJSONToken } from '../../helpers/utils';
 import { JsonResponse } from '../../util/responses';
 import { verifyUserPermission } from '../../lib/auth';
 import { getAdminHeaderBaseTemplateData } from '../../datastore/adminStore';
+import {
+  adminCreateProviderGetDepartmentDataBySiteId,
+  getDepartmentDataBySiteId,
+} from '../../datastore/departmentStore';
+import department from '../department';
+import { getRoleDataBySiteId } from '../../datastore/roleStore';
+import { adminCreateProviderGetUnitsDataBySiteId } from '../../datastore/unitStore';
 
 const adminGetRequestHandler = Router();
 
@@ -27,6 +34,45 @@ adminGetRequestHandler.get(
       if (error instanceof Error) message = error.message;
 
       return JsonResponse(res, message, false, null, 403);
+    }
+  }
+);
+
+adminGetRequestHandler.get(
+  '/provider/create-new/roles-departments-areas-units/:siteId',
+  async (req, res) => {
+    const siteId = req.params.siteId as string;
+    let message = 'Not Authorised',
+      success = false;
+
+    try {
+      const verifiedUser = await verifyUserPermission(
+        req?.headers?.token as string,
+        ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES']
+      );
+
+      if (!verifiedUser) return JsonResponse(res, message, success, null, 200);
+
+      const response = await Promise.all([
+        adminCreateProviderGetDepartmentDataBySiteId(siteId),
+
+        adminCreateProviderGetUnitsDataBySiteId(siteId),
+      ]);
+
+      return JsonResponse(
+        res,
+        'Success',
+        true,
+        {
+          departments: response[0],
+          units: response[1],
+        },
+        200
+      );
+    } catch (error) {
+      if (error instanceof Error) message = error.message;
+
+      return JsonResponse(res, message, success, null, 401);
     }
   }
 );
