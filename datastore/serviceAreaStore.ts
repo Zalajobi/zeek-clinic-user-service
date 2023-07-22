@@ -16,3 +16,20 @@ export const createServiceArea = async (data: CreateServiceAreaDataProps) => {
       : 'Something Happened. Error happened While Creating Service Area',
   };
 };
+
+export const adminCreateProviderGetServiceAreaDataBySiteId = async (
+  siteId: string
+) => {
+  const serviceAreaRepository = serviceAreaRepo();
+
+  return await serviceAreaRepository.find({
+    where: {
+      siteId,
+    },
+
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+};

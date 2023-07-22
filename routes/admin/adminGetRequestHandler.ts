@@ -9,8 +9,12 @@ import {
   getDepartmentDataBySiteId,
 } from '../../datastore/departmentStore';
 import department from '../department';
-import { getRoleDataBySiteId } from '../../datastore/roleStore';
+import {
+  adminCreateProviderGetRolesDataBySiteId,
+  getRoleDataBySiteId,
+} from '../../datastore/roleStore';
 import { adminCreateProviderGetUnitsDataBySiteId } from '../../datastore/unitStore';
+import { adminCreateProviderGetServiceAreaDataBySiteId } from '../../datastore/serviceAreaStore';
 
 const adminGetRequestHandler = Router();
 
@@ -57,6 +61,10 @@ adminGetRequestHandler.get(
         adminCreateProviderGetDepartmentDataBySiteId(siteId),
 
         adminCreateProviderGetUnitsDataBySiteId(siteId),
+
+        adminCreateProviderGetServiceAreaDataBySiteId(siteId),
+
+        adminCreateProviderGetRolesDataBySiteId(siteId),
       ]);
 
       return JsonResponse(
@@ -66,6 +74,8 @@ adminGetRequestHandler.get(
         {
           departments: response[0],
           units: response[1],
+          serviceAreas: response[2],
+          roles: response[3],
         },
         200
       );

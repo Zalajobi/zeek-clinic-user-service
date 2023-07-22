@@ -87,7 +87,6 @@ export type profileInfoModelProps = {
   state: string;
   country: string;
   zip_code: string;
-  nationality: string;
   profile_pic?: string;
   religion?: string;
   providerId?: string;

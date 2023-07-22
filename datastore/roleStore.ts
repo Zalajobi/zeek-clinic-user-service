@@ -30,3 +30,19 @@ export const getRoleDataBySiteId = async (siteId: string) => {
     },
   });
 };
+
+export const adminCreateProviderGetRolesDataBySiteId = async (
+  siteId: string
+) => {
+  const roleRepository = roleRepo();
+
+  return await roleRepository.find({
+    where: {
+      siteId,
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+};

@@ -31,7 +31,6 @@ export class PersonalInformation {
     this.state = data?.state as string;
     this.country = data?.country as string;
     this.zip_code = data?.zip_code as string;
-    this.nationality = data?.nationality as string;
     this.profile_pic = data?.profile_pic as string;
     this.religion = data?.religion as string;
     this.marital_status = data?.marital_status as MartialStatus;
@@ -110,9 +109,6 @@ export class PersonalInformation {
     nullable: true,
   })
   zip_code: string;
-
-  @Column()
-  nationality: string;
 
   @Column({
     nullable: true,

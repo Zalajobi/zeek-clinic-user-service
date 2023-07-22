@@ -20,7 +20,7 @@ export const adminCreateProviderGetUnitsDataBySiteId = async (
 ) => {
   const unitRepository = unitRepo();
 
-  return unitRepository.find({
+  return await unitRepository.find({
     where: {
       siteId,
     },
