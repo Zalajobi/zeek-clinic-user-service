@@ -16,9 +16,15 @@ import { Units } from './units';
 import { ProviderStatus } from './enums';
 import { Servicearea } from './servicearea';
 import { Patients } from './patient';
+import { ProviderModelProps } from '../../types';
 
 @Entity()
 export class Provider {
+  // constructor(data:ProviderModelProps) {
+  //   this.siteId
+  //
+  // }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
