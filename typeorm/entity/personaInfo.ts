@@ -18,6 +18,7 @@ import { Patients } from './patient';
 export class PersonalInformation {
   constructor(data: profileInfoModelProps) {
     this.providerId = data?.providerId as string;
+    this.patientId = data?.patientId as string;
     this.adminId = data?.adminId as string;
     this.phone = data?.phone as string;
     this.first_name = data?.first_name as string;
@@ -44,6 +45,12 @@ export class PersonalInformation {
     unique: true,
   })
   providerId?: string;
+
+  @Column({
+    nullable: true,
+    unique: true,
+  })
+  patientId?: string;
 
   @Column({
     nullable: true,

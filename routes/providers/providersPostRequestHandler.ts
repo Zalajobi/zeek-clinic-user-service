@@ -48,7 +48,31 @@ providersPostRequestHandler.post(
         password: generatePasswordHash(data.password),
       };
 
-      const newAdmin = await adminCreateNewProvider(providersData, data.phone);
+      const personalInfoData: profileInfoModelProps = {
+        address: '',
+        adminId: '',
+        city: '',
+        country: '',
+        dob: '',
+        first_name: '',
+        gender: '',
+        last_name: '',
+        marital_status: undefined,
+        middle_name: '',
+        phone: '',
+        profile_pic: '',
+        providerId: '',
+        religion: '',
+        state: '',
+        title: '',
+        zip_code: '',
+      };
+
+      const newAdmin = await adminCreateNewProvider(
+        providersData,
+        {},
+        data.phone
+      );
 
       // profileInfoModelProps
 

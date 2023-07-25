@@ -92,6 +92,7 @@ export type profileInfoModelProps = {
   providerId?: string;
   adminId?: string;
   marital_status?: MartialStatus;
+  patientId?: string;
 };
 
 export type createProviderRequestBody = {
