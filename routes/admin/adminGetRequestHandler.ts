@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { JWTDataProps } from '../../types/jwt';
 import { verifyJSONToken } from '../../helpers/utils';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import { verifyUserPermission } from '../../lib/auth';
 import { getAdminHeaderBaseTemplateData } from '../../datastore/adminStore';
 import {
@@ -31,13 +31,13 @@ adminGetRequestHandler.get(
       );
 
       if (verifyToken)
-        return JsonResponse(res, 'Token is valid', true, null, 200);
-      else return JsonResponse(res, 'Token is invalid', false, null, 401);
+        return JsonApiResponse(res, 'Token is valid', true, null, 200);
+      else return JsonApiResponse(res, 'Token is invalid', false, null, 401);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );
@@ -55,7 +55,8 @@ adminGetRequestHandler.get(
         ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES']
       );
 
-      if (!verifiedUser) return JsonResponse(res, message, success, null, 200);
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 200);
 
       const response = await Promise.all([
         adminCreateProviderGetDepartmentDataBySiteId(siteId),
@@ -67,7 +68,7 @@ adminGetRequestHandler.get(
         adminCreateProviderGetRolesDataBySiteId(siteId),
       ]);
 
-      return JsonResponse(
+      return JsonApiResponse(
         res,
         'Success',
         true,
@@ -82,7 +83,7 @@ adminGetRequestHandler.get(
     } catch (error) {
       if (error instanceof Error) message = error.message;
 
-      return JsonResponse(res, message, success, null, 401);
+      return JsonApiResponse(res, message, success, null, 401);
     }
   }
 );
@@ -105,19 +106,19 @@ adminGetRequestHandler.get('/profile/get-data', async (req, res) => {
       ]
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 403);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
 
     const data = await getAdminHeaderBaseTemplateData(
       verifiedUser?.id as string
     );
 
-    if (!data) JsonResponse(res, 'Something Went Wrong', false, null, 403);
+    if (!data) JsonApiResponse(res, 'Something Went Wrong', false, null, 403);
 
-    return JsonResponse(res, 'Success', true, data, 200);
+    return JsonApiResponse(res, 'Success', true, data, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 

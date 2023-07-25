@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '../../lib/auth';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import {
   createProviderRequestBody,
   profileInfoModelProps,
   ProviderModelProps,
 } from '../../types';
 import { generatePasswordHash } from '../../helpers/utils';
+import { adminCreateNewProvider } from '../../datastore/providerStore';
 
 const providersPostRequestHandler = Router();
 
@@ -19,7 +20,13 @@ providersPostRequestHandler.post(
     try {
       const verifiedUser = await verifyUserPermission(
         req?.headers?.token as string,
-        ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
+        [
+          'SUPER_ADMIN',
+          'HOSPITAL_ADMIN',
+          'SITE_ADMIN',
+          'ADMIN',
+          'HUMAN_RESOURCES',
+        ] // Remove HUMAN_RESOURCES later, this is for testing purpose for July 23, 2023 session 8AM - 2PM
       );
 
       const data = req.body as createProviderRequestBody;
@@ -41,13 +48,16 @@ providersPostRequestHandler.post(
         password: generatePasswordHash(data.password),
       };
 
+      const newAdmin = await adminCreateNewProvider(providersData, data.phone);
+
       // profileInfoModelProps
 
-      if (!verifiedUser) return JsonResponse(res, message, success, null, 200);
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
       if (error instanceof Error) message = error.message;
 
-      return JsonResponse(res, message, success, null, 401);
+      return JsonApiResponse(res, message, success, null, 401);
     }
   }
 );

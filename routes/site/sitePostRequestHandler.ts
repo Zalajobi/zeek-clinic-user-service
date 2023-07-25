@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '../../lib/auth';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import { adminCreateSite } from '../../datastore/siteStore';
 import { siteModelProps } from '../../types';
 
@@ -16,11 +16,11 @@ sitePostRequest.post('/create', async (req, res) => {
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN']
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const site = await adminCreateSite(req.body as siteModelProps);
 
-    return JsonResponse(
+    return JsonApiResponse(
       res,
       site?.message as string,
       site?.success as boolean,
@@ -31,7 +31,7 @@ sitePostRequest.post('/create', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 

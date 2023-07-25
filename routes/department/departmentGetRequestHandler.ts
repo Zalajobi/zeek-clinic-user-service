@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import { verifyUserPermission } from '../../lib/auth';
 import { getDepartmentDataBySiteId } from '../../datastore/departmentStore';
 
@@ -16,15 +16,15 @@ departmentGetRequest.get('/get-all/:siteId', async (req, res) => {
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES']
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 200);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 200);
 
     const departments = await getDepartmentDataBySiteId(siteId);
 
-    return JsonResponse(res, 'Success', true, departments, 200);
+    return JsonApiResponse(res, 'Success', true, departments, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 401);
+    return JsonApiResponse(res, message, success, null, 401);
   }
 });
 

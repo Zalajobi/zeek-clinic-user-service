@@ -4,7 +4,7 @@ import {
   generateJSONTokenCredentials,
   validatePassword,
 } from '../../helpers/utils';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 
 const superadminPostRequest = Router();
 
@@ -31,7 +31,7 @@ superadminPostRequest.post('/auth/login', async (req, res) => {
       success = true;
     }
 
-    return JsonResponse(
+    return JsonApiResponse(
       res,
       responseMessage,
       success,
@@ -44,7 +44,7 @@ superadminPostRequest.post('/auth/login', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 

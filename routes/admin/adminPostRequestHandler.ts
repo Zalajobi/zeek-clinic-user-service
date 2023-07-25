@@ -12,7 +12,7 @@ import {
   generatePasswordHash,
   validatePassword,
 } from '../../helpers/utils';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import { verifyUserPermission } from '../../lib/auth';
 import { adminModelProps } from '../../types';
 import { sendResetPasswordEmail } from '../../messaging/email';
@@ -50,7 +50,7 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
       success = true;
     }
 
-    JsonResponse(
+    return JsonApiResponse(
       res,
       responseMessage,
       success,
@@ -64,7 +64,7 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 
@@ -78,16 +78,16 @@ adminPostRequestHandler.post('/create', async (req, res) => {
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
     req.body.password = generatePasswordHash(req.body.password);
 
     const newAdmin = await createNewAdmin(req.body as adminModelProps);
 
-    return JsonResponse(res, newAdmin.message, newAdmin.success, null, 200);
+    return JsonApiResponse(res, newAdmin.message, newAdmin.success, null, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 
@@ -115,7 +115,7 @@ adminPostRequestHandler.post(
           user?.personalInfo?.first_name ?? ''
         );
         if (passwordResetEmailResponse.accepted.length !== 0) {
-          JsonResponse(
+          return JsonApiResponse(
             res,
             `Password reset link sent to ${user?.email ?? ''}`,
             true,
@@ -124,13 +124,13 @@ adminPostRequestHandler.post(
           );
         }
       } else {
-        JsonResponse(res, responseMessage, success, null, 401);
+        return JsonApiResponse(res, responseMessage, success, null, 401);
       }
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );
@@ -175,12 +175,12 @@ adminPostRequestHandler.post(
         success = false;
       }
 
-      JsonResponse(res, message, success, null, 200);
+      return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );
@@ -225,12 +225,12 @@ adminPostRequestHandler.post(
         success = false;
       }
 
-      JsonResponse(res, message, success, null, 200);
+      return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );
@@ -275,12 +275,12 @@ adminPostRequestHandler.post(
         success = false;
       }
 
-      JsonResponse(res, message, success, null, 200);
+      return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );

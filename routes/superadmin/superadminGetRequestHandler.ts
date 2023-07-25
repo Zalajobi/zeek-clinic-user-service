@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '../../lib/auth';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import {
   getSuperadminBaseData,
   getSuperadminDataById,
@@ -20,16 +20,16 @@ superadminGetRouter.get('/profile/get-data', async (req, res) => {
     );
 
     if (!verifiedUser)
-      return JsonResponse(res, 'Not Authorized', false, null, 401);
+      return JsonApiResponse(res, 'Not Authorized', false, null, 401);
 
     const data = await getSuperadminBaseData(verifiedUser?.id as string);
 
-    if (data) return JsonResponse(res, 'Authorized', true, data, 200);
+    if (data) return JsonApiResponse(res, 'Authorized', true, data, 200);
   } catch (error) {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 
@@ -44,7 +44,7 @@ superadminGetRouter.get('/get/roles_and_departments', async (req, res) => {
     );
 
     if (!verifiedUser)
-      return JsonResponse(res, 'Not Authorized', success, null, 403);
+      return JsonApiResponse(res, 'Not Authorized', success, null, 403);
 
     const admin = await Promise.all([
       getOneAdminDataById(verifiedUser?.id as string),
@@ -59,7 +59,7 @@ superadminGetRouter.get('/get/roles_and_departments', async (req, res) => {
         getRoleDataBySiteId(siteId as string),
       ]);
 
-      return JsonResponse(
+      return JsonApiResponse(
         res,
         'Roles and departments data fetch successful',
         true,
@@ -71,11 +71,11 @@ superadminGetRouter.get('/get/roles_and_departments', async (req, res) => {
       );
     }
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 
