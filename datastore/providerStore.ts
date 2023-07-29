@@ -38,9 +38,6 @@ export const adminCreateNewProvider = async (
       .where('LOWER(provider.staff_id) LIKE :staffId', {
         staffId: data.staff_id,
       })
-      .where('provider.siteId = :siteId', {
-        siteId: data.siteId,
-      })
       .getCount(),
   ]);
 
