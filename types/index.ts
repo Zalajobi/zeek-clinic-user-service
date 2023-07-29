@@ -92,6 +92,7 @@ export type profileInfoModelProps = {
   providerId?: string;
   adminId?: string;
   marital_status?: MartialStatus;
+  profilePic?: string;
   patientId?: string;
 };
 
@@ -121,6 +122,8 @@ export type createProviderRequestBody = {
   is_consultant: boolean;
   is_specialist: boolean;
   appointments: boolean;
+  address: string;
+  profilePic: string;
 };
 
 export type ProviderModelProps = {

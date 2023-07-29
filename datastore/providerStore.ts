@@ -1,5 +1,9 @@
 import { providerRepo } from '../typeorm/repositories/providerRepository';
-import { createProviderRequestBody, ProviderModelProps } from '../types';
+import {
+  createProviderRequestBody,
+  profileInfoModelProps,
+  ProviderModelProps,
+} from '../types';
 import { Admin } from '../typeorm/entity/admin';
 import { Provider } from '../typeorm/entity/providers';
 import {
@@ -10,7 +14,7 @@ import { DefaultJsonResponse } from '../util/responses';
 
 export const adminCreateNewProvider = async (
   data: ProviderModelProps,
-  personalInfoData: createNewPersonalInfo,
+  personalInfoData: profileInfoModelProps,
   phone: string
 ) => {
   const providerRepository = providerRepo();
@@ -40,8 +44,8 @@ export const adminCreateNewProvider = async (
       .getCount(),
   ]);
 
-  if (isUnique[0] == 0 || !isUnique[1] || isUnique[2] == 0) {
-    if (isUnique[2])
+  if (isUnique[0] >= 1 || isUnique[1] || isUnique[2] >= 1) {
+    if (isUnique[2] >= 1)
       return DefaultJsonResponse(
         'Provider With Staff ID already exists',
         null,
@@ -55,9 +59,14 @@ export const adminCreateNewProvider = async (
       );
   }
 
-  const admin = await providerRepository.save(new Provider(data));
+  const newProvider = await providerRepository.save(new Provider(data));
 
-  if (admin) return DefaultJsonResponse('New Provider Added', admin, true);
+  if (newProvider) {
+    personalInfoData.providerId = newProvider?.id ?? '';
+    await createNewPersonalInfo(personalInfoData);
+
+    return DefaultJsonResponse('New Provider Added', newProvider, true);
+  }
 
   return DefaultJsonResponse('Something Went Wrong', null, false);
 };
