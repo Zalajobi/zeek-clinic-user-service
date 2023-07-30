@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '../../lib/auth';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import { createNewHospital } from '../../datastore/hospitalStore';
 import { hospitalModelProps } from '../../types';
 
@@ -15,12 +15,12 @@ hospitalPostRequest.post('/create', async (req, res) => {
       ['SUPER_ADMIN']
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, false, null, 401);
+    if (!verifiedUser) return JsonApiResponse(res, message, false, null, 401);
 
     const hospital = await createNewHospital(req.body as hospitalModelProps);
 
     if (!hospital) {
-      return JsonResponse(
+      return JsonApiResponse(
         res,
         'Email Or Phone Number Already Exists',
         false,
@@ -29,11 +29,11 @@ hospitalPostRequest.post('/create', async (req, res) => {
       );
     }
 
-    return JsonResponse(res, 'New Organization Added', true, null, 200);
+    return JsonApiResponse(res, 'New Organization Added', true, null, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, false, null, 403);
+    return JsonApiResponse(res, message, false, null, 403);
   }
 });
 

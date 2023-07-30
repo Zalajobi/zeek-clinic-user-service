@@ -16,9 +16,25 @@ import { Units } from './units';
 import { ProviderStatus } from './enums';
 import { Servicearea } from './servicearea';
 import { Patients } from './patient';
+import { ProviderModelProps } from '../../types';
 
 @Entity()
 export class Provider {
+  constructor(data: ProviderModelProps) {
+    this.siteId = data?.siteId as string;
+    this.primaryRoleId = data?.primaryRoleId as string;
+    this.departmentId = data?.departmentId as string;
+    this.serviceareaId = data?.serviceareaId as string;
+    this.unitId = data?.unitId as string;
+    this.email = data?.email as string;
+    this.password = data?.password as string;
+    this.username = data?.username as string;
+    this.staff_id = data?.staff_id as string;
+    this.is_consultant = data?.is_consultant as boolean;
+    this.is_specialist = data?.is_specialist as boolean;
+    this.appointments = data?.appointments as boolean;
+  }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

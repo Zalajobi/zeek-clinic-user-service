@@ -5,7 +5,7 @@ import {
   validatePassword,
   verifyJSONToken,
 } from '../../helpers/utils';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import {
   getAdminBaseDataAndProfileDataByAdminId,
   updateAdminPasswordByAdminId,
@@ -41,12 +41,12 @@ adminPutRequestHandler.put(
         }
       }
 
-      JsonResponse(res, message, true, null, 200);
+      return JsonApiResponse(res, message, true, null, 200);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );

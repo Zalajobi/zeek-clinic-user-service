@@ -18,6 +18,7 @@ import { Patients } from './patient';
 export class PersonalInformation {
   constructor(data: profileInfoModelProps) {
     this.providerId = data?.providerId as string;
+    this.patientId = data?.patientId as string;
     this.adminId = data?.adminId as string;
     this.phone = data?.phone as string;
     this.first_name = data?.first_name as string;
@@ -31,7 +32,6 @@ export class PersonalInformation {
     this.state = data?.state as string;
     this.country = data?.country as string;
     this.zip_code = data?.zip_code as string;
-    this.nationality = data?.nationality as string;
     this.profile_pic = data?.profile_pic as string;
     this.religion = data?.religion as string;
     this.marital_status = data?.marital_status as MartialStatus;
@@ -45,6 +45,12 @@ export class PersonalInformation {
     unique: true,
   })
   providerId?: string;
+
+  @Column({
+    nullable: true,
+    unique: true,
+  })
+  patientId?: string;
 
   @Column({
     nullable: true,
@@ -110,9 +116,6 @@ export class PersonalInformation {
     nullable: true,
   })
   zip_code: string;
-
-  @Column()
-  nationality: string;
 
   @Column({
     nullable: true,

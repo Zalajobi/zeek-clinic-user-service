@@ -14,3 +14,19 @@ export const createNewUnit = async (data: createUnitDataProps) => {
       : 'Something happened. Error happened while creating New Unit',
   };
 };
+
+export const adminCreateProviderGetUnitsDataBySiteId = async (
+  siteId: string
+) => {
+  const unitRepository = unitRepo();
+
+  return await unitRepository.find({
+    where: {
+      siteId,
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+};

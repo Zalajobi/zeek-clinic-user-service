@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '../../lib/auth';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import {
   getHospitalDetails,
   selectAllAvailableCountries,
@@ -22,7 +22,7 @@ hospitalGetRequest.get('/super-admin/get/all/pagination', async (req, res) => {
       ['SUPER_ADMIN']
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const data = await superAdminGetHospitals(
       page as unknown as number,
@@ -34,11 +34,11 @@ hospitalGetRequest.get('/super-admin/get/all/pagination', async (req, res) => {
       status as any
     );
 
-    return JsonResponse(res, 'Success', true, data, 200);
+    return JsonApiResponse(res, 'Success', true, data, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, false, null, 401);
+    return JsonApiResponse(res, message, false, null, 401);
   }
 });
 
@@ -52,14 +52,14 @@ hospitalGetRequest.get('/super-admin/countries/distinct', async (req, res) => {
       ['SUPER_ADMIN']
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const distinctHospitals = await selectAllAvailableCountries();
 
     if (!distinctHospitals)
-      return JsonResponse(res, 'Something went wrong', success, null, 401);
+      return JsonApiResponse(res, 'Something went wrong', success, null, 401);
     else
-      return JsonResponse(
+      return JsonApiResponse(
         res,
         'Get Distinct Success',
         true,
@@ -69,7 +69,7 @@ hospitalGetRequest.get('/super-admin/countries/distinct', async (req, res) => {
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 401);
+    return JsonApiResponse(res, message, success, null, 401);
   }
 });
 
@@ -83,19 +83,19 @@ hospitalGetRequest.get('/details', async (req, res) => {
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN']
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 403);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
 
     const hospitalData = await getHospitalDetails(req.query.id as string);
 
     if (!hospitalData)
-      return JsonResponse(res, 'Organization not found', success, null, 400);
+      return JsonApiResponse(res, 'Organization not found', success, null, 400);
 
-    return JsonResponse(res, 'Hospital data', true, hospitalData, 200);
+    return JsonApiResponse(res, 'Hospital data', true, hospitalData, 200);
   } catch (error) {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 

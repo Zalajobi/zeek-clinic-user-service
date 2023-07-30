@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { JsonResponse } from '../../util/responses';
+import { JsonApiResponse } from '../../util/responses';
 import { verifyUserPermission } from '../../lib/auth';
 import {
   getDistinctOrganizationSiteCountriesAndStates,
@@ -18,7 +18,7 @@ siteGetRequest.get('/get-information', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 
@@ -34,16 +34,17 @@ siteGetRequest.get(
         ['SUPER_ADMIN', 'HOSPITAL_ADMIN']
       );
 
-      if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
 
       const data = await getDistinctOrganizationSiteCountriesAndStates(
         req.query.hospital_id as string
       );
-      return JsonResponse(res, 'Success', true, data, 200);
+      return JsonApiResponse(res, 'Success', true, data, 200);
     } catch (error) {
       if (error instanceof Error) message = error.message;
 
-      return JsonResponse(res, message, false, null, 401);
+      return JsonApiResponse(res, message, false, null, 401);
     }
   }
 );
@@ -69,7 +70,7 @@ siteGetRequest.get('/organization/table-filter', async (req, res) => {
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN']
     );
 
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const data = await siteTableDatastore(
       page as unknown as number,
@@ -83,11 +84,11 @@ siteGetRequest.get('/organization/table-filter', async (req, res) => {
       hospital_id as unknown as string
     );
 
-    return JsonResponse(res, 'Success', true, data, 200);
+    return JsonApiResponse(res, 'Success', true, data, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonResponse(res, message, false, null, 401);
+    return JsonApiResponse(res, message, false, null, 401);
   }
 });
 
