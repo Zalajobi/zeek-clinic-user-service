@@ -35,9 +35,13 @@ export const adminCreateNewProvider = async (
 
     providerRepository
       .createQueryBuilder('provider')
-      .where('LOWER(provider.staff_id) LIKE :staffId', {
-        staffId: data.staff_id,
-      })
+      .where(
+        'LOWER(provider.staff_id) = :staffId AND provider.siteId = :siteId',
+        {
+          staffId: data.staff_id,
+          siteId: data.siteId,
+        }
+      )
       .getCount(),
   ]);
 
