@@ -1,7 +1,6 @@
 import { roleModelProps } from '../types';
 import { roleRepo } from '../typeorm/repositories/roleRepository';
 import { Roles } from '../typeorm/entity/roles';
-import { RoleObjectType } from '../typeorm/objectsTypes/rolesObjectType';
 
 export const createNewRole = async (data: roleModelProps) => {
   const roleRepository = roleRepo();
@@ -27,6 +26,22 @@ export const getRoleDataBySiteId = async (siteId: string) => {
       id: true,
       name: true,
       description: true,
+    },
+  });
+};
+
+export const adminCreateProviderGetRolesDataBySiteId = async (
+  siteId: string
+) => {
+  const roleRepository = roleRepo();
+
+  return await roleRepository.find({
+    where: {
+      siteId,
+    },
+    select: {
+      id: true,
+      name: true,
     },
   });
 };

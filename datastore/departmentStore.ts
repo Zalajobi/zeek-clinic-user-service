@@ -1,7 +1,6 @@
 import { departmentRepo } from '../typeorm/repositories/departmentRepository';
 import { departmentModelProps } from '../types';
 import { Departments } from '../typeorm/entity/departments';
-import { DepartmentObjectType } from '../typeorm/objectsTypes/departmentObjectType';
 
 export const createNewDepartment = async (data: departmentModelProps) => {
   const deptRepository = departmentRepo();
@@ -27,6 +26,22 @@ export const getDepartmentDataBySiteId = async (siteId: string) => {
       id: true,
       name: true,
       description: true,
+    },
+  });
+};
+
+export const adminCreateProviderGetDepartmentDataBySiteId = async (
+  siteId: string
+) => {
+  const deptRepository = departmentRepo();
+
+  return await deptRepository.find({
+    where: {
+      siteId,
+    },
+    select: {
+      id: true,
+      name: true,
     },
   });
 };

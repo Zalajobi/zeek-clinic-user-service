@@ -10,4 +10,5 @@ module.exports = {
   bracketSpacing: true,
   bracketSameLine: false,
   singleAttributePerLine: true,
+  organizeImports: true,
 };

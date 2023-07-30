@@ -6,6 +6,7 @@ import {
 } from './personalInfoStore';
 import { Admin } from '../typeorm/entity/admin';
 import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
+import email from '../lib/email';
 
 export const createNewAdmin = async (data: adminModelProps) => {
   const adminRepository = adminRepo();
@@ -54,18 +55,22 @@ export const createNewAdmin = async (data: adminModelProps) => {
   };
 };
 
-export const getAdminPrimaryInformation = async (value: string) => {
+export const getAdminPrimaryLoginInformation = async (value: string) => {
   const adminRepository = adminRepo();
 
   return await adminRepository
     .createQueryBuilder('admin')
-    .where('admin.email = :email', {
+    .where('admin.email = :email OR admin.username = :username', {
       email: value,
-    })
-    .orWhere('admin.username = :username', {
       username: value,
     })
-    .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
+    .select([
+      'admin.password',
+      'admin.role',
+      'admin.email',
+      'admin.id',
+      'admin.siteId',
+    ])
     .getOne();
 };
 
@@ -160,5 +165,18 @@ export const getAdminAndProfileDataByEmailOrUsername = async (
       username: value,
     })
     .leftJoinAndSelect('admin.personalInfo', 'profile')
+    .getOne();
+};
+
+export const getAdminHeaderBaseTemplateData = async (id: string) => {
+  const adminRepository = adminRepo();
+
+  return await adminRepository
+    .createQueryBuilder('admin')
+    .where('admin.id = :id', {
+      id,
+    })
+    .leftJoinAndSelect('admin.personalInfo', 'profile')
+    .select(['admin.role', 'profile.first_name', 'profile.last_name'])
     .getOne();
 };
