@@ -1,7 +1,9 @@
-export const excludeKeys = (object:any, keys: string[]) => {
+export const excludeKeys = (object: any, keys: string[]) => {
   for (let key of keys) {
-    delete object[key]
+    delete object[key];
   }
 
-  return object
-}
+  return object;
+};
+
+export const encryptString = (value: string) => {};

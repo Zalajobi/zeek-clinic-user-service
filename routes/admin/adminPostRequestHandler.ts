@@ -17,6 +17,7 @@ import { verifyUserPermission } from '../../lib/auth';
 import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
 import { sendResetPasswordEmail } from '../../messaging/email';
 import { AdminModelProps } from '../../typeorm/objectsTypes/adminObjectTypes';
+import { emitNewEvent } from '../../messaging/rabbitMq';
 
 const adminPostRequestHandler = Router();
 
@@ -100,14 +101,26 @@ adminPostRequestHandler.post('/create-admin', async (req, res) => {
       req?.headers?.token as string,
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
     );
-    console.log('2');
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+
+    const tempPassword = generateCode();
+    adminData.password = generatePasswordHash(tempPassword);
 
     const newAdmin = await createNewAdmin(
       adminData as AdminModelProps,
       profileInfoData as ProfileInfoModelProps
     );
+
+    if (newAdmin.success as boolean) {
+      await emitNewEvent('hello', {
+        email: requestBody.email,
+        firstName: requestBody.first_name,
+        lastName: requestBody.last_name,
+        tempPassword: tempPassword,
+        userName: requestBody.username,
+      });
+    }
 
     return JsonApiResponse(
       res,
