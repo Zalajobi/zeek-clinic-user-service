@@ -1,4 +1,4 @@
-import { AdminModelProps } from '../types';
+import { AdminModelProps, CreateAdminApiJsonBody } from '../types';
 import { adminRepo } from '../typeorm/repositories/adminRepository';
 import {
   createNewPersonalInfo,
@@ -8,7 +8,7 @@ import { Admin } from '../typeorm/entity/admin';
 import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
 import email from '../lib/email';
 
-export const createNewAdmin = async (data: AdminModelProps) => {
+export const createNewAdmin = async (data: CreateAdminApiJsonBody) => {
   // const adminRepository = adminRepo();
   //
   // let isNotUnique = await adminRepository
