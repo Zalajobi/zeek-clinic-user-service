@@ -14,7 +14,7 @@ import {
 } from '../../helpers/utils';
 import { JsonApiResponse } from '../../util/responses';
 import { verifyUserPermission } from '../../lib/auth';
-import { adminModelProps } from '../../types';
+import { AdminModelProps, CreateAdminApiJsonBody } from '../../types';
 import { sendResetPasswordEmail } from '../../messaging/email';
 import { AdminEntityObject } from '../../typeorm/objectsTypes/adminObjectTypes';
 
@@ -68,22 +68,30 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
   }
 });
 
-adminPostRequestHandler.post('/create', async (req, res) => {
+adminPostRequestHandler.post('/create-admin', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
+  const requestBody = req.body as CreateAdminApiJsonBody;
 
   try {
+    console.log('1');
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
     );
+    console.log('2');
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
-    req.body.password = generatePasswordHash(req.body.password);
 
-    const newAdmin = await createNewAdmin(req.body as adminModelProps);
+    // const { personalInfo, ...adminData } = user;
+    // console.log('3')
+    // req.body.password = generatePasswordHash(generateCode());
+    // console.log("4")
 
-    return JsonApiResponse(res, newAdmin.message, newAdmin.success, null, 200);
+    // const newAdmin = await createNewAdmin(req.body as AdminModelProps);
+    //
+    // return JsonApiResponse(res, newAdmin.message, newAdmin.success, null, 200);
+    return JsonApiResponse(res, 'newAdmin.message', true, null, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 

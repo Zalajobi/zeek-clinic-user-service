@@ -1,4 +1,4 @@
-import { adminModelProps } from '../types';
+import { AdminModelProps } from '../types';
 import { adminRepo } from '../typeorm/repositories/adminRepository';
 import {
   createNewPersonalInfo,
@@ -8,51 +8,51 @@ import { Admin } from '../typeorm/entity/admin';
 import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
 import email from '../lib/email';
 
-export const createNewAdmin = async (data: adminModelProps) => {
-  const adminRepository = adminRepo();
-
-  let isNotUnique = await adminRepository
-    .createQueryBuilder('admin')
-    .where('admin.email = :email', {
-      email: data?.email,
-    })
-    .orWhere('admin.username = :username', {
-      username: data?.username,
-    })
-    .getOne();
-
-  if (
-    isNotUnique ||
-    (await getPersonalInfoByPhone(data?.profileData?.phone ?? ''))
-  )
-    return {
-      success: false,
-      message: 'Admin with same email, phone or username already exists',
-    };
-
-  const admin = await adminRepository.save(new Admin(data));
-  data.profileData.adminId = admin.id;
-
-  const profileInformation = await createNewPersonalInfo(data.profileData);
-
-  if (admin && profileInformation) {
-    await adminRepository.update(
-      {
-        id: admin.id,
-      },
-      {
-        personalInfoId: profileInformation.id,
-      }
-    );
-  }
-
-  return {
-    success: admin && profileInformation ? true : false,
-    message:
-      admin && profileInformation
-        ? 'Admin Creation Successful'
-        : 'Something happened. Error happened while creating Admin',
-  };
+export const createNewAdmin = async (data: AdminModelProps) => {
+  // const adminRepository = adminRepo();
+  //
+  // let isNotUnique = await adminRepository
+  //   .createQueryBuilder('admin')
+  //   .where('admin.email = :email', {
+  //     email: data?.email,
+  //   })
+  //   .orWhere('admin.username = :username', {
+  //     username: data?.username,
+  //   })
+  //   .getOne();
+  //
+  // if (
+  //   isNotUnique ||
+  //   (await getPersonalInfoByPhone(data?.profileData?.phone ?? ''))
+  // )
+  //   return {
+  //     success: false,
+  //     message: 'Admin with same email, phone or username already exists',
+  //   };
+  //
+  // const admin = await adminRepository.save(new Admin(data));
+  // data.profileData.adminId = admin.id;
+  //
+  // const profileInformation = await createNewPersonalInfo(data.profileData);
+  //
+  // if (admin && profileInformation) {
+  //   await adminRepository.update(
+  //     {
+  //       id: admin.id,
+  //     },
+  //     {
+  //       personalInfoId: profileInformation.id,
+  //     }
+  //   );
+  // }
+  //
+  // return {
+  //   success: admin && profileInformation ? true : false,
+  //   message:
+  //     admin && profileInformation
+  //       ? 'Admin Creation Successful'
+  //       : 'Something happened. Error happened while creating Admin',
+  // };
 };
 
 export const getAdminPrimaryLoginInformation = async (value: string) => {

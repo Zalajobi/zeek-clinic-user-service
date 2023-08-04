@@ -64,17 +64,18 @@ export type departmentModelProps = {
   description: string;
 };
 
-export type adminModelProps = {
+export type CreateAdminApiJsonBody = AdminModelProps & ProfileInfoModelProps;
+
+export type AdminModelProps = {
   siteId: string;
   role: AdminRoles;
   email: string;
   password: string;
   username: string;
   staff_id: string;
-  profileData: profileInfoModelProps;
 };
 
-export type profileInfoModelProps = {
+export type ProfileInfoModelProps = {
   phone?: string;
   first_name: string;
   last_name: string;

@@ -1,7 +1,7 @@
 import { providerRepo } from '../typeorm/repositories/providerRepository';
 import {
   createProviderRequestBody,
-  profileInfoModelProps,
+  ProfileInfoModelProps,
   ProviderModelProps,
 } from '../types';
 import { Admin } from '../typeorm/entity/admin';
@@ -14,7 +14,7 @@ import { DefaultJsonResponse } from '../util/responses';
 
 export const adminCreateNewProvider = async (
   data: ProviderModelProps,
-  personalInfoData: profileInfoModelProps,
+  personalInfoData: ProfileInfoModelProps,
   phone: string
 ) => {
   const providerRepository = providerRepo();

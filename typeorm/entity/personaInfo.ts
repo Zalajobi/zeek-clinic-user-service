@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Provider } from './providers';
 import { Admin } from './admin';
-import { profileInfoModelProps } from '../../types';
+import { ProfileInfoModelProps } from '../../types';
 import { MartialStatus } from './enums';
 import { Patients } from './patient';
 
@@ -16,7 +16,7 @@ import { Patients } from './patient';
   name: 'personal_info',
 })
 export class PersonalInformation {
-  constructor(data: profileInfoModelProps) {
+  constructor(data: ProfileInfoModelProps) {
     this.providerId = data?.providerId as string;
     this.patientId = data?.patientId as string;
     this.adminId = data?.adminId as string;
