@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Provider } from './providers';
 import { Admin } from './admin';
-import { profileInfoModelProps } from '../../types';
+import { ProfileInfoModelProps } from '../../types';
 import { MartialStatus } from './enums';
 import { Patients } from './patient';
 
@@ -16,7 +16,7 @@ import { Patients } from './patient';
   name: 'personal_info',
 })
 export class PersonalInformation {
-  constructor(data: profileInfoModelProps) {
+  constructor(data: ProfileInfoModelProps) {
     this.providerId = data?.providerId as string;
     this.patientId = data?.patientId as string;
     this.adminId = data?.adminId as string;
@@ -28,6 +28,7 @@ export class PersonalInformation {
     this.gender = data?.gender as string;
     this.dob = new Date(data?.dob as string);
     this.address = data?.address as string;
+    this.address_two = data?.address_two as string;
     this.city = data?.city as string;
     this.state = data?.state as string;
     this.country = data?.country as string;
@@ -90,6 +91,11 @@ export class PersonalInformation {
   @Column()
   address: string;
 
+  @Column({
+    default: '',
+  })
+  address_two?: string;
+
   @Column()
   city: string;
 
@@ -130,14 +136,14 @@ export class PersonalInformation {
 
   // Relations
   @OneToOne(() => Provider, (provider) => provider.personalInfo)
-  @JoinColumn()
+  // @JoinColumn()
   provider?: Provider;
 
   @OneToOne(() => Patients)
-  @JoinColumn()
+  // @JoinColumn()
   patient?: Patients;
 
   @OneToOne(() => Admin)
-  @JoinColumn()
+  // @JoinColumn()
   admin?: Admin;
 }

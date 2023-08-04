@@ -57,7 +57,7 @@ export const verifyJSONToken = (bearerToken: string) => {
   );
 };
 
-export const generateCode = (length: number = 6) => {
+export const generateCode = (length: number = 8) => {
   let result = '';
   const characters = '0123456789';
   const charactersLength = characters.length;

@@ -3,7 +3,7 @@ import { verifyUserPermission } from '../../lib/auth';
 import { JsonApiResponse } from '../../util/responses';
 import {
   createProviderRequestBody,
-  profileInfoModelProps,
+  ProfileInfoModelProps,
   ProviderModelProps,
 } from '../../types';
 import { generatePasswordHash } from '../../helpers/utils';
@@ -51,7 +51,7 @@ providersPostRequestHandler.post(
         password: generatePasswordHash(data.password),
       };
 
-      const personalInfoData: profileInfoModelProps = {
+      const personalInfoData: ProfileInfoModelProps = {
         address: data?.address ?? '',
         city: data?.city ?? '',
         country: data.country ?? '',

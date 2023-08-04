@@ -1,63 +1,66 @@
 import { providerRepo } from '../typeorm/repositories/providerRepository';
-import {
-  createProviderRequestBody,
-  profileInfoModelProps,
-  ProviderModelProps,
-} from '../types';
-import { Admin } from '../typeorm/entity/admin';
+import { ProfileInfoModelProps, ProviderModelProps } from '../types';
 import { Provider } from '../typeorm/entity/providers';
 import {
   createNewPersonalInfo,
   getPersonalInfoCountByPhone,
 } from './personalInfoStore';
 import { DefaultJsonResponse } from '../util/responses';
+import { customPromiseRequest } from '../lib/api';
 
 export const adminCreateNewProvider = async (
   data: ProviderModelProps,
-  personalInfoData: profileInfoModelProps,
+  personalInfoData: ProfileInfoModelProps,
   phone: string
 ) => {
   const providerRepository = providerRepo();
 
-  const isUnique = await Promise.all([
-    getPersonalInfoCountByPhone(phone),
+  const [infoCountByPhone, providerCount, staffIdAndCount]: any =
+    await customPromiseRequest([
+      getPersonalInfoCountByPhone(phone),
 
-    providerRepository
-      .createQueryBuilder('provider')
-      .where('LOWER(provider.email) LIKE :email', {
-        email: data.email,
-      })
-      .orWhere('LOWER(provider.username) LIKE :username', {
-        username: data.username,
-      })
-      .select(['provider.email', 'provider.username'])
-      .getOne(),
+      providerRepository
+        .createQueryBuilder('provider')
+        .where('LOWER(provider.email) LIKE :email', {
+          email: data.email,
+        })
+        .orWhere('LOWER(provider.username) LIKE :username', {
+          username: data.username,
+        })
+        .getCount(),
 
-    providerRepository
-      .createQueryBuilder('provider')
-      .where(
-        'LOWER(provider.staff_id) = :staffId AND provider.siteId = :siteId',
-        {
-          staffId: data.staff_id,
-          siteId: data.siteId,
-        }
-      )
-      .getCount(),
-  ]);
+      providerRepository
+        .createQueryBuilder('provider')
+        .where(
+          'LOWER(provider.staff_id) = :staffId AND provider.siteId = :siteId',
+          {
+            staffId: data.staff_id,
+            siteId: data.siteId,
+          }
+        )
+        .getCount(),
+    ]);
 
-  if (isUnique[0] >= 1 || isUnique[1] || isUnique[2] >= 1) {
-    if (isUnique[2] >= 1)
+  if (
+    infoCountByPhone.status.toString() === 'fulfilled' &&
+    providerCount.status.toString() === 'fulfilled' &&
+    staffIdAndCount.status.toString() === 'fulfilled'
+  ) {
+    if (Number(staffIdAndCount?.value.toString()) >= 1) {
       return DefaultJsonResponse(
         'Provider With Staff ID already exists',
         null,
         false
       );
-    else
+    } else if (Number(infoCountByPhone?.value.toString()) >= 1) {
+      return DefaultJsonResponse('User with phone already exists', null, false);
+    } else if (Number(providerCount?.value.toString()) >= 1) {
       return DefaultJsonResponse(
-        'Provider with Username, Email or Phone already exist...',
+        'Provider with Username or Email already exits',
         null,
         false
       );
+    }
   }
 
   const newProvider = await providerRepository.save(new Provider(data));
