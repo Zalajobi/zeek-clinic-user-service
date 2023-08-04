@@ -1,63 +1,33 @@
-import express = require('express');
-import { JsonResponse } from '../util/responses';
-import { adminModelProps } from '../types';
-import { verifyUserPermission } from '../lib/auth';
+import { Router } from 'express';
+import {
+  createNewAdmin,
+  getAdminAndProfileDataByEmailOrUsername,
+  getAdminPrimaryLoginInformation,
+  getAdminPrimaryInformationAndProfile,
+  updateAdminData,
+} from '../../datastore/adminStore';
 import {
   generateCode,
   generateJSONTokenCredentials,
   generatePasswordHash,
   validatePassword,
-  verifyJSONToken,
-} from '../helpers/utils';
-import {
-  createNewAdmin,
-  getAdminAndProfileDataByEmailOrUsername,
-  getAdminBaseDataAndProfileDataByAdminId,
-  getAdminPrimaryInformation,
-  getAdminPrimaryInformationAndProfile,
-  updateAdminData,
-  updateAdminPasswordByAdminId,
-} from '../datastore/adminStore';
-import {
-  sendResetPasswordEmail,
-  sendSignupCompleteProfileEmail,
-} from '../messaging/email';
-import { JWTDataProps } from '../types/jwt';
-import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
+} from '../../helpers/utils';
+import { JsonApiResponse } from '../../util/responses';
+import { verifyUserPermission } from '../../lib/auth';
+import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
+import { sendResetPasswordEmail } from '../../messaging/email';
+import { AdminModelProps } from '../../typeorm/objectsTypes/adminObjectTypes';
 
-const adminRouter = express.Router();
+const adminPostRequestHandler = Router();
 
-adminRouter.post('/admin/create', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false;
-
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
-    );
-
-    if (!verifiedUser) return JsonResponse(res, message, success, null, 401);
-    req.body.password = generatePasswordHash(req.body.password);
-
-    const newAdmin = await createNewAdmin(req.body as adminModelProps);
-
-    return JsonResponse(res, newAdmin.message, newAdmin.success, null, 200);
-  } catch (error) {
-    if (error instanceof Error) message = error.message;
-
-    return JsonResponse(res, message, success, null, 403);
-  }
-});
-
-adminRouter.post(`/admin/login`, async (req, res) => {
+adminPostRequestHandler.post(`/login`, async (req, res) => {
   let responseMessage = 'Incorrect Credentials',
     jwtSignData = null,
     success = false;
   try {
     const { email, password, rememberMe } = req.body;
 
-    const admin = await getAdminPrimaryInformation(email as string);
+    const admin = await getAdminPrimaryLoginInformation(email as string);
 
     if (
       validatePassword(password as string, admin?.password ?? ('' as string))
@@ -66,6 +36,7 @@ adminRouter.post(`/admin/login`, async (req, res) => {
         id: admin?.id ?? '',
         email: admin?.email ?? '',
         role: admin?.role ?? '',
+        siteId: admin?.siteId,
       };
 
       // if remember me, set the date expiration of the jwt to 1 day
@@ -79,12 +50,13 @@ adminRouter.post(`/admin/login`, async (req, res) => {
       success = true;
     }
 
-    JsonResponse(
+    return JsonApiResponse(
       res,
       responseMessage,
       success,
       {
         token: jwtSignData,
+        role: admin?.role,
       },
       200
     );
@@ -92,110 +64,112 @@ adminRouter.post(`/admin/login`, async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    JsonResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 403);
+  }
+});
+
+adminPostRequestHandler.post('/create-admin', async (req, res) => {
+  let message = 'Not Authorised',
+    success = false;
+  const requestBody = req.body as CreateAdminApiJsonBody;
+
+  try {
+    const { siteId, role, email, username, staff_id, ...profileInfoData } =
+      requestBody;
+    const {
+      first_name,
+      last_name,
+      middle_name,
+      country,
+      state,
+      city,
+      phone,
+      zip_code,
+      religion,
+      gender,
+      dob,
+      title,
+      address,
+      address_two,
+      profile_pic,
+      marital_status,
+      ...adminData
+    } = requestBody;
+
+    const verifiedUser = await verifyUserPermission(
+      req?.headers?.token as string,
+      ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
+    );
+    console.log('2');
+
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+
+    const newAdmin = await createNewAdmin(
+      adminData as AdminModelProps,
+      profileInfoData as ProfileInfoModelProps
+    );
+
+    return JsonApiResponse(
+      res,
+      newAdmin.message,
+      newAdmin.success as boolean,
+      null,
+      200
+    );
+  } catch (error) {
+    if (error instanceof Error) message = error.message;
+
+    return JsonApiResponse(res, message, success, null, 403);
   }
 });
 
 // Send  Email With Temporary Token For Password Reset
-adminRouter.post(`/admin/password/request-password/reset`, async (req, res) => {
-  let responseMessage = 'User with email or username not found',
-    success = false;
-  try {
-    const user = await getAdminPrimaryInformationAndProfile(req.body.email);
-    if (user) {
-      const token = generateJSONTokenCredentials(
-        {
-          id: user?.id ?? '',
-          email: user?.email ?? '',
-          role: user?.role ?? '',
-        },
-        Math.floor(Date.now() / 1000) + 60 * 10
-      );
-
-      const passwordResetEmailResponse = await sendResetPasswordEmail(
-        user?.email ?? '',
-        token,
-        user?.personalInfo?.first_name ?? ''
-      );
-      if (passwordResetEmailResponse.accepted.length !== 0) {
-        JsonResponse(
-          res,
-          `Password reset link sent to ${user?.email ?? ''}`,
-          true,
-          null,
-          401
-        );
-      }
-    } else {
-      JsonResponse(res, responseMessage, success, null, 401);
-    }
-  } catch (error) {
-    let message = 'Something Went Wrong';
-    if (error instanceof Error) message = error.message;
-
-    JsonResponse(res, message, false, null, 403);
-  }
-});
-
-// Verify Token with JWT and update Password
-adminRouter.get(
-  '/admin/password/request-password/jwt_token/verify',
+adminPostRequestHandler.post(
+  `/password/request-password/reset`,
   async (req, res) => {
-    let message = 'Token has expired',
+    let responseMessage = 'User with email or username not found',
       success = false;
-
     try {
-      const verifyToken = <JWTDataProps>(
-        (<unknown>verifyJSONToken(req.query.token as string))
-      );
+      const user = await getAdminPrimaryInformationAndProfile(req.body.email);
+      if (user) {
+        const token = generateJSONTokenCredentials(
+          {
+            id: user?.id ?? '',
+            email: user?.email ?? '',
+            role: user?.role ?? '',
+          },
+          Math.floor(Date.now() / 1000) + 60 * 10
+        );
 
-      if (verifyToken) JsonResponse(res, 'Token is valid', true, null, 200);
-      else JsonResponse(res, 'Token is invalid', false, null, 401);
+        const passwordResetEmailResponse = await sendResetPasswordEmail(
+          user?.email ?? '',
+          token,
+          user?.personalInfo?.first_name ?? ''
+        );
+        if (passwordResetEmailResponse.accepted.length !== 0) {
+          return JsonApiResponse(
+            res,
+            `Password reset link sent to ${user?.email ?? ''}`,
+            true,
+            null,
+            401
+          );
+        }
+      } else {
+        return JsonApiResponse(res, responseMessage, success, null, 401);
+      }
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );
 
-// Change Password When via password reset token
-adminRouter.put(`/admin/password/change_password`, async (req, res) => {
-  const { authorization } = req.headers,
-    { old_password, new_password } = req.body;
-  let message = 'Error Updating Password';
-
-  try {
-    const verifyToken = <JWTDataProps>(
-      (<unknown>verifyJSONToken(authorization as string))
-    );
-
-    if (verifyToken) {
-      const admin = await getAdminBaseDataAndProfileDataByAdminId(
-        verifyToken?.id ?? ''
-      );
-
-      if (validatePassword(old_password, admin?.password ?? '')) {
-        const password = generatePasswordHash(new_password);
-
-        if (await updateAdminPasswordByAdminId(verifyToken?.id ?? '', password))
-          message = 'Password Updated';
-      }
-    }
-
-    JsonResponse(res, message, true, null, 200);
-  } catch (error) {
-    let message = 'Something Went Wrong';
-    if (error instanceof Error) message = error.message;
-
-    JsonResponse(res, message, false, null, 403);
-  }
-});
-
 // Verify Admin Email, Username data, and send SMS to user number
-adminRouter.post(
-  `/admin/password/reset/user_verification/sms`,
+adminPostRequestHandler.post(
+  `/password/reset/user_verification/sms`,
   async (req, res) => {
     let message = 'Passcode is send to the admin registered phone number',
       success = true;
@@ -220,7 +194,7 @@ adminRouter.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -233,19 +207,19 @@ adminRouter.post(
         success = false;
       }
 
-      JsonResponse(res, message, success, null, 200);
+      return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );
 
 // Verify Admin Email, Username data, and Call user number
-adminRouter.post(
-  `/admin/password/reset/user_verification/direct-call`,
+adminPostRequestHandler.post(
+  `/password/reset/user_verification/direct-call`,
   async (req, res) => {
     let message = 'Passcode is send to the admin registered phone number',
       success = true;
@@ -270,7 +244,7 @@ adminRouter.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -283,19 +257,19 @@ adminRouter.post(
         success = false;
       }
 
-      JsonResponse(res, message, success, null, 200);
+      return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );
 
 // Verify Admin Email, Username data, and send code to user WhatsApp
-adminRouter.post(
-  `/admin/password/reset/user_verification/whatsApp`,
+adminPostRequestHandler.post(
+  `/password/reset/user_verification/whatsApp`,
   async (req, res) => {
     let message = 'Passcode is send to the admin registered phone number',
       success = true;
@@ -320,7 +294,7 @@ adminRouter.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -333,14 +307,14 @@ adminRouter.post(
         success = false;
       }
 
-      JsonResponse(res, message, success, null, 200);
+      return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      JsonResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 403);
     }
   }
 );
 
-export default adminRouter;
+export default adminPostRequestHandler;

@@ -1,9 +1,27 @@
-import {Response} from "express";
+import { Response } from 'express';
 
-export const JsonResponse = (res:Response, message:string, success:boolean, data:any, statusCode:number ) => {
+export const JsonApiResponse = (
+  res: Response,
+  message: string,
+  success: boolean,
+  data: any,
+  statusCode: number
+) => {
   res.status(statusCode).json({
     message,
     success,
-    data
-  })
-}
+    data,
+  });
+};
+
+export const DefaultJsonResponse = (
+  message: string,
+  data: any,
+  success?: boolean
+) => {
+  return {
+    message,
+    data,
+    success,
+  };
+};
