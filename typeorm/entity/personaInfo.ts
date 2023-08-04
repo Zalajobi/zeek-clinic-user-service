@@ -28,6 +28,7 @@ export class PersonalInformation {
     this.gender = data?.gender as string;
     this.dob = new Date(data?.dob as string);
     this.address = data?.address as string;
+    this.address_two = data?.address_two as string;
     this.city = data?.city as string;
     this.state = data?.state as string;
     this.country = data?.country as string;
@@ -90,6 +91,11 @@ export class PersonalInformation {
   @Column()
   address: string;
 
+  @Column({
+    default: '',
+  })
+  address_two?: string;
+
   @Column()
   city: string;
 
@@ -130,14 +136,14 @@ export class PersonalInformation {
 
   // Relations
   @OneToOne(() => Provider, (provider) => provider.personalInfo)
-  @JoinColumn()
+  // @JoinColumn()
   provider?: Provider;
 
   @OneToOne(() => Patients)
-  @JoinColumn()
+  // @JoinColumn()
   patient?: Patients;
 
   @OneToOne(() => Admin)
-  @JoinColumn()
+  // @JoinColumn()
   admin?: Admin;
 }

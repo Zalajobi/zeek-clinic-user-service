@@ -1,10 +1,5 @@
 import { providerRepo } from '../typeorm/repositories/providerRepository';
-import {
-  createProviderRequestBody,
-  ProfileInfoModelProps,
-  ProviderModelProps,
-} from '../types';
-import { Admin } from '../typeorm/entity/admin';
+import { ProfileInfoModelProps, ProviderModelProps } from '../types';
 import { Provider } from '../typeorm/entity/providers';
 import {
   createNewPersonalInfo,
@@ -12,20 +7,6 @@ import {
 } from './personalInfoStore';
 import { DefaultJsonResponse } from '../util/responses';
 import { customPromiseRequest } from '../lib/api';
-
-type CreateProviderUniquePromise = [
-  { status: string; value: number },
-
-  {
-    status: string;
-    value: number;
-  },
-
-  {
-    status: string;
-    value: number;
-  }
-];
 
 export const adminCreateNewProvider = async (
   data: ProviderModelProps,
@@ -59,10 +40,6 @@ export const adminCreateNewProvider = async (
         )
         .getCount(),
     ]);
-
-  console.log(infoCountByPhone);
-  console.log(providerCount);
-  console.log(staffIdAndCount);
 
   if (
     infoCountByPhone.status.toString() === 'fulfilled' &&

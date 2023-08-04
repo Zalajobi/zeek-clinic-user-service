@@ -48,10 +48,10 @@ export class Provider {
   })
   primaryRoleId: string;
 
-  @Column({
-    nullable: true,
-  })
-  personalInfoId?: string;
+  // @Column({
+  //   nullable: true,
+  // })
+  // personalInfoId?: string;
 
   @Column({
     nullable: false,

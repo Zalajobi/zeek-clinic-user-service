@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 import { Site } from './site';
 import { AdminRoles } from './enums';
-import { AdminModelProps } from '../../types';
 import { PersonalInformation } from './personaInfo';
+import { AdminModelProps } from '../objectsTypes/adminObjectTypes';
 
 @Entity()
 export class Admin {
@@ -21,6 +21,8 @@ export class Admin {
     this.password = data?.password as string;
     this.username = data?.username as string;
     this.staff_id = data?.staff_id as string;
+    this.password_reset_request_timestamp =
+      data?.password_reset_request_timestamp as Date;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -31,10 +33,10 @@ export class Admin {
   })
   siteId: string;
 
-  @Column({
-    nullable: true,
-  })
-  personalInfoId?: string;
+  // @Column({
+  //   nullable: true,
+  // })
+  // personalInfoId?: string;
 
   @Column({
     type: 'enum',

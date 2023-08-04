@@ -1,58 +1,88 @@
-import { AdminModelProps, CreateAdminApiJsonBody } from '../types';
+import { ProfileInfoModelProps } from '../types';
 import { adminRepo } from '../typeorm/repositories/adminRepository';
 import {
   createNewPersonalInfo,
-  getPersonalInfoByPhone,
+  getPersonalInfoCountByPhone,
 } from './personalInfoStore';
 import { Admin } from '../typeorm/entity/admin';
-import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
 import email from '../lib/email';
+import { generateCode, generatePasswordHash } from '../helpers/utils';
+import { customPromiseRequest } from '../lib/api';
+import { DefaultJsonResponse } from '../util/responses';
+import { AdminModelProps } from '../typeorm/objectsTypes/adminObjectTypes';
 
-export const createNewAdmin = async (data: CreateAdminApiJsonBody) => {
-  // const adminRepository = adminRepo();
-  //
-  // let isNotUnique = await adminRepository
-  //   .createQueryBuilder('admin')
-  //   .where('admin.email = :email', {
-  //     email: data?.email,
-  //   })
-  //   .orWhere('admin.username = :username', {
-  //     username: data?.username,
-  //   })
-  //   .getOne();
-  //
-  // if (
-  //   isNotUnique ||
-  //   (await getPersonalInfoByPhone(data?.profileData?.phone ?? ''))
-  // )
-  //   return {
-  //     success: false,
-  //     message: 'Admin with same email, phone or username already exists',
-  //   };
-  //
-  // const admin = await adminRepository.save(new Admin(data));
-  // data.profileData.adminId = admin.id;
-  //
-  // const profileInformation = await createNewPersonalInfo(data.profileData);
-  //
-  // if (admin && profileInformation) {
-  //   await adminRepository.update(
-  //     {
-  //       id: admin.id,
-  //     },
-  //     {
-  //       personalInfoId: profileInformation.id,
-  //     }
-  //   );
-  // }
-  //
-  // return {
-  //   success: admin && profileInformation ? true : false,
-  //   message:
-  //     admin && profileInformation
-  //       ? 'Admin Creation Successful'
-  //       : 'Something happened. Error happened while creating Admin',
-  // };
+export const createNewAdmin = async (
+  adminData: AdminModelProps,
+  profileInfoData: ProfileInfoModelProps
+) => {
+  const adminRepository = adminRepo();
+
+  const [infoCountByPhone, adminCount, staffIdAndCount]: any =
+    await customPromiseRequest([
+      getPersonalInfoCountByPhone(profileInfoData?.phone ?? ''),
+
+      adminRepository
+        .createQueryBuilder('admin')
+        .where('LOWER(admin.email) LIKE :email', {
+          email: adminData.email,
+        })
+        .orWhere('LOWER(admin.username) LIKE :username', {
+          username: adminData.username,
+        })
+        .getCount(),
+
+      adminRepository
+        .createQueryBuilder('admin')
+        .where('LOWER(admin.staff_id) = :staffId AND admin.siteId = :siteId', {
+          staffId: adminData.staff_id,
+          siteId: adminData.siteId,
+        })
+        .getCount(),
+    ]);
+
+  const tempPassword = generateCode();
+  console.log(`Temp Password: ${tempPassword}`);
+
+  adminData.password = generatePasswordHash(tempPassword);
+  adminData.staff_id = adminData.staff_id.toLowerCase();
+
+  if (
+    infoCountByPhone.status.toString() === 'fulfilled' &&
+    adminCount.status.toString() === 'fulfilled' &&
+    staffIdAndCount.status.toString() === 'fulfilled'
+  ) {
+    if (Number(staffIdAndCount?.value.toString()) >= 1) {
+      return DefaultJsonResponse(
+        'Admin With Staff ID already exists',
+        null,
+        false
+      );
+    } else if (Number(infoCountByPhone?.value.toString()) >= 1) {
+      return DefaultJsonResponse('User with phone already exists', null, false);
+    } else if (Number(adminCount?.value.toString()) >= 1) {
+      return DefaultJsonResponse(
+        'Admin with Username or Email already exits',
+        null,
+        false
+      );
+    }
+  }
+
+  const admin = await adminRepository.save(new Admin(adminData));
+  if (admin) {
+    profileInfoData.adminId = admin.id ?? '';
+    await createNewPersonalInfo(profileInfoData);
+
+    return DefaultJsonResponse(
+      admin
+        ? 'Admin Creation Successful'
+        : 'Something happened. Error happened while creating Admin',
+      admin,
+      admin ? true : false
+    );
+  }
+
+  return DefaultJsonResponse('Something Went Wrong', null, false);
 };
 
 export const getAdminPrimaryLoginInformation = async (value: string) => {
@@ -119,7 +149,7 @@ export const getAdminBaseDataAndProfileDataByAdminId = async (id: string) => {
 export const getOneAdminDataById = async (id: string) => {
   const adminRepository = adminRepo();
 
-  return <AdminEntityObject>await adminRepository.findOneBy({
+  return <AdminModelProps>await adminRepository.findOneBy({
     id,
   });
 };
@@ -140,7 +170,7 @@ export const updateAdminPasswordByAdminId = async (
   );
 };
 
-export const updateAdminData = async (id: string, data: AdminEntityObject) => {
+export const updateAdminData = async (id: string, data: AdminModelProps) => {
   const adminRepository = adminRepo();
 
   return await adminRepository.update(

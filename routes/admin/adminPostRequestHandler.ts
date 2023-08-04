@@ -14,9 +14,9 @@ import {
 } from '../../helpers/utils';
 import { JsonApiResponse } from '../../util/responses';
 import { verifyUserPermission } from '../../lib/auth';
-import { AdminModelProps, CreateAdminApiJsonBody } from '../../types';
+import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
 import { sendResetPasswordEmail } from '../../messaging/email';
-import { AdminEntityObject } from '../../typeorm/objectsTypes/adminObjectTypes';
+import { AdminModelProps } from '../../typeorm/objectsTypes/adminObjectTypes';
 
 const adminPostRequestHandler = Router();
 
@@ -74,26 +74,48 @@ adminPostRequestHandler.post('/create-admin', async (req, res) => {
   const requestBody = req.body as CreateAdminApiJsonBody;
 
   try {
-    console.log('1');
-    // const {email, appointments, department, is_consultant, is_specialist, ...profileInfoData} = data;
-    // const {first_name, last_name, middle_name, relationship_status, religion, country, state, city, dob, phone ,...providersData} = data
-    // const verifiedUser = await verifyUserPermission(
-    //   req?.headers?.token as string,
-    //   ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
-    // );
-    // console.log('2');
-    //
-    // if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+    const { siteId, role, email, username, staff_id, ...profileInfoData } =
+      requestBody;
+    const {
+      first_name,
+      last_name,
+      middle_name,
+      country,
+      state,
+      city,
+      phone,
+      zip_code,
+      religion,
+      gender,
+      dob,
+      title,
+      address,
+      address_two,
+      profile_pic,
+      marital_status,
+      ...adminData
+    } = requestBody;
 
-    // const { personalInfo, ...adminData } = user;
-    // console.log('3')
-    // req.body.password = generatePasswordHash(generateCode());
-    // console.log("4")
+    const verifiedUser = await verifyUserPermission(
+      req?.headers?.token as string,
+      ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
+    );
+    console.log('2');
 
-    const newAdmin = await createNewAdmin(requestBody);
-    //
-    // return JsonApiResponse(res, newAdmin.message, newAdmin.success, null, 200);
-    return JsonApiResponse(res, 'newAdmin.message', true, null, 200);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+
+    const newAdmin = await createNewAdmin(
+      adminData as AdminModelProps,
+      profileInfoData as ProfileInfoModelProps
+    );
+
+    return JsonApiResponse(
+      res,
+      newAdmin.message,
+      newAdmin.success as boolean,
+      null,
+      200
+    );
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
@@ -172,7 +194,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -222,7 +244,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -272,7 +294,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 

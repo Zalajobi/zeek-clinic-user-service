@@ -20,7 +20,7 @@ import { PatientEmployer } from './patientEmployer';
 export class Patients {
   constructor(data: CreatePatientsDataProps) {
     this.siteId = data?.siteId as string;
-    this.personalInfoId = data?.personalInfoId as string;
+    // this.personalInfoId = data?.personalInfoId as string;
     this.departmentId = data?.departmentId as string;
     this.serviceareaId = data?.serviceareaId as string;
     this.unitId = data?.unitId as string;
@@ -38,10 +38,10 @@ export class Patients {
   })
   siteId: string;
 
-  @Column({
-    nullable: true,
-  })
-  personalInfoId: string;
+  // @Column({
+  //   nullable: true,
+  // })
+  // personalInfoId: string;
 
   @Column({
     nullable: true,
