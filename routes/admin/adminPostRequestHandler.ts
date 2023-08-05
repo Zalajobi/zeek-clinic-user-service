@@ -18,6 +18,7 @@ import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
 import { sendResetPasswordEmail } from '../../messaging/email';
 import { AdminModelProps } from '../../typeorm/objectsTypes/adminObjectTypes';
 import { emitNewEvent } from '../../messaging/rabbitMq';
+import { CREATE_ADMIN_QUEUE_NAME } from '../../util/constants';
 
 const adminPostRequestHandler = Router();
 
@@ -113,7 +114,7 @@ adminPostRequestHandler.post('/create-admin', async (req, res) => {
     );
 
     if (newAdmin.success as boolean) {
-      await emitNewEvent('hello', {
+      await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
         email: requestBody.email,
         firstName: requestBody.first_name,
         lastName: requestBody.last_name,
