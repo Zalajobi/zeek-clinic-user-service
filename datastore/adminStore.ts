@@ -40,10 +40,6 @@ export const createNewAdmin = async (
         .getCount(),
     ]);
 
-  const tempPassword = generateCode();
-  console.log(`Temp Password: ${tempPassword}`);
-
-  adminData.password = generatePasswordHash(tempPassword);
   adminData.staff_id = adminData.staff_id.toLowerCase();
 
   if (
