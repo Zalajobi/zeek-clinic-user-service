@@ -17,7 +17,7 @@ import { Patients } from './patient';
 })
 export class PersonalInformation {
   constructor(data: ProfileInfoModelProps) {
-    this.providerId = data?.providerId as string;
+    // this.providerId = data?.providerId as string;
     this.patientId = data?.patientId as string;
     this.adminId = data?.adminId as string;
     this.phone = data?.phone as string;
@@ -41,11 +41,11 @@ export class PersonalInformation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    nullable: true,
-    unique: true,
-  })
-  providerId?: string;
+  // @Column({
+  //   nullable: true,
+  //   unique: true,
+  // })
+  // providerId?: string;
 
   @Column({
     nullable: true,
@@ -134,10 +134,10 @@ export class PersonalInformation {
   @CreateDateColumn()
   updated_at: Date;
 
-  // Relations
-  @OneToOne(() => Provider, (provider) => provider.personalInfo)
-  // @JoinColumn()
-  provider?: Provider;
+  // // Relations
+  // @OneToOne(() => Provider, (provider) => provider.personalInfo)
+  // // @JoinColumn()
+  // provider?: Provider;
 
   @OneToOne(() => Patients)
   // @JoinColumn()

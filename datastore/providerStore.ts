@@ -63,11 +63,11 @@ export const adminCreateNewProvider = async (
     }
   }
 
-  const newProvider = await providerRepository.save(new Provider(data));
+  const personalInfo = await createNewPersonalInfo(personalInfoData);
+  data.personalInfoId = personalInfo.id;
 
-  if (newProvider) {
-    personalInfoData.providerId = newProvider?.id ?? '';
-    await createNewPersonalInfo(personalInfoData);
+  if (personalInfo) {
+    const newProvider = await providerRepository.save(new Provider(data));
 
     return DefaultJsonResponse('New Provider Added', newProvider, true);
   }

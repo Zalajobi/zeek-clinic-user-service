@@ -54,6 +54,7 @@ providersPostRequestHandler.post(
         username: data.username,
         email: data.email,
         password: generatePasswordHash(tempPassword),
+        personalInfoId: '',
       };
 
       const personalInfoData: ProfileInfoModelProps = {
@@ -72,7 +73,7 @@ providersPostRequestHandler.post(
         phone: data?.phone ?? '',
         profile_pic: data?.profilePic ?? '',
         religion: data?.religion ?? '',
-        providerId: '',
+        // providerId: '',
       };
 
       const newAdmin = await adminCreateNewProvider(

@@ -1,5 +1,6 @@
 import { AdminRoles, MartialStatus } from '../typeorm/entity/enums';
 import { AdminModelProps } from '../typeorm/objectsTypes/adminObjectTypes';
+import { PersonalInformation } from '../typeorm/entity/personaInfo';
 
 export type loginProps = {
   email: string;
@@ -83,7 +84,7 @@ export type ProfileInfoModelProps = {
   zip_code: string;
   profile_pic?: string;
   religion?: string;
-  providerId?: string;
+  // providerId?: string;
   adminId?: string;
   marital_status?: MartialStatus;
   profilePic?: string;
@@ -123,7 +124,7 @@ export type createProviderRequestBody = {
 export type ProviderModelProps = {
   siteId: string;
   primaryRoleId: string;
-  personalInfoId?: string;
+  personalInfoId: string;
   departmentId: string;
   serviceareaId: string;
   unitId: string;
@@ -134,4 +135,5 @@ export type ProviderModelProps = {
   is_consultant: boolean;
   is_specialist: boolean;
   appointments: boolean;
+  personalInfo?: PersonalInformation;
 };
