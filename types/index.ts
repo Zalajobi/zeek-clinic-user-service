@@ -85,7 +85,7 @@ export type ProfileInfoModelProps = {
   profile_pic?: string;
   religion?: string;
   // providerId?: string;
-  adminId?: string;
+  // adminId?: string;
   marital_status?: MartialStatus;
   profilePic?: string;
   patientId?: string;

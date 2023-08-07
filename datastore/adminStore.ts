@@ -6,13 +6,10 @@ import {
 } from './personalInfoStore';
 import { Admin } from '../typeorm/entity/admin';
 import email from '../lib/email';
-import {
-  generateTemporaryPassCode,
-  generatePasswordHash,
-} from '../helpers/utils';
 import { customPromiseRequest } from '../lib/api';
 import { DefaultJsonResponse } from '../util/responses';
 import { AdminModelProps } from '../typeorm/objectsTypes/adminObjectTypes';
+import { AdminRoles } from '../typeorm/entity/enums';
 
 export const createNewAdmin = async (
   adminData: AdminModelProps,
@@ -44,6 +41,7 @@ export const createNewAdmin = async (
     ]);
 
   adminData.staff_id = adminData.staff_id.toLowerCase();
+  adminData.role = adminData.role.replace(' ', '_') as AdminRoles;
 
   if (
     infoCountByPhone.status.toString() === 'fulfilled' &&
@@ -67,11 +65,13 @@ export const createNewAdmin = async (
     }
   }
 
-  const admin = await adminRepository.save(new Admin(adminData));
-  if (admin) {
-    profileInfoData.adminId = admin.id ?? '';
-    await createNewPersonalInfo(profileInfoData);
+  const personalInfo = await createNewPersonalInfo(profileInfoData);
+  const newAdmin = new Admin(adminData);
+  newAdmin.personalInfo = personalInfo;
 
+  const admin = await adminRepository.save(newAdmin);
+
+  if (admin) {
     return DefaultJsonResponse(
       admin
         ? 'Admin Creation Successful'

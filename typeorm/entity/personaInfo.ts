@@ -19,7 +19,7 @@ export class PersonalInformation {
   constructor(data: ProfileInfoModelProps) {
     // this.providerId = data?.providerId as string;
     this.patientId = data?.patientId as string;
-    this.adminId = data?.adminId as string;
+    // this.adminId = data?.adminId as string;
     this.phone = data?.phone as string;
     this.first_name = data?.first_name as string;
     this.last_name = data?.last_name as string;
@@ -53,11 +53,11 @@ export class PersonalInformation {
   })
   patientId?: string;
 
-  @Column({
-    nullable: true,
-    unique: true,
-  })
-  adminId?: string;
+  // @Column({
+  //   nullable: true,
+  //   unique: true,
+  // })
+  // adminId?: string;
 
   @Column({
     unique: true,
@@ -134,16 +134,14 @@ export class PersonalInformation {
   @CreateDateColumn()
   updated_at: Date;
 
-  // // Relations
-  // @OneToOne(() => Provider, (provider) => provider.personalInfo)
-  // // @JoinColumn()
-  // provider?: Provider;
+  // Relations
+  @OneToOne(() => Provider, (provider) => provider.personalInfo)
+  provider?: Provider;
 
   @OneToOne(() => Patients)
-  // @JoinColumn()
+  @JoinColumn()
   patient?: Patients;
 
-  @OneToOne(() => Admin)
-  // @JoinColumn()
-  admin?: Admin;
+  @OneToOne(() => Admin, (admin) => admin.personalInfo)
+  admin: Admin;
 }
