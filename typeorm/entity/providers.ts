@@ -25,6 +25,7 @@ export class Provider {
     this.primaryRoleId = data?.primaryRoleId as string;
     this.departmentId = data?.departmentId as string;
     this.serviceareaId = data?.serviceareaId as string;
+    // this.personalInfoId = data?.personalInfoId as string;
     this.unitId = data?.unitId as string;
     this.email = data?.email as string;
     this.password = data?.password as string;
@@ -49,9 +50,9 @@ export class Provider {
   primaryRoleId: string;
 
   // @Column({
-  //   nullable: true,
+  //   nullable: false,
   // })
-  // personalInfoId?: string;
+  // personalInfoId: string;
 
   @Column({
     nullable: false,
@@ -122,9 +123,15 @@ export class Provider {
   updated_at: Date;
 
   // Relations
-  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.provider)
+  @OneToOne(
+    () => PersonalInformation,
+    (personalInfo) => personalInfo.provider,
+    {
+      onDelete: 'CASCADE',
+    }
+  )
   @JoinColumn()
-  personalInfo?: PersonalInformation;
+  personalInfo: PersonalInformation;
 
   @OneToMany((type) => Patients, (patients) => patients.careGiver)
   patients: Patients[];

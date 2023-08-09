@@ -7,7 +7,7 @@ import {
   updateAdminData,
 } from '../../datastore/adminStore';
 import {
-  generateCode,
+  generateTemporaryPassCode,
   generateJSONTokenCredentials,
   generatePasswordHash,
   validatePassword,
@@ -17,6 +17,8 @@ import { verifyUserPermission } from '../../lib/auth';
 import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
 import { sendResetPasswordEmail } from '../../messaging/email';
 import { AdminModelProps } from '../../typeorm/objectsTypes/adminObjectTypes';
+import { emitNewEvent } from '../../messaging/rabbitMq';
+import { CREATE_ADMIN_QUEUE_NAME } from '../../util/constants';
 
 const adminPostRequestHandler = Router();
 
@@ -100,14 +102,26 @@ adminPostRequestHandler.post('/create-admin', async (req, res) => {
       req?.headers?.token as string,
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
     );
-    console.log('2');
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+
+    const tempPassword = generateTemporaryPassCode();
+    adminData.password = generatePasswordHash(tempPassword);
 
     const newAdmin = await createNewAdmin(
       adminData as AdminModelProps,
       profileInfoData as ProfileInfoModelProps
     );
+
+    if (newAdmin.success as boolean) {
+      await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
+        email: requestBody.email,
+        firstName: requestBody.first_name,
+        lastName: requestBody.last_name,
+        tempPassword: tempPassword,
+        userName: requestBody.username,
+      });
+    }
 
     return JsonApiResponse(
       res,
@@ -182,7 +196,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendSMSMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Your Temporary Code Is ${passwordResetCode}`
@@ -232,7 +246,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendAudioMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Your Temporary Code Is ${passwordResetCode}`
@@ -282,7 +296,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendWhatsAppMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`
