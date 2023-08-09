@@ -206,6 +206,26 @@ export const getAdminHeaderBaseTemplateData = async (id: string) => {
       id,
     })
     .leftJoinAndSelect('admin.personalInfo', 'profile')
-    .select(['admin.role', 'profile.first_name', 'profile.last_name'])
+    .select([
+      'admin.role',
+      'admin.siteId',
+      'admin.email',
+      'admin.staff_id',
+      'profile.first_name',
+      'profile.last_name',
+      'profile.phone',
+      'profile.title',
+      'profile.gender',
+      'profile.dob',
+      'profile.address',
+      'profile.city',
+      'profile.country',
+      'profile.zip_code',
+      'profile.profile_pic',
+      'profile.created_at',
+      'profile.middle_name',
+      'profile.religion',
+      'profile.marital_status',
+    ])
     .getOne();
 };
