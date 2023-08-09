@@ -6,10 +6,10 @@ import {
 } from './personalInfoStore';
 import { Admin } from '../typeorm/entity/admin';
 import email from '../lib/email';
-import { generateCode, generatePasswordHash } from '../helpers/utils';
 import { customPromiseRequest } from '../lib/api';
 import { DefaultJsonResponse } from '../util/responses';
 import { AdminModelProps } from '../typeorm/objectsTypes/adminObjectTypes';
+import { AdminRoles } from '../typeorm/entity/enums';
 
 export const createNewAdmin = async (
   adminData: AdminModelProps,
@@ -41,6 +41,7 @@ export const createNewAdmin = async (
     ]);
 
   adminData.staff_id = adminData.staff_id.toLowerCase();
+  adminData.role = adminData.role.replace(' ', '_') as AdminRoles;
 
   if (
     infoCountByPhone.status.toString() === 'fulfilled' &&
@@ -64,11 +65,13 @@ export const createNewAdmin = async (
     }
   }
 
-  const admin = await adminRepository.save(new Admin(adminData));
-  if (admin) {
-    profileInfoData.adminId = admin.id ?? '';
-    await createNewPersonalInfo(profileInfoData);
+  const personalInfo = await createNewPersonalInfo(profileInfoData);
+  const newAdmin = new Admin(adminData);
+  newAdmin.personalInfo = personalInfo;
 
+  const admin = await adminRepository.save(newAdmin);
+
+  if (admin) {
     return DefaultJsonResponse(
       admin
         ? 'Admin Creation Successful'
@@ -203,6 +206,26 @@ export const getAdminHeaderBaseTemplateData = async (id: string) => {
       id,
     })
     .leftJoinAndSelect('admin.personalInfo', 'profile')
-    .select(['admin.role', 'profile.first_name', 'profile.last_name'])
+    .select([
+      'admin.role',
+      'admin.siteId',
+      'admin.email',
+      'admin.staff_id',
+      'profile.first_name',
+      'profile.last_name',
+      'profile.phone',
+      'profile.title',
+      'profile.gender',
+      'profile.dob',
+      'profile.address',
+      'profile.city',
+      'profile.country',
+      'profile.zip_code',
+      'profile.profile_pic',
+      'profile.created_at',
+      'profile.middle_name',
+      'profile.religion',
+      'profile.marital_status',
+    ])
     .getOne();
 };

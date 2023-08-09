@@ -7,7 +7,7 @@ import {
   updateAdminData,
 } from '../../datastore/adminStore';
 import {
-  generateCode,
+  generateTemporaryPassCode,
   generateJSONTokenCredentials,
   generatePasswordHash,
   validatePassword,
@@ -105,7 +105,7 @@ adminPostRequestHandler.post('/create-admin', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const tempPassword = generateCode();
+    const tempPassword = generateTemporaryPassCode();
     adminData.password = generatePasswordHash(tempPassword);
 
     const newAdmin = await createNewAdmin(
@@ -196,7 +196,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendSMSMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Your Temporary Code Is ${passwordResetCode}`
@@ -246,7 +246,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendAudioMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Your Temporary Code Is ${passwordResetCode}`
@@ -296,7 +296,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendWhatsAppMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`

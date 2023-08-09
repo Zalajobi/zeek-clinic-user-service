@@ -12,8 +12,11 @@ export const getPersonalInfoByPhone = async (phone: string) => {
 
 export const createNewPersonalInfo = async (data: ProfileInfoModelProps) => {
   const personalInfoRepository = personalInfoRepo();
+  const personalInformation = new PersonalInformation(data);
 
-  return await personalInfoRepository.save(new PersonalInformation(data));
+  await personalInfoRepository.save(personalInformation);
+
+  return personalInformation;
 };
 
 export const getPersonalInfoCountByPhone = async (phone: string) => {
