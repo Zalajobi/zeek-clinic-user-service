@@ -1,11 +1,7 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '../../lib/auth';
 import { JsonApiResponse } from '../../util/responses';
-import {
-  createProviderRequestBody,
-  ProfileInfoModelProps,
-  ProviderModelProps,
-} from '../../types';
+import { ProfileInfoModelProps } from '../../types';
 import {
   generateTemporaryPassCode,
   generatePasswordHash,
@@ -14,6 +10,10 @@ import { adminCreateNewProvider } from '../../datastore/providerStore';
 import { MartialStatus } from '../../typeorm/entity/enums';
 import { emitNewEvent } from '../../messaging/rabbitMq';
 import { CREATE_ADMIN_QUEUE_NAME } from '../../util/constants';
+import {
+  createProviderRequestBody,
+  ProviderModelProps,
+} from '../../typeorm/objectsTypes/providersObjectTypes';
 
 const providersPostRequestHandler = Router();
 

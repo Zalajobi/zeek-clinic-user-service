@@ -1,5 +1,5 @@
 import { providerRepo } from '../typeorm/repositories/providerRepository';
-import { ProfileInfoModelProps, ProviderModelProps } from '../types';
+import { ProfileInfoModelProps } from '../types';
 import { Provider } from '../typeorm/entity/providers';
 import {
   createNewPersonalInfo,
@@ -7,7 +7,10 @@ import {
 } from './personalInfoStore';
 import { DefaultJsonResponse } from '../util/responses';
 import { customPromiseRequest } from '../lib/api';
+import { ProviderModelProps } from '../typeorm/objectsTypes/providersObjectTypes';
+import { getSiteInformationBySiteId } from './siteStore';
 
+// Post Requests Stores
 export const adminCreateNewProvider = async (
   data: ProviderModelProps,
   personalInfoData: ProfileInfoModelProps,
@@ -74,4 +77,40 @@ export const adminCreateNewProvider = async (
   }
 
   return DefaultJsonResponse('Something Went Wrong', null, false);
+};
+
+// Get Requests Stores
+export const adminGetAllProvidersData = async (siteId: string) => {
+  const providerRepository = providerRepo();
+
+  const [site, provider] = await Promise.all([
+    getSiteInformationBySiteId(siteId),
+
+    providerRepository
+      .createQueryBuilder('provider')
+      .where('provider.siteId = :siteId', {
+        siteId,
+      })
+      .leftJoinAndSelect('provider.personalInfo', 'profile')
+      .leftJoinAndSelect('provider.department', 'department')
+      .select([
+        'provider.id',
+        'provider.email',
+        'provider.created_at',
+        'profile.first_name',
+        'profile.last_name',
+        'profile.id',
+        'profile.phone',
+        'profile.title',
+        'profile.gender',
+        'profile.country',
+        'profile.profile_pic',
+        'profile.middle_name',
+        'department.id',
+        'department.name',
+      ])
+      .getMany(),
+  ]);
+
+  return [site, provider];
 };
