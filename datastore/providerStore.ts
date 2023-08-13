@@ -88,7 +88,8 @@ export const adminGetProvidersInfoPagination = async (
   from: string,
   to: string,
   country: string,
-  status: string
+  status: string,
+  siteId: string
 ) => {
   const providerRepository = providerRepo();
 
@@ -101,12 +102,15 @@ export const adminGetProvidersInfoPagination = async (
 
   const providerQuery = providerRepository
     .createQueryBuilder('provider')
-    .andWhere('provider.created_at > :fromDate', {
-      fromDate,
-    })
-    .andWhere('provider.created_at < :toDate', {
-      toDate,
-    })
+    .where('provider.siteId = :siteId', { siteId })
+    // .andWhere('provider.created_at > :fromDate', {
+    //   fromDate,
+    // })
+    // .andWhere('provider.created_at < :toDate', {
+    //   toDate,
+    // })
+    .leftJoinAndSelect('provider.personalInfo', 'profile')
+    .leftJoinAndSelect('provider.department', 'department')
     .select([
       'provider.id',
       'provider.email',
@@ -148,44 +152,14 @@ export const adminGetProvidersInfoPagination = async (
   }
 
   if (Number(perPage) === 0) {
-    providers = await providerQuery
-      .orderBy({
-        created_at: 'DESC',
-      })
-      .getManyAndCount();
+    providers = await providerQuery.getManyAndCount();
   } else {
-    providers = await providerQuery
-      .orderBy({
-        created_at: 'DESC',
-      })
-      .skip(skip)
-      .take(take)
-      .getManyAndCount();
+    providers = await providerQuery.skip(skip).take(take).getManyAndCount();
   }
 
-  // providerRepository
-  //   .createQueryBuilder('provider')
-  //   .where('provider.siteId = :siteId', {
-  //     siteId,
-  //   })
-  //   .leftJoinAndSelect('provider.personalInfo', 'profile')
-  //   .leftJoinAndSelect('provider.department', 'department')
-  //   .select([
-  //     'provider.id',
-  //     'provider.email',
-  //     'provider.status',
-  //     'provider.created_at',
-  //     'profile.first_name',
-  //     'profile.last_name',
-  //     'profile.id',
-  //     'profile.phone',
-  //     'profile.title',
-  //     'profile.gender',
-  //     'profile.country',
-  //     'profile.profile_pic',
-  //     'profile.middle_name',
-  //     'department.id',
-  //     'department.name',
-  //   ])
-  //   .getMany(),
+  return DefaultJsonResponse(
+    'Provider Data Retrieval Success',
+    providers,
+    true
+  );
 };

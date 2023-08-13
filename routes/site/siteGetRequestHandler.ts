@@ -111,8 +111,6 @@ siteGetRequest.get(`/admin/get/information/:siteId`, async (req, res) => {
       ]
     );
 
-    console.log(`Site information`);
-
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
 
     const site = await getSiteInformationBySiteId(siteId);
