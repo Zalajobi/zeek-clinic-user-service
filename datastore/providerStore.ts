@@ -103,12 +103,12 @@ export const adminGetProvidersInfoPagination = async (
   const providerQuery = providerRepository
     .createQueryBuilder('provider')
     .where('provider.siteId = :siteId', { siteId })
-    // .andWhere('provider.created_at > :fromDate', {
-    //   fromDate,
-    // })
-    // .andWhere('provider.created_at < :toDate', {
-    //   toDate,
-    // })
+    .andWhere('provider.created_at > :fromDate', {
+      fromDate,
+    })
+    .andWhere('provider.created_at < :toDate', {
+      toDate,
+    })
     .leftJoinAndSelect('provider.personalInfo', 'profile')
     .leftJoinAndSelect('provider.department', 'department')
     .select([

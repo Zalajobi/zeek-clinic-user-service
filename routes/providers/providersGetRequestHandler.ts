@@ -48,7 +48,10 @@ providersGetRequestHandler.get(
           res,
           providersData.message,
           providersData.success,
-          providersData.data,
+          {
+            providers: providersData.data[0],
+            count: providersData.data[1],
+          },
           200
         );
 
