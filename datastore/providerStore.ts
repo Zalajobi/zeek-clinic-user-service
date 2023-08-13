@@ -8,7 +8,8 @@ import {
 import { DefaultJsonResponse } from '../util/responses';
 import { customPromiseRequest } from '../lib/api';
 import { ProviderModelProps } from '../typeorm/objectsTypes/providersObjectTypes';
-import { getSiteInformationBySiteId } from './siteStore';
+import { hospitalRepo } from '../typeorm/repositories/hospitalRepository';
+import { HospitalStatus } from '../typeorm/entity/enums';
 
 // Post Requests Stores
 export const adminCreateNewProvider = async (
@@ -79,38 +80,112 @@ export const adminCreateNewProvider = async (
   return DefaultJsonResponse('Something Went Wrong', null, false);
 };
 
-// Get Requests Stores
-export const adminGetAllProvidersData = async (siteId: string) => {
+// Get Providers Data - Pagination
+export const adminGetProvidersInfoPagination = async (
+  page: number,
+  perPage: number,
+  query: string,
+  from: string,
+  to: string,
+  country: string,
+  status: string
+) => {
   const providerRepository = providerRepo();
 
-  const [site, provider] = await Promise.all([
-    getSiteInformationBySiteId(siteId),
+  let skip = Number(perPage * page),
+    take = Number(perPage),
+    providers = null;
+  const fromDate = from ? new Date(from) : new Date('1900-01-01'),
+    toDate = to ? new Date(to) : new Date(),
+    hospitalRepository = hospitalRepo();
 
-    providerRepository
-      .createQueryBuilder('provider')
-      .where('provider.siteId = :siteId', {
-        siteId,
+  const providerQuery = providerRepository
+    .createQueryBuilder('provider')
+    .andWhere('provider.created_at > :fromDate', {
+      fromDate,
+    })
+    .andWhere('provider.created_at < :toDate', {
+      toDate,
+    })
+    .select([
+      'provider.id',
+      'provider.email',
+      'provider.status',
+      'provider.created_at',
+      'profile.first_name',
+      'profile.last_name',
+      'profile.id',
+      'profile.phone',
+      'profile.title',
+      'profile.gender',
+      'profile.country',
+      'profile.profile_pic',
+      'profile.middle_name',
+      'department.id',
+      'department.name',
+    ]);
+
+  if (query) {
+    providerQuery.where(
+      'LOWER(provider.name) LIKE :name OR LOWER(provider.email) LIKE :email',
+      {
+        name: `%${query.toLowerCase()}%`,
+        email: `%${query.toLowerCase()}%`,
+      }
+    );
+  }
+
+  if (country) {
+    providerQuery.andWhere('LOWER(provider.country) LIKE :country', {
+      country: `%${country.toLowerCase()}%`,
+    });
+  }
+
+  if (status) {
+    providerQuery.andWhere('provider.status = :status', {
+      status: status as HospitalStatus,
+    });
+  }
+
+  if (Number(perPage) === 0) {
+    providers = await providerQuery
+      .orderBy({
+        created_at: 'DESC',
       })
-      .leftJoinAndSelect('provider.personalInfo', 'profile')
-      .leftJoinAndSelect('provider.department', 'department')
-      .select([
-        'provider.id',
-        'provider.email',
-        'provider.created_at',
-        'profile.first_name',
-        'profile.last_name',
-        'profile.id',
-        'profile.phone',
-        'profile.title',
-        'profile.gender',
-        'profile.country',
-        'profile.profile_pic',
-        'profile.middle_name',
-        'department.id',
-        'department.name',
-      ])
-      .getMany(),
-  ]);
+      .getManyAndCount();
+  } else {
+    providers = await providerQuery
+      .orderBy({
+        created_at: 'DESC',
+      })
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
+  }
 
-  return [site, provider];
+  // providerRepository
+  //   .createQueryBuilder('provider')
+  //   .where('provider.siteId = :siteId', {
+  //     siteId,
+  //   })
+  //   .leftJoinAndSelect('provider.personalInfo', 'profile')
+  //   .leftJoinAndSelect('provider.department', 'department')
+  //   .select([
+  //     'provider.id',
+  //     'provider.email',
+  //     'provider.status',
+  //     'provider.created_at',
+  //     'profile.first_name',
+  //     'profile.last_name',
+  //     'profile.id',
+  //     'profile.phone',
+  //     'profile.title',
+  //     'profile.gender',
+  //     'profile.country',
+  //     'profile.profile_pic',
+  //     'profile.middle_name',
+  //     'department.id',
+  //     'department.name',
+  //   ])
+  //   .getMany(),
 };

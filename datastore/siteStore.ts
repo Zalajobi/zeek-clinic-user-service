@@ -168,7 +168,11 @@ export const getSiteInformationBySiteId = async (siteId: string) => {
       address: true,
       email: true,
       country: true,
+      state: true,
+      city: true,
       phone: true,
+      created_at: true,
+      status: true,
     },
   });
 };
