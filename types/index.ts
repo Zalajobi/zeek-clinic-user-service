@@ -1,4 +1,6 @@
 import { AdminRoles, MartialStatus } from '../typeorm/entity/enums';
+import { AdminModelProps } from '../typeorm/objectsTypes/adminObjectTypes';
+import { PersonalInformation } from '../typeorm/entity/personaInfo';
 
 export type loginProps = {
   email: string;
@@ -17,39 +19,6 @@ export type hospitalModelProps = {
   logo?: string;
   country_code: string;
   zip_code: string;
-};
-
-export type siteModelProps = {
-  address: string;
-  hospital_id: string;
-  name: string;
-  email: string;
-  city: string;
-  state: string;
-  country: string;
-  logo?: string;
-  time_zone?: string;
-  phone: string;
-  zip_code?: string;
-  is_private?: boolean;
-  has_appointment?: boolean;
-  has_caregiver?: boolean;
-  has_clinical?: boolean;
-  has_doctor?: boolean;
-  has_emergency?: boolean;
-  has_laboratory?: boolean;
-  has_medical_supply?: boolean;
-  has_nursing?: boolean;
-  has_inpatient?: boolean;
-  has_outpatient?: boolean;
-  has_pharmacy?: boolean;
-  has_physical_therapy?: boolean;
-  has_procedure?: boolean;
-  has_radiology?: boolean;
-  has_unit?: boolean;
-  has_vital?: boolean;
-  has_wallet?: boolean;
-  totalSites: number;
 };
 
 export type roleModelProps = {
@@ -82,55 +51,9 @@ export type ProfileInfoModelProps = {
   zip_code: string;
   profile_pic?: string;
   religion?: string;
-  providerId?: string;
-  adminId?: string;
+  // providerId?: string;
+  // adminId?: string;
   marital_status?: MartialStatus;
   profilePic?: string;
   patientId?: string;
-};
-
-export type createProviderRequestBody = {
-  title: string;
-  first_name: string;
-  middle_name: string;
-  last_name: string;
-  gender: string;
-  dob: string;
-  email: string;
-  password: string;
-  staff_id: string;
-  siteId: string;
-  username: string;
-  relationship_status: string;
-  religion: string;
-  department: string;
-  role: string;
-  serviceArea: string;
-  unit: string;
-  country: string;
-  state: string;
-  city?: string;
-  zip_code: string;
-  phone: string;
-  is_consultant: boolean;
-  is_specialist: boolean;
-  appointments: boolean;
-  address: string;
-  profilePic: string;
-};
-
-export type ProviderModelProps = {
-  siteId: string;
-  primaryRoleId: string;
-  personalInfoId?: string;
-  departmentId: string;
-  serviceareaId: string;
-  unitId: string;
-  email: string;
-  password: string;
-  username: string;
-  staff_id: string;
-  is_consultant: boolean;
-  is_specialist: boolean;
-  appointments: boolean;
 };
