@@ -142,7 +142,7 @@ export const adminGetProvidersInfoPagination = async (
 
   if (query) {
     providerQuery.where(
-      'LOWER(provider.name) LIKE :name OR LOWER(provider.email) LIKE :email',
+      'LOWER(profile.first_name) LIKE :name OR LOWER(profile.middle_name) LIKE :name OR LOWER(profile.last_name) LIKE :name OR LOWER(provider.email) LIKE :email',
       {
         name: `%${query.toLowerCase()}%`,
         email: `%${query.toLowerCase()}%`,
