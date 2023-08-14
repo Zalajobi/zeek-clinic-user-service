@@ -82,7 +82,7 @@ export class Provider {
 
   @Column({
     unique: true,
-    nullable: false,
+    nullable: true,
   })
   username: string;
 

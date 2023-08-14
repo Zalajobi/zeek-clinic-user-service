@@ -72,6 +72,7 @@ export const adminCreateNewProvider = async (
   if (personalInfo) {
     const provider = new Provider(data);
     provider.personalInfo = personalInfo;
+
     const newProvider = await providerRepository.save(provider);
 
     return DefaultJsonResponse('New Provider Added', newProvider, true);
@@ -119,6 +120,7 @@ export const adminGetProvidersInfoPagination = async (
       'provider.email',
       'provider.status',
       'provider.created_at',
+      'provider.siteId',
       'profile.first_name',
       'profile.last_name',
       'profile.id',
