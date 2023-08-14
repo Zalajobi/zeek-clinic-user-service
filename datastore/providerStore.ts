@@ -163,3 +163,28 @@ export const adminGetProvidersInfoPagination = async (
     true
   );
 };
+
+// export const selectAllProviderCountriesBySiteId = async (siteId:string) => {
+//   const providerRepository = providerRepo();
+//
+//   console.log(`HELLO WORLD`)
+//
+//   const countries = await providerRepository
+//     .createQueryBuilder('provider')
+//     .where('provider.siteId = :siteId', { siteId })
+//     .leftJoinAndSelect('provider.personalInfo', 'profile')
+//     .select('profile.country')
+//     .orderBy({
+//       'profile.country': 'ASC'
+//     })
+//     .getRawMany()
+//
+//   console.log(countries)
+//
+//   return DefaultJsonResponse(
+//     'Provider Countries Data Retrieval Success',
+//     countries,
+//     true
+//   );
+// }
+export class selectAllProviderCountriesBySiteId {}
