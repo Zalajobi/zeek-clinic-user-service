@@ -55,8 +55,9 @@ adminGetRequestHandler.get(
         ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES']
       );
 
-      if (!verifiedUser)
+      if (!verifiedUser) {
         return JsonApiResponse(res, message, success, null, 200);
+      }
 
       const response = await Promise.all([
         adminCreateProviderGetDepartmentDataBySiteId(siteId),
@@ -68,18 +69,22 @@ adminGetRequestHandler.get(
         adminCreateProviderGetRolesDataBySiteId(siteId),
       ]);
 
-      return JsonApiResponse(
-        res,
-        'Success',
-        true,
-        {
-          departments: response[0],
-          units: response[1],
-          serviceAreas: response[2],
-          roles: response[3],
-        },
-        200
-      );
+      if (response) {
+        JsonApiResponse(
+          res,
+          'Success',
+          true,
+          {
+            departments: response[0],
+            units: response[1],
+            serviceAreas: response[2],
+            roles: response[3],
+          },
+          200
+        );
+      }
+
+      return JsonApiResponse(res, 'Something went wrong', false, null, 401);
     } catch (error) {
       if (error instanceof Error) message = error.message;
 

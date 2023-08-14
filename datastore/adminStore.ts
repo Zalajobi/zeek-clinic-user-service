@@ -210,6 +210,7 @@ export const getAdminHeaderBaseTemplateData = async (id: string) => {
       'admin.role',
       'admin.siteId',
       'admin.email',
+      'admin.id',
       'admin.staff_id',
       'profile.first_name',
       'profile.last_name',

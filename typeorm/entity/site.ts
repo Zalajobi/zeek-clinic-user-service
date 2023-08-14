@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { Hospital } from './hospital';
 import { BankAccount } from './bankAccount';
-import { siteModelProps } from '../../types';
 import { SiteStatus } from './enums';
 import { Roles } from './roles';
 import { Provider } from './providers';
@@ -18,6 +17,7 @@ import { Units } from './units';
 import { Servicearea } from './servicearea';
 import { Patients } from './patient';
 import { PatientEmployer } from './patientEmployer';
+import { siteModelProps } from '../objectsTypes/siteObjectTypes';
 
 @Entity()
 export class Site {

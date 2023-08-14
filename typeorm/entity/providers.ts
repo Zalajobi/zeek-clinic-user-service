@@ -16,7 +16,7 @@ import { Units } from './units';
 import { ProviderStatus } from './enums';
 import { Servicearea } from './servicearea';
 import { Patients } from './patient';
-import { ProviderModelProps } from '../../types';
+import { ProviderModelProps } from '../objectsTypes/providersObjectTypes';
 
 @Entity()
 export class Provider {
@@ -82,7 +82,7 @@ export class Provider {
 
   @Column({
     unique: true,
-    nullable: false,
+    nullable: true,
   })
   username: string;
 
