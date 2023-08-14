@@ -111,6 +111,9 @@ export const adminGetProvidersInfoPagination = async (
     })
     .leftJoinAndSelect('provider.personalInfo', 'profile')
     .leftJoinAndSelect('provider.department', 'department')
+    .leftJoinAndSelect('provider.unit', 'unit')
+    .leftJoinAndSelect('provider.servicearea', 'servicearea')
+    .leftJoinAndSelect('provider.primary_role', 'role')
     .select([
       'provider.id',
       'provider.email',
@@ -127,6 +130,12 @@ export const adminGetProvidersInfoPagination = async (
       'profile.middle_name',
       'department.id',
       'department.name',
+      'unit.id',
+      'unit.name',
+      'servicearea.id',
+      'servicearea.name',
+      'role.id',
+      'role.name',
     ]);
 
   if (query) {
