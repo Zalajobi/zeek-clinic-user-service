@@ -10,6 +10,7 @@ import { customPromiseRequest } from '../lib/api';
 import { ProviderModelProps } from '../typeorm/objectsTypes/providersObjectTypes';
 import { hospitalRepo } from '../typeorm/repositories/hospitalRepository';
 import { HospitalStatus } from '../typeorm/entity/enums';
+import { getPatientCountByProviderId } from './patientStore';
 
 // Post Requests Stores
 export const adminCreateNewProvider = async (
@@ -175,27 +176,57 @@ export const adminGetProvidersInfoPagination = async (
   );
 };
 
-// export const selectAllProviderCountriesBySiteId = async (siteId:string) => {
-//   const providerRepository = providerRepo();
-//
-//   console.log(`HELLO WORLD`)
-//
-//   const countries = await providerRepository
-//     .createQueryBuilder('provider')
-//     .where('provider.siteId = :siteId', { siteId })
-//     .leftJoinAndSelect('provider.personalInfo', 'profile')
-//     .select('profile.country')
-//     .orderBy({
-//       'profile.country': 'ASC'
-//     })
-//     .getRawMany()
-//
-//   console.log(countries)
-//
-//   return DefaultJsonResponse(
-//     'Provider Countries Data Retrieval Success',
-//     countries,
-//     true
-//   );
-// }
-export class selectAllProviderCountriesBySiteId {}
+export const adminGetProviderDetails = async (id: string) => {
+  const providerRepository = providerRepo();
+
+  const [provider, patientCount] = await Promise.all([
+    providerRepository
+      .createQueryBuilder('provider')
+      .where('provider.id = :id', { id })
+      .leftJoinAndSelect('provider.personalInfo', 'profile')
+      .leftJoinAndSelect('provider.department', 'department')
+      .leftJoinAndSelect('provider.unit', 'unit')
+      .leftJoinAndSelect('provider.servicearea', 'servicearea')
+      .leftJoinAndSelect('provider.primary_role', 'role')
+      .select([
+        'provider.id',
+        'provider.email',
+        'provider.status',
+        'provider.created_at',
+        'provider.siteId',
+        'profile.first_name',
+        'profile.last_name',
+        'profile.id',
+        'profile.phone',
+        'profile.dob',
+        'profile.title',
+        'profile.gender',
+        'profile.country',
+        'profile.profile_pic',
+        'profile.middle_name',
+        'profile.state',
+        'profile.city',
+        'profile.address',
+        'department.id',
+        'department.name',
+        'unit.id',
+        'unit.name',
+        'servicearea.id',
+        'servicearea.name',
+        'role.id',
+        'role.name',
+      ])
+      .getOne(),
+
+    getPatientCountByProviderId(id),
+  ]);
+
+  return DefaultJsonResponse(
+    'Provider Data Retrieval Success',
+    {
+      provider,
+      patientCount,
+    },
+    true
+  );
+};

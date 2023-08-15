@@ -27,7 +27,7 @@ export class Patients {
     this.email = data?.email as string;
     this.password = data?.password as string;
     this.status = data?.status as PatientStatus;
-    this.careGiverId = data?.careGiverId as string;
+    // this.careGiverId = data?.careGiverId as string;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -63,10 +63,10 @@ export class Patients {
   })
   unitId: string;
 
-  @Column({
-    nullable: true,
-  })
-  careGiverId: string;
+  // @Column({
+  //   nullable: true,
+  // })
+  // careGiverId: string;
 
   @Column({
     unique: true,

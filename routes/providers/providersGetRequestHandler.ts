@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '../../lib/auth';
 import { JsonApiResponse } from '../../util/responses';
-import { adminGetProvidersInfoPagination } from '../../datastore/providerStore';
+import {
+  adminGetProviderDetails,
+  adminGetProvidersInfoPagination,
+} from '../../datastore/providerStore';
 
 const providersGetRequestHandler = Router();
 
@@ -64,46 +67,45 @@ providersGetRequestHandler.get(
   }
 );
 
-// providersGetRequestHandler.get(`/admin/get-all-providers/country/distinct/:siteId`, async (req, res) => {
-//   let message = 'Not Authorised',
-//     success = false;
-//
-//   const { siteId } = req.params;
-//
-//   try {
-//     const verifiedUser = await verifyUserPermission(
-//       req?.headers?.token as string,
-//       [
-//         'SUPER_ADMIN',
-//         'HOSPITAL_ADMIN',
-//         'SITE_ADMIN',
-//         'ADMIN',
-//         'HUMAN_RESOURCES',
-//       ]
-//     );
-//
-//     if (!verifiedUser)
-//       return JsonApiResponse(res, message, success, null, 403);
-//
-//     const countries = await selectAllProviderCountriesBySiteId(siteId)
-//
-//     if (countries.success)
-//       return JsonApiResponse(
-//         res,
-//         countries.message,
-//         countries.success,
-//         countries,
-//         200
-//       );
-//
-//     return JsonApiResponse(res, 'Something went wrong', success, null, 403);
-//   } catch (error) {
-//     let message = 'Not Authorized';
-//     if (error instanceof Error) message = error.message;
-//
-//     return JsonApiResponse(res, message, success, null, 403);
-//   }
-//
-// })
+providersGetRequestHandler.get(`/admin/details/:id`, async (req, res) => {
+  let message = 'Not Authorised',
+    success = false;
+
+  const { id } = req.params;
+
+  try {
+    const verifiedUser = await verifyUserPermission(
+      req?.headers?.token as string,
+      [
+        'SUPER_ADMIN',
+        'HOSPITAL_ADMIN',
+        'SITE_ADMIN',
+        'ADMIN',
+        'HUMAN_RESOURCES',
+      ]
+    );
+
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
+
+    const provider = await adminGetProviderDetails(id);
+
+    if (provider.success) {
+      return JsonApiResponse(
+        res,
+        provider.message,
+        provider.success,
+        provider.data,
+        200
+      );
+    }
+
+    return JsonApiResponse(res, 'Something went wrong', success, null, 403);
+  } catch (error) {
+    let message = 'Not Authorized';
+    if (error instanceof Error) message = error.message;
+
+    return JsonApiResponse(res, message, success, null, 403);
+  }
+});
 
 export default providersGetRequestHandler;

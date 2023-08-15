@@ -5,7 +5,7 @@ export type CreatePatientsDataProps = {
   departmentId: string;
   serviceareaId: string;
   unitId: string;
-  careGiverId: string;
+  // careGiverId: string;
   siteId: string;
   personalInfoId: string;
   email: string;
