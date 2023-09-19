@@ -1,10 +1,7 @@
 import { Router } from 'express';
-import { getSuperadminLoginData } from '../../datastore/superadminStore';
-import {
-  generateJSONTokenCredentials,
-  validatePassword,
-} from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
+import { getSuperadminLoginData } from '@datastore/superadminStore';
+import { generateJSONTokenCredentials, validatePassword } from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
 
 const superadminPostRequest = Router();
 

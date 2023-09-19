@@ -1,15 +1,9 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
-import {
-  getSuperadminBaseData,
-  getSuperadminDataById,
-} from '../../datastore/superadminStore';
-import { getOneAdminDataById } from '../../datastore/adminStore';
-import { getDepartmentDataBySiteId } from '../../datastore/departmentStore';
-import { getRoleDataBySiteId } from '../../datastore/roleStore';
-import { customPromiseRequest } from '../../lib/api';
-import { AdminRoles } from '../../typeorm/entity/enums';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { getSuperadminBaseData } from '@datastore/superadminStore';
+import { getDepartmentDataBySiteId } from '@datastore/departmentStore';
+import { AdminRoles } from '@typeorm/entity/enums';
 
 const superadminGetRouter = Router();
 

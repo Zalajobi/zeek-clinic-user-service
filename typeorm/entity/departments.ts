@@ -1,44 +1,51 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm"
-import {departmentModelProps} from "../../types";
-import {Site} from "./site";
-import {Provider} from "./providers";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { departmentModelProps } from '../../types';
+import { Site } from '@typeorm/entity/site';
+import { Provider } from '@typeorm/entity/providers';
 
 @Entity()
 export class Departments {
-  constructor(data:departmentModelProps) {
-    this.name = data?.name as string
-    this.siteId = data?.siteId as string
-    this.description = data?.description as string
+  constructor(data: departmentModelProps) {
+    this.name = data?.name;
+    this.siteId = data?.siteId;
+    this.description = data?.description;
   }
 
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  siteId: string
+  siteId: string;
 
   @Column({
     nullable: false,
   })
-  description: string
+  description: string;
 
   @Column({
     nullable: false,
   })
-  name: string
+  name: string;
 
   @CreateDateColumn()
-   created_at: Date
+  created_at: Date;
 
   @CreateDateColumn()
-  updated_at: Date
+  updated_at: Date;
 
   // Relations
-  @OneToMany(type => Provider, provider => provider.department)
-  providers: Provider[]
+  @OneToMany((type) => Provider, (provider) => provider.department)
+  providers: Provider[];
 
-  @ManyToOne(type => Site, site => site.departments)
-  site: Site
+  @ManyToOne((type) => Site, (site) => site.departments)
+  site: Site;
 }

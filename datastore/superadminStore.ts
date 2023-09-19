@@ -1,5 +1,5 @@
-import { superAdminRepo } from '../typeorm/repositories/superAdminRepository';
-import { SuperAdminEntityObject } from '../typeorm/objectsTypes/superadminObjectTypes';
+import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
+import { SuperAdminEntityObject } from '@typeorm/objectsTypes/superadminObjectTypes';
 
 export const getSuperadminLoginData = async (value: string) => {
   const superAdminRepository = superAdminRepo();

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
-import { getDepartmentDataBySiteId } from '../../datastore/departmentStore';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { getDepartmentDataBySiteId } from '@datastore/departmentStore';
 
 const departmentGetRequest = Router();
 

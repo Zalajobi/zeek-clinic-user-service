@@ -1,8 +1,8 @@
-import { siteRepo } from '../typeorm/repositories/siteRepository';
-import { Site } from '../typeorm/entity/site';
-import { hospitalRepo } from '../typeorm/repositories/hospitalRepository';
-import { SiteStatus } from '../typeorm/entity/enums';
-import { siteModelProps } from '../typeorm/objectsTypes/siteObjectTypes';
+import { siteRepo } from '@typeorm/repositories/siteRepository';
+import { Site } from '@typeorm/entity/site';
+import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
+import { SiteStatus } from '@typeorm/entity/enums';
+import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 
 export const adminCreateSite = async (data: siteModelProps) => {
   const siteRepository = siteRepo();

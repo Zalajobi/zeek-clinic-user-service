@@ -7,20 +7,19 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { CreatePatientEmployerProps } from '../objectsTypes/patientEmployerObjectType';
+import { CreatePatientEmployerProps } from '@typeorm/objectsTypes/patientEmployerObjectType';
 import { Site } from './site';
-import { Provider } from './providers';
 import { Patients } from './patient';
 
 @Entity()
 export class PatientEmployer {
   constructor(data: CreatePatientEmployerProps) {
-    this.siteId = data?.siteId as string;
+    this.siteId = data?.siteId;
     this.occupation = data?.occupation as string;
     this.department = data?.department as string;
-    this.company_name = data?.company_name as string;
-    this.company_phone = data?.company_phone as string;
-    this.company_address = data?.company_address as string;
+    this.company_name = data?.company_name;
+    this.company_phone = data?.company_phone;
+    this.company_address = data?.company_address;
   }
 
   @PrimaryGeneratedColumn('uuid')

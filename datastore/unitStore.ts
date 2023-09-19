@@ -1,6 +1,6 @@
-import { unitRepo } from '../typeorm/repositories/unitRepositories';
-import { createUnitDataProps } from '../typeorm/objectsTypes/unitObjectTypes';
-import { Units } from '../typeorm/entity/units';
+import { unitRepo } from '@typeorm/repositories/unitRepositories';
+import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
+import { Units } from '@typeorm/entity/units';
 
 export const createNewUnit = async (data: createUnitDataProps) => {
   const unitRepository = unitRepo();

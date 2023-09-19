@@ -1,6 +1,6 @@
-import { serviceAreaRepo } from '../typeorm/repositories/serviceAreaRepository';
-import { CreateServiceAreaDataProps } from '../typeorm/objectsTypes/serviceAreaObjectType';
-import { Servicearea } from '../typeorm/entity/servicearea';
+import { serviceAreaRepo } from '@typeorm/repositories/serviceAreaRepository';
+import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
+import { Servicearea } from '@typeorm/entity/servicearea';
 
 export const createServiceArea = async (data: CreateServiceAreaDataProps) => {
   const serviceAreaRepository = serviceAreaRepo();

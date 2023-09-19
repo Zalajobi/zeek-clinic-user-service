@@ -5,7 +5,7 @@ import siteRouter from './site';
 import roleRouter from './role';
 import departmentRouter from './department';
 import adminRouter from './admin';
-import { BASE_URL } from '../util/constants';
+import { BASE_URL } from '@util/constants';
 import providersRouter from './providers';
 
 let rootRouter = Router();

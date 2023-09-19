@@ -10,24 +10,22 @@ import {
 } from 'typeorm';
 import { PatientStatus } from './enums';
 import { Site } from './site';
-import { PersonalInformation } from './personaInfo';
-import { EmergencyContacts } from './emergencyContacts';
-import { CreatePatientsDataProps } from '../objectsTypes/patientObjectTypes';
-import { Provider } from './providers';
-import { PatientEmployer } from './patientEmployer';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
+import { CreatePatientsDataProps } from '@typeorm/objectsTypes/patientObjectTypes';
+import { Provider } from '@typeorm/entity/providers';
+import { PatientEmployer } from '@typeorm/entity/patientEmployer';
 
 @Entity()
 export class Patients {
   constructor(data: CreatePatientsDataProps) {
-    this.siteId = data?.siteId as string;
-    // this.personalInfoId = data?.personalInfoId as string;
-    this.departmentId = data?.departmentId as string;
-    this.serviceareaId = data?.serviceareaId as string;
-    this.unitId = data?.unitId as string;
-    this.email = data?.email as string;
-    this.password = data?.password as string;
-    this.status = data?.status as PatientStatus;
-    // this.careGiverId = data?.careGiverId as string;
+    this.siteId = data?.siteId;
+    this.departmentId = data?.departmentId;
+    this.serviceareaId = data?.serviceareaId;
+    this.unitId = data?.unitId;
+    this.email = data?.email;
+    this.password = data?.password;
+    this.status = data?.status;
   }
 
   @PrimaryGeneratedColumn('uuid')

@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
-import { adminCreateSite } from '../../datastore/siteStore';
-import { siteModelProps } from '../../typeorm/objectsTypes/siteObjectTypes';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { adminCreateSite } from '@datastore/siteStore';
+import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 
 const sitePostRequest = Router();
 

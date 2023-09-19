@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { JWTDataProps } from '../../types/jwt';
-import { verifyJSONToken } from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
-import { getAdminHeaderBaseTemplateData } from '../../datastore/adminStore';
-import { adminCreateProviderGetDepartmentDataBySiteId } from '../../datastore/departmentStore';
-import { adminCreateProviderGetUnitsDataBySiteId } from '../../datastore/unitStore';
-import { adminCreateProviderGetServiceAreaDataBySiteId } from '../../datastore/serviceAreaStore';
-import { adminCreateProviderGetRolesDataBySiteId } from '../../datastore/roleStore';
+import { verifyJSONToken } from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { getAdminHeaderBaseTemplateData } from '@datastore/adminStore';
+import { adminCreateProviderGetDepartmentDataBySiteId } from '@datastore/departmentStore';
+import { adminCreateProviderGetUnitsDataBySiteId } from '@datastore/unitStore';
+import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceAreaStore';
+import { adminCreateProviderGetRolesDataBySiteId } from '@datastore/roleStore';
 
 const adminGetRequestHandler = Router();
 

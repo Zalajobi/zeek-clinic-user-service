@@ -1,16 +1,16 @@
-import { providerRepo } from '../typeorm/repositories/providerRepository';
+import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { ProfileInfoModelProps } from '../types';
-import { Provider } from '../typeorm/entity/providers';
+import { Provider } from '@typeorm/entity/providers';
 import {
   createNewPersonalInfo,
   getPersonalInfoCountByPhone,
 } from './personalInfoStore';
-import { DefaultJsonResponse } from '../util/responses';
-import { customPromiseRequest } from '../lib/api';
-import { ProviderModelProps } from '../typeorm/objectsTypes/providersObjectTypes';
-import { hospitalRepo } from '../typeorm/repositories/hospitalRepository';
-import { HospitalStatus } from '../typeorm/entity/enums';
-import { getPatientCountByProviderId } from './patientStore';
+import { DefaultJsonResponse } from '@util/responses';
+import { customPromiseRequest } from '@lib/api';
+import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
+import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
+import { HospitalStatus } from '@typeorm/entity/enums';
+import { getPatientCountByProviderId } from '@datastore/patientStore';
 
 // Post Requests Stores
 export const adminCreateNewProvider = async (

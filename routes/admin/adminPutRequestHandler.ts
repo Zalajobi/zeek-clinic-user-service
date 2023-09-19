@@ -4,12 +4,12 @@ import {
   generatePasswordHash,
   validatePassword,
   verifyJSONToken,
-} from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
+} from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
 import {
   getAdminBaseDataAndProfileDataByAdminId,
   updateAdminPasswordByAdminId,
-} from '../../datastore/adminStore';
+} from '@datastore/adminStore';
 
 const adminPutRequestHandler = Router();
 

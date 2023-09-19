@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
 import {
   adminGetProviderDetails,
   adminGetProvidersInfoPagination,
-} from '../../datastore/providerStore';
+} from '@datastore/providerStore';
 
 const providersGetRequestHandler = Router();
 

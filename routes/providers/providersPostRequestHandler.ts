@@ -1,19 +1,19 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
 import { ProfileInfoModelProps } from '../../types';
 import {
   generateTemporaryPassCode,
   generatePasswordHash,
-} from '../../helpers/utils';
-import { adminCreateNewProvider } from '../../datastore/providerStore';
-import { MartialStatus } from '../../typeorm/entity/enums';
-import { emitNewEvent } from '../../messaging/rabbitMq';
-import { CREATE_ADMIN_QUEUE_NAME } from '../../util/constants';
+} from '@helpers/utils';
+import { adminCreateNewProvider } from '@datastore/providerStore';
+import { MartialStatus } from '@typeorm/entity/enums';
+import { emitNewEvent } from '@messaging/rabbitMq';
+import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
 import {
   createProviderRequestBody,
   ProviderModelProps,
-} from '../../typeorm/objectsTypes/providersObjectTypes';
+} from '@typeorm/objectsTypes/providersObjectTypes';
 
 const providersPostRequestHandler = Router();
 

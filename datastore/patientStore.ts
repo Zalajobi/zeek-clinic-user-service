@@ -1,4 +1,4 @@
-import { patientRepo } from '../typeorm/repositories/patientRepository';
+import { patientRepo } from '@typeorm/repositories/patientRepository';
 
 export const getPatientCountByProviderId = async (providerId: string) => {
   const patientRepository = patientRepo();

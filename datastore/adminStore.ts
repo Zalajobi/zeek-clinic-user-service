@@ -1,14 +1,14 @@
 import { ProfileInfoModelProps } from '../types';
-import { adminRepo } from '../typeorm/repositories/adminRepository';
+import { adminRepo } from '@typeorm/repositories/adminRepository';
 import {
   createNewPersonalInfo,
   getPersonalInfoCountByPhone,
-} from './personalInfoStore';
-import { Admin } from '../typeorm/entity/admin';
-import { customPromiseRequest } from '../lib/api';
-import { DefaultJsonResponse } from '../util/responses';
-import { AdminModelProps } from '../typeorm/objectsTypes/adminObjectTypes';
-import { AdminRoles } from '../typeorm/entity/enums';
+} from '@datastore/personalInfoStore';
+import { Admin } from '@typeorm/entity/admin';
+import { customPromiseRequest } from '@lib/api';
+import { DefaultJsonResponse } from '@util/responses';
+import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
+import { AdminRoles } from '@typeorm/entity/enums';
 
 export const createNewAdmin = async (
   adminData: AdminModelProps,

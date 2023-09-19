@@ -1,4 +1,4 @@
-import { getRabbitMQDefaultConnection } from '../lib';
+import { getRabbitMQDefaultConnection } from '@lib/index';
 
 // Convert Data to be sent to consumer event to String
 export const emitNewEvent = async (que: string, jsonStringData: any) => {

@@ -6,4 +6,6 @@ module.exports = {
   bracketSpacing: true,
   bracketSameLine: true,
   printWidth: 80,
+  pluginSearchDirs: false,
+  singleAttributePerLine: true,
 };
