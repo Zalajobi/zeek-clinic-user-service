@@ -1,20 +1,20 @@
 import { Router } from 'express';
-import { JWTDataProps } from '../../types/jwt';
-import { verifyJSONToken } from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
-import { getAdminHeaderBaseTemplateData } from '../../datastore/adminStore';
+import { JWTDataProps } from '@types/jwt';
+import { verifyJSONToken } from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { getAdminHeaderBaseTemplateData } from '@datastore/adminStore';
 import {
   adminCreateProviderGetDepartmentDataBySiteId,
   getDepartmentDataBySiteId,
-} from '../../datastore/departmentStore';
+} from '@datastore/departmentStore';
 import department from '../department';
 import {
   adminCreateProviderGetRolesDataBySiteId,
   getRoleDataBySiteId,
-} from '../../datastore/roleStore';
-import { adminCreateProviderGetUnitsDataBySiteId } from '../../datastore/unitStore';
-import { adminCreateProviderGetServiceAreaDataBySiteId } from '../../datastore/serviceAreaStore';
+} from '@datastore/roleStore';
+import { adminCreateProviderGetUnitsDataBySiteId } from '@datastore/unitStore';
+import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceAreaStore';
 
 const adminGetRequestHandler = Router();
 
