@@ -5,20 +5,20 @@ import {
   getAdminPrimaryLoginInformation,
   getAdminPrimaryInformationAndProfile,
   updateAdminData,
-} from '../../datastore/adminStore';
+} from '@datastore/adminStore';
 import {
   generateTemporaryPassCode,
   generateJSONTokenCredentials,
   generatePasswordHash,
   validatePassword,
-} from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
+} from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
 import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
-import { sendResetPasswordEmail } from '../../messaging/email';
-import { AdminModelProps } from '../../typeorm/objectsTypes/adminObjectTypes';
-import { emitNewEvent } from '../../messaging/rabbitMq';
-import { CREATE_ADMIN_QUEUE_NAME } from '../../util/constants';
+import { sendResetPasswordEmail } from '@messaging/email';
+import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
+import { emitNewEvent } from '@messaging/rabbitMq';
+import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
 
 const adminPostRequestHandler = Router();
 

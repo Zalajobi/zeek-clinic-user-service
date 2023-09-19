@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@data/*": ["data/*"],
+      "@datastore/*": ["datastore/*"],
+      "@helpers/*": ["./helpers/*"],
+      "@lib/*": ["lib/*"],
+      "@messaging/*": ["messaging/*"],
+      "@routes/*": ["routes/*"],
+      "@typeorm/*": ["typeorm/*"],
+      "@types/*": ["types/*"],
+      "@util/*": ["util/*"]
+    }
+  }
+}

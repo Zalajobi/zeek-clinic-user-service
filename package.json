@@ -3,6 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
+  "_moduleAliases": {
+    "@data": "./data",
+    "@datastore": "./datastore",
+    "@helpers": "./helpers",
+    "@lib": "./lib",
+    "@messaging": "./messaging",
+    "@routes": "./routes",
+    "@typeorm": "./typeorm",
+    "@types": "./types",
+    "@util": "./util"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "precommit": "pretty-quick --staged",
@@ -20,6 +31,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
+    "module-alias": "^2.2.3",
     "nodemailer": "^6.9.1",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
@@ -38,7 +50,7 @@
     "@types/nodemailer": "^6.4.7",
     "@types/uuid": "^9.0.2",
     "husky": "^8.0.3",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.0.1",
     "prettier": "^2.8.8",
     "pretty-quick": "^3.1.3",
     "ts-node": "^10.9.1"

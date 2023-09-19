@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import express = require('express');
 import cors = require('cors');
 import 'reflect-metadata';

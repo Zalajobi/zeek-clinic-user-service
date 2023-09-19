@@ -5,7 +5,6 @@ import {
   getPersonalInfoCountByPhone,
 } from './personalInfoStore';
 import { Admin } from '../typeorm/entity/admin';
-import email from '../lib/email';
 import { customPromiseRequest } from '../lib/api';
 import { DefaultJsonResponse } from '../util/responses';
 import { AdminModelProps } from '../typeorm/objectsTypes/adminObjectTypes';
