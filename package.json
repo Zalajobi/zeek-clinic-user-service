@@ -10,6 +10,17 @@
     "start": "npx ts-node index.ts",
     "start:dev": "npx nodemon"
   },
+  "_moduleAliases": {
+    "@data": "./data",
+    "@datastore": "./datastore",
+    "@helpers": "./helpers",
+    "@lib": "./lib",
+    "@messaging": "./messaging",
+    "@routes": "./routes",
+    "@typeorm": "./typeorm",
+    "@types": "./types",
+    "@util": "./util"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,6 +31,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
+    "module-alias": "^2.2.3",
     "nodemailer": "^6.9.1",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",

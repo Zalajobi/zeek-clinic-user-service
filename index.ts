@@ -1,10 +1,11 @@
+import 'module-alias/register';
 import express = require('express');
 import cors = require('cors');
 import 'reflect-metadata';
 import { AppDataSource } from './data-source';
-import { SuperAdmin } from './typeorm/entity/superAdmin';
-import { generatePasswordHash } from './helpers/utils';
-import { superAdminRepo } from './typeorm/repositories/superAdminRepository';
+import { SuperAdmin } from '@typeorm/entity/superAdmin';
+import { generatePasswordHash } from '@helpers/utils';
+import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
 import rootRouter from './routes';
 require('dotenv').config();
 
