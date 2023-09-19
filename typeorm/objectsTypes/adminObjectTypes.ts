@@ -9,4 +9,5 @@ export type AdminModelProps = {
   staff_id: string;
   password_reset_code?: string;
   password_reset_request_timestamp?: Date;
+  // personalInfoId?: string
 };

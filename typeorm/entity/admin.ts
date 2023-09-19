@@ -23,6 +23,7 @@ export class Admin {
     this.staff_id = data?.staff_id as string;
     this.password_reset_request_timestamp =
       data?.password_reset_request_timestamp as Date;
+    // this.personalInfoId = data?.personalInfoId as string
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -85,7 +86,9 @@ export class Admin {
   updated_at: Date;
 
   // Relations
-  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin)
+  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   personalInfo?: PersonalInformation;
 
