@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "precommit": "pretty-quick --staged",
     "prepare": "husky install .husky",
-    "start": "nodemon index.ts"
+    "start": "npx ts-node index.ts",
+    "start:dev": "npx nodemon"
   },
   "keywords": [],
   "author": "",
