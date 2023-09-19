@@ -1,18 +1,18 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { Hospital } from './typeorm/entity/hospital';
-import { Site } from './typeorm/entity/site';
-import { BankAccount } from './typeorm/entity/bankAccount';
-import { SuperAdmin } from './typeorm/entity/superAdmin';
-import { Provider } from './typeorm/entity/providers';
-import { PersonalInformation } from './typeorm/entity/personaInfo';
-import { Roles } from './typeorm/entity/roles';
-import { Departments } from './typeorm/entity/departments';
-import { Admin } from './typeorm/entity/admin';
-import { Units } from './typeorm/entity/units';
-import { Servicearea } from './typeorm/entity/servicearea';
-import { Patients } from './typeorm/entity/patient';
-import { EmergencyContacts } from './typeorm/entity/emergencyContacts';
+import { Hospital } from '@typeorm/entity/hospital';
+import { Site } from '@typeorm/entity/site';
+import { BankAccount } from '@typeorm/entity/bankAccount';
+import { SuperAdmin } from '@typeorm/entity/superAdmin';
+import { Provider } from '@typeorm/entity/providers';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { Roles } from '@typeorm/entity/roles';
+import { Departments } from '@typeorm/entity/departments';
+import { Admin } from '@typeorm/entity/admin';
+import { Units } from '@typeorm/entity/units';
+import { Servicearea } from '@typeorm/entity/servicearea';
+import { Patients } from '@typeorm/entity/patient';
+import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 
 // Using environment variables
 import dotenv from 'dotenv';

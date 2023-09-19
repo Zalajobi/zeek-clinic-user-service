@@ -1,6 +1,5 @@
-import { AdminRoles, MartialStatus } from '../typeorm/entity/enums';
-import { AdminModelProps } from '../typeorm/objectsTypes/adminObjectTypes';
-import { PersonalInformation } from '../typeorm/entity/personaInfo';
+import { AdminRoles, MartialStatus } from '@typeorm/entity/enums';
+import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 
 export type loginProps = {
   email: string;

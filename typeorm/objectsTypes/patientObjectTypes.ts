@@ -1,5 +1,5 @@
-import { PatientStatus } from '../entity/enums';
-import { CreateEmergencyContactsDataProps } from './emergencyContactsObjectTypes';
+import { PatientStatus } from '@typeorm/entity/enums';
+import { CreateEmergencyContactsDataProps } from '@typeorm/objectsTypes/emergencyContactsObjectTypes';
 
 export type CreatePatientsDataProps = {
   departmentId: string;

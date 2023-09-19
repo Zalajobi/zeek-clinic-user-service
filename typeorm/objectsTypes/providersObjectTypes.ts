@@ -1,7 +1,7 @@
-import { ProviderStatus } from '../entity/enums';
+import { ProviderStatus } from '@typeorm/entity/enums';
 import { ProfileInfoModelProps } from '../../types';
-import { PersonalInformation } from '../entity/personaInfo';
-import { siteModelProps } from './siteObjectTypes';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 
 export type createProviderRequestBody = {
   title: string;
