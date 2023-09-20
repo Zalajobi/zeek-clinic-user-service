@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import providersPostRequestHandler from './providersPostRequestHandler';
-import providersGetRequestHandler from './providersGetRequestHandler';
+// @ts-ignore
+import providersPostRequestHandler from '@routes/providers/providersPostRequestHandler';
+// @ts-ignore
+import providersGetRequestHandler from '@routes/providers/providersGetRequestHandler';
 
 const providersRouter = Router();
 

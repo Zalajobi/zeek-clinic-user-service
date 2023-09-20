@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
 import {
   getDistinctOrganizationSiteCountriesAndStates,
   getSiteInformationBySiteId,
   siteTableDatastore,
-} from '../../datastore/siteStore';
+} from '@datastore/siteStore';
 
 const siteGetRequest = Router();
 

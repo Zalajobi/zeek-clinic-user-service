@@ -6,10 +6,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ServiceAreaType } from './enums';
-import { CreateServiceAreaDataProps } from '../objectsTypes/serviceAreaObjectType';
-import { Provider } from './providers';
-import { Site } from './site';
+import { ServiceAreaType } from '@typeorm/entity/enums';
+// @ts-ignore
+import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
+import { Site } from '@typeorm/entity/site';
+import { Provider } from '@typeorm/entity/providers';
 
 @Entity({
   name: 'service_area',

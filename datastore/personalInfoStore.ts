@@ -1,6 +1,7 @@
-import { personalInfoRepo } from '../typeorm/repositories/personalInfoRepository';
+// @ts-ignore
+import { personalInfoRepo } from '@typeorm/repositories/personalInfoRepository';
 import { ProfileInfoModelProps } from '../types';
-import { PersonalInformation } from '../typeorm/entity/personaInfo';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
 
 export const getPersonalInfoByPhone = async (phone: string) => {
   const personalInfoRepository = personalInfoRepo();

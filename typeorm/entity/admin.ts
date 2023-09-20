@@ -7,10 +7,10 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Site } from './site';
-import { AdminRoles } from './enums';
-import { PersonalInformation } from './personaInfo';
-import { AdminModelProps } from '../objectsTypes/adminObjectTypes';
+import { Site } from '@typeorm/entity/site';
+import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
+import { AdminRoles } from '@typeorm/entity/enums';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
 
 @Entity()
 export class Admin {

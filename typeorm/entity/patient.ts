@@ -8,13 +8,16 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { PatientStatus } from './enums';
-import { Site } from './site';
-import { PersonalInformation } from './personaInfo';
-import { EmergencyContacts } from './emergencyContacts';
-import { CreatePatientsDataProps } from '../objectsTypes/patientObjectTypes';
-import { Provider } from './providers';
-import { PatientEmployer } from './patientEmployer';
+// @ts-ignore
+import { CreatePatientsDataProps } from '@typeorm/objectsTypes/patientObjectTypes';
+import { PatientStatus } from '@typeorm/entity/enums';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+// @ts-ignore
+import { PatientEmployer } from '@typeorm/entity/patientEmployer';
+// @ts-ignore
+import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
+import { Site } from '@typeorm/entity/site';
+import { Provider } from '@typeorm/entity/providers';
 
 @Entity()
 export class Patients {

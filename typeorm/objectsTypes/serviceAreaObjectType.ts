@@ -1,4 +1,4 @@
-import { ServiceAreaType } from '../entity/enums';
+import { ServiceAreaType } from '@typeorm/entity/enums';
 
 export type CreateServiceAreaDataProps = {
   siteId: string;

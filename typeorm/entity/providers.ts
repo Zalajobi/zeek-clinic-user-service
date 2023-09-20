@@ -8,15 +8,17 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Site } from './site';
-import { Roles } from './roles';
-import { Departments } from './departments';
-import { PersonalInformation } from './personaInfo';
-import { Units } from './units';
-import { ProviderStatus } from './enums';
-import { Servicearea } from './servicearea';
-import { Patients } from './patient';
-import { ProviderModelProps } from '../objectsTypes/providersObjectTypes';
+// @ts-ignore
+import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
+import { ProviderStatus } from '@typeorm/entity/enums';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+// @ts-ignore
+import { Patients } from '@typeorm/entity/patient';
+import { Site } from '@typeorm/entity/site';
+import { Roles } from '@typeorm/entity/roles';
+import { Departments } from '@typeorm/entity/departments';
+import { Units } from '@typeorm/entity/units';
+import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()
 export class Provider {

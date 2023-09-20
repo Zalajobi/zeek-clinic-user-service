@@ -1,8 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm"
-import {HospitalStatus} from "./enums";
-import {Site} from "./site";
-import {hospitalModelProps} from "../../types";
-import {JoinColumn} from "typeorm/browser";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  OneToMany,
+} from 'typeorm';
+// @ts-ignore
+import { hospitalModelProps } from '../../types';
+import { HospitalStatus } from '@typeorm/entity/enums';
+import { Site } from '@typeorm/entity/site';
 
 @Entity()
 export class Hospital {
@@ -17,84 +23,82 @@ export class Hospital {
     this.logo = data?.logo as string;
     this.zip_code = data?.zip_code as string;
     this.country_code = data?.country_code as string;
-    // this.created_at = new Date();
-    // this.updated_at = new Date();
   }
 
-  @PrimaryGeneratedColumn("uuid")
-  id: string
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({nullable: false})
-  name: string
+  @Column({ nullable: false })
+  name: string;
 
   @Column({
     unique: true,
-    nullable:false
+    nullable: false,
   })
-  email: string
+  email: string;
 
   @Column({
     default: 0,
-    nullable:false
+    nullable: false,
   })
-  site_count: number
-
-  @Column({
-    nullable: false
-  })
-  phone: string
-
-  @Column({
-    nullable: false
-  })
-  address: string
-
-  @Column({
-    nullable: true
-  })
-  city?: string
-
-  @Column({
-    nullable: true
-  })
-  state?: string
-
-  @Column({
-    nullable: false
-  })
-  country: string
-
-  @Column({
-    nullable: true
-  })
-  logo?: string
+  site_count: number;
 
   @Column({
     nullable: false,
-    type: "enum",
+  })
+  phone: string;
+
+  @Column({
+    nullable: false,
+  })
+  address: string;
+
+  @Column({
+    nullable: true,
+  })
+  city?: string;
+
+  @Column({
+    nullable: true,
+  })
+  state?: string;
+
+  @Column({
+    nullable: false,
+  })
+  country: string;
+
+  @Column({
+    nullable: true,
+  })
+  logo?: string;
+
+  @Column({
+    nullable: false,
+    type: 'enum',
     enum: HospitalStatus,
-    default: HospitalStatus.PENDING
+    default: HospitalStatus.PENDING,
   })
-  status: string
+  status: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
-  zip_code?: string
+  zip_code?: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
-  country_code?: string
+  country_code?: string;
 
   @CreateDateColumn()
-   created_at: Date
+  created_at: Date;
 
   @CreateDateColumn()
-  updated_at: Date
+  updated_at: Date;
 
   // Relations
-  @OneToMany(type => Site, site => site.hospital, {onDelete: 'CASCADE'})
+  @OneToMany((type) => Site, (site) => site.hospital, { onDelete: 'CASCADE' })
   // @JoinColumn()
-  sites: Site[]
+  sites: Site[];
 }

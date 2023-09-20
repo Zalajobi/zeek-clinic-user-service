@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
-import { adminGetProvidersInfoPagination } from '../../datastore/providerStore';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { adminGetProvidersInfoPagination } from '@datastore/providerStore';
 
 const providersGetRequestHandler = Router();
 

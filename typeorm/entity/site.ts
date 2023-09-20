@@ -6,18 +6,25 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Hospital } from './hospital';
-import { BankAccount } from './bankAccount';
-import { SiteStatus } from './enums';
-import { Roles } from './roles';
-import { Provider } from './providers';
-import { Departments } from './departments';
-import { Admin } from './admin';
-import { Units } from './units';
-import { Servicearea } from './servicearea';
-import { Patients } from './patient';
-import { PatientEmployer } from './patientEmployer';
-import { siteModelProps } from '../objectsTypes/siteObjectTypes';
+import { Provider } from '@typeorm/entity/providers';
+import { Patients } from '@typeorm/entity/patient';
+import { PatientEmployer } from '@typeorm/entity/patientEmployer';
+// @ts-ignore
+import { Servicearea } from '@typeorm/entity/servicearea';
+// @ts-ignore
+import { Units } from '@typeorm/entity/units';
+// @ts-ignore
+import { Departments } from '@typeorm/entity/departments';
+// @ts-ignore
+import { Roles } from '@typeorm/entity/roles';
+// @ts-ignore
+import { BankAccount } from '@typeorm/entity/bankAccount';
+// @ts-ignore
+import { Hospital } from '@typeorm/entity/hospital';
+// @ts-ignore
+import { Admin } from '@typeorm/entity/admin';
+import { SiteStatus } from '@typeorm/entity/enums';
+import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 
 @Entity()
 export class Site {

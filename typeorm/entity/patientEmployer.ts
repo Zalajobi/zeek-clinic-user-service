@@ -7,10 +7,10 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { CreatePatientEmployerProps } from '../objectsTypes/patientEmployerObjectType';
-import { Site } from './site';
-import { Provider } from './providers';
-import { Patients } from './patient';
+// @ts-ignore// @ts-ignore
+import { CreatePatientEmployerProps } from '@typeorm/objectsTypes/patientEmployerObjectType';
+import { Patients } from '@typeorm/entity/patient';
+import { Site } from '@typeorm/entity/site';
 
 @Entity()
 export class PatientEmployer {

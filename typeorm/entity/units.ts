@@ -8,7 +8,8 @@ import {
 } from 'typeorm';
 import { Provider } from './providers';
 import { Site } from './site';
-import { createUnitDataProps } from '../objectsTypes/unitObjectTypes';
+// @ts-ignore
+import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
 
 @Entity()
 export class Units {

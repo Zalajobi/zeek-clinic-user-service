@@ -6,11 +6,12 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Provider } from './providers';
-import { Admin } from './admin';
+// @ts-ignore
+import { Provider } from '@typeorm/entity/providers';
+import { Admin } from '@typeorm/entity/admin';
 import { ProfileInfoModelProps } from '../../types';
-import { MartialStatus } from './enums';
-import { Patients } from './patient';
+import { MartialStatus } from '@typeorm/entity/enums';
+import { Patients } from '@typeorm/entity/patient';
 
 @Entity({
   name: 'personal_info',

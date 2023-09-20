@@ -11,15 +11,15 @@
     "start:dev": "npx nodemon"
   },
   "_moduleAliases": {
-    "@data": "./data",
-    "@datastore": "./datastore",
-    "@helpers": "./helpers",
-    "@lib": "./lib",
-    "@messaging": "./messaging",
-    "@routes": "./routes",
-    "@typeorm": "./typeorm",
-    "@types": "./types",
-    "@util": "./util"
+    "@data": "data",
+    "@datastore": "datastore",
+    "@helpers": "helpers",
+    "@lib": "lib",
+    "@messaging": "messaging",
+    "@routes": "routes",
+    "@typeorm": "typeorm",
+    "@types": "types",
+    "@util": "util"
   },
   "keywords": [],
   "author": "",

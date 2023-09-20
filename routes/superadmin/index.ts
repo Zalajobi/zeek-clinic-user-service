@@ -1,6 +1,8 @@
 import express = require('express');
-import superadminGetRouter from './superadminGetRequestHandler';
-import superadminPostRequest from './superadminPostRequestHandler';
+// @ts-ignore
+import superadminGetRouter from '@routes/superadmin/superadminGetRequestHandler';
+// @ts-ignore
+import superadminPostRequest from '@routes/superadmin/superadminPostRequestHandler';
 
 const superadminRouter = express.Router();
 

@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
+// @ts-ignore
+import { verifyUserPermission } from '@lib/auth';
+// @ts-ignore
+import { JsonApiResponse } from '@util/responses';
 import {
-  getSuperadminBaseData,
-  getSuperadminDataById,
-} from '../../datastore/superadminStore';
-import { getOneAdminDataById } from '../../datastore/adminStore';
-import { getDepartmentDataBySiteId } from '../../datastore/departmentStore';
-import { getRoleDataBySiteId } from '../../datastore/roleStore';
-import { customPromiseRequest } from '../../lib/api';
-import { AdminRoles } from '../../typeorm/entity/enums';
+  getSuperAdminBaseData,
+  // @ts-ignore
+} from '@datastore/superadminStore';
+// @ts-ignore
+import { getDepartmentDataBySiteId } from '@datastore/departmentStore';
+import { AdminRoles } from '@typeorm/entity/enums';
 
 const superadminGetRouter = Router();
 
@@ -24,7 +24,7 @@ superadminGetRouter.get('/profile/get-data', async (req, res) => {
     if (!verifiedUser)
       return JsonApiResponse(res, 'Not Authorized', false, null, 401);
 
-    const data = await getSuperadminBaseData(verifiedUser?.id as string);
+    const data = await getSuperAdminBaseData(verifiedUser?.id as string);
 
     if (data) return JsonApiResponse(res, 'Authorized', true, data, 200);
   } catch (error) {
