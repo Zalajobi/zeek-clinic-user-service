@@ -17,10 +17,10 @@ import { Provider } from '@typeorm/entity/providers';
 })
 export class Servicearea {
   constructor(data: CreateServiceAreaDataProps) {
-    this.name = data?.name as string;
-    this.siteId = data?.siteId as string;
-    this.description = data?.description as string;
-    this.type = data?.type as ServiceAreaType;
+    this.name = data?.name;
+    this.siteId = data?.siteId;
+    this.description = data?.description;
+    this.type = data?.type;
   }
 
   @PrimaryGeneratedColumn('uuid')

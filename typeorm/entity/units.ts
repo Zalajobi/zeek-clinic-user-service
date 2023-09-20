@@ -14,10 +14,10 @@ import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
 @Entity()
 export class Units {
   constructor(data: createUnitDataProps) {
-    this.name = data?.name as string;
-    this.siteId = data?.siteId as string;
-    this.description = data?.description as string;
-    this.total_beds = data?.total_beds as number;
+    this.name = data?.name;
+    this.siteId = data?.siteId;
+    this.description = data?.description;
+    this.total_beds = data?.total_beds;
     this.occupied_beds = data?.occupied_beds as number;
   }
 

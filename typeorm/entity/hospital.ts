@@ -8,21 +8,22 @@ import {
 // @ts-ignore
 import { hospitalModelProps } from '../../types';
 import { HospitalStatus } from '@typeorm/entity/enums';
+// @ts-ignore
 import { Site } from '@typeorm/entity/site';
 
 @Entity()
 export class Hospital {
   constructor(data: hospitalModelProps) {
-    this.name = data?.name as string;
-    this.email = data?.email as string;
-    this.phone = data?.phone as string;
-    this.address = data?.address as string;
-    this.city = data?.city as string;
-    this.state = data?.state as string;
-    this.country = data?.country as string;
-    this.logo = data?.logo as string;
-    this.zip_code = data?.zip_code as string;
-    this.country_code = data?.country_code as string;
+    this.name = data?.name;
+    this.email = data?.email;
+    this.phone = data?.phone;
+    this.address = data?.address;
+    this.city = data?.city;
+    this.state = data?.state;
+    this.country = data?.country;
+    this.logo = data?.logo;
+    this.zip_code = data?.zip_code;
+    this.country_code = data?.country_code;
   }
 
   @PrimaryGeneratedColumn('uuid')

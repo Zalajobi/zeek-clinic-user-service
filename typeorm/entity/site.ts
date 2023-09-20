@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+// @ts-ignore
 import { Provider } from '@typeorm/entity/providers';
 import { Patients } from '@typeorm/entity/patient';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
@@ -29,15 +30,15 @@ import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 @Entity()
 export class Site {
   constructor(data: siteModelProps) {
-    this.address = data?.address as string;
-    this.name = data?.name as string;
-    this.email = data?.email as string;
-    this.city = data?.city as string;
-    this.state = data?.state as string;
-    this.country = data?.country as string;
+    this.address = data?.address;
+    this.name = data?.name;
+    this.email = data?.email;
+    this.city = data?.city;
+    this.state = data?.state;
+    this.country = data?.country;
     this.logo = data?.logo as string;
     this.time_zone = data?.time_zone as string;
-    this.phone = data?.phone as string;
+    this.phone = data?.phone;
     this.zip_code = data?.zip_code as string;
     this.is_private = data?.is_private as boolean;
     this.has_appointment = data?.has_appointment as boolean;
@@ -57,7 +58,7 @@ export class Site {
     this.has_unit = data?.has_unit as boolean;
     this.has_vital = data?.has_vital as boolean;
     this.has_wallet = data?.has_wallet as boolean;
-    this.hospitalId = data?.hospital_id as string;
+    this.hospitalId = data?.hospital_id;
   }
 
   @PrimaryGeneratedColumn('uuid')

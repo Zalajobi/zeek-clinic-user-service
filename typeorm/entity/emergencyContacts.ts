@@ -14,13 +14,13 @@ import { Patients } from '@typeorm/entity/patient';
 })
 export class EmergencyContacts {
   constructor(data: CreateEmergencyContactsDataProps) {
-    this.patientId = data?.patientId as string;
-    this.name = data?.name as string;
-    this.phone = data?.phone as string;
-    this.address = data?.address as string;
-    this.relationship = data?.relationship as string;
-    this.gender = data?.gender as string;
-    this.occupation = data?.occupation as string;
+    this.patientId = data?.patientId;
+    this.name = data?.name;
+    this.phone = data?.phone;
+    this.address = data?.address;
+    this.relationship = data?.relationship;
+    this.gender = data?.gender;
+    this.occupation = data?.occupation;
   }
 
   @PrimaryGeneratedColumn('uuid')

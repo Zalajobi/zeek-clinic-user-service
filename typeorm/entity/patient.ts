@@ -22,15 +22,14 @@ import { Provider } from '@typeorm/entity/providers';
 @Entity()
 export class Patients {
   constructor(data: CreatePatientsDataProps) {
-    this.siteId = data?.siteId as string;
-    // this.personalInfoId = data?.personalInfoId as string;
-    this.departmentId = data?.departmentId as string;
-    this.serviceareaId = data?.serviceareaId as string;
-    this.unitId = data?.unitId as string;
-    this.email = data?.email as string;
-    this.password = data?.password as string;
-    this.status = data?.status as PatientStatus;
-    this.careGiverId = data?.careGiverId as string;
+    this.siteId = data?.siteId;
+    this.departmentId = data?.departmentId;
+    this.serviceareaId = data?.serviceareaId;
+    this.unitId = data?.unitId;
+    this.email = data?.email;
+    this.password = data?.password;
+    this.status = data?.status;
+    this.careGiverId = data?.careGiverId;
   }
 
   @PrimaryGeneratedColumn('uuid')

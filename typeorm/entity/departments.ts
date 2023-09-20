@@ -14,9 +14,9 @@ import { Provider } from '@typeorm/entity/providers';
 @Entity()
 export class Departments {
   constructor(data: departmentModelProps) {
-    this.name = data?.name as string;
-    this.siteId = data?.siteId as string;
-    this.description = data?.description as string;
+    this.name = data?.name;
+    this.siteId = data?.siteId;
+    this.description = data?.description;
   }
 
   @PrimaryGeneratedColumn('uuid')
