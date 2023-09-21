@@ -31,3 +31,17 @@ export const adminCreateProviderGetUnitsDataBySiteId = async (
     },
   });
 };
+
+export const getUnitDataBySiteID = async (siteId: string) => {
+  const unitRepository = unitRepo();
+
+  return await unitRepository.find({
+    where: {
+      siteId,
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+};
