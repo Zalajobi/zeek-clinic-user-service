@@ -1,10 +1,12 @@
 import { ProfileInfoModelProps } from '../../types';
+// @ts-ignore
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
 import { ProviderStatus } from '@typeorm/entity/enums';
 // @ts-ignore
 import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 
-export type createProviderRequestBody = {
+export type createAndUpdateProviderRequestBody = {
+  address_two: string;
   title: string;
   first_name: string;
   middle_name: string;
@@ -21,6 +23,7 @@ export type createProviderRequestBody = {
   department: string;
   role: string;
   serviceArea: string;
+  servicearea: string;
   unit: string;
   country: string;
   state: string;
@@ -35,9 +38,9 @@ export type createProviderRequestBody = {
 };
 
 export type ProviderModelProps = {
-  siteId: string;
+  siteId?: string;
   primaryRoleId: string;
-  personalInfoId: string;
+  personalInfoId?: string;
   departmentId: string;
   serviceareaId: string;
   unitId: string;

@@ -12,7 +12,7 @@ import { MartialStatus } from '@typeorm/entity/enums';
 import { emitNewEvent } from '@messaging/rabbitMq';
 import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
 import {
-  createProviderRequestBody,
+  createAndUpdateProviderRequestBody,
   ProviderModelProps,
 } from '@typeorm/objectsTypes/providersObjectTypes';
 
@@ -25,7 +25,7 @@ providersPostRequestHandler.post(
       success = false;
 
     try {
-      const data = req.body as createProviderRequestBody;
+      const data = req.body as createAndUpdateProviderRequestBody;
       const verifiedUser = await verifyUserPermission(
         req?.headers?.token as string,
         [

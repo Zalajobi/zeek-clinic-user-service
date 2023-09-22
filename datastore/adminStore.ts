@@ -1,10 +1,10 @@
 import { ProfileInfoModelProps } from '../types';
 // @ts-ignore
 import { adminRepo } from '@typeorm/repositories/adminRepository';
-// @ts-ignore
 import {
   createNewPersonalInfo,
   getPersonalInfoCountByPhone,
+  // @ts-ignore
 } from '@datastore/personalInfoStore';
 import { Admin } from '@typeorm/entity/admin';
 // @ts-ignore

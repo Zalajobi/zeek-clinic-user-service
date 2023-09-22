@@ -55,10 +55,10 @@ export class Provider {
   })
   primaryRoleId: string;
 
-  // @Column({
-  //   nullable: false,
-  // })
-  // personalInfoId: string;
+  @Column({
+    nullable: false,
+  })
+  personalInfoId: string;
 
   @Column({
     nullable: false,
