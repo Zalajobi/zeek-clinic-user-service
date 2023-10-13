@@ -10,6 +10,7 @@ import { Provider } from './providers';
 import { Site } from './site';
 // @ts-ignore
 import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
+import { Patients } from '@typeorm/entity/patient';
 
 @Entity()
 export class Units {
@@ -60,6 +61,9 @@ export class Units {
   // Relations
   @OneToMany((type) => Provider, (provider) => provider.unit)
   providers: Provider[];
+
+  @OneToMany((type) => Patients, (patient) => patient.unit)
+  patients: Patients[];
 
   @ManyToOne((type) => Site, (site) => site.departments)
   site: Site;

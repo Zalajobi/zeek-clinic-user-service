@@ -11,6 +11,7 @@ import { ServiceAreaType } from '@typeorm/entity/enums';
 import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
+import { Patients } from '@typeorm/entity/patient';
 
 @Entity({
   name: 'service_area',
@@ -56,6 +57,10 @@ export class Servicearea {
   // Relations
   @OneToMany((type) => Provider, (provider) => provider.servicearea)
   providers: Provider[];
+
+  // Relations
+  @OneToMany((type) => Patients, (patients) => patients.servicearea)
+  patients: Patients[];
 
   @ManyToOne((type) => Site, (site) => site.serviceareas)
   site: Site;

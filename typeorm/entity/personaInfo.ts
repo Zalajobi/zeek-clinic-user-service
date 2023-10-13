@@ -80,16 +80,24 @@ export class PersonalInformation {
   })
   middle_name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   title: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   gender: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   dob: Date;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   address: string;
 
   @Column({
@@ -97,13 +105,19 @@ export class PersonalInformation {
   })
   address_two?: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   city: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   state: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   country: string;
 
   @Column({
@@ -139,8 +153,7 @@ export class PersonalInformation {
   @OneToOne(() => Provider, (provider) => provider.personalInfo)
   provider?: Provider;
 
-  @OneToOne(() => Patients)
-  @JoinColumn()
+  @OneToOne(() => Patients, (patient) => patient.personalInfo)
   patient?: Patients;
 
   @OneToOne(() => Admin, (admin) => admin.personalInfo)

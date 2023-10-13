@@ -8,6 +8,7 @@ import {
 
 const providersGetRequestHandler = Router();
 
+// Admin get the list of provider of a site by site ID - Paginated Data
 providersGetRequestHandler.get(
   `/admin/get-providers/pagination/:siteId`,
   async (req, res) => {
@@ -67,6 +68,7 @@ providersGetRequestHandler.get(
   }
 );
 
+// Admin get providers details
 providersGetRequestHandler.get(`/admin/details/:id`, async (req, res) => {
   let message = 'Not Authorised',
     success = false;

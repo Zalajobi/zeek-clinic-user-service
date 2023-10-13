@@ -18,6 +18,12 @@ import { PatientEmployer } from '@typeorm/entity/patientEmployer';
 import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
+// @ts-ignore
+import { Departments } from '@typeorm/entity/departments';
+// @ts-ignore
+import { Units } from '@typeorm/entity/units';
+// @ts-ignore
+import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()
 export class Patients {
@@ -40,10 +46,10 @@ export class Patients {
   })
   siteId: string;
 
-  // @Column({
-  //   nullable: true,
-  // })
-  // personalInfoId: string;
+  @Column({
+    nullable: true,
+  })
+  personalInfoId: string;
 
   @Column({
     nullable: true,
@@ -97,9 +103,11 @@ export class Patients {
   updated_at: Date;
 
   // Relations
-  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient)
+  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
-  personalInfo?: PersonalInformation;
+  personalInfo: PersonalInformation;
 
   @OneToOne(() => PatientEmployer, (employer) => employer.patient)
   @JoinColumn()
@@ -113,6 +121,15 @@ export class Patients {
 
   @ManyToOne((type) => Provider, (provider) => provider.patients)
   careGiver: Provider;
+
+  @ManyToOne((type) => Departments, (department) => department.patients)
+  department: Departments;
+
+  @ManyToOne((type) => Units, (unit) => unit.patients)
+  unit: Units;
+
+  @ManyToOne((type) => Servicearea, (unit) => unit.patients)
+  servicearea: Servicearea;
 
   /// Add, complains, medications, allergies, diagnosis and visit
 }

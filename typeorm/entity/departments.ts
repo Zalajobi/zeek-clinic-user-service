@@ -10,6 +10,7 @@ import {
 import { departmentModelProps } from '../../types';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
+import { Patients } from '@typeorm/entity/patient';
 
 @Entity()
 export class Departments {
@@ -46,6 +47,9 @@ export class Departments {
   // Relations
   @OneToMany((type) => Provider, (provider) => provider.department)
   providers: Provider[];
+
+  @OneToMany((type) => Patients, (patients) => patients.department)
+  patients: Patients[];
 
   @ManyToOne((type) => Site, (site) => site.departments)
   site: Site;
