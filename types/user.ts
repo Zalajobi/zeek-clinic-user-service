@@ -1,15 +1,9 @@
-export interface CreateUserProps {
-  email: string
-  phone_number?: string
-  password: string
-  username: string
-  first_name: string
-  last_name: string
-}
+// import {Jsonify} from "type-fest";
 
 export interface JWTDataProps {
-  id: string
-  role?: string
-  email?: string
+  id: string;
+  role?: string;
+  email?: string;
 }
 
+// export type ProfileType = Jsonify<JWTDataProps>
