@@ -8,15 +8,21 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Site } from './site';
-import { Roles } from './roles';
-import { Departments } from './departments';
-import { PersonalInformation } from './personaInfo';
-import { Units } from './units';
-import { ProviderStatus } from './enums';
-import { Servicearea } from './servicearea';
-import { Patients } from './patient';
-import { ProviderModelProps } from '../../types';
+// @ts-ignore
+import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
+import { ProviderStatus } from '@typeorm/entity/enums';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+// @ts-ignore
+import { Patients } from '@typeorm/entity/patient';
+import { Site } from '@typeorm/entity/site';
+// @ts-ignore
+import { Roles } from '@typeorm/entity/roles';
+// @ts-ignore
+import { Departments } from '@typeorm/entity/departments';
+// @ts-ignore
+import { Units } from '@typeorm/entity/units';
+// @ts-ignore
+import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()
 export class Provider {
@@ -25,6 +31,7 @@ export class Provider {
     this.primaryRoleId = data?.primaryRoleId as string;
     this.departmentId = data?.departmentId as string;
     this.serviceareaId = data?.serviceareaId as string;
+    // this.personalInfoId = data?.personalInfoId as string;
     this.unitId = data?.unitId as string;
     this.email = data?.email as string;
     this.password = data?.password as string;
@@ -49,9 +56,9 @@ export class Provider {
   primaryRoleId: string;
 
   @Column({
-    nullable: true,
+    nullable: false,
   })
-  personalInfoId?: string;
+  personalInfoId: string;
 
   @Column({
     nullable: false,
@@ -81,7 +88,7 @@ export class Provider {
 
   @Column({
     unique: true,
-    nullable: false,
+    nullable: true,
   })
   username: string;
 
@@ -122,9 +129,15 @@ export class Provider {
   updated_at: Date;
 
   // Relations
-  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.provider)
+  @OneToOne(
+    () => PersonalInformation,
+    (personalInfo) => personalInfo.provider,
+    {
+      onDelete: 'CASCADE',
+    }
+  )
   @JoinColumn()
-  personalInfo?: PersonalInformation;
+  personalInfo: PersonalInformation;
 
   @OneToMany((type) => Patients, (patients) => patients.careGiver)
   patients: Patients[];

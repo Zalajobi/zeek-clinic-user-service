@@ -1,7 +1,8 @@
-import { superAdminRepo } from '../typeorm/repositories/superAdminRepository';
-import { SuperAdminEntityObject } from '../typeorm/objectsTypes/superadminObjectTypes';
+import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
+// @ts-ignore
+import { SuperAdminEntityObject } from '@typeorm/objectsTypes/superadminObjectTypes';
 
-export const getSuperadminLoginData = async (value: string) => {
+export const getSuperAdminLoginData = async (value: string) => {
   const superAdminRepository = superAdminRepo();
 
   return await superAdminRepository.findOne({
@@ -24,7 +25,7 @@ export const getSuperadminLoginData = async (value: string) => {
   });
 };
 
-export const getSuperadminBaseData = async (id: string) => {
+export const getSuperAdminBaseData = async (id: string) => {
   const superAdminRepository = superAdminRepo();
 
   return await superAdminRepository.findOne({
@@ -43,7 +44,7 @@ export const getSuperadminBaseData = async (id: string) => {
   });
 };
 
-export const getSuperadminDataById = async (id: string) => {
+export const getSuperAdminDataById = async (id: string) => {
   const superAdminRepository = superAdminRepo();
 
   return <SuperAdminEntityObject>await superAdminRepository.findOneBy({

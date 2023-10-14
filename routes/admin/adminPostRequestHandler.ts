@@ -5,18 +5,23 @@ import {
   getAdminPrimaryLoginInformation,
   getAdminPrimaryInformationAndProfile,
   updateAdminData,
-} from '../../datastore/adminStore';
+} from '@datastore/adminStore';
 import {
-  generateCode,
+  generateTemporaryPassCode,
   generateJSONTokenCredentials,
   generatePasswordHash,
   validatePassword,
-} from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
-import { adminModelProps } from '../../types';
-import { sendResetPasswordEmail } from '../../messaging/email';
-import { AdminEntityObject } from '../../typeorm/objectsTypes/adminObjectTypes';
+} from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
+// @ts-ignore
+import { sendResetPasswordEmail } from '@messaging/email';
+import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
+// @ts-ignore
+import { emitNewEvent } from '@messaging/rabbitMq';
+// @ts-ignore
+import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
 
 const adminPostRequestHandler = Router();
 
@@ -68,22 +73,66 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
   }
 });
 
-adminPostRequestHandler.post('/create', async (req, res) => {
+adminPostRequestHandler.post('/create-admin', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
+  const requestBody = req.body as CreateAdminApiJsonBody;
 
   try {
+    const { siteId, role, email, username, staff_id, ...profileInfoData } =
+      requestBody;
+    const {
+      first_name,
+      last_name,
+      middle_name,
+      country,
+      state,
+      city,
+      phone,
+      zip_code,
+      religion,
+      gender,
+      dob,
+      title,
+      address,
+      address_two,
+      profile_pic,
+      marital_status,
+      ...adminData
+    } = requestBody;
+
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
     );
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
-    req.body.password = generatePasswordHash(req.body.password);
 
-    const newAdmin = await createNewAdmin(req.body as adminModelProps);
+    const tempPassword = generateTemporaryPassCode();
+    adminData.password = generatePasswordHash(tempPassword);
 
-    return JsonApiResponse(res, newAdmin.message, newAdmin.success, null, 200);
+    const newAdmin = await createNewAdmin(
+      adminData as AdminModelProps,
+      profileInfoData as ProfileInfoModelProps
+    );
+
+    if (newAdmin.success as boolean) {
+      await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
+        email: requestBody.email,
+        firstName: requestBody.first_name,
+        lastName: requestBody.last_name,
+        tempPassword: tempPassword,
+        userName: requestBody.username,
+      });
+    }
+
+    return JsonApiResponse(
+      res,
+      newAdmin.message,
+      newAdmin.success as boolean,
+      null,
+      200
+    );
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
@@ -150,7 +199,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendSMSMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Your Temporary Code Is ${passwordResetCode}`
@@ -162,7 +211,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -200,7 +249,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendAudioMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Your Temporary Code Is ${passwordResetCode}`
@@ -212,7 +261,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -250,7 +299,7 @@ adminPostRequestHandler.post(
       );
 
       if (user) {
-        const passwordResetCode = generateCode();
+        const passwordResetCode = generateTemporaryPassCode();
         // await twilioSendWhatsAppMessage(
         //   user?.personalInfo?.phone ?? '',
         //   `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`
@@ -262,7 +311,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminEntityObject;
+        } as AdminModelProps;
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 

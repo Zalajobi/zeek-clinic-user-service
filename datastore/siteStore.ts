@@ -1,8 +1,8 @@
-import { siteModelProps } from '../types';
-import { siteRepo } from '../typeorm/repositories/siteRepository';
+import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { Site } from '../typeorm/entity/site';
 import { hospitalRepo } from '../typeorm/repositories/hospitalRepository';
 import { SiteStatus } from '../typeorm/entity/enums';
+import { siteModelProps } from '../typeorm/objectsTypes/siteObjectTypes';
 
 export const adminCreateSite = async (data: siteModelProps) => {
   const siteRepository = siteRepo();
@@ -153,4 +153,26 @@ export const getDistinctOrganizationSiteCountriesAndStates = async (
     countries: response[0],
     states: response[1],
   };
+};
+
+export const getSiteInformationBySiteId = async (siteId: string) => {
+  const siteRepository = siteRepo();
+
+  return siteRepository.findOne({
+    where: {
+      id: siteId,
+    },
+    select: {
+      id: true,
+      name: true,
+      address: true,
+      email: true,
+      country: true,
+      state: true,
+      city: true,
+      phone: true,
+      created_at: true,
+      status: true,
+    },
+  });
 };

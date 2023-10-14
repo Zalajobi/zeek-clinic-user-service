@@ -1,14 +1,20 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { ProfileInfoModelProps } from '../../types';
 import {
-  createProviderRequestBody,
-  profileInfoModelProps,
+  generateTemporaryPassCode,
+  generatePasswordHash,
+} from '@helpers/utils';
+// @ts-ignore
+import { adminCreateNewProvider } from '@datastore/providerStore';
+import { MartialStatus } from '@typeorm/entity/enums';
+import { emitNewEvent } from '@messaging/rabbitMq';
+import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
+import {
+  createAndUpdateProviderRequestBody,
   ProviderModelProps,
-} from '../../types';
-import { generatePasswordHash } from '../../helpers/utils';
-import { adminCreateNewProvider } from '../../datastore/providerStore';
-import { MartialStatus } from '../../typeorm/entity/enums';
+} from '@typeorm/objectsTypes/providersObjectTypes';
 
 const providersPostRequestHandler = Router();
 
@@ -19,7 +25,7 @@ providersPostRequestHandler.post(
       success = false;
 
     try {
-      const data = req.body as createProviderRequestBody;
+      const data = req.body as createAndUpdateProviderRequestBody;
       const verifiedUser = await verifyUserPermission(
         req?.headers?.token as string,
         [
@@ -34,8 +40,8 @@ providersPostRequestHandler.post(
       if (!verifiedUser)
         return JsonApiResponse(res, message, success, null, 200);
 
-      // const {email, appointments, department, is_consultant, is_specialist, ...profileInfoData} = data;
-      // const {first_name, last_name, middle_name, relationship_status, religion, country, state, city, dob, phone ,...providersData} = data
+      const tempPassword = generateTemporaryPassCode();
+
       const providersData: ProviderModelProps = {
         appointments: data.appointments,
         departmentId: data.department,
@@ -48,10 +54,11 @@ providersPostRequestHandler.post(
         unitId: data.unit,
         username: data.username,
         email: data.email,
-        password: generatePasswordHash(data.password),
+        password: generatePasswordHash(tempPassword),
+        personalInfoId: '',
       };
 
-      const personalInfoData: profileInfoModelProps = {
+      const personalInfoData: ProfileInfoModelProps = {
         address: data?.address ?? '',
         city: data?.city ?? '',
         country: data.country ?? '',
@@ -67,7 +74,7 @@ providersPostRequestHandler.post(
         phone: data?.phone ?? '',
         profile_pic: data?.profilePic ?? '',
         religion: data?.religion ?? '',
-        providerId: '',
+        // providerId: '',
       };
 
       const newAdmin = await adminCreateNewProvider(
@@ -75,6 +82,16 @@ providersPostRequestHandler.post(
         personalInfoData,
         data.phone
       );
+
+      if (newAdmin.success as boolean) {
+        await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
+          email: providersData.email,
+          firstName: personalInfoData.first_name,
+          lastName: personalInfoData.last_name,
+          tempPassword: tempPassword,
+          userName: providersData.username,
+        });
+      }
 
       return JsonApiResponse(
         res,

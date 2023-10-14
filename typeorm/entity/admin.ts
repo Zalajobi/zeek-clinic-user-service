@@ -1,32 +1,43 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm"
-import {Site} from "./site";
-import {AdminRoles} from "./enums";
-import {adminModelProps} from "../../types";
-import {PersonalInformation} from "./personaInfo";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Site } from '@typeorm/entity/site';
+import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
+import { AdminRoles } from '@typeorm/entity/enums';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
 
 @Entity()
 export class Admin {
-  constructor(data:adminModelProps) {
-    this.siteId = data?.siteId as string
-    this.role = data?.role as AdminRoles
-    this.email = data?.email as string
-    this.password = data?.password as string
-    this.username = data?.username as string
-    this.staff_id = data?.staff_id as string
+  constructor(data: AdminModelProps) {
+    this.siteId = data?.siteId as string;
+    this.role = data?.role as AdminRoles;
+    this.email = data?.email as string;
+    this.password = data?.password as string;
+    this.username = data?.username as string;
+    this.staff_id = data?.staff_id as string;
+    this.password_reset_request_timestamp =
+      data?.password_reset_request_timestamp as Date;
+    // this.personalInfoId = data?.personalInfoId as string
   }
 
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  siteId: string
+  siteId: string;
 
-  @Column({
-    nullable: true
-  })
-  personalInfoId?: string
+  // @Column({
+  //   nullable: true,
+  // })
+  // personalInfoId?: string;
 
   @Column({
     type: 'enum',
@@ -34,52 +45,53 @@ export class Admin {
     unique: false,
     nullable: false,
   })
-  role: AdminRoles
+  role: AdminRoles;
 
   @Column({
     unique: true,
-    nullable: false
+    nullable: false,
   })
-  email: string
+  email: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  password: string
+  password: string;
 
   @Column({
     unique: true,
-    nullable: false
+    nullable: false,
   })
-  username: string
+  username: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  staff_id: string
+  staff_id: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
-  password_reset_code: string
+  password_reset_code: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
-  password_reset_request_timestamp: Date
+  password_reset_request_timestamp: Date;
 
   @CreateDateColumn()
-  created_at: Date
+  created_at: Date;
 
   @CreateDateColumn()
-  updated_at: Date
+  updated_at: Date;
 
   // Relations
-  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin)
+  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
-  personalInfo?: PersonalInformation
+  personalInfo?: PersonalInformation;
 
-  @ManyToOne(type => Site, site => site.admins)
+  @ManyToOne((type) => Site, (site) => site.admins)
   site: Site;
-
 }

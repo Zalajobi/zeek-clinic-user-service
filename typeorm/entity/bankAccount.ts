@@ -1,38 +1,43 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from "typeorm"
-import {Site} from "./site";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+} from 'typeorm';
+import { Site } from '@typeorm/entity/site';
 
 @Entity()
 export class BankAccount {
-
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
-  siteId: string
+  siteId: string;
 
   @Column()
-  bank_name: string
+  bank_name: string;
 
   @Column()
-  account_number: string
+  account_number: string;
 
   @Column()
-  currency: string
+  currency: string;
 
   @Column()
-  country: string
+  country: string;
 
   @Column()
-  account_officer?: string
+  account_officer?: string;
 
   @CreateDateColumn()
-   created_at: Date
+  created_at: Date;
 
   @CreateDateColumn()
-  updated_at: Date
+  updated_at: Date;
 
-  @ManyToOne(type => Site, site => site.bankAccounts)
+  @ManyToOne((type) => Site, (site) => site.bankAccounts)
   site: Site;
 }

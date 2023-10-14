@@ -6,32 +6,34 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Provider } from './providers';
-import { Admin } from './admin';
-import { profileInfoModelProps } from '../../types';
-import { MartialStatus } from './enums';
-import { Patients } from './patient';
+// @ts-ignore
+import { Provider } from '@typeorm/entity/providers';
+// @ts-ignore
+import { Admin } from '@typeorm/entity/admin';
+import { ProfileInfoModelProps } from '../../types';
+import { MartialStatus } from '@typeorm/entity/enums';
+// @ts-ignore
+import { Patients } from '@typeorm/entity/patient';
 
 @Entity({
   name: 'personal_info',
 })
 export class PersonalInformation {
-  constructor(data: profileInfoModelProps) {
-    this.providerId = data?.providerId as string;
+  constructor(data: ProfileInfoModelProps) {
     this.patientId = data?.patientId as string;
-    this.adminId = data?.adminId as string;
     this.phone = data?.phone as string;
-    this.first_name = data?.first_name as string;
-    this.last_name = data?.last_name as string;
-    this.middle_name = data?.middle_name as string;
-    this.title = data?.title as string;
-    this.gender = data?.gender as string;
-    this.dob = new Date(data?.dob as string);
-    this.address = data?.address as string;
-    this.city = data?.city as string;
-    this.state = data?.state as string;
-    this.country = data?.country as string;
-    this.zip_code = data?.zip_code as string;
+    this.first_name = data?.first_name;
+    this.last_name = data?.last_name;
+    this.middle_name = data?.middle_name;
+    this.title = data?.title;
+    this.gender = data?.gender;
+    this.dob = new Date(data?.dob);
+    this.address = data?.address;
+    this.address_two = data?.address_two as string;
+    this.city = data?.city;
+    this.state = data?.state;
+    this.country = data?.country;
+    this.zip_code = data?.zip_code;
     this.profile_pic = data?.profile_pic as string;
     this.religion = data?.religion as string;
     this.marital_status = data?.marital_status as MartialStatus;
@@ -40,11 +42,11 @@ export class PersonalInformation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    nullable: true,
-    unique: true,
-  })
-  providerId?: string;
+  // @Column({
+  //   nullable: true,
+  //   unique: true,
+  // })
+  // providerId?: string;
 
   @Column({
     nullable: true,
@@ -52,11 +54,11 @@ export class PersonalInformation {
   })
   patientId?: string;
 
-  @Column({
-    nullable: true,
-    unique: true,
-  })
-  adminId?: string;
+  // @Column({
+  //   nullable: true,
+  //   unique: true,
+  // })
+  // adminId?: string;
 
   @Column({
     unique: true,
@@ -78,25 +80,44 @@ export class PersonalInformation {
   })
   middle_name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   title: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   gender: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   dob: Date;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   address: string;
 
-  @Column()
+  @Column({
+    default: '',
+  })
+  address_two?: string;
+
+  @Column({
+    nullable: true,
+  })
   city: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   state: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   country: string;
 
   @Column({
@@ -130,14 +151,11 @@ export class PersonalInformation {
 
   // Relations
   @OneToOne(() => Provider, (provider) => provider.personalInfo)
-  @JoinColumn()
   provider?: Provider;
 
-  @OneToOne(() => Patients)
-  @JoinColumn()
+  @OneToOne(() => Patients, (patient) => patient.personalInfo)
   patient?: Patients;
 
-  @OneToOne(() => Admin)
-  @JoinColumn()
-  admin?: Admin;
+  @OneToOne(() => Admin, (admin) => admin.personalInfo)
+  admin: Admin;
 }

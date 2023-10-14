@@ -1,13 +1,15 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
+// @ts-ignore
+import { verifyUserPermission } from '@lib/auth';
+// @ts-ignore
+import { JsonApiResponse } from '@util/responses';
 import {
-  getSuperadminBaseData,
-  getSuperadminDataById,
-} from '../../datastore/superadminStore';
-import { getOneAdminDataById } from '../../datastore/adminStore';
-import { getDepartmentDataBySiteId } from '../../datastore/departmentStore';
-import { getRoleDataBySiteId } from '../../datastore/roleStore';
+  getSuperAdminBaseData,
+  // @ts-ignore
+} from '@datastore/superadminStore';
+// @ts-ignore
+import { getDepartmentDataBySiteId } from '@datastore/departmentStore';
+import { AdminRoles } from '@typeorm/entity/enums';
 
 const superadminGetRouter = Router();
 
@@ -22,7 +24,7 @@ superadminGetRouter.get('/profile/get-data', async (req, res) => {
     if (!verifiedUser)
       return JsonApiResponse(res, 'Not Authorized', false, null, 401);
 
-    const data = await getSuperadminBaseData(verifiedUser?.id as string);
+    const data = await getSuperAdminBaseData(verifiedUser?.id as string);
 
     if (data) return JsonApiResponse(res, 'Authorized', true, data, 200);
   } catch (error) {
@@ -33,50 +35,47 @@ superadminGetRouter.get('/profile/get-data', async (req, res) => {
   }
 });
 
-superadminGetRouter.get('/get/roles_and_departments', async (req, res) => {
-  let success = false,
-    message = 'Not Authorized';
-  try {
-    const { siteId } = req.query;
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      ['SUPER_ADMIN', 'SITE_ADMIN', 'HOSPITAL_ADMIN']
-    );
+// Get Available roles and departments for create Admin for specific site
+superadminGetRouter.get(
+  '/get/available-admin/roles_and_departments',
+  async (req, res) => {
+    let success = false,
+      message = 'Not Authorized';
+    try {
+      const { siteId } = req.query;
+      let roles: { name: string }[] = [];
+      const verifiedUser = await verifyUserPermission(
+        req?.headers?.token as string,
+        ['SUPER_ADMIN', 'SITE_ADMIN', 'HOSPITAL_ADMIN']
+      );
 
-    if (!verifiedUser)
-      return JsonApiResponse(res, 'Not Authorized', success, null, 403);
+      if (!verifiedUser)
+        return JsonApiResponse(res, 'Not Authorized', success, null, 500);
 
-    const admin = await Promise.all([
-      getOneAdminDataById(verifiedUser?.id as string),
-
-      getSuperadminDataById(verifiedUser?.id as string),
-    ]);
-
-    if (admin[0]?.id === siteId || admin[1]) {
-      const response = await Promise.all([
-        getDepartmentDataBySiteId(siteId as string),
-
-        getRoleDataBySiteId(siteId as string),
-      ]);
+      Object.keys(AdminRoles).forEach((item) => {
+        if (item !== 'HOSPITAL_ADMIN' && item !== 'SUPER_ADMIN') {
+          roles.push({
+            name: item.replace('_', ' '),
+          });
+        }
+      });
 
       return JsonApiResponse(
         res,
         'Roles and departments data fetch successful',
         true,
         {
-          department: response[0],
-          role: response[1],
+          department: await getDepartmentDataBySiteId(siteId as string),
+          role: roles,
         },
         200
       );
+    } catch (error) {
+      if (error instanceof Error) message = error.message;
+
+      return JsonApiResponse(res, message, success, null, 401);
     }
-
-    return JsonApiResponse(res, message, success, null, 403);
-  } catch (error) {
-    if (error instanceof Error) message = error.message;
-
-    return JsonApiResponse(res, message, success, null, 403);
   }
-});
+);
 
 export default superadminGetRouter;

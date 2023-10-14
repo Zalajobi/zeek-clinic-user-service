@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
-import { createNewHospital } from '../../datastore/hospitalStore';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { createNewHospital } from '@datastore/hospitalStore';
 import { hospitalModelProps } from '../../types';
 
 const hospitalPostRequest = Router();

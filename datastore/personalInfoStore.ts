@@ -1,6 +1,8 @@
-import { personalInfoRepo } from '../typeorm/repositories/personalInfoRepository';
-import { profileInfoModelProps } from '../types';
-import { PersonalInformation } from '../typeorm/entity/personaInfo';
+// @ts-ignore
+import { personalInfoRepo } from '@typeorm/repositories/personalInfoRepository';
+import { ProfileInfoModelProps } from '../types';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { AppDataSource } from '../data-source';
 
 export const getPersonalInfoByPhone = async (phone: string) => {
   const personalInfoRepository = personalInfoRepo();
@@ -10,10 +12,13 @@ export const getPersonalInfoByPhone = async (phone: string) => {
   });
 };
 
-export const createNewPersonalInfo = async (data: profileInfoModelProps) => {
+export const createNewPersonalInfo = async (data: ProfileInfoModelProps) => {
   const personalInfoRepository = personalInfoRepo();
+  const personalInformation = new PersonalInformation(data);
 
-  return await personalInfoRepository.save(new PersonalInformation(data));
+  await personalInfoRepository.save(personalInformation);
+
+  return personalInformation;
 };
 
 export const getPersonalInfoCountByPhone = async (phone: string) => {
@@ -24,4 +29,30 @@ export const getPersonalInfoCountByPhone = async (phone: string) => {
       phone,
     },
   });
+};
+
+export const getPersonalInfoCountByPhoneAndNotSameId = async (
+  phone: string,
+  id: string
+) => {
+  const personalInfoRepository = personalInfoRepo();
+
+  return await personalInfoRepository
+    .createQueryBuilder('personalInfo')
+    .where('personalInfo.phone = :phone and personalInfo.id != :id', {
+      phone,
+      id,
+    })
+    .getCount();
+};
+
+export const updatePersonalInfoById = async (
+  id: string,
+  personalInfoData: Record<string, any>
+) => {
+  return await AppDataSource.createQueryBuilder()
+    .update(PersonalInformation)
+    .set(personalInfoData)
+    .where('id = :id', { id })
+    .execute();
 };

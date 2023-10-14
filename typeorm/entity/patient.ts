@@ -8,26 +8,34 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { PatientStatus } from './enums';
-import { Site } from './site';
-import { PersonalInformation } from './personaInfo';
-import { EmergencyContacts } from './emergencyContacts';
-import { CreatePatientsDataProps } from '../objectsTypes/patientObjectTypes';
-import { Provider } from './providers';
-import { PatientEmployer } from './patientEmployer';
+// @ts-ignore
+import { CreatePatientsDataProps } from '@typeorm/objectsTypes/patientObjectTypes';
+import { PatientStatus } from '@typeorm/entity/enums';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+// @ts-ignore
+import { PatientEmployer } from '@typeorm/entity/patientEmployer';
+// @ts-ignore
+import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
+import { Site } from '@typeorm/entity/site';
+import { Provider } from '@typeorm/entity/providers';
+// @ts-ignore
+import { Departments } from '@typeorm/entity/departments';
+// @ts-ignore
+import { Units } from '@typeorm/entity/units';
+// @ts-ignore
+import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()
 export class Patients {
   constructor(data: CreatePatientsDataProps) {
-    this.siteId = data?.siteId as string;
-    this.personalInfoId = data?.personalInfoId as string;
-    this.departmentId = data?.departmentId as string;
-    this.serviceareaId = data?.serviceareaId as string;
-    this.unitId = data?.unitId as string;
-    this.email = data?.email as string;
-    this.password = data?.password as string;
-    this.status = data?.status as PatientStatus;
-    this.careGiverId = data?.careGiverId as string;
+    this.siteId = data?.siteId;
+    this.departmentId = data?.departmentId;
+    this.serviceareaId = data?.serviceareaId;
+    this.unitId = data?.unitId;
+    this.email = data?.email;
+    this.password = data?.password;
+    this.status = data?.status;
+    this.careGiverId = data?.careGiverId;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -91,13 +99,18 @@ export class Patients {
   @CreateDateColumn()
   created_at: Date;
 
-  @CreateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updated_at: Date;
 
   // Relations
-  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient)
+  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
-  personalInfo?: PersonalInformation;
+  personalInfo: PersonalInformation;
 
   @OneToOne(() => PatientEmployer, (employer) => employer.patient)
   @JoinColumn()
@@ -111,6 +124,15 @@ export class Patients {
 
   @ManyToOne((type) => Provider, (provider) => provider.patients)
   careGiver: Provider;
+
+  @ManyToOne((type) => Departments, (department) => department.patients)
+  department: Departments;
+
+  @ManyToOne((type) => Units, (unit) => unit.patients)
+  unit: Units;
+
+  @ManyToOne((type) => Servicearea, (unit) => unit.patients)
+  servicearea: Servicearea;
 
   /// Add, complains, medications, allergies, diagnosis and visit
 }

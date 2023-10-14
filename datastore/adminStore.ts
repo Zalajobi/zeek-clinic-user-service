@@ -1,58 +1,89 @@
-import { adminModelProps } from '../types';
-import { adminRepo } from '../typeorm/repositories/adminRepository';
+import { ProfileInfoModelProps } from '../types';
+// @ts-ignore
+import { adminRepo } from '@typeorm/repositories/adminRepository';
 import {
   createNewPersonalInfo,
-  getPersonalInfoByPhone,
-} from './personalInfoStore';
-import { Admin } from '../typeorm/entity/admin';
-import { AdminEntityObject } from '../typeorm/objectsTypes/adminObjectTypes';
-import email from '../lib/email';
+  getPersonalInfoCountByPhone,
+  // @ts-ignore
+} from '@datastore/personalInfoStore';
+import { Admin } from '@typeorm/entity/admin';
+// @ts-ignore
+import { customPromiseRequest } from '@lib/api';
+import { DefaultJsonResponse } from '@util/responses';
+import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
+import { AdminRoles } from '@typeorm/entity/enums';
 
-export const createNewAdmin = async (data: adminModelProps) => {
+export const createNewAdmin = async (
+  adminData: AdminModelProps,
+  profileInfoData: ProfileInfoModelProps
+) => {
   const adminRepository = adminRepo();
 
-  let isNotUnique = await adminRepository
-    .createQueryBuilder('admin')
-    .where('admin.email = :email', {
-      email: data?.email,
-    })
-    .orWhere('admin.username = :username', {
-      username: data?.username,
-    })
-    .getOne();
+  const [infoCountByPhone, adminCount, staffIdAndCount]: any =
+    await customPromiseRequest([
+      getPersonalInfoCountByPhone(profileInfoData?.phone ?? ''),
+
+      adminRepository
+        .createQueryBuilder('admin')
+        .where('LOWER(admin.email) LIKE :email', {
+          email: adminData.email,
+        })
+        .orWhere('LOWER(admin.username) LIKE :username', {
+          username: adminData.username,
+        })
+        .getCount(),
+
+      adminRepository
+        .createQueryBuilder('admin')
+        .where('LOWER(admin.staff_id) = :staffId AND admin.siteId = :siteId', {
+          staffId: adminData.staff_id,
+          siteId: adminData.siteId,
+        })
+        .getCount(),
+    ]);
+
+  adminData.staff_id = adminData.staff_id.toLowerCase();
+  adminData.role = adminData.role.replace(' ', '_') as AdminRoles;
 
   if (
-    isNotUnique ||
-    (await getPersonalInfoByPhone(data?.profileData?.phone ?? ''))
-  )
-    return {
-      success: false,
-      message: 'Admin with same email, phone or username already exists',
-    };
+    infoCountByPhone.status.toString() === 'fulfilled' &&
+    adminCount.status.toString() === 'fulfilled' &&
+    staffIdAndCount.status.toString() === 'fulfilled'
+  ) {
+    if (Number(staffIdAndCount?.value.toString()) >= 1) {
+      return DefaultJsonResponse(
+        'Admin With Staff ID already exists',
+        null,
+        false
+      );
+    } else if (Number(infoCountByPhone?.value.toString()) >= 1) {
+      return DefaultJsonResponse('User with phone already exists', null, false);
+    } else if (Number(adminCount?.value.toString()) >= 1) {
+      return DefaultJsonResponse(
+        'Admin with Username or Email already exits',
+        null,
+        false
+      );
+    }
+  }
 
-  const admin = await adminRepository.save(new Admin(data));
-  data.profileData.adminId = admin.id;
+  const personalInfo = await createNewPersonalInfo(profileInfoData);
+  const newAdmin = new Admin(adminData);
+  newAdmin.personalInfo = personalInfo;
 
-  const profileInformation = await createNewPersonalInfo(data.profileData);
+  const admin = await adminRepository.save(newAdmin);
 
-  if (admin && profileInformation) {
-    await adminRepository.update(
-      {
-        id: admin.id,
-      },
-      {
-        personalInfoId: profileInformation.id,
-      }
+  if (admin) {
+    return DefaultJsonResponse(
+      admin
+        ? 'Admin Creation Successful'
+        : 'Something happened. Error happened while creating Admin',
+      admin,
+      admin ? true : false
     );
   }
 
-  return {
-    success: admin && profileInformation ? true : false,
-    message:
-      admin && profileInformation
-        ? 'Admin Creation Successful'
-        : 'Something happened. Error happened while creating Admin',
-  };
+  return DefaultJsonResponse('Something Went Wrong', null, false);
 };
 
 export const getAdminPrimaryLoginInformation = async (value: string) => {
@@ -119,7 +150,7 @@ export const getAdminBaseDataAndProfileDataByAdminId = async (id: string) => {
 export const getOneAdminDataById = async (id: string) => {
   const adminRepository = adminRepo();
 
-  return <AdminEntityObject>await adminRepository.findOneBy({
+  return <AdminModelProps>await adminRepository.findOneBy({
     id,
   });
 };
@@ -140,7 +171,7 @@ export const updateAdminPasswordByAdminId = async (
   );
 };
 
-export const updateAdminData = async (id: string, data: AdminEntityObject) => {
+export const updateAdminData = async (id: string, data: AdminModelProps) => {
   const adminRepository = adminRepo();
 
   return await adminRepository.update(
@@ -177,6 +208,27 @@ export const getAdminHeaderBaseTemplateData = async (id: string) => {
       id,
     })
     .leftJoinAndSelect('admin.personalInfo', 'profile')
-    .select(['admin.role', 'profile.first_name', 'profile.last_name'])
+    .select([
+      'admin.role',
+      'admin.siteId',
+      'admin.email',
+      'admin.id',
+      'admin.staff_id',
+      'profile.first_name',
+      'profile.last_name',
+      'profile.phone',
+      'profile.title',
+      'profile.gender',
+      'profile.dob',
+      'profile.address',
+      'profile.city',
+      'profile.country',
+      'profile.zip_code',
+      'profile.profile_pic',
+      'profile.created_at',
+      'profile.middle_name',
+      'profile.religion',
+      'profile.marital_status',
+    ])
     .getOne();
 };

@@ -1,12 +1,22 @@
 import { Router } from 'express';
-import superadminRouter from './superadmin';
-import hospitalRouter from './hospital';
-import siteRouter from './site';
-import roleRouter from './role';
-import departmentRouter from './department';
-import adminRouter from './admin';
-import { BASE_URL } from '../util/constants';
-import providersRouter from './providers';
+// @ts-ignore
+import superadminRouter from '@routes/superadmin';
+// @ts-ignore
+import { BASE_URL } from '@util/constants';
+// @ts-ignore
+import siteRouter from '@routes/site';
+// @ts-ignore
+import hospitalRouter from '@routes/hospital';
+// @ts-ignore
+import roleRouter from '@routes/role';
+// @ts-ignore
+import departmentRouter from '@routes/department';
+// @ts-ignore
+import adminRouter from '@routes/admin';
+// @ts-ignore
+import providersRouter from '@routes/providers';
+// @ts-ignore
+import patientRouter from '@routes/patient';
 
 let rootRouter = Router();
 
@@ -17,5 +27,6 @@ rootRouter.use(`${BASE_URL}/role`, roleRouter);
 rootRouter.use(`${BASE_URL}/department`, departmentRouter);
 rootRouter.use(`${BASE_URL}/admin`, adminRouter);
 rootRouter.use(`${BASE_URL}/providers`, providersRouter);
+rootRouter.use(`${BASE_URL}/patients`, patientRouter);
 
 export default rootRouter;

@@ -1,20 +1,22 @@
 import { Router } from 'express';
 import { JWTDataProps } from '../../types/jwt';
-import { verifyJSONToken } from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
-import { getAdminHeaderBaseTemplateData } from '../../datastore/adminStore';
+import { verifyJSONToken } from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { getAdminHeaderBaseTemplateData } from '@datastore/adminStore';
 import {
   adminCreateProviderGetDepartmentDataBySiteId,
   getDepartmentDataBySiteId,
-} from '../../datastore/departmentStore';
+} from '@datastore/departmentStore';
 import department from '../department';
 import {
   adminCreateProviderGetRolesDataBySiteId,
   getRoleDataBySiteId,
-} from '../../datastore/roleStore';
-import { adminCreateProviderGetUnitsDataBySiteId } from '../../datastore/unitStore';
-import { adminCreateProviderGetServiceAreaDataBySiteId } from '../../datastore/serviceAreaStore';
+} from '@datastore/roleStore';
+// @ts-ignore
+import { adminCreateProviderGetUnitsDataBySiteId } from '@datastore/unitStore';
+// @ts-ignore
+import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceAreaStore';
 
 const adminGetRequestHandler = Router();
 
@@ -55,8 +57,9 @@ adminGetRequestHandler.get(
         ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES']
       );
 
-      if (!verifiedUser)
+      if (!verifiedUser) {
         return JsonApiResponse(res, message, success, null, 200);
+      }
 
       const response = await Promise.all([
         adminCreateProviderGetDepartmentDataBySiteId(siteId),
@@ -68,18 +71,22 @@ adminGetRequestHandler.get(
         adminCreateProviderGetRolesDataBySiteId(siteId),
       ]);
 
-      return JsonApiResponse(
-        res,
-        'Success',
-        true,
-        {
-          departments: response[0],
-          units: response[1],
-          serviceAreas: response[2],
-          roles: response[3],
-        },
-        200
-      );
+      if (response) {
+        JsonApiResponse(
+          res,
+          'Success',
+          true,
+          {
+            departments: response[0],
+            units: response[1],
+            serviceAreas: response[2],
+            roles: response[3],
+          },
+          200
+        );
+      }
+
+      return JsonApiResponse(res, 'Something went wrong', false, null, 401);
     } catch (error) {
       if (error instanceof Error) message = error.message;
 

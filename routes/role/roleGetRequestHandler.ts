@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { roleModelProps } from '../../types';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
-import { createNewRole } from '../../datastore/roleStore';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { createNewRole } from '@datastore/roleStore';
 
 const roleGetRequest = Router();
 
