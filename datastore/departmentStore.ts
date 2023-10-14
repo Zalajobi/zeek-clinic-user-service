@@ -1,6 +1,7 @@
-import { departmentRepo } from '../typeorm/repositories/departmentRepository';
+// @ts-ignore
+import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 import { departmentModelProps } from '../types';
-import { Departments } from '../typeorm/entity/departments';
+import { Departments } from '@typeorm/entity/departments';
 
 export const createNewDepartment = async (data: departmentModelProps) => {
   const deptRepository = departmentRepo();
@@ -8,7 +9,7 @@ export const createNewDepartment = async (data: departmentModelProps) => {
   const department = await deptRepository.save(new Departments(data));
 
   return {
-    success: department ? true : false,
+    success: !!department,
     message: department
       ? 'New Department Created'
       : 'Something happened. Error happened while creating Department',

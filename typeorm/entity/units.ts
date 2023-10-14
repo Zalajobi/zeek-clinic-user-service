@@ -8,15 +8,17 @@ import {
 } from 'typeorm';
 import { Provider } from './providers';
 import { Site } from './site';
-import { createUnitDataProps } from '../objectsTypes/unitObjectTypes';
+// @ts-ignore
+import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
+import { Patients } from '@typeorm/entity/patient';
 
 @Entity()
 export class Units {
   constructor(data: createUnitDataProps) {
-    this.name = data?.name as string;
-    this.siteId = data?.siteId as string;
-    this.description = data?.description as string;
-    this.total_beds = data?.total_beds as number;
+    this.name = data?.name;
+    this.siteId = data?.siteId;
+    this.description = data?.description;
+    this.total_beds = data?.total_beds;
     this.occupied_beds = data?.occupied_beds as number;
   }
 
@@ -59,6 +61,9 @@ export class Units {
   // Relations
   @OneToMany((type) => Provider, (provider) => provider.unit)
   providers: Provider[];
+
+  @OneToMany((type) => Patients, (patient) => patient.unit)
+  patients: Patients[];
 
   @ManyToOne((type) => Site, (site) => site.departments)
   site: Site;

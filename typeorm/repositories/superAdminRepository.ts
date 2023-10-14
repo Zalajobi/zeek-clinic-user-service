@@ -1,6 +1,6 @@
-import {SuperAdmin} from "../entity/superAdmin";
-import {AppDataSource} from "../../data-source";
+import { AppDataSource } from '../../data-source';
+import { SuperAdmin } from '@typeorm/entity/superAdmin';
 
 export const superAdminRepo = () => {
   return AppDataSource.getRepository(SuperAdmin);
-}
+};

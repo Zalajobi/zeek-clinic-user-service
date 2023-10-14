@@ -1,4 +1,4 @@
-import { siteRepo } from '../typeorm/repositories/siteRepository';
+import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { Site } from '../typeorm/entity/site';
 import { hospitalRepo } from '../typeorm/repositories/hospitalRepository';
 import { SiteStatus } from '../typeorm/entity/enums';

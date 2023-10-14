@@ -1,4 +1,4 @@
-import { AdminRoles } from '../entity/enums';
+import { AdminRoles } from '@typeorm/entity/enums';
 
 export type SuperAdminEntityObject = {
   id: string;

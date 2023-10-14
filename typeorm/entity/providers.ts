@@ -8,15 +8,21 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Site } from './site';
-import { Roles } from './roles';
-import { Departments } from './departments';
-import { PersonalInformation } from './personaInfo';
-import { Units } from './units';
-import { ProviderStatus } from './enums';
-import { Servicearea } from './servicearea';
-import { Patients } from './patient';
-import { ProviderModelProps } from '../objectsTypes/providersObjectTypes';
+// @ts-ignore
+import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
+import { ProviderStatus } from '@typeorm/entity/enums';
+import { PersonalInformation } from '@typeorm/entity/personaInfo';
+// @ts-ignore
+import { Patients } from '@typeorm/entity/patient';
+import { Site } from '@typeorm/entity/site';
+// @ts-ignore
+import { Roles } from '@typeorm/entity/roles';
+// @ts-ignore
+import { Departments } from '@typeorm/entity/departments';
+// @ts-ignore
+import { Units } from '@typeorm/entity/units';
+// @ts-ignore
+import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()
 export class Provider {
@@ -49,10 +55,10 @@ export class Provider {
   })
   primaryRoleId: string;
 
-  // @Column({
-  //   nullable: false,
-  // })
-  // personalInfoId: string;
+  @Column({
+    nullable: false,
+  })
+  personalInfoId: string;
 
   @Column({
     nullable: false,

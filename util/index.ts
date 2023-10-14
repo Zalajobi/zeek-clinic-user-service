@@ -2,12 +2,41 @@
 // const algorithm = process.env.ENCRYPTION_ALGORITHM as string;
 // const iv = Buffer.from('1234567890123456', 'utf8');
 
+import { object } from 'twilio/lib/base/serialize';
+import * as console from 'console';
+
 export const excludeKeys = (object: any, keys: string[]) => {
   for (let key of keys) {
     delete object[key];
   }
 
   return object;
+};
+
+export const purgeObjectOfNullOrEmptyValues = (
+  obj: Record<string, any>
+): Record<string, any> => {
+  const cleanedObject: Record<string, any> = {};
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+      if (value !== null && value !== undefined && value !== '') {
+        cleanedObject[key] = value;
+      }
+    }
+  }
+
+  return cleanedObject;
+};
+
+export const isObjectEmpty = (obj: Record<string, any>): boolean => {
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 // export const encryptString = (value: string):string => {

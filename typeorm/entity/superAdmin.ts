@@ -1,59 +1,64 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
-import {AdminRoles} from "./enums";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
+import { AdminRoles } from '@typeorm/entity/enums';
 
 @Entity()
 export class SuperAdmin {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
-    unique: true
+    unique: true,
   })
-  email: string
+  email: string;
 
   @Column({
-    unique: true
+    unique: true,
   })
-  username: string
+  username: string;
 
   @Column({
-    unique: true
+    unique: true,
   })
-  phone_number: string
+  phone_number: string;
 
   @Column({
-    unique: false
+    unique: false,
   })
-  first_name: string
+  first_name: string;
 
   @Column({
-    unique: false
+    unique: false,
   })
-  last_name: string
+  last_name: string;
 
   @Column({
     nullable: true,
-    unique: false
+    unique: false,
   })
-  other_name: string
+  other_name: string;
 
   @Column({
     type: 'enum',
     enum: AdminRoles,
     unique: false,
     nullable: false,
-    default: AdminRoles.SUPER_ADMIN
+    default: AdminRoles.SUPER_ADMIN,
   })
-  role: AdminRoles
+  role: AdminRoles;
 
   @Column({
-    unique: false
+    unique: false,
   })
-  password: string
+  password: string;
 
   @CreateDateColumn()
-   created_at: Date
+  created_at: Date;
 
   @CreateDateColumn()
-  updated_at: Date
+  updated_at: Date;
 }

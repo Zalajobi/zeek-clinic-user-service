@@ -1,6 +1,8 @@
 import express = require('express');
-import hospitalGetRequest from './hospitalGetRequestHandler';
-import hospitalPostRequest from './hospitalPostRequestHandler';
+// @ts-ignore
+import hospitalGetRequest from '@routes/hospital/hospitalGetRequestHandler';
+// @ts-ignore
+import hospitalPostRequest from '@routes/hospital/hospitalPostRequestHandler';
 
 const hospitalRouter = express.Router();
 

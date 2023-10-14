@@ -1,11 +1,18 @@
 import { Router } from 'express';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
 import {
   getDistinctOrganizationSiteCountriesAndStates,
   getSiteInformationBySiteId,
   siteTableDatastore,
-} from '../../datastore/siteStore';
+} from '@datastore/siteStore';
+import { getDepartmentDataBySiteId } from '@datastore/departmentStore';
+// @ts-ignore
+import { getRoleDataBySiteId } from '@datastore/roleStore';
+// @ts-ignore
+import { getServiceAreaDataBySiteId } from '@datastore/serviceAreaStore';
+// @ts-ignore
+import { getUnitDataBySiteID } from '@datastore/unitStore';
 
 const siteGetRequest = Router();
 
@@ -93,7 +100,7 @@ siteGetRequest.get('/organization/table-filter', async (req, res) => {
   }
 });
 
-siteGetRequest.get(`/admin/get/information/:siteId`, async (req, res) => {
+siteGetRequest.get('/admin/get/information/:siteId', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -130,5 +137,52 @@ siteGetRequest.get(`/admin/get/information/:siteId`, async (req, res) => {
     return JsonApiResponse(res, message, success, null, 403);
   }
 });
+
+siteGetRequest.get(
+  '/department-roles-service_area-unit/:siteId',
+  async (req, res) => {
+    let message = 'Not Authorised',
+      success = false;
+
+    const { siteId } = req.params;
+
+    try {
+      const verifiedUser = await verifyUserPermission(
+        req?.headers?.token as string,
+        ['HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES']
+      );
+
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
+
+      const [department, role, serviceArea, unit] = await Promise.all([
+        getDepartmentDataBySiteId(siteId),
+
+        getRoleDataBySiteId(siteId),
+
+        getServiceAreaDataBySiteId(siteId),
+
+        getUnitDataBySiteID(siteId),
+      ]);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          department,
+          role,
+          serviceArea,
+          unit,
+        },
+        200
+      );
+    } catch (error) {
+      if (error instanceof Error) message = error.message;
+
+      return JsonApiResponse(res, message, false, null, 401);
+    }
+  }
+);
 
 export default siteGetRequest;

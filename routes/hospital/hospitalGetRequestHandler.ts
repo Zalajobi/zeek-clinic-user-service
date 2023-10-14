@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
 import {
   getHospitalDetails,
   selectAllAvailableCountries,
   superAdminGetHospitals,
-} from '../../datastore/hospitalStore';
+  // @ts-ignore
+} from '@datastore/hospitalStore';
 import hospitalRouter from './index';
 
 const hospitalGetRequest = Router();

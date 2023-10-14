@@ -1,6 +1,8 @@
 import express = require('express');
-import departmentPostRequest from './departmentPostRequestHandler';
-import departmentGetRequest from './departmentGetRequestHandler';
+// @ts-ignore
+import departmentPostRequest from '@routes/department/departmentPostRequestHandler';
+// @ts-ignore
+import departmentGetRequest from '@routes/department/departmentGetRequestHandler';
 
 const departmentRouter = express.Router();
 
