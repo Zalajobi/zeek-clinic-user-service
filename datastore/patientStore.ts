@@ -1,7 +1,6 @@
 // @ts-ignore
 import { patientRepo } from '@typeorm/repositories/patientRepository';
 import { DefaultJsonResponse } from '@util/responses';
-import * as console from 'console';
 
 export const getPatientCountByProviderId = async (providerId: string) => {
   const patientRepository = patientRepo();
@@ -61,5 +60,24 @@ export const getPatientsDetailsByCareGiverId = async (providerId: string) => {
       : 'Something went wrong while retrieving data',
     patientData,
     !!patientData
+  );
+};
+
+export const movePatientWithinSite = async (id: string, data: Object) => {
+  const patientRepository = patientRepo();
+
+  const updatedData = await patientRepository.update(
+    {
+      id,
+    },
+    data
+  );
+
+  return DefaultJsonResponse(
+    Number(updatedData?.affected) >= 1
+      ? 'Patient Successfully Moved'
+      : 'Something went wrong while retrieving data',
+    null,
+    Number(updatedData?.affected) >= 1
   );
 };

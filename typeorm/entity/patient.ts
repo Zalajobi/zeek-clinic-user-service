@@ -99,7 +99,10 @@ export class Patients {
   @CreateDateColumn()
   created_at: Date;
 
-  @CreateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updated_at: Date;
 
   // Relations
