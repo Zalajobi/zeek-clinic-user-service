@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
 import { getPatientsDetailsByCareGiverId } from '@datastore/patientStore';
-import * as console from 'console';
 
 const patientGetRequestHandler = Router();
 
