@@ -1,15 +1,14 @@
 import { Router } from 'express';
-import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import { movePatientWithinSite } from '@datastore/patientStore';
+import { JsonApiResponse } from '@util/responses';
+import { updateDepartmentData } from '@datastore/departmentStore';
 
-const patientPutRequestHandler = Router();
+const departmentPutRequest = Router();
 
-patientPutRequestHandler.put('/move/:id', async (req, res) => {
+departmentPutRequest.put('/admin/update/:departmentId', async (req, res) => {
+  const departmentId = req.params.departmentId as string;
   let message = 'Not Authorised',
     success = false;
-
-  const id = req.params.id;
 
   try {
     const verifiedUser = await verifyUserPermission(
@@ -25,14 +24,14 @@ patientPutRequestHandler.put('/move/:id', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const response = await movePatientWithinSite(req.params.id, req.body);
+    const updatedData = await updateDepartmentData(departmentId, req.body);
 
     return JsonApiResponse(
       res,
-      response.message,
-      response.success as boolean,
+      updatedData.message,
+      updatedData.success as boolean,
       null,
-      response?.success ? 200 : 400
+      updatedData?.success ? 200 : 400
     );
   } catch (error) {
     let message = 'Not Authorized';
@@ -41,4 +40,4 @@ patientPutRequestHandler.put('/move/:id', async (req, res) => {
     return JsonApiResponse(res, message, success, null, 500);
   }
 });
-export default patientPutRequestHandler;
+export default departmentPutRequest;

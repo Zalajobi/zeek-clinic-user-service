@@ -41,7 +41,7 @@ superadminPostRequest.post('/auth/login', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 

@@ -39,7 +39,7 @@ adminGetRequestHandler.get(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );
@@ -113,19 +113,19 @@ adminGetRequestHandler.get('/profile/get-data', async (req, res) => {
       ]
     );
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const data = await getAdminHeaderBaseTemplateData(
       verifiedUser?.id as string
     );
 
-    if (!data) JsonApiResponse(res, 'Something Went Wrong', false, null, 403);
+    if (!data) JsonApiResponse(res, 'Something Went Wrong', false, null, 401);
 
     return JsonApiResponse(res, 'Success', true, data, 200);
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 

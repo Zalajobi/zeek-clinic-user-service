@@ -104,7 +104,6 @@ export const adminGetProvidersInfoPagination = async (
   let skip = Number(perPage * page),
     take = Number(perPage),
     providers = null;
-  hospitalRepo();
   const fromDate = from ? new Date(from) : new Date('1900-01-01'),
     toDate = to ? new Date(to) : new Date();
 

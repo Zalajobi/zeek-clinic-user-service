@@ -26,7 +26,7 @@ siteGetRequest.get('/get-information', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 
@@ -118,15 +118,14 @@ siteGetRequest.get('/admin/get/information/:siteId', async (req, res) => {
       ]
     );
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const site = await getSiteInformationBySiteId(siteId);
 
     return JsonApiResponse(
       res,
-      message,
-      true,
-      // providers,
+      site ? 'Site Info Request Success' : 'Something Went Wrong',
+      !!site,
       site,
       200
     );
@@ -134,7 +133,7 @@ siteGetRequest.get('/admin/get/information/:siteId', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 

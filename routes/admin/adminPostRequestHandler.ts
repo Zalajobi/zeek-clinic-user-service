@@ -69,7 +69,7 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 
@@ -136,7 +136,7 @@ adminPostRequestHandler.post('/create-admin', async (req, res) => {
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 
@@ -179,7 +179,7 @@ adminPostRequestHandler.post(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );
@@ -229,7 +229,7 @@ adminPostRequestHandler.post(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );
@@ -279,7 +279,7 @@ adminPostRequestHandler.post(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );
@@ -329,7 +329,7 @@ adminPostRequestHandler.post(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );

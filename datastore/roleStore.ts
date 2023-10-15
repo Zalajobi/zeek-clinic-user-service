@@ -2,6 +2,7 @@ import { roleModelProps } from '../types';
 // @ts-ignore
 import { roleRepo } from '@typeorm/repositories/roleRepository';
 import { Roles } from '@typeorm/entity/roles';
+import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 
 export const createNewRole = async (data: roleModelProps) => {
   const roleRepository = roleRepo();

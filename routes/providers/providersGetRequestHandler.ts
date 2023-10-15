@@ -33,7 +33,7 @@ providersGetRequestHandler.get(
         req.query;
 
       if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 403);
+        return JsonApiResponse(res, message, success, null, 401);
 
       const providersData = await adminGetProvidersInfoPagination(
         page as unknown as number,
@@ -58,12 +58,12 @@ providersGetRequestHandler.get(
           200
         );
 
-      return JsonApiResponse(res, 'Something went wrong', success, null, 403);
+      return JsonApiResponse(res, 'Something went wrong', success, null, 401);
     } catch (error) {
       let message = 'Not Authorized';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, success, null, 403);
+      return JsonApiResponse(res, message, success, null, 500);
     }
   }
 );
@@ -87,7 +87,7 @@ providersGetRequestHandler.get(`/admin/details/:id`, async (req, res) => {
       ]
     );
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const provider = await adminGetProviderDetails(id);
 
@@ -101,12 +101,12 @@ providersGetRequestHandler.get(`/admin/details/:id`, async (req, res) => {
       );
     }
 
-    return JsonApiResponse(res, 'Something went wrong', success, null, 403);
+    return JsonApiResponse(res, 'Something went wrong', success, null, 401);
   } catch (error) {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 
