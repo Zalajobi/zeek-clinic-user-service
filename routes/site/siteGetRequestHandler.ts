@@ -124,9 +124,8 @@ siteGetRequest.get('/admin/get/information/:siteId', async (req, res) => {
 
     return JsonApiResponse(
       res,
-      message,
-      true,
-      // providers,
+      site ? 'Site Info Request Success' : 'Something Went Wrong',
+      !!site,
       site,
       200
     );
