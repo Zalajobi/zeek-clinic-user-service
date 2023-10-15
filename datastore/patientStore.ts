@@ -76,7 +76,7 @@ export const movePatientWithinSite = async (id: string, data: Object) => {
   return DefaultJsonResponse(
     Number(updatedData?.affected) >= 1
       ? 'Patient Successfully Moved'
-      : 'Something went wrong while retrieving data',
+      : 'Something Went Wrong',
     null,
     Number(updatedData?.affected) >= 1
   );

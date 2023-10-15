@@ -26,7 +26,7 @@ roleGetRequest.post('/create', async (req, res) => {
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 

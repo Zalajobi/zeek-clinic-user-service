@@ -27,7 +27,7 @@ patientGetRequestHandler.get(
       );
 
       if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 403);
+        return JsonApiResponse(res, message, success, null, 401);
 
       const patientData = await getPatientsDetailsByCareGiverId(providerId);
 
