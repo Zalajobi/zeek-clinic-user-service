@@ -57,7 +57,7 @@ departmentGetRequest.get('/list/paginated/:siteId', async (req, res) => {
     const { page, per_page, from_date, to_date, search, country, status } =
       req.query;
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const deptData = await adminGetDepartmentsAndProvidersCount(
       page as unknown as number,
