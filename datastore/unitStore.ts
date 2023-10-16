@@ -3,11 +3,10 @@ import { unitRepo } from '@typeorm/repositories/unitRepositories';
 import { DefaultJsonResponse } from '@util/responses';
 // @ts-ignore
 import { unitModelProps } from '@types/index';
-import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 import { Units } from '@typeorm/entity/units';
 
 export const createNewUnit = async (data: unitModelProps) => {
-  const unitRepository = departmentRepo();
+  const unitRepository = unitRepo();
 
   // If Unit already exists in the same site, do no create
   const isUnique = await unitRepository

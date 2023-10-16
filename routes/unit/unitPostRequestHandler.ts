@@ -7,6 +7,7 @@ import { createNewUnit } from '@datastore/unitStore';
 
 const unitPostRequest = Router();
 
+// Create New Department
 unitPostRequest.post('/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
