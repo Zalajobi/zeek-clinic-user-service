@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { updateDepartmentDataByDepartmentId } from '@datastore/departmentStore';
+import { updateUnitDataByUnitId } from '@datastore/unitStore';
 
-const departmentPutRequest = Router();
+const unitPutRequest = Router();
 
-departmentPutRequest.put('/admin/update/:departmentId', async (req, res) => {
-  const departmentId = req.params.departmentId as string;
+unitPutRequest.put('/admin/update/:unitId', async (req, res) => {
+  const departmentId = req.params.unitId as string;
   let message = 'Not Authorised',
     success = false;
 
@@ -24,10 +24,7 @@ departmentPutRequest.put('/admin/update/:departmentId', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const updatedData = await updateDepartmentDataByDepartmentId(
-      departmentId,
-      req.body
-    );
+    const updatedData = await updateUnitDataByUnitId(departmentId, req.body);
 
     return JsonApiResponse(
       res,
@@ -43,4 +40,5 @@ departmentPutRequest.put('/admin/update/:departmentId', async (req, res) => {
     return JsonApiResponse(res, message, success, null, 500);
   }
 });
-export default departmentPutRequest;
+
+export default unitPutRequest;

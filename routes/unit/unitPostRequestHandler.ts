@@ -1,16 +1,20 @@
 import { Router } from 'express';
+// @ts-ignore
+import { unitModelProps } from '@types/index';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { updateDepartmentDataByDepartmentId } from '@datastore/departmentStore';
+import { createNewUnit } from '@datastore/unitStore';
 
-const departmentPutRequest = Router();
+const unitPostRequest = Router();
 
-departmentPutRequest.put('/admin/update/:departmentId', async (req, res) => {
-  const departmentId = req.params.departmentId as string;
+// Create New Department
+unitPostRequest.post('/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
   try {
+    const data = req.body as unitModelProps;
+
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
       [
@@ -24,23 +28,20 @@ departmentPutRequest.put('/admin/update/:departmentId', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const updatedData = await updateDepartmentDataByDepartmentId(
-      departmentId,
-      req.body
-    );
+    const newRole = await createNewUnit(data);
 
     return JsonApiResponse(
       res,
-      updatedData.message,
-      updatedData.success as boolean,
+      newRole.message,
+      <boolean>newRole.success,
       null,
-      updatedData?.success ? 200 : 400
+      newRole?.success ? 201 : 500
     );
   } catch (error) {
-    let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
     return JsonApiResponse(res, message, success, null, 500);
   }
 });
-export default departmentPutRequest;
+
+export default unitPostRequest;
