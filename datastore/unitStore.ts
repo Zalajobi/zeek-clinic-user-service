@@ -1,20 +1,37 @@
 // @ts-ignore
 import { unitRepo } from '@typeorm/repositories/unitRepositories';
-import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
-import { Units } from '@typeorm/entity/units';
 import { DefaultJsonResponse } from '@util/responses';
+// @ts-ignore
+import { unitModelProps } from '@types/index';
+import { departmentRepo } from '@typeorm/repositories/departmentRepository';
+import { Units } from '@typeorm/entity/units';
 
-export const createNewUnit = async (data: createUnitDataProps) => {
-  const unitRepository = unitRepo();
+export const createNewUnit = async (data: unitModelProps) => {
+  const unitRepository = departmentRepo();
 
-  const newUnit = await unitRepository.save(new Units(data));
+  // If Unit already exists in the same site, do no create
+  const isUnique = await unitRepository
+    .createQueryBuilder('unit')
+    .where('LOWER(unit.name) LIKE LOWER(:name)', {
+      name: data.name,
+    })
+    .andWhere('unit.siteId = :siteId', {
+      siteId: data?.siteId,
+    })
+    .getCount();
 
-  return {
-    success: !!newUnit,
-    message: newUnit
-      ? 'New Unit Added'
-      : 'Something happened. Error happened while creating New Unit',
-  };
+  if (isUnique >= 1)
+    return DefaultJsonResponse('Unit with name already exists', null, false);
+
+  const units = await unitRepository.save(new Units(data));
+
+  return DefaultJsonResponse(
+    units
+      ? 'New Unit Created'
+      : 'Something happened. Error happened while creating Department',
+    null,
+    !!units
+  );
 };
 
 export const adminCreateProviderGetUnitsDataBySiteId = async (
@@ -79,6 +96,8 @@ export const adminGetUnitsWithProvidersAndPatientsCount = async (
       'unit.siteId',
       'unit.description',
       'unit.name',
+      'units.total_beds',
+      'units.occupied_beds',
       'unit.created_at',
       'unit.updated_at',
     ]);

@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { adminGetDepartmentsAndProvidersCount } from '@datastore/departmentStore';
-import * as console from 'console';
 import { adminGetUnitsWithProvidersAndPatientsCount } from '@datastore/unitStore';
 
 const unitGetRequest = Router();

@@ -34,6 +34,14 @@ export type departmentModelProps = {
   description: string;
 };
 
+export type unitModelProps = {
+  siteId: string;
+  name: string;
+  description: string;
+  total_beds: number;
+  occupied_beds?: number;
+};
+
 export type CreateAdminApiJsonBody = AdminModelProps & ProfileInfoModelProps;
 
 export type ProfileInfoModelProps = {
