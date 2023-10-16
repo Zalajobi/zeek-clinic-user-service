@@ -1,9 +1,8 @@
 import { Router } from 'express';
 // @ts-ignore
-import { departmentModelProps, unitModelProps } from '@types/index';
+import { unitModelProps } from '@types/index';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { createNewDepartment } from '@datastore/departmentStore';
 import { createNewUnit } from '@datastore/unitStore';
 
 const unitPostRequest = Router();

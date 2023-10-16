@@ -96,8 +96,8 @@ export const adminGetUnitsWithProvidersAndPatientsCount = async (
       'unit.siteId',
       'unit.description',
       'unit.name',
-      'units.total_beds',
-      'units.occupied_beds',
+      'unit.total_beds',
+      'unit.occupied_beds',
       'unit.created_at',
       'unit.updated_at',
     ]);
@@ -122,5 +122,24 @@ export const adminGetUnitsWithProvidersAndPatientsCount = async (
     units ? 'Units Data Retrieval Success' : 'Something Went Wong',
     units,
     !!units
+  );
+};
+
+export const updateUnitDataByUnitId = async (id: string, data: Object) => {
+  const unitRepository = unitRepo();
+
+  const updatedData = await unitRepository.update(
+    {
+      id,
+    },
+    data
+  );
+
+  return DefaultJsonResponse(
+    Number(updatedData?.affected) >= 1
+      ? 'Unit Successfully Updated'
+      : 'Something Went Wrong',
+    null,
+    Number(updatedData?.affected) >= 1
   );
 };

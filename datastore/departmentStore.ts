@@ -136,7 +136,10 @@ export const adminGetDepartmentsAndProvidersCount = async (
   );
 };
 
-export const updateDepartmentData = async (id: string, data: Object) => {
+export const updateDepartmentDataByDepartmentId = async (
+  id: string,
+  data: Object
+) => {
   const deptRepository = departmentRepo();
 
   const updatedData = await deptRepository.update(

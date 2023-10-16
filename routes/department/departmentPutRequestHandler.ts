@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { updateDepartmentData } from '@datastore/departmentStore';
+import { updateDepartmentDataByDepartmentId } from '@datastore/departmentStore';
 
 const departmentPutRequest = Router();
 
@@ -24,7 +24,10 @@ departmentPutRequest.put('/admin/update/:departmentId', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const updatedData = await updateDepartmentData(departmentId, req.body);
+    const updatedData = await updateDepartmentDataByDepartmentId(
+      departmentId,
+      req.body
+    );
 
     return JsonApiResponse(
       res,
