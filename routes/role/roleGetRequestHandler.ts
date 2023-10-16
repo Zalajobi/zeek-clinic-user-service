@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { roleModelProps } from '../../types';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
-import { createNewRole } from '../../datastore/roleStore';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { createNewRole } from '@datastore/roleStore';
 
 const roleGetRequest = Router();
 
@@ -26,7 +26,7 @@ roleGetRequest.post('/create', async (req, res) => {
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
-import { createNewHospital } from '../../datastore/hospitalStore';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+import { createNewHospital } from '@datastore/hospitalStore';
 import { hospitalModelProps } from '../../types';
 
 const hospitalPostRequest = Router();
@@ -33,7 +33,7 @@ hospitalPostRequest.post('/create', async (req, res) => {
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, false, null, 403);
+    return JsonApiResponse(res, message, false, null, 500);
   }
 });
 

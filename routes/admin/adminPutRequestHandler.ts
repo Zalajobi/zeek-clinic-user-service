@@ -4,12 +4,12 @@ import {
   generatePasswordHash,
   validatePassword,
   verifyJSONToken,
-} from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
+} from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
 import {
   getAdminBaseDataAndProfileDataByAdminId,
   updateAdminPasswordByAdminId,
-} from '../../datastore/adminStore';
+} from '@datastore/adminStore';
 
 const adminPutRequestHandler = Router();
 
@@ -46,7 +46,7 @@ adminPutRequestHandler.put(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );

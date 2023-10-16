@@ -1,18 +1,17 @@
 import { Router } from 'express';
-import { departmentModelProps } from '../../types';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { createNewDepartment } from '@datastore/departmentStore';
+import { verifyUserPermission } from '@lib/auth';
+import { movePatientWithinSite } from '@datastore/patientStore';
 
-const departmentPostRequest = Router();
+const patientPutRequestHandler = Router();
 
-departmentPostRequest.post('/create', async (req, res) => {
+patientPutRequestHandler.put('/move/:id', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
-  try {
-    const data = req.body as departmentModelProps;
+  const id = req.params.id;
 
+  try {
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
       [
@@ -26,20 +25,20 @@ departmentPostRequest.post('/create', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const newRole = await createNewDepartment(data);
+    const response = await movePatientWithinSite(req.params.id, req.body);
 
     return JsonApiResponse(
       res,
-      newRole.message,
-      <boolean>newRole.success,
+      response.message,
+      response.success as boolean,
       null,
-      newRole?.success ? 201 : 500
+      response?.success ? 200 : 400
     );
   } catch (error) {
+    let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
     return JsonApiResponse(res, message, success, null, 500);
   }
 });
-
-export default departmentPostRequest;
+export default patientPutRequestHandler;

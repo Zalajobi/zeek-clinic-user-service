@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
-import { adminCreateSite } from '../../datastore/siteStore';
-import { siteModelProps } from '../../typeorm/objectsTypes/siteObjectTypes';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
+// @ts-ignore
+import { adminCreateSite } from '@datastore/siteStore';
+import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 
 const sitePostRequest = Router();
 
@@ -31,7 +32,7 @@ sitePostRequest.post('/create', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 

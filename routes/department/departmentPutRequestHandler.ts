@@ -1,18 +1,16 @@
 import { Router } from 'express';
-import { departmentModelProps } from '../../types';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { createNewDepartment } from '@datastore/departmentStore';
+import { updateDepartmentData } from '@datastore/departmentStore';
 
-const departmentPostRequest = Router();
+const departmentPutRequest = Router();
 
-departmentPostRequest.post('/create', async (req, res) => {
+departmentPutRequest.put('/admin/update/:departmentId', async (req, res) => {
+  const departmentId = req.params.departmentId as string;
   let message = 'Not Authorised',
     success = false;
 
   try {
-    const data = req.body as departmentModelProps;
-
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
       [
@@ -26,20 +24,20 @@ departmentPostRequest.post('/create', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const newRole = await createNewDepartment(data);
+    const updatedData = await updateDepartmentData(departmentId, req.body);
 
     return JsonApiResponse(
       res,
-      newRole.message,
-      <boolean>newRole.success,
+      updatedData.message,
+      updatedData.success as boolean,
       null,
-      newRole?.success ? 201 : 500
+      updatedData?.success ? 200 : 400
     );
   } catch (error) {
+    let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
     return JsonApiResponse(res, message, success, null, 500);
   }
 });
-
-export default departmentPostRequest;
+export default departmentPutRequest;

@@ -6,20 +6,22 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ServiceAreaType } from './enums';
-import { CreateServiceAreaDataProps } from '../objectsTypes/serviceAreaObjectType';
-import { Provider } from './providers';
-import { Site } from './site';
+import { ServiceAreaType } from '@typeorm/entity/enums';
+// @ts-ignore
+import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
+import { Site } from '@typeorm/entity/site';
+import { Provider } from '@typeorm/entity/providers';
+import { Patients } from '@typeorm/entity/patient';
 
 @Entity({
   name: 'service_area',
 })
 export class Servicearea {
   constructor(data: CreateServiceAreaDataProps) {
-    this.name = data?.name as string;
-    this.siteId = data?.siteId as string;
-    this.description = data?.description as string;
-    this.type = data?.type as ServiceAreaType;
+    this.name = data?.name;
+    this.siteId = data?.siteId;
+    this.description = data?.description;
+    this.type = data?.type;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -55,6 +57,10 @@ export class Servicearea {
   // Relations
   @OneToMany((type) => Provider, (provider) => provider.servicearea)
   providers: Provider[];
+
+  // Relations
+  @OneToMany((type) => Patients, (patients) => patients.servicearea)
+  patients: Patients[];
 
   @ManyToOne((type) => Site, (site) => site.serviceareas)
   site: Site;

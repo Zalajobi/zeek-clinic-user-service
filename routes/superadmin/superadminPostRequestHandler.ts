@@ -1,10 +1,7 @@
 import { Router } from 'express';
-import { getSuperadminLoginData } from '../../datastore/superadminStore';
-import {
-  generateJSONTokenCredentials,
-  validatePassword,
-} from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
+import { getSuperAdminLoginData } from '@datastore/superadminStore';
+import { generateJSONTokenCredentials, validatePassword } from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
 
 const superadminPostRequest = Router();
 
@@ -14,7 +11,7 @@ superadminPostRequest.post('/auth/login', async (req, res) => {
     success = false;
 
   try {
-    const admin = await getSuperadminLoginData(req.body.email);
+    const admin = await getSuperAdminLoginData(req.body.email);
 
     if (validatePassword(req.body.password, admin?.password ?? '')) {
       const jwtData = {
@@ -44,7 +41,7 @@ superadminPostRequest.post('/auth/login', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 

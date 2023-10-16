@@ -5,20 +5,24 @@ import {
   getAdminPrimaryLoginInformation,
   getAdminPrimaryInformationAndProfile,
   updateAdminData,
-} from '../../datastore/adminStore';
+  // @ts-ignore
+} from '@datastore/adminStore';
 import {
   generateTemporaryPassCode,
   generateJSONTokenCredentials,
   generatePasswordHash,
   validatePassword,
-} from '../../helpers/utils';
-import { JsonApiResponse } from '../../util/responses';
-import { verifyUserPermission } from '../../lib/auth';
+} from '@helpers/utils';
+import { JsonApiResponse } from '@util/responses';
+import { verifyUserPermission } from '@lib/auth';
 import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
-import { sendResetPasswordEmail } from '../../messaging/email';
-import { AdminModelProps } from '../../typeorm/objectsTypes/adminObjectTypes';
-import { emitNewEvent } from '../../messaging/rabbitMq';
-import { CREATE_ADMIN_QUEUE_NAME } from '../../util/constants';
+// @ts-ignore
+import { sendResetPasswordEmail } from '@messaging/email';
+import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
+// @ts-ignore
+import { emitNewEvent } from '@messaging/rabbitMq';
+// @ts-ignore
+import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
 
 const adminPostRequestHandler = Router();
 
@@ -66,7 +70,7 @@ adminPostRequestHandler.post(`/login`, async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 
@@ -133,7 +137,7 @@ adminPostRequestHandler.post('/create-admin', async (req, res) => {
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 
@@ -176,7 +180,7 @@ adminPostRequestHandler.post(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );
@@ -226,7 +230,7 @@ adminPostRequestHandler.post(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );
@@ -276,7 +280,7 @@ adminPostRequestHandler.post(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );
@@ -326,7 +330,7 @@ adminPostRequestHandler.post(
       let message = 'Something Went Wrong';
       if (error instanceof Error) message = error.message;
 
-      return JsonApiResponse(res, message, false, null, 403);
+      return JsonApiResponse(res, message, false, null, 500);
     }
   }
 );

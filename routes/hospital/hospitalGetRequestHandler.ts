@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { verifyUserPermission } from '../../lib/auth';
-import { JsonApiResponse } from '../../util/responses';
+import { verifyUserPermission } from '@lib/auth';
+import { JsonApiResponse } from '@util/responses';
 import {
   getHospitalDetails,
   selectAllAvailableCountries,
   superAdminGetHospitals,
-} from '../../datastore/hospitalStore';
+  // @ts-ignore
+} from '@datastore/hospitalStore';
 import hospitalRouter from './index';
 
 const hospitalGetRequest = Router();
@@ -83,7 +84,7 @@ hospitalGetRequest.get('/details', async (req, res) => {
       ['SUPER_ADMIN', 'HOSPITAL_ADMIN']
     );
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 403);
+    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const hospitalData = await getHospitalDetails(req.query.id as string);
 
@@ -95,7 +96,7 @@ hospitalGetRequest.get('/details', async (req, res) => {
     let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
-    return JsonApiResponse(res, message, success, null, 403);
+    return JsonApiResponse(res, message, success, null, 500);
   }
 });
 

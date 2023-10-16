@@ -6,9 +6,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Site } from './site';
-import { Provider } from './providers';
 import { roleModelProps } from '../../types';
+import { Provider } from '@typeorm/entity/providers';
+import { Site } from '@typeorm/entity/site';
 
 @Entity({ name: 'roles' })
 export class Roles {
