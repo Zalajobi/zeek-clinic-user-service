@@ -5,6 +5,7 @@ import {
   getAdminPrimaryLoginInformation,
   getAdminPrimaryInformationAndProfile,
   updateAdminData,
+  // @ts-ignore
 } from '@datastore/adminStore';
 import {
   generateTemporaryPassCode,
