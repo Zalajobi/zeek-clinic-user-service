@@ -17,6 +17,8 @@ import adminRouter from '@routes/admin';
 import providersRouter from '@routes/providers';
 // @ts-ignore
 import patientRouter from '@routes/patient';
+// @ts-ignore
+import unitRouter from '@routes/unit';
 
 let rootRouter = Router();
 
@@ -25,6 +27,7 @@ rootRouter.use(`${BASE_URL}/hospital`, hospitalRouter);
 rootRouter.use(`${BASE_URL}/site`, siteRouter);
 rootRouter.use(`${BASE_URL}/role`, roleRouter);
 rootRouter.use(`${BASE_URL}/department`, departmentRouter);
+rootRouter.use(`${BASE_URL}/unit`, unitRouter);
 rootRouter.use(`${BASE_URL}/admin`, adminRouter);
 rootRouter.use(`${BASE_URL}/providers`, providersRouter);
 rootRouter.use(`${BASE_URL}/patients`, patientRouter);
