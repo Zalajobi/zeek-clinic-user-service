@@ -3,19 +3,38 @@ import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 import { departmentModelProps } from '../types';
 import { Departments } from '@typeorm/entity/departments';
 import { DefaultJsonResponse } from '@util/responses';
-import * as console from 'console';
+import { Like } from 'typeorm';
 
 export const createNewDepartment = async (data: departmentModelProps) => {
   const deptRepository = departmentRepo();
 
+  // If Department already exists in the same site, do no create
+  const isUnique = await deptRepository
+    .createQueryBuilder('department')
+    .where('LOWER(department.name) LIKE LOWER(:name)', {
+      name: data.name,
+    })
+    .andWhere('department.siteId = :siteId', {
+      siteId: data?.siteId,
+    })
+    .getCount();
+
+  if (isUnique >= 1)
+    return DefaultJsonResponse(
+      'Department with name already exists',
+      null,
+      false
+    );
+
   const department = await deptRepository.save(new Departments(data));
 
-  return {
-    success: !!department,
-    message: department
+  return DefaultJsonResponse(
+    department
       ? 'New Department Created'
       : 'Something happened. Error happened while creating Department',
-  };
+    null,
+    !!department
+  );
 };
 
 // Get Department By SiteId
