@@ -1,4 +1,4 @@
-import { AdminRoles, MartialStatus } from '@typeorm/entity/enums';
+import { MartialStatus } from '@typeorm/entity/enums';
 
 import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 

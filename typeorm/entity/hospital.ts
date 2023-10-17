@@ -6,10 +6,10 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import { hospitalModelProps } from '../../types';
 import { HospitalStatus } from '@typeorm/entity/enums';
 
 import { Site } from '@typeorm/entity/site';
+import { hospitalModelProps } from '@typeDesc/index';
 
 @Entity()
 export class Hospital {

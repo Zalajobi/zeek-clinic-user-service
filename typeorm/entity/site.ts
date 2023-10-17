@@ -10,19 +10,12 @@ import {
 import { Provider } from '@typeorm/entity/providers';
 import { Patients } from '@typeorm/entity/patient';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
-
 import { Servicearea } from '@typeorm/entity/servicearea';
-
 import { Units } from '@typeorm/entity/units';
-
 import { Departments } from '@typeorm/entity/departments';
-
 import { Roles } from '@typeorm/entity/roles';
-
 import { BankAccount } from '@typeorm/entity/bankAccount';
-
 import { Hospital } from '@typeorm/entity/hospital';
-
 import { Admin } from '@typeorm/entity/admin';
 import { SiteStatus } from '@typeorm/entity/enums';
 import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';

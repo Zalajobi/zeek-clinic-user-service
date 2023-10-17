@@ -1,8 +1,6 @@
 import { ProfileInfoModelProps } from '../../types';
-
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
 import { ProviderStatus } from '@typeorm/entity/enums';
-
 import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 
 export type createAndUpdateProviderRequestBody = {

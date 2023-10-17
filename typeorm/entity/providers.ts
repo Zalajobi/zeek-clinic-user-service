@@ -8,20 +8,14 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
 import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
 import { ProviderStatus } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
-
 import { Patients } from '@typeorm/entity/patient';
 import { Site } from '@typeorm/entity/site';
-
 import { Roles } from '@typeorm/entity/roles';
-
 import { Departments } from '@typeorm/entity/departments';
-
 import { Units } from '@typeorm/entity/units';
-
 import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()

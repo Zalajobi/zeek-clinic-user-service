@@ -8,21 +8,15 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-
 import { CreatePatientsDataProps } from '@typeorm/objectsTypes/patientObjectTypes';
 import { PatientStatus } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
-
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
-
 import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
-
 import { Departments } from '@typeorm/entity/departments';
-
 import { Units } from '@typeorm/entity/units';
-
 import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()
