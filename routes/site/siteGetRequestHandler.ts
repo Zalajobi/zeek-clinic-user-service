@@ -6,10 +6,10 @@ import {
   getSiteInformationBySiteId,
   siteTableDatastore,
 } from '@datastore/siteStore';
-import { getRoleDataBySiteId } from '@datastore/roleStore';
 import { getUnitDataBySiteID } from '@datastore/unitStore';
 import { getServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
+import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 
 const siteGetRequest = Router();
 

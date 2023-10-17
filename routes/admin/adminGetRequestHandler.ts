@@ -3,11 +3,11 @@ import { JWTDataProps } from '@typeDesc/jwt';
 import { verifyJSONToken } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import { adminCreateProviderGetRolesDataBySiteId } from '@datastore/roleStore';
 import { adminCreateProviderGetUnitsDataBySiteId } from '@datastore/unitStore';
 import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 import { getAdminHeaderBaseTemplateData } from '@datastore/admin/adminGetStore';
 import { adminCreateProviderGetDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
+import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 
 const adminGetRequestHandler = Router();
 
@@ -59,7 +59,7 @@ adminGetRequestHandler.get(
 
         adminCreateProviderGetServiceAreaDataBySiteId(siteId),
 
-        adminCreateProviderGetRolesDataBySiteId(siteId),
+        getRoleDataBySiteId(siteId),
       ]);
 
       if (response) {
