@@ -4,7 +4,7 @@ import { verifyUserPermission } from '@lib/auth';
 import {
   adminGetDepartmentsAndProvidersCount,
   getDepartmentDataBySiteId,
-} from '@datastore/departmentStore';
+} from '@datastore/department/departmentGetStore';
 
 const departmentGetRequest = Router();
 

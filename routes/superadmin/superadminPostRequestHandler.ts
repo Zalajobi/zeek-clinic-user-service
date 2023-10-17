@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getSuperAdminLoginData } from '@datastore/superadminStore';
+import { getSuperAdminLoginData } from '@datastore/superAdmin/superadminGetStore';
 import { generateJSONTokenCredentials, validatePassword } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 

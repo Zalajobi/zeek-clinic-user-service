@@ -1,22 +1,13 @@
 import { Router } from 'express';
-import { JWTDataProps } from '../../types/jwt';
+import { JWTDataProps } from '@typeDesc/jwt';
 import { verifyJSONToken } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import { getAdminHeaderBaseTemplateData } from '@datastore/adminStore';
-import {
-  adminCreateProviderGetDepartmentDataBySiteId,
-  getDepartmentDataBySiteId,
-} from '@datastore/departmentStore';
-import department from '../department';
-import {
-  adminCreateProviderGetRolesDataBySiteId,
-  getRoleDataBySiteId,
-} from '@datastore/roleStore';
-// @ts-ignore
-import { adminCreateProviderGetUnitsDataBySiteId } from '@datastore/unitStore';
-// @ts-ignore
-import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceAreaStore';
+import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
+import { getAdminHeaderBaseTemplateData } from '@datastore/admin/adminGetStore';
+import { adminCreateProviderGetDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
+import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
+import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 
 const adminGetRequestHandler = Router();
 
@@ -64,11 +55,11 @@ adminGetRequestHandler.get(
       const response = await Promise.all([
         adminCreateProviderGetDepartmentDataBySiteId(siteId),
 
-        adminCreateProviderGetUnitsDataBySiteId(siteId),
+        getUnitDataBySiteID(siteId),
 
         adminCreateProviderGetServiceAreaDataBySiteId(siteId),
 
-        adminCreateProviderGetRolesDataBySiteId(siteId),
+        getRoleDataBySiteId(siteId),
       ]);
 
       if (response) {

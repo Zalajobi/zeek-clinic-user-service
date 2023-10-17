@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-// @ts-ignore
+
 import { CreateEmergencyContactsDataProps } from '@typeorm/objectsTypes/emergencyContactsObjectTypes';
 import { Patients } from '@typeorm/entity/patient';
 

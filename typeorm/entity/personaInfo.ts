@@ -2,18 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-// @ts-ignore
 import { Provider } from '@typeorm/entity/providers';
-// @ts-ignore
 import { Admin } from '@typeorm/entity/admin';
-import { ProfileInfoModelProps } from '../../types';
 import { MartialStatus } from '@typeorm/entity/enums';
-// @ts-ignore
 import { Patients } from '@typeorm/entity/patient';
+import { ProfileInfoModelProps } from '@typeDesc/index';
 
 @Entity({
   name: 'personal_info',

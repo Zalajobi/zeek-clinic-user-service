@@ -6,11 +6,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Provider } from './providers';
-import { Site } from './site';
-// @ts-ignore
 import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
 import { Patients } from '@typeorm/entity/patient';
+import { Provider } from '@typeorm/entity/providers';
+import { Site } from '@typeorm/entity/site';
 
 @Entity()
 export class Units {

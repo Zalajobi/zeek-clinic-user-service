@@ -5,18 +5,18 @@
 
     /* Modules */
     "module": "commonjs",
-    "rootDir": "src",
+    "rootDir": "",
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@data/*": ["data/*"],
-      "@datastore/*": ["datastore/*"],
-      "@helpers/*": ["helpers/*"],
-      "@lib/*": ["lib/*"],
-      "@messaging/*": ["messaging/*"],
-      "@routes/*": ["routes/*"],
-      "@typeorm/*": ["typeorm/*"],
-      "@types/*": ["types/*"],
+      "@data/*": ["./data/*"],
+      "@datastore/*": ["./datastore/*"],
+      "@helpers/*": ["./helpers/*"],
+      "@lib/*": ["./lib/*"],
+      "@messaging/*": ["./messaging/*"],
+      "@routes/*": ["./routes/*"],
+      "@typeorm/*": ["./typeorm/*"],
+      "@typeDesc/*": ["./types/*"],
       "@util/*": ["./util/*"]
     },
 

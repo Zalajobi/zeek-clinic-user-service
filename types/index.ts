@@ -1,6 +1,5 @@
-// @ts-ignore
-import { AdminRoles, MartialStatus } from '@typeorm/entity/enums';
-// @ts-ignore
+import { MartialStatus } from '@typeorm/entity/enums';
+
 import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 
 export type loginProps = {
@@ -32,6 +31,14 @@ export type departmentModelProps = {
   siteId: string;
   name: string;
   description: string;
+};
+
+export type unitModelProps = {
+  siteId: string;
+  name: string;
+  description: string;
+  total_beds: number;
+  occupied_beds?: number;
 };
 
 export type CreateAdminApiJsonBody = AdminModelProps & ProfileInfoModelProps;

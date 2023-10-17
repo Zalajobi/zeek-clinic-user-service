@@ -1,5 +1,4 @@
-// @ts-ignore
-import { AdminRoles } from '@typeorm/entity/entity/enums';
+import { AdminRoles } from '@typeorm/entity/enums';
 
 export type AdminModelProps = {
   siteId: string;

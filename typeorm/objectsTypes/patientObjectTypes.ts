@@ -1,5 +1,5 @@
 import { PatientStatus } from '@typeorm/entity/enums';
-// @ts-ignore
+
 import { CreateEmergencyContactsDataProps } from '@typeorm/objectsTypes/emergencyContactsObjectTypes';
 
 export type CreatePatientsDataProps = {

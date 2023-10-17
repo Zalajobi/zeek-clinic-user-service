@@ -1,24 +1,20 @@
 import { Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
+import { getServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
+import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
+import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 import {
   getDistinctOrganizationSiteCountriesAndStates,
   getSiteInformationBySiteId,
   siteTableDatastore,
-} from '@datastore/siteStore';
-import { getDepartmentDataBySiteId } from '@datastore/departmentStore';
-// @ts-ignore
-import { getRoleDataBySiteId } from '@datastore/roleStore';
-// @ts-ignore
-import { getServiceAreaDataBySiteId } from '@datastore/serviceAreaStore';
-// @ts-ignore
-import { getUnitDataBySiteID } from '@datastore/unitStore';
+} from '@datastore/site/siteGetStore';
+import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 
 const siteGetRequest = Router();
 
 siteGetRequest.get('/get-information', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false;
+  let success = false;
 
   try {
     // const siteData = await getSiteInformation(req.params.hospitalId as string)

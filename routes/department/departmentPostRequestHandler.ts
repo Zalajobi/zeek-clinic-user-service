@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { departmentModelProps } from '../../types';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { createNewDepartment } from '@datastore/departmentStore';
+import { createNewDepartment } from '@datastore/department/departmentPostStore';
+import { departmentModelProps } from '@typeDesc/index';
 
 const departmentPostRequest = Router();
 

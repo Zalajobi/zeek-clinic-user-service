@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-// @ts-ignore
+
 import { departmentModelProps } from '../../types';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
