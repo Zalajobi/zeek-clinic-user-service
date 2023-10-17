@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { hospitalModelProps } from '../../types';
 import { createNewHospital } from '@datastore/hospital/hospitalPostStore';
+import { hospitalModelProps } from '@typeDesc/index';
 
 const hospitalPostRequest = Router();
 

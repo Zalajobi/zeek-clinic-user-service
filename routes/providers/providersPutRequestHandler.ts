@@ -5,7 +5,6 @@ import { verifyUserPermission } from '@lib/auth';
 import { generatePasswordHash } from '@helpers/utils';
 
 import { purgeObjectOfNullOrEmptyValues } from '@util/index';
-import * as console from 'console';
 import { MartialStatus } from '@typeorm/entity/enums';
 import { updateProviderDetails } from '@datastore/provider/providerPutStore';
 

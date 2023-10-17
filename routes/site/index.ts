@@ -1,7 +1,5 @@
 import express = require('express');
-
 import sitePostRequest from '@routes/site/sitePostRequestHandler';
-
 import siteGetRequest from '@routes/site/siteGetRequestHandler';
 
 const siteRouter = express.Router();

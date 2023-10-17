@@ -1,9 +1,6 @@
 import express = require('express');
-
 import departmentPostRequest from '@routes/department/departmentPostRequestHandler';
-
 import departmentGetRequest from '@routes/department/departmentGetRequestHandler';
-
 import departmentPutRequest from '@routes/department/departmentPutRequestHandler';
 
 const departmentRouter = express.Router();

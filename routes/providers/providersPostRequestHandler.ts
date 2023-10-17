@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { ProfileInfoModelProps } from '../../types';
 import {
   generateTemporaryPassCode,
   generatePasswordHash,
@@ -15,6 +14,7 @@ import {
   ProviderModelProps,
 } from '@typeorm/objectsTypes/providersObjectTypes';
 import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
+import { ProfileInfoModelProps } from '@typeDesc/index';
 
 const providersPostRequestHandler = Router();
 
