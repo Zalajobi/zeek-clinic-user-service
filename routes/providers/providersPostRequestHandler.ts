@@ -6,7 +6,7 @@ import {
   generateTemporaryPassCode,
   generatePasswordHash,
 } from '@helpers/utils';
-// @ts-ignore
+
 import { adminCreateNewProvider } from '@datastore/providerStore';
 import { MartialStatus } from '@typeorm/entity/enums';
 import { emitNewEvent } from '@messaging/rabbitMq';

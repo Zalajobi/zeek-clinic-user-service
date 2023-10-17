@@ -1,9 +1,9 @@
 import { hospitalModelProps } from '../types';
-// @ts-ignore
+
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { HospitalStatus, SiteStatus } from '@typeorm/entity/enums';
 import { Hospital } from '@typeorm/entity/hospital';
-// @ts-ignore
+
 import { siteRepo } from '@typeorm/repositories/siteRepository';
 
 export const createNewHospital = async (data: hospitalModelProps) => {

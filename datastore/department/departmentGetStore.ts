@@ -1,55 +1,5 @@
 import { departmentRepo } from '@typeorm/repositories/departmentRepository';
-import { departmentModelProps } from '../types';
-import { Departments } from '@typeorm/entity/departments';
 import { DefaultJsonResponse } from '@util/responses';
-
-export const createNewDepartment = async (data: departmentModelProps) => {
-  const deptRepository = departmentRepo();
-
-  // If Department already exists in the same site, do no create
-  const isUnique = await deptRepository
-    .createQueryBuilder('department')
-    .where('LOWER(department.name) LIKE LOWER(:name)', {
-      name: data.name,
-    })
-    .andWhere('department.siteId = :siteId', {
-      siteId: data?.siteId,
-    })
-    .getCount();
-
-  if (isUnique >= 1)
-    return DefaultJsonResponse(
-      'Department with name already exists',
-      null,
-      false
-    );
-
-  const department = await deptRepository.save(new Departments(data));
-
-  return DefaultJsonResponse(
-    department
-      ? 'New Department Created'
-      : 'Something happened. Error happened while creating Department',
-    null,
-    !!department
-  );
-};
-
-// Get Department By SiteId
-export const getDepartmentDataBySiteId = async (siteId: string) => {
-  const deptRepository = departmentRepo();
-
-  return await deptRepository.find({
-    where: {
-      siteId,
-    },
-    select: {
-      id: true,
-      name: true,
-      description: true,
-    },
-  });
-};
 
 export const adminCreateProviderGetDepartmentDataBySiteId = async (
   siteId: string
@@ -134,24 +84,18 @@ export const adminGetDepartmentsAndProvidersCount = async (
   );
 };
 
-export const updateDepartmentDataByDepartmentId = async (
-  id: string,
-  data: Object
-) => {
+// Get Department By SiteId
+export const getDepartmentDataBySiteId = async (siteId: string) => {
   const deptRepository = departmentRepo();
 
-  const updatedData = await deptRepository.update(
-    {
-      id,
+  return await deptRepository.find({
+    where: {
+      siteId,
     },
-    data
-  );
-
-  return DefaultJsonResponse(
-    Number(updatedData?.affected) >= 1
-      ? 'Department Successfully Updated'
-      : 'Something Went Wrong',
-    null,
-    Number(updatedData?.affected) >= 1
-  );
+    select: {
+      id: true,
+      name: true,
+      description: true,
+    },
+  });
 };

@@ -1,4 +1,3 @@
-// @ts-ignore
 import { patientRepo } from '@typeorm/repositories/patientRepository';
 import { DefaultJsonResponse } from '@util/responses';
 

@@ -8,21 +8,21 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-// @ts-ignore
+
 import { CreatePatientsDataProps } from '@typeorm/objectsTypes/patientObjectTypes';
 import { PatientStatus } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
-// @ts-ignore
+
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
-// @ts-ignore
+
 import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
-// @ts-ignore
+
 import { Departments } from '@typeorm/entity/departments';
-// @ts-ignore
+
 import { Units } from '@typeorm/entity/units';
-// @ts-ignore
+
 import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()

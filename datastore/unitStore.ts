@@ -1,9 +1,7 @@
-// @ts-ignore
 import { unitRepo } from '@typeorm/repositories/unitRepositories';
 import { DefaultJsonResponse } from '@util/responses';
-// @ts-ignore
-import { unitModelProps } from '@types/index';
 import { Units } from '@typeorm/entity/units';
+import { unitModelProps } from '@typeDesc/index';
 
 export const createNewUnit = async (data: unitModelProps) => {
   const unitRepository = unitRepo();

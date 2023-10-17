@@ -1,15 +1,9 @@
 import { Router } from 'express';
-// @ts-ignore
 import { verifyUserPermission } from '@lib/auth';
-// @ts-ignore
 import { JsonApiResponse } from '@util/responses';
-import {
-  getSuperAdminBaseData,
-  // @ts-ignore
-} from '@datastore/superadminStore';
-// @ts-ignore
-import { getDepartmentDataBySiteId } from '@datastore/departmentStore';
+import { getSuperAdminBaseData } from '@datastore/superadminStore';
 import { AdminRoles } from '@typeorm/entity/enums';
+import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 
 const superadminGetRouter = Router();
 

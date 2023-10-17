@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-// @ts-ignore
+
 import { Hospital } from '@typeorm/entity/hospital';
 import { Site } from '@typeorm/entity/site';
 import { BankAccount } from '@typeorm/entity/bankAccount';
-// @ts-ignore
+
 import { SuperAdmin } from '@typeorm/entity/superAdmin';
 import { Provider } from '@typeorm/entity/providers';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';

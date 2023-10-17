@@ -6,23 +6,23 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-// @ts-ignore
+
 import { Provider } from '@typeorm/entity/providers';
 import { Patients } from '@typeorm/entity/patient';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
-// @ts-ignore
+
 import { Servicearea } from '@typeorm/entity/servicearea';
-// @ts-ignore
+
 import { Units } from '@typeorm/entity/units';
-// @ts-ignore
+
 import { Departments } from '@typeorm/entity/departments';
-// @ts-ignore
+
 import { Roles } from '@typeorm/entity/roles';
-// @ts-ignore
+
 import { BankAccount } from '@typeorm/entity/bankAccount';
-// @ts-ignore
+
 import { Hospital } from '@typeorm/entity/hospital';
-// @ts-ignore
+
 import { Admin } from '@typeorm/entity/admin';
 import { SiteStatus } from '@typeorm/entity/enums';
 import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';

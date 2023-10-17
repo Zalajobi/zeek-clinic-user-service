@@ -1,4 +1,3 @@
-// @ts-ignore
 import { personalInfoRepo } from '@typeorm/repositories/personalInfoRepository';
 import { ProfileInfoModelProps } from '../types';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';

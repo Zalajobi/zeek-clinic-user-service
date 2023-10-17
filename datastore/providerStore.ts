@@ -1,4 +1,3 @@
-// @ts-ignore
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { ProfileInfoModelProps } from '../types';
 import { Provider } from '@typeorm/entity/providers';
@@ -13,9 +12,9 @@ import { customPromiseRequest } from '@lib/api';
 import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { HospitalStatus } from '@typeorm/entity/enums';
-// @ts-ignore
+
 import { getPatientCountByProviderId } from '@datastore/patientStore';
-// @ts-ignore
+
 import { isObjectEmpty } from '@util/index';
 
 // Post Requests Stores

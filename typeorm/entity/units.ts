@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Provider } from './providers';
 import { Site } from './site';
-// @ts-ignore
+
 import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
 import { Patients } from '@typeorm/entity/patient';
 

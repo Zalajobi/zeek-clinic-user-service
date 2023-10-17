@@ -3,7 +3,7 @@ import { JsonApiResponse } from '@util/responses';
 import { createAndUpdateProviderRequestBody } from '@typeorm/objectsTypes/providersObjectTypes';
 import { verifyUserPermission } from '@lib/auth';
 import { generatePasswordHash } from '@helpers/utils';
-// @ts-ignore
+
 import { purgeObjectOfNullOrEmptyValues } from '@util/index';
 import * as console from 'console';
 import { MartialStatus } from '@typeorm/entity/enums';

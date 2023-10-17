@@ -1,5 +1,5 @@
 import { Router } from 'express';
-// @ts-ignore
+
 import roleGetRequest from '@routes/role/roleGetRequestHandler';
 
 const roleRouter = Router();

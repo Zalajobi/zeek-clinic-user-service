@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-// @ts-ignore
+
 import { adminCreateSite } from '@datastore/siteStore';
 import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 

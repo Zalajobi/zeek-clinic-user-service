@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ServiceAreaType } from '@typeorm/entity/enums';
-// @ts-ignore
+
 import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
