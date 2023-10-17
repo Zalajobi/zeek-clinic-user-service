@@ -1,17 +1,6 @@
 import { patientRepo } from '@typeorm/repositories/patientRepository';
 import { DefaultJsonResponse } from '@util/responses';
 
-export const getPatientCountByProviderId = async (providerId: string) => {
-  const patientRepository = patientRepo();
-
-  return patientRepository
-    .createQueryBuilder('patient')
-    .where('patient.careGiverId = :careGiverId', {
-      careGiverId: providerId,
-    })
-    .getCount();
-};
-
 export const getPatientsDetailsByCareGiverId = async (providerId: string) => {
   const patientRepository = patientRepo();
 
@@ -62,21 +51,13 @@ export const getPatientsDetailsByCareGiverId = async (providerId: string) => {
   );
 };
 
-export const movePatientWithinSite = async (id: string, data: Object) => {
+export const getPatientCountByProviderId = async (providerId: string) => {
   const patientRepository = patientRepo();
 
-  const updatedData = await patientRepository.update(
-    {
-      id,
-    },
-    data
-  );
-
-  return DefaultJsonResponse(
-    Number(updatedData?.affected) >= 1
-      ? 'Patient Successfully Moved'
-      : 'Something Went Wrong',
-    null,
-    Number(updatedData?.affected) >= 1
-  );
+  return patientRepository
+    .createQueryBuilder('patient')
+    .where('patient.careGiverId = :careGiverId', {
+      careGiverId: providerId,
+    })
+    .getCount();
 };

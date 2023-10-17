@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import { movePatientWithinSite } from '@datastore/patientStore';
+import { movePatientWithinSite } from '@datastore/patient/patientPutStore';
 
 const patientPutRequestHandler = Router();
 

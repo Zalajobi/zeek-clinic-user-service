@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import { getPatientsDetailsByCareGiverId } from '@datastore/patientStore';
+import { getPatientsDetailsByCareGiverId } from '@datastore/patient/patientGetStore';
 
 const patientGetRequestHandler = Router();
 

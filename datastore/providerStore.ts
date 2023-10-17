@@ -13,9 +13,8 @@ import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { HospitalStatus } from '@typeorm/entity/enums';
 
-import { getPatientCountByProviderId } from '@datastore/patientStore';
-
 import { isObjectEmpty } from '@util/index';
+import { getPatientCountByProviderId } from '@datastore/patient/patientGetStore';
 
 // Post Requests Stores
 export const adminCreateNewProvider = async (
