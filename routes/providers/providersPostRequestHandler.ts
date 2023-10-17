@@ -7,7 +7,6 @@ import {
   generatePasswordHash,
 } from '@helpers/utils';
 
-import { adminCreateNewProvider } from '@datastore/providerStore';
 import { MartialStatus } from '@typeorm/entity/enums';
 import { emitNewEvent } from '@messaging/rabbitMq';
 import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
@@ -15,6 +14,7 @@ import {
   createAndUpdateProviderRequestBody,
   ProviderModelProps,
 } from '@typeorm/objectsTypes/providersObjectTypes';
+import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
 
 const providersPostRequestHandler = Router();
 
