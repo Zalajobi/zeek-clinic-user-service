@@ -14,8 +14,7 @@ import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetSt
 const siteGetRequest = Router();
 
 siteGetRequest.get('/get-information', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false;
+  let success = false;
 
   try {
     // const siteData = await getSiteInformation(req.params.hospitalId as string)
