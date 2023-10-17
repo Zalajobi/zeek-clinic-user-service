@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import {
-  getDistinctOrganizationSiteCountriesAndStates,
-  getSiteInformationBySiteId,
-  siteTableDatastore,
-} from '@datastore/siteStore';
 import { getUnitDataBySiteID } from '@datastore/unitStore';
 import { getServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
+import {
+  getDistinctOrganizationSiteCountriesAndStates,
+  getSiteInformationBySiteId,
+  siteTableDatastore,
+} from '@datastore/site/siteGetStore';
 
 const siteGetRequest = Router();
 
