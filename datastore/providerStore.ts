@@ -1,20 +1,18 @@
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { ProfileInfoModelProps } from '../types';
 import { Provider } from '@typeorm/entity/providers';
-import {
-  createNewPersonalInfo,
-  getPersonalInfoCountByPhone,
-  getPersonalInfoCountByPhoneAndNotSameId,
-  updatePersonalInfoById,
-} from '@datastore/personalInfoStore';
 import { DefaultJsonResponse } from '@util/responses';
 import { customPromiseRequest } from '@lib/api';
 import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
-import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { HospitalStatus } from '@typeorm/entity/enums';
-
 import { isObjectEmpty } from '@util/index';
 import { getPatientCountByProviderId } from '@datastore/patient/patientGetStore';
+import {
+  getPersonalInfoCountByPhone,
+  getPersonalInfoCountByPhoneAndNotSameId,
+} from '@datastore/personalInfo/personalInfoGetStore';
+import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
+import { updatePersonalInfoById } from '@datastore/personalInfo/personalInfoPut';
 
 // Post Requests Stores
 export const adminCreateNewProvider = async (
