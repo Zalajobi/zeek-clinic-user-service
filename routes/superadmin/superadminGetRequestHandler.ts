@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { getSuperAdminBaseData } from '@datastore/superadminStore';
+import { getSuperAdminBaseData } from '@datastore/superAdmin/superadminGetStore';
 import { AdminRoles } from '@typeorm/entity/enums';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 
