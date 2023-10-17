@@ -4,19 +4,10 @@ import { verifyJSONToken } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
 import { getAdminHeaderBaseTemplateData } from '@datastore/adminStore';
-import {
-  adminCreateProviderGetDepartmentDataBySiteId,
-  getDepartmentDataBySiteId,
-} from '@datastore/departmentStore';
-import department from '../department';
-import {
-  adminCreateProviderGetRolesDataBySiteId,
-  getRoleDataBySiteId,
-} from '@datastore/roleStore';
-// @ts-ignore
+import { adminCreateProviderGetDepartmentDataBySiteId } from '@datastore/departmentStore';
+import { adminCreateProviderGetRolesDataBySiteId } from '@datastore/roleStore';
 import { adminCreateProviderGetUnitsDataBySiteId } from '@datastore/unitStore';
-// @ts-ignore
-import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceAreaStore';
+import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 
 const adminGetRequestHandler = Router();
 

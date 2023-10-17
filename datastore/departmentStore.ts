@@ -1,9 +1,7 @@
-// @ts-ignore
 import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 import { departmentModelProps } from '../types';
 import { Departments } from '@typeorm/entity/departments';
 import { DefaultJsonResponse } from '@util/responses';
-import { Like } from 'typeorm';
 
 export const createNewDepartment = async (data: departmentModelProps) => {
   const deptRepository = departmentRepo();

@@ -7,12 +7,9 @@ import {
   siteTableDatastore,
 } from '@datastore/siteStore';
 import { getDepartmentDataBySiteId } from '@datastore/departmentStore';
-// @ts-ignore
 import { getRoleDataBySiteId } from '@datastore/roleStore';
-// @ts-ignore
-import { getServiceAreaDataBySiteId } from '@datastore/serviceAreaStore';
-// @ts-ignore
 import { getUnitDataBySiteID } from '@datastore/unitStore';
+import { getServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 
 const siteGetRequest = Router();
 
