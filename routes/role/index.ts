@@ -1,8 +1,8 @@
-import express = require('express');
+import { Router } from 'express';
 // @ts-ignore
 import roleGetRequest from '@routes/role/roleGetRequestHandler';
 
-const roleRouter = express.Router();
+const roleRouter = Router();
 roleRouter.use('/', roleGetRequest);
 
 export default roleRouter;
