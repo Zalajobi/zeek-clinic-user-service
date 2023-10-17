@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import { getUnitDataBySiteID } from '@datastore/unitStore';
 import { getServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
@@ -10,6 +9,7 @@ import {
   getSiteInformationBySiteId,
   siteTableDatastore,
 } from '@datastore/site/siteGetStore';
+import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 
 const siteGetRequest = Router();
 

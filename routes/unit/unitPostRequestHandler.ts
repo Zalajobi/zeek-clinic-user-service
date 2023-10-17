@@ -2,8 +2,8 @@ import { Router } from 'express';
 
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { createNewUnit } from '@datastore/unitStore';
 import { unitModelProps } from '@typeDesc/index';
+import { createNewUnit } from '@datastore/unit/unitPostStore';
 
 const unitPostRequest = Router();
 

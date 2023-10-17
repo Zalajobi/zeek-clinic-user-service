@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { updateUnitDataByUnitId } from '@datastore/unitStore';
+import { updateUnitDataByUnitId } from '@datastore/unit/unitPutStore';
 
 const unitPutRequest = Router();
 

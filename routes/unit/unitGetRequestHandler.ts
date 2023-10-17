@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { adminGetUnitsWithProvidersAndPatientsCount } from '@datastore/unitStore';
+import { adminGetUnitsWithProvidersAndPatientsCount } from '@datastore/unit/unitGetStore';
 
 const unitGetRequest = Router();
 
