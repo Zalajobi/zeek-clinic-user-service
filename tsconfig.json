@@ -16,7 +16,7 @@
       "@messaging/*": ["./messaging/*"],
       "@routes/*": ["./routes/*"],
       "@typeorm/*": ["./typeorm/*"],
-      "@types/*": ["./types/*"],
+      "@typeDesc/*": ["./types/*"],
       "@util/*": ["./util/*"]
     },
 

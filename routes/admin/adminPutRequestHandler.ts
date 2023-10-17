@@ -6,10 +6,8 @@ import {
   verifyJSONToken,
 } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
-import {
-  getAdminBaseDataAndProfileDataByAdminId,
-  updateAdminPasswordByAdminId,
-} from '@datastore/adminStore';
+import { getAdminBaseDataAndProfileDataByAdminId } from '@datastore/admin/adminGetStore';
+import { updateAdminPasswordByAdminId } from '@datastore/admin/adminPutStore';
 
 const adminPutRequestHandler = Router();
 
