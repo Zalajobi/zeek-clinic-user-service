@@ -22,6 +22,7 @@ export type hospitalModelProps = {
 };
 
 export type roleModelProps = {
+  plan: boolean;
   nursing: boolean;
   charts: boolean;
   upload: boolean;

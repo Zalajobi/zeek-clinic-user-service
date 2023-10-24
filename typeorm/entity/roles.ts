@@ -39,6 +39,7 @@ export class Roles {
     this.upload = data?.upload as boolean;
     this.charts = data?.charts as boolean;
     this.nursing = data?.nursing as boolean;
+    this.plan = data?.plan as boolean;
   }
 
   @PrimaryGeneratedColumn('uuid')
