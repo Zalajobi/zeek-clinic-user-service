@@ -4,7 +4,7 @@ import { JsonApiResponse } from '@util/responses';
 import {
   adminGetProviderDetails,
   adminGetProvidersInfoPagination,
-} from '@datastore/providerStore';
+} from '@datastore/provider/providerGetStore';
 
 const providersGetRequestHandler = Router();
 

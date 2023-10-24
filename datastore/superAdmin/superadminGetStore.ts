@@ -1,5 +1,5 @@
 import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
-// @ts-ignore
+
 import { SuperAdminEntityObject } from '@typeorm/objectsTypes/superadminObjectTypes';
 
 export const getSuperAdminLoginData = async (value: string) => {

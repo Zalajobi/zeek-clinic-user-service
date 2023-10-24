@@ -8,20 +8,14 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-// @ts-ignore
 import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
 import { ProviderStatus } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
-// @ts-ignore
 import { Patients } from '@typeorm/entity/patient';
 import { Site } from '@typeorm/entity/site';
-// @ts-ignore
 import { Roles } from '@typeorm/entity/roles';
-// @ts-ignore
 import { Departments } from '@typeorm/entity/departments';
-// @ts-ignore
 import { Units } from '@typeorm/entity/units';
-// @ts-ignore
 import { Servicearea } from '@typeorm/entity/servicearea';
 
 @Entity()

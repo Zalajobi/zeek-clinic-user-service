@@ -1,14 +1,14 @@
 import { Router } from 'express';
-// @ts-ignore
-import { unitModelProps } from '@types/index';
+
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { createNewUnit } from '@datastore/unitStore';
+import { unitModelProps } from '@typeDesc/index';
+import { createNewUnit } from '@datastore/unit/unitPostStore';
 
 const unitPostRequest = Router();
 
 // Create New Department
-unitPostRequest.post('/create', async (req, res) => {
+unitPostRequest.post('/admin/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 

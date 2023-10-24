@@ -1,6 +1,5 @@
-// @ts-ignore
-import { AdminRoles, MartialStatus } from '@typeorm/entity/enums';
-// @ts-ignore
+import { MartialStatus } from '@typeorm/entity/enums';
+
 import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 
 export type loginProps = {
