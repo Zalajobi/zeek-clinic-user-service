@@ -22,6 +22,29 @@ export type hospitalModelProps = {
 };
 
 export type roleModelProps = {
+  nursing: boolean;
+  charts: boolean;
+  upload: boolean;
+  refer_outpx: boolean;
+  referral: boolean;
+  consult: boolean;
+  radiology: boolean;
+  clerking: boolean;
+  dental: boolean;
+  logs: boolean;
+  review: boolean;
+  time_of_death: boolean;
+  discharge: boolean;
+  move_patient: boolean;
+  transfer_patient: boolean;
+  admit_patient: boolean;
+  med_supply: boolean;
+  vitals: boolean;
+  appointment: boolean;
+  lab_test: boolean;
+  procedure: boolean;
+  note: boolean;
+  prescription: boolean;
   siteId: string;
   name: string;
   description: string;
