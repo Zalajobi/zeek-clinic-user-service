@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { adminGetUnitsWithProvidersAndPatientsCount } from '@datastore/unitStore';
+import { adminGetUnitsWithProvidersAndPatientsCount } from '@datastore/unit/unitGetStore';
 
 const unitGetRequest = Router();
 
-unitGetRequest.get('/list/paginated/:siteId', async (req, res) => {
+unitGetRequest.get('/admin/list/paginated/:siteId', async (req, res) => {
   const siteId = req.params.siteId as string;
   let message = 'Not Authorised',
     success = false;

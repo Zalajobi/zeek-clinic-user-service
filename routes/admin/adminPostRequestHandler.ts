@@ -1,13 +1,5 @@
 import { Router } from 'express';
 import {
-  createNewAdmin,
-  getAdminAndProfileDataByEmailOrUsername,
-  getAdminPrimaryLoginInformation,
-  getAdminPrimaryInformationAndProfile,
-  updateAdminData,
-  // @ts-ignore
-} from '@datastore/adminStore';
-import {
   generateTemporaryPassCode,
   generateJSONTokenCredentials,
   generatePasswordHash,
@@ -15,14 +7,18 @@ import {
 } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '../../types';
-// @ts-ignore
 import { sendResetPasswordEmail } from '@messaging/email';
 import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
-// @ts-ignore
 import { emitNewEvent } from '@messaging/rabbitMq';
-// @ts-ignore
 import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
+import {
+  getAdminAndProfileDataByEmailOrUsername,
+  getAdminPrimaryInformationAndProfile,
+  getAdminPrimaryLoginInformation,
+} from '@datastore/admin/adminGetStore';
+import { CreateAdminApiJsonBody, ProfileInfoModelProps } from '@typeDesc/index';
+import { createNewAdmin } from '@datastore/admin/adminPostStore';
+import { updateAdminData } from '@datastore/admin/adminPutStore';
 
 const adminPostRequestHandler = Router();
 
@@ -141,7 +137,7 @@ adminPostRequestHandler.post('/create-admin', async (req, res) => {
   }
 });
 
-// Send  Email With Temporary Token For Password Reset
+// Send Email With Temporary Token For Password Reset
 adminPostRequestHandler.post(
   `/password/request-password/reset`,
   async (req, res) => {

@@ -5,9 +5,7 @@ import {
   getHospitalDetails,
   selectAllAvailableCountries,
   superAdminGetHospitals,
-  // @ts-ignore
-} from '@datastore/hospitalStore';
-import hospitalRouter from './index';
+} from '@datastore/hospital/hospitalGetStore';
 
 const hospitalGetRequest = Router();
 

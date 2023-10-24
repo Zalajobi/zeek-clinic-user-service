@@ -5,11 +5,11 @@ import {
   CreateDateColumn,
   OneToMany,
 } from 'typeorm';
-// @ts-ignore
-import { hospitalModelProps } from '../../types';
+
 import { HospitalStatus } from '@typeorm/entity/enums';
-// @ts-ignore
+
 import { Site } from '@typeorm/entity/site';
+import { hospitalModelProps } from '@typeDesc/index';
 
 @Entity()
 export class Hospital {

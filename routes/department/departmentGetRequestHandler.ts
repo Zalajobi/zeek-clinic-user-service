@@ -4,7 +4,7 @@ import { verifyUserPermission } from '@lib/auth';
 import {
   adminGetDepartmentsAndProvidersCount,
   getDepartmentDataBySiteId,
-} from '@datastore/departmentStore';
+} from '@datastore/department/departmentGetStore';
 
 const departmentGetRequest = Router();
 
@@ -37,7 +37,7 @@ departmentGetRequest.get('/get-all/:siteId', async (req, res) => {
   }
 });
 
-departmentGetRequest.get('/list/paginated/:siteId', async (req, res) => {
+departmentGetRequest.get('/admin/list/paginated/:siteId', async (req, res) => {
   const siteId = req.params.siteId as string;
   let message = 'Not Authorised',
     success = false;

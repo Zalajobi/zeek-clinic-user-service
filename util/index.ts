@@ -2,9 +2,6 @@
 // const algorithm = process.env.ENCRYPTION_ALGORITHM as string;
 // const iv = Buffer.from('1234567890123456', 'utf8');
 
-import { object } from 'twilio/lib/base/serialize';
-import * as console from 'console';
-
 export const excludeKeys = (object: any, keys: string[]) => {
   for (let key of keys) {
     delete object[key];

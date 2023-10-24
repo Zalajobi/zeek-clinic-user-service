@@ -1,6 +1,6 @@
 import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
-// @ts-ignore
+
 import { JWTDataProps } from '../types/user';
 
 export const generatePasswordHash = (password: string) => {
