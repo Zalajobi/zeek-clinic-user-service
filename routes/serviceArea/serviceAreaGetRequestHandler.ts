@@ -5,7 +5,7 @@ import { getServiceAreaPaginationDataWithUsersCount } from '@datastore/serviceAr
 
 const serviceAreaGetRequest = Router();
 
-serviceAreaGetRequest.get('/list/paginated/:siteId', async (req, res) => {
+serviceAreaGetRequest.get('/admin/list/paginated/:siteId', async (req, res) => {
   const siteId = req.params.siteId as string;
   let message = 'Not Authorised',
     success = false;

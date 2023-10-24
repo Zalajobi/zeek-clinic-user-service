@@ -6,7 +6,7 @@ import { departmentModelProps } from '@typeDesc/index';
 
 const departmentPostRequest = Router();
 
-departmentPostRequest.post('/create', async (req, res) => {
+departmentPostRequest.post('/admin/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 

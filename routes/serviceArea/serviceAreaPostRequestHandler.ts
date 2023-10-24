@@ -6,7 +6,7 @@ import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObj
 
 const serviceAreaPostRequest = Router();
 
-serviceAreaPostRequest.post('/create', async (req, res) => {
+serviceAreaPostRequest.post('/admin/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
