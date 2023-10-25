@@ -6,7 +6,7 @@ import { roleModelProps } from '@typeDesc/index';
 
 const rolePostRequest = Router();
 
-rolePostRequest.post('/create', async (req, res) => {
+rolePostRequest.post('/admin/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
@@ -15,14 +15,26 @@ rolePostRequest.post('/create', async (req, res) => {
 
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
-      ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
+      [
+        'SUPER_ADMIN',
+        'HOSPITAL_ADMIN',
+        'SITE_ADMIN',
+        'ADMIN',
+        'HUMAN_RESOURCES',
+      ]
     );
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
     const newRole = await createNewRole(data);
 
-    return JsonApiResponse(res, newRole.message, newRole.success, null, 200);
+    return JsonApiResponse(
+      res,
+      newRole.message,
+      <boolean>newRole.success,
+      null,
+      newRole?.success ? 201 : 500
+    );
   } catch (error) {
     if (error instanceof Error) message = error.message;
 
