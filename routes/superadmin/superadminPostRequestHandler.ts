@@ -24,6 +24,7 @@ superadminPostRequest.post('/auth/login', async (req, res) => {
         jwtData,
         Math.floor(Date.now() / 1000) + 60 * 360
       );
+
       responseMessage = 'Login Successful';
       success = true;
     }

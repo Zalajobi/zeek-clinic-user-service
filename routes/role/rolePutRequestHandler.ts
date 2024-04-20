@@ -1,18 +1,16 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { createServiceArea } from '@datastore/serviceArea/serviceAreaPostStore';
-import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
+import { updateRoleDataByRoleId } from '@datastore/role/rolePutStore';
 
-const serviceAreaPostRequest = Router();
+const rolePutRequest = Router();
 
-serviceAreaPostRequest.post('/admin/create', async (req, res) => {
+rolePutRequest.put('/admin/update/:roleId', async (req, res) => {
+  const roleId = req.params.roleId as string;
   let message = 'Not Authorised',
     success = false;
 
   try {
-    const data = req.body as CreateServiceAreaDataProps;
-
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
       [
@@ -26,20 +24,21 @@ serviceAreaPostRequest.post('/admin/create', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const newRole = await createServiceArea(data);
+    const updatedData = await updateRoleDataByRoleId(roleId, req.body);
 
     return JsonApiResponse(
       res,
-      newRole.message,
-      <boolean>newRole.success,
+      updatedData.message,
+      updatedData.success as boolean,
       null,
-      newRole?.success ? 201 : 500
+      updatedData?.success ? 200 : 400
     );
   } catch (error) {
+    let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
     return JsonApiResponse(res, message, success, null, 500);
   }
 });
 
-export default serviceAreaPostRequest;
+export default rolePutRequest;

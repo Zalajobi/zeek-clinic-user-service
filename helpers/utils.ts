@@ -2,16 +2,11 @@ import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
 
 import { JWTDataProps } from '../types/user';
+import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/constants';
 
 export const generatePasswordHash = (password: string) => {
   return crypto
-    .pbkdf2Sync(
-      password,
-      process.env.PASSWORD_HASH_SECRET as string,
-      1000,
-      64,
-      'sha512'
-    )
+    .pbkdf2Sync(password, PASSWORD_HASH_SECRET, 1000, 64, 'sha512')
     .toString('hex');
 };
 
@@ -20,16 +15,10 @@ export const validatePassword = (
   comparePassword: string
 ) => {
   const generatedPasswordHash = crypto
-    .pbkdf2Sync(
-      reqPassword,
-      process.env.PASSWORD_HASH_SECRET!,
-      1000,
-      64,
-      'sha512'
-    )
+    .pbkdf2Sync(reqPassword, PASSWORD_HASH_SECRET, 1000, 64, 'sha512')
     .toString('hex');
 
-  return generatedPasswordHash === comparePassword ? true : false;
+  return generatedPasswordHash === comparePassword;
 };
 
 export const generateJSONTokenCredentials = (
@@ -42,20 +31,16 @@ export const generateJSONTokenCredentials = (
       exp, // Expire in 6hrs by default
       // expiresIn: '356 days' //Expire in 365 Days - Meant to test
     },
-    process.env.JWT_SECRET_KEY as string
+    JWT_SECRET_KEY
   );
 };
 
 export const verifyJSONToken = (bearerToken: string) => {
-  return jwt.verify(
-    bearerToken,
-    process.env.JWT_SECRET_KEY as string,
-    (err: any, user: any) => {
-      if (err) return null;
+  return jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
+    if (err) return null;
 
-      return user?.data;
-    }
-  );
+    return user?.data;
+  });
 };
 
 export const generateCode = (length: number = 12): string => {

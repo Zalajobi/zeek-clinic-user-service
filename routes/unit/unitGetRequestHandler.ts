@@ -5,7 +5,7 @@ import { adminGetUnitsWithProvidersAndPatientsCount } from '@datastore/unit/unit
 
 const unitGetRequest = Router();
 
-unitGetRequest.get('/list/paginated/:siteId', async (req, res) => {
+unitGetRequest.get('/admin/list/paginated/:siteId', async (req, res) => {
   const siteId = req.params.siteId as string;
   let message = 'Not Authorised',
     success = false;

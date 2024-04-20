@@ -18,7 +18,11 @@ export const createServiceArea = async (data: CreateServiceAreaDataProps) => {
     .getCount();
 
   if (isUnique >= 1)
-    return DefaultJsonResponse('Unit with name already exists', null, false);
+    return DefaultJsonResponse(
+      'Service Area with name already exists',
+      null,
+      false
+    );
 
   const units = await serviceAreaRepository.save(new Servicearea(data));
 

@@ -5,7 +5,7 @@ import { getServiceAreaPaginationDataWithUsersCount } from '@datastore/serviceAr
 
 const serviceAreaGetRequest = Router();
 
-serviceAreaGetRequest.get('/list/paginated/:siteId', async (req, res) => {
+serviceAreaGetRequest.get('/admin/list/paginated/:siteId', async (req, res) => {
   const siteId = req.params.siteId as string;
   let message = 'Not Authorised',
     success = false;
@@ -50,7 +50,6 @@ serviceAreaGetRequest.get('/list/paginated/:siteId', async (req, res) => {
 
     return JsonApiResponse(res, 'Something went wrong', success, null, 200);
   } catch (error) {
-    let message = 'Not Authorized';
     if (error instanceof Error) message = error.message;
 
     return JsonApiResponse(res, message, success, null, 500);

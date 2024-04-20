@@ -1,17 +1,17 @@
 import { Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { createServiceArea } from '@datastore/serviceArea/serviceAreaPostStore';
-import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
+import { createNewRole } from '@datastore/role/rolePostStore';
+import { roleModelProps } from '@typeDesc/index';
 
-const serviceAreaPostRequest = Router();
+const rolePostRequest = Router();
 
-serviceAreaPostRequest.post('/admin/create', async (req, res) => {
+rolePostRequest.post('/admin/create', async (req, res) => {
   let message = 'Not Authorised',
     success = false;
 
   try {
-    const data = req.body as CreateServiceAreaDataProps;
+    const data = req.body as roleModelProps;
 
     const verifiedUser = await verifyUserPermission(
       req?.headers?.token as string,
@@ -26,7 +26,7 @@ serviceAreaPostRequest.post('/admin/create', async (req, res) => {
 
     if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
 
-    const newRole = await createServiceArea(data);
+    const newRole = await createNewRole(data);
 
     return JsonApiResponse(
       res,
@@ -42,4 +42,4 @@ serviceAreaPostRequest.post('/admin/create', async (req, res) => {
   }
 });
 
-export default serviceAreaPostRequest;
+export default rolePostRequest;
