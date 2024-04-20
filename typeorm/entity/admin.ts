@@ -11,10 +11,12 @@ import { Site } from '@typeorm/entity/site';
 import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 import { AdminRoles } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { createAdminRequestSchema } from '@lib/schemas/adminSchemas';
+import { z } from 'zod';
 
 @Entity()
 export class Admin {
-  constructor(data: AdminModelProps) {
+  constructor(data: z.infer<typeof createAdminRequestSchema>) {
     this.siteId = data?.siteId as string;
     this.role = data?.role as AdminRoles;
     this.email = data?.email as string;
@@ -22,8 +24,9 @@ export class Admin {
     this.username = data?.username as string;
     this.staff_id = data?.staff_id as string;
     this.password_reset_request_timestamp =
-      data?.password_reset_request_timestamp as Date;
-    // this.personalInfoId = data?.personalInfoId as string
+      data?.password_reset_request_timestamp
+        ? new Date(data?.password_reset_request_timestamp)
+        : new Date();
   }
 
   @PrimaryGeneratedColumn('uuid')

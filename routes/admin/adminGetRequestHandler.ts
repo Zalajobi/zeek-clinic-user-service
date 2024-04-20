@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { JWTDataProps } from '@typeDesc/jwt';
 import { verifyJSONToken } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
@@ -14,10 +14,7 @@ const adminGetRequestHandler = Router();
 // Verify Token with JWT and update Password
 adminGetRequestHandler.get(
   '/password/request-password/jwt_token/verify',
-  async (req, res) => {
-    let message = 'Token has expired',
-      success = false;
-
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const verifyToken = <JWTDataProps>(
         (<unknown>verifyJSONToken(req.query.token as string))
@@ -27,10 +24,7 @@ adminGetRequestHandler.get(
         return JsonApiResponse(res, 'Token is valid', true, null, 200);
       else return JsonApiResponse(res, 'Token is invalid', false, null, 401);
     } catch (error) {
-      let message = 'Something Went Wrong';
-      if (error instanceof Error) message = error.message;
-
-      return JsonApiResponse(res, message, false, null, 500);
+      next(error);
     }
   }
 );

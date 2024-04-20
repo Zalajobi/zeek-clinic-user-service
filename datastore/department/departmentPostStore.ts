@@ -1,9 +1,12 @@
-import { departmentModelProps } from '@typeDesc/index';
 import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 import { DefaultJsonResponse } from '@util/responses';
 import { Departments } from '@typeorm/entity/departments';
+import { createDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
+import { z } from 'zod';
 
-export const createNewDepartment = async (data: departmentModelProps) => {
+export const createNewDepartment = async (
+  data: z.infer<typeof createDepartmentRequestSchema>
+) => {
   const deptRepository = departmentRepo();
 
   // If Department already exists in the same site, do no create

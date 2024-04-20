@@ -1,8 +1,7 @@
 import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
-
-import { JWTDataProps } from '../types/user';
 import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/constants';
+import { JWTDataProps } from '@typeDesc/jwt';
 
 export const generatePasswordHash = (password: string) => {
   return crypto
@@ -37,7 +36,7 @@ export const generateJSONTokenCredentials = (
 
 export const verifyJSONToken = (bearerToken: string) => {
   return jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
-    if (err) return null;
+    if (err) throw err;
 
     return user?.data;
   });

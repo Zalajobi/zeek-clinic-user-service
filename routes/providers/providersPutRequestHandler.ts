@@ -1,96 +1,98 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { createAndUpdateProviderRequestBody } from '@typeorm/objectsTypes/providersObjectTypes';
 import { verifyUserPermission } from '@lib/auth';
 import { generatePasswordHash } from '@helpers/utils';
-
-import { purgeObjectOfNullOrEmptyValues } from '@util/index';
-import { MartialStatus } from '@typeorm/entity/enums';
+import { remapObjectKeys } from '@util/index';
 import { updateProviderDetails } from '@datastore/provider/providerPutStore';
+import { updateProviderRequestSchema } from '@lib/schemas/providerSchemas';
 
 const providersPutRequestHandler = Router();
 
-providersPutRequestHandler.put('/update/:id/:siteId', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false,
-    encryptedPass = '';
-  const { siteId, id } = req.params;
+providersPutRequestHandler.put(
+  '/update/:id/:site',
+  async (req: Request, res: Response, next: NextFunction) => {
+    let message = 'Not Authorised',
+      success = false;
 
-  try {
-    const data = req.body as createAndUpdateProviderRequestBody;
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ] // Remove HUMAN_RESOURCES later, this is for testing purpose for July 23, 2023 session 8AM - 2PM
-    );
+    const providerKeys = [
+        'appointments',
+        'email',
+        'is_consultant',
+        'is_specialist',
+        'password',
+        'staff_id',
+        'username',
+        'departmentId',
+        'primaryRoleId',
+        'serviceareaId',
+        'siteId',
+        'unitId',
+      ],
+      personalInfoKeys = [
+        'address',
+        'address_two',
+        'city',
+        'country',
+        'dob',
+        'first_name',
+        'gender',
+        'last_name',
+        'middle_name',
+        'state',
+        'title',
+        'zip_code',
+        'marital_status',
+        'phone',
+        'profile_pic',
+        'religion',
+      ];
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+    try {
+      const requestBody = updateProviderRequestSchema.parse({
+        ...req.headers,
+        ...req.params,
+        ...req.body,
+      });
 
-    if (data.password) encryptedPass = generatePasswordHash(data.password);
+      const verifiedUser = await verifyUserPermission(
+        requestBody.token,
+        [
+          'SUPER_ADMIN',
+          'HOSPITAL_ADMIN',
+          'SITE_ADMIN',
+          'ADMIN',
+          'HUMAN_RESOURCES',
+        ] // Remove HUMAN_RESOURCES later, this is for testing purpose for July 23, 2023 session 8AM - 2PM
+      );
 
-    const providerData = purgeObjectOfNullOrEmptyValues({
-      appointments: data?.appointments,
-      email: data?.email,
-      is_consultant: data?.is_consultant,
-      is_specialist: data?.is_specialist,
-      password: encryptedPass,
-      staff_id: data?.staff_id,
-      username: data?.username,
-      departmentId: data.department,
-      primaryRoleId: data.role,
-      serviceareaId: data.serviceArea ?? data.servicearea ?? '',
-      unitId: data.unit,
-    });
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
 
-    const personalInfoData = purgeObjectOfNullOrEmptyValues({
-      address: data.address,
-      address_two: data.address_two,
-      city: data.city,
-      country: data.country,
-      dob: data?.dob ? new Date(data?.dob) : '',
-      first_name: data?.first_name,
-      gender: data.gender,
-      last_name: data.last_name,
-      middle_name: data.middle_name,
-      state: data.state,
-      title: data.title,
-      zip_code: data.zip_code,
-      marital_status: data?.relationship_status as MartialStatus,
-      phone: data?.phone,
-      profile_pic: data?.profilePic,
-      religion: data?.religion,
-    });
+      if (requestBody?.password) {
+        requestBody.password = generatePasswordHash(requestBody.password);
+      }
 
-    const updateProviderResponse = await updateProviderDetails(
-      id,
-      siteId,
-      providerData,
-      personalInfoData
-    );
+      const providerData = remapObjectKeys(requestBody, providerKeys);
+      const personalInfoData = remapObjectKeys(requestBody, personalInfoKeys);
 
-    return JsonApiResponse(
-      res,
-      updateProviderResponse.message,
-      <boolean>updateProviderResponse.success,
-      null,
-      updateProviderResponse.success ? 201 : 500
-    );
-  } catch (error) {
-    if (error instanceof Error) message = error.message;
+      const updateProviderResponse = await updateProviderDetails(
+        requestBody.id,
+        requestBody.site,
+        providerData,
+        personalInfoData
+      );
 
-    return JsonApiResponse(
-      res,
-      'Provider Information Updated Successfully',
-      true,
-      null,
-      500
-    );
+      return JsonApiResponse(
+        res,
+        updateProviderResponse.message,
+        <boolean>updateProviderResponse.success,
+        null,
+        updateProviderResponse.success ? 201 : 500
+      );
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 export default providersPutRequestHandler;

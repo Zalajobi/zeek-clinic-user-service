@@ -33,12 +33,12 @@ export const getServiceAreaDataBySiteId = async (siteId: string) => {
   });
 };
 
-export const getServiceAreaPaginationDataWithUsersCount = async (
+export const fetchFilteredServiceAreaData = async (
   page: number,
   perPage: number,
-  query: string,
-  from: string,
-  to: string,
+  query: string | undefined,
+  from: string | undefined,
+  to: string | undefined,
   siteId: string
 ) => {
   const serviceAreaRepository = serviceAreaRepo();

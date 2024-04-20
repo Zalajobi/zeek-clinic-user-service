@@ -1,16 +1,17 @@
-import { ProfileInfoModelProps } from '@typeDesc/index';
-import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { customPromiseRequest } from '@lib/api';
 import { getPersonalInfoCountByPhone } from '@datastore/personalInfo/personalInfoGetStore';
 import { DefaultJsonResponse } from '@util/responses';
 import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
 import { Provider } from '@typeorm/entity/providers';
+import { z } from 'zod';
+import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
+import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
 
 // Post Requests Stores
 export const adminCreateNewProvider = async (
-  data: ProviderModelProps,
-  personalInfoData: ProfileInfoModelProps,
+  data: z.infer<typeof createProviderRequestSchema> | any,
+  personalInfoData: z.infer<typeof profileDataRequestSchema> | any,
   phone: string
 ) => {
   const providerRepository = providerRepo();

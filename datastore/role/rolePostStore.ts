@@ -1,9 +1,12 @@
-import { roleModelProps } from '@typeDesc/index';
 import { roleRepo } from '@typeorm/repositories/roleRepository';
 import { Roles } from '@typeorm/entity/roles';
 import { DefaultJsonResponse } from '@util/responses';
+import { createAndUpdateRoleRequestSchema } from '@lib/schemas/roleSchemas';
+import { z } from 'zod';
 
-export const createNewRole = async (data: roleModelProps) => {
+export const createNewRole = async (
+  data: z.infer<typeof createAndUpdateRoleRequestSchema>
+) => {
   const roleRepository = roleRepo();
 
   const isUnique = await roleRepository

@@ -36,6 +36,27 @@ export const isObjectEmpty = (obj: Record<string, any>): boolean => {
   return true;
 };
 
+export const remapObjectKeys = (
+  inputObject: Record<string, any>,
+  fromKeys: string[],
+  toKeys: string[] = fromKeys
+): Record<string, any> => {
+  const resultObject: Record<string, any> = {};
+
+  if (fromKeys.length !== toKeys.length)
+    throw new Error('FromKeys and ToKeys must have the same length');
+
+  for (let i = 0; i < fromKeys.length; i++) {
+    const fromKey = fromKeys[i];
+    const toKey = toKeys[i];
+
+    if (inputObject.hasOwnProperty(fromKey))
+      resultObject[toKey] = inputObject[fromKey];
+  }
+
+  return resultObject;
+};
+
 // export const encryptString = (value: string):string => {
 //   console.log(value)
 //   // const key = createHash('sha256').update(encryptionKey, 'utf8').digest();

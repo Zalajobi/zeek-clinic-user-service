@@ -6,13 +6,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { roleModelProps } from '../../types';
 import { Provider } from '@typeorm/entity/providers';
 import { Site } from '@typeorm/entity/site';
+import { z } from 'zod';
+import { createAndUpdateRoleRequestSchema } from '@lib/schemas/roleSchemas';
 
 @Entity({ name: 'roles' })
 export class Roles {
-  constructor(data: roleModelProps) {
+  constructor(data: z.infer<typeof createAndUpdateRoleRequestSchema>) {
     this.description = data?.description as string;
     this.name = data?.name as string;
     this.siteId = data?.siteId as string;

@@ -1,15 +1,16 @@
 import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { SiteStatus } from '@typeorm/entity/enums';
+import { Site } from '@typeorm/entity/site';
 
-export const siteTableDatastore = async (
+export const fetchFilteredSiteData = async (
   page: number,
   perPage: number,
-  query: string,
-  from: string,
-  to: string,
-  country: string,
-  status: string,
-  state: string,
+  query: string | undefined,
+  from: string | undefined,
+  to: string | undefined,
+  country: string | undefined,
+  status: string | undefined,
+  state: string | undefined,
   hospitalId: string
 ) => {
   const fromDate = from ? new Date(from) : new Date('1900-01-01'),
@@ -80,9 +81,9 @@ export const siteTableDatastore = async (
   };
 };
 
-export const getDistinctOrganizationSiteCountriesAndStates = async (
+export const getHospitalGeoDetails = async (
   hospitalId: string
-) => {
+): Promise<{ countries: Site[] | null; states: Site[] | null }> => {
   const siteRepository = siteRepo();
 
   const response = await Promise.all([
@@ -115,7 +116,7 @@ export const getDistinctOrganizationSiteCountriesAndStates = async (
   };
 };
 
-export const getSiteInformationBySiteId = async (siteId: string) => {
+export const loadSiteDetailsById = async (siteId: string) => {
   const siteRepository = siteRepo();
 
   return siteRepository.findOne({

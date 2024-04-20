@@ -1,163 +1,229 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
 import { getServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 import {
-  getDistinctOrganizationSiteCountriesAndStates,
-  getSiteInformationBySiteId,
-  siteTableDatastore,
+  getHospitalGeoDetails,
+  loadSiteDetailsById,
+  fetchFilteredSiteData,
 } from '@datastore/site/siteGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
+import {
+  getHospitalGeoDetailsRequestSchema,
+  getOrganisationSiteFilterRequestSchema,
+  getSiteDetailsRequestSchema,
+  getSitesOrganizationalStructuresRequestSchema,
+} from '@lib/schemas/siteSchemas';
 
 const siteGetRequest = Router();
 
-siteGetRequest.get('/get-information', async (req, res) => {
-  let success = false;
-
-  try {
-    // const siteData = await getSiteInformation(req.params.hospitalId as string)
-  } catch (error) {
-    let message = 'Not Authorized';
-    if (error instanceof Error) message = error.message;
-
-    return JsonApiResponse(res, message, success, null, 500);
-  }
-});
-
-// Get All countries and States where an organization has a site. These countries and states are distinct
+/**
+ * Retrieves detailed information for a specific site based on a hospital or site ID.
+ * This endpoint is designed to provide comprehensive details about a site, such as
+ * location, services offered, and operational status. The current implementation
+ * expects to fetch data based on a hospitalId, but the route does not currently
+ * parse this ID from the request. This needs to be updated to either include a
+ * route parameter or a query string to properly function.
+ *
+ * @route GET /get-information
+ * @param {string} hospitalId - The unique identifier of the hospital or site to retrieve information from.
+ * @returns {Object} A response object containing the site details or an error message in case of failure.
+ */
 siteGetRequest.get(
-  '/get-distinct/country-and-state/organization',
-  async (req, res) => {
+  '/get-information',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // const siteData = await getSiteInformation(req.params.hospitalId as string)
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * Fetches unique countries and states for sites linked to a specific hospital ID.
+ * @param hospitalId The hospital's unique identifier.
+ * @param token Authorization token required for access.
+ * @returns An object with arrays of distinct countries and states.
+ */
+siteGetRequest.get(
+  '/:hospitalId/locations/distinct',
+  async (req: Request, res: Response, next: NextFunction) => {
     let message = 'Not Authorised',
       success = false;
     try {
+      const requestBody = getHospitalGeoDetailsRequestSchema.parse({
+        ...req.headers,
+        ...req.params,
+      });
+
+      const verifiedUser = await verifyUserPermission(requestBody.token, [
+        'SUPER_ADMIN',
+        'HOSPITAL_ADMIN',
+      ]);
+
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
+
+      const data = await getHospitalGeoDetails(requestBody.hospitalId);
+      return JsonApiResponse(res, 'Success', true, data, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * Retrieves filtered site data for an organization within an account context, supporting advanced
+ * filtering options such as date ranges, search terms, and location. This endpoint requires an
+ * authorization token and supports pagination.
+ * @param token The authorization token required for validating user permissions.
+ * @param hospital_id Identifier for the hospital associated with the sites being queried.
+ * @param page Page number for pagination of the site data.
+ * @param per_page Number of site records per page.
+ * @param from_date Start date for filtering site data.
+ * @param to_date End date for filtering site data.
+ * @param search Search term for filtering sites.
+ * @param country Country filter for the sites.
+ * @param status Operational status filter for the sites.
+ * @param state State filter for the sites.
+ * @returns Paginated and filtered data specific to site details for a given organization.
+ */
+siteGetRequest.get(
+  '/organization/sites/filters',
+  async (req: Request, res: Response, next: NextFunction) => {
+    let message = 'Not Authorised',
+      success = false;
+
+    try {
+      const requestBody = getOrganisationSiteFilterRequestSchema.parse({
+        ...req.query,
+        ...req.headers,
+      });
+
+      const verifiedUser = await verifyUserPermission(requestBody.token, [
+        'SUPER_ADMIN',
+        'HOSPITAL_ADMIN',
+      ]);
+
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
+
+      const data = await fetchFilteredSiteData(
+        requestBody.page,
+        requestBody.per_page,
+        requestBody?.search,
+        requestBody?.from_date,
+        requestBody?.to_date,
+        requestBody?.country,
+        requestBody?.status,
+        requestBody?.state,
+        requestBody.hospital_id
+      );
+
+      return JsonApiResponse(res, 'Success', true, data, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * Retrieves detailed information about a specific site identified by its unique site ID.
+ * This endpoint is designed to provide comprehensive details about the site, including
+ * its operational data, location, and other relevant attributes. The information is
+ * primarily intended for display in user interfaces or for administrative purposes.
+ *
+ * @route GET /account/site/:siteId/details
+ * @param {string} siteId - The unique identifier of the site. This ID is required to
+ *                          fetch specific site details and must be provided in the URL.
+ * @returns {Object} A JSON response containing a success status, a message, and the
+ *                   detailed site data if successful. If an error occurs, it returns a
+ *                   response with a failure status and the error message.
+ */
+siteGetRequest.get(
+  '/:siteId/details',
+  async (req: Request, res: Response, next: NextFunction) => {
+    let message = 'Not Authorised',
+      success = false;
+
+    try {
+      const requestBody = getSiteDetailsRequestSchema.parse({
+        ...req.params,
+        ...req.headers,
+      });
+
       const verifiedUser = await verifyUserPermission(
-        req?.headers?.token as string,
-        ['SUPER_ADMIN', 'HOSPITAL_ADMIN']
+        requestBody.token as string,
+        [
+          'SUPER_ADMIN',
+          'HOSPITAL_ADMIN',
+          'SITE_ADMIN',
+          'ADMIN',
+          'HUMAN_RESOURCES',
+        ]
       );
 
       if (!verifiedUser)
         return JsonApiResponse(res, message, success, null, 401);
 
-      const data = await getDistinctOrganizationSiteCountriesAndStates(
-        req.query.hospital_id as string
-      );
-      return JsonApiResponse(res, 'Success', true, data, 200);
-    } catch (error) {
-      if (error instanceof Error) message = error.message;
+      const site = await loadSiteDetailsById(requestBody.siteId);
 
-      return JsonApiResponse(res, message, false, null, 401);
+      return JsonApiResponse(
+        res,
+        site ? 'Site Info Request Success' : 'Something Went Wrong',
+        !!site,
+        site,
+        200
+      );
+    } catch (error) {
+      next(error);
     }
   }
 );
 
-siteGetRequest.get('/organization/table-filter', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false;
-  const {
-    page,
-    per_page,
-    from_date,
-    to_date,
-    search,
-    country,
-    status,
-    state,
-    hospital_id,
-  } = req.query;
-
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      ['SUPER_ADMIN', 'HOSPITAL_ADMIN']
-    );
-
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
-
-    const data = await siteTableDatastore(
-      page as unknown as number,
-      per_page as unknown as number,
-      search as unknown as string,
-      from_date as unknown as string,
-      to_date as unknown as string,
-      country as unknown as string,
-      status as unknown as string,
-      state as unknown as string,
-      hospital_id as unknown as string
-    );
-
-    return JsonApiResponse(res, 'Success', true, data, 200);
-  } catch (error) {
-    if (error instanceof Error) message = error.message;
-
-    return JsonApiResponse(res, message, false, null, 401);
-  }
-});
-
-siteGetRequest.get('/admin/get/information/:siteId', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false;
-
-  const { siteId } = req.params;
-
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]
-    );
-
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
-
-    const site = await getSiteInformationBySiteId(siteId);
-
-    return JsonApiResponse(
-      res,
-      site ? 'Site Info Request Success' : 'Something Went Wrong',
-      !!site,
-      site,
-      200
-    );
-  } catch (error) {
-    let message = 'Not Authorized';
-    if (error instanceof Error) message = error.message;
-
-    return JsonApiResponse(res, message, success, null, 500);
-  }
-});
-
+/**
+ * Retrieves detailed organizational structure data (departments, roles, service areas, and units)
+ * for a specified site. This endpoint requires authorization and is intended for users with specific
+ * administrative roles within the hospital.
+ *
+ * @route GET /account/site/:siteId/organizational-structures
+ * @param siteId The unique identifier of the site for which organizational data is requested.
+ * @header token Authorization token required to validate user permissions. Must be provided in the request headers.
+ * @returns A JSON response containing the organizational data if the user is authorized, or an error message if not authorized or in case of an error.
+ */
 siteGetRequest.get(
-  '/department-roles-service_area-unit/:siteId',
-  async (req, res) => {
+  '/:siteId/organizational-structures',
+  async (req: Request, res: Response, next: NextFunction) => {
     let message = 'Not Authorised',
       success = false;
 
-    const { siteId } = req.params;
-
     try {
-      const verifiedUser = await verifyUserPermission(
-        req?.headers?.token as string,
-        ['HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES']
-      );
+      const requestBody = getSitesOrganizationalStructuresRequestSchema.parse({
+        ...req.headers,
+        ...req.params,
+      });
+
+      const verifiedUser = await verifyUserPermission(requestBody.token, [
+        'HOSPITAL_ADMIN',
+        'SITE_ADMIN',
+        'HUMAN_RESOURCES',
+        'SUPER_ADMIN',
+      ]);
 
       if (!verifiedUser)
         return JsonApiResponse(res, message, success, null, 401);
 
       const [department, role, serviceArea, unit] = await Promise.all([
-        getDepartmentDataBySiteId(siteId),
+        getDepartmentDataBySiteId(requestBody.siteId),
 
-        getRoleDataBySiteId(siteId),
+        getRoleDataBySiteId(requestBody.siteId),
 
-        getServiceAreaDataBySiteId(siteId),
+        getServiceAreaDataBySiteId(requestBody.siteId),
 
-        getUnitDataBySiteID(siteId),
+        getUnitDataBySiteID(requestBody.siteId),
       ]);
 
       return JsonApiResponse(
@@ -173,9 +239,7 @@ siteGetRequest.get(
         200
       );
     } catch (error) {
-      if (error instanceof Error) message = error.message;
-
-      return JsonApiResponse(res, message, false, null, 401);
+      next(error);
     }
   }
 );

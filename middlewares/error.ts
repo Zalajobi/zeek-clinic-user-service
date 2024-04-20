@@ -7,6 +7,7 @@ import {
   TransactionAlreadyStartedError,
   TransactionNotStartedError,
 } from 'typeorm';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 export const errorMiddleware = async (
   err: any,
@@ -37,6 +38,7 @@ export const errorMiddleware = async (
         type: 'database_error',
         message: err.message,
         errors: err.stack,
+        name: err.name,
       },
     });
     return;
@@ -49,6 +51,7 @@ export const errorMiddleware = async (
       error: {
         type: 'not_found',
         message: err.message,
+        name: err.name,
       },
     });
     return;
@@ -61,7 +64,7 @@ export const errorMiddleware = async (
       error: {
         type: 'database_error',
         message: err.message,
-        errors: err,
+        name: err.name,
       },
     });
   }
@@ -73,7 +76,8 @@ export const errorMiddleware = async (
       error: {
         type: 'api_error',
         message: 'Transaction already started',
-        errors: err,
+        // message: err.message,
+        name: err.name,
       },
     });
     return;
@@ -85,20 +89,38 @@ export const errorMiddleware = async (
     res.status(500).json({
       error: {
         type: 'api_error',
-        message: 'Transaction not started',
-        errors: err,
+        // message: 'Transaction not started',
+        message: err.message,
+        name: err.name,
+        // errors: err,
       },
     });
+  }
+
+  // JWT Error
+  if (err instanceof JsonWebTokenError) {
+    console.log('JWT Error');
+    res.status(401).json({
+      error: {
+        type: 'jwt_error',
+        message: err.message,
+        name: err.name,
+        // errors: err,
+      },
+    });
+    return;
   }
 
   // Generic Error
   if (err instanceof Error) {
     console.log('General Error');
+    console.log(err);
     res.status(500).json({
       error: {
         type: 'api_error',
         message: err.message,
-        errors: err,
+        name: err.name,
+        // errors: err,
       },
     });
     return;

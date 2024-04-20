@@ -2,12 +2,12 @@ import { unitRepo } from '@typeorm/repositories/unitRepositories';
 import { DefaultJsonResponse } from '@util/responses';
 
 // Get Unit in a site by the SiteId and their provider count
-export const adminGetUnitsWithProvidersAndPatientsCount = async (
+export const fetchFilteredUnitData = async (
   page: number,
   perPage: number,
-  query: string,
-  from: string,
-  to: string,
+  query: string | undefined,
+  from: string | undefined,
+  to: string | undefined,
   siteId: string
 ) => {
   const unitRepository = unitRepo();
