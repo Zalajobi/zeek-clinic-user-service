@@ -19,15 +19,22 @@ import { PatientEmployer } from '@typeorm/entity/patientEmployer';
 
 // Using environment variables
 import dotenv from 'dotenv';
+import {
+  DATABASE_HOST,
+  DATABASE_NAME,
+  DATABASE_PASSWORD,
+  DATABASE_PORT,
+  DATABASE_USERNAME,
+} from '@util/constants';
 dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: process.env.DATABASE_HOST_LOCAL,
-  port: Number(process.env.DATABASE_PORT),
-  username: process.env.DATABASE_USERNAME_LOCAL,
-  password: process.env.DATABASE_PASSWORD_LOCAL,
-  database: process.env.DATABASE_NAME_LOCAL,
+  host: DATABASE_HOST,
+  port: Number(DATABASE_PORT),
+  username: DATABASE_USERNAME,
+  password: DATABASE_PASSWORD,
+  database: DATABASE_NAME,
   synchronize: true,
   logging: false,
   entities: [

@@ -2,6 +2,7 @@ import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
 
 import { JWTDataProps } from '../types/user';
+import { JWT_SECRET_KEY } from '@util/constants';
 
 export const generatePasswordHash = (password: string) => {
   return crypto
@@ -42,20 +43,16 @@ export const generateJSONTokenCredentials = (
       exp, // Expire in 6hrs by default
       // expiresIn: '356 days' //Expire in 365 Days - Meant to test
     },
-    process.env.JWT_SECRET_KEY as string
+    JWT_SECRET_KEY
   );
 };
 
 export const verifyJSONToken = (bearerToken: string) => {
-  return jwt.verify(
-    bearerToken,
-    process.env.JWT_SECRET_KEY as string,
-    (err: any, user: any) => {
-      if (err) return null;
+  return jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
+    if (err) return null;
 
-      return user?.data;
-    }
-  );
+    return user?.data;
+  });
 };
 
 export const generateCode = (length: number = 12): string => {

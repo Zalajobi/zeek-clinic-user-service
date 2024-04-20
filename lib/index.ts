@@ -1,11 +1,10 @@
 import ampq from 'amqplib';
+import { RABBITMQURL } from '@util/constants';
 // import {USER_SERVICE_EXCHANGE} from "../util/constants";
 
 export const getRabbitMQDefaultConnection = async (queName: string) => {
   try {
-    const connection = await ampq.connect(
-      process.env.RABBITMQURL_DEV as string
-    );
+    const connection = await ampq.connect(RABBITMQURL);
     const channel = await connection.createChannel();
 
     await channel.assertQueue(queName, { durable: false });

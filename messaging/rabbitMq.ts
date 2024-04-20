@@ -4,7 +4,7 @@ import { getRabbitMQDefaultConnection } from '../lib';
 export const emitNewEvent = async (que: string, jsonStringData: any) => {
   const [connection, channel] = <any>await getRabbitMQDefaultConnection(que);
 
-  // const connection = await ampq.connect(process.env.RABBITMQURL_DEV as string);
+  // const connection = await ampq.connect(process.env.RABBITMQURL as string);
   // const channel = await connection.createChannel();
   // await channel.assertQueue(que, { durable: false });
 

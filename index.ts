@@ -11,7 +11,7 @@ import { generatePasswordHash } from '@helpers/utils';
 import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
 
 import rootRouter from './routes';
-require('dotenv').config();
+import 'dotenv/config';
 
 const app = express();
 
@@ -48,6 +48,6 @@ AppDataSource.initialize()
   })
   .catch((error) => console.log(error));
 
-app.listen(process.env.DEV_PORT, () => {
-  console.log(`Example app listening on port ${process.env.DEV_PORT}`);
+app.listen(process.env.PROJECT_PORT, () => {
+  console.log(`Example app listening on port ${process.env.PROJECT_PORT}`);
 });
