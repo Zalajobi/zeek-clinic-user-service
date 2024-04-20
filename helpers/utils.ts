@@ -30,7 +30,7 @@ export const validatePassword = (
     )
     .toString('hex');
 
-  return generatedPasswordHash === comparePassword ? true : false;
+  return generatedPasswordHash === comparePassword;
 };
 
 export const generateJSONTokenCredentials = (
