@@ -19,7 +19,8 @@
     "@routes": "routes",
     "@typeorm": "typeorm",
     "@types": "types",
-    "@util": "util"
+    "@util": "util",
+    "@middlewares": "middlewares"
   },
   "keywords": [],
   "author": "",
@@ -38,7 +39,8 @@
     "twilio": "^4.10.0",
     "type-fest": "^3.10.0",
     "typeorm": "^0.3.16",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "zod": "^3.22.5"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.1",

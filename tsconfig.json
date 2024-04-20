@@ -17,7 +17,8 @@
       "@routes/*": ["./routes/*"],
       "@typeorm/*": ["./typeorm/*"],
       "@typeDesc/*": ["./types/*"],
-      "@util/*": ["./util/*"]
+      "@util/*": ["./util/*"],
+      "@middlewares/*": ["./middlewares/*"]
     },
 
     /* JavaScript Support */
