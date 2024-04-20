@@ -12,12 +12,14 @@ import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
 
 import rootRouter from './routes';
 import 'dotenv/config';
+import { errorMiddleware } from '@middlewares/error';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use('/', rootRouter);
+app.use(errorMiddleware);
 
 AppDataSource.initialize()
   .then(async () => {

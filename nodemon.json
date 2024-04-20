@@ -9,7 +9,10 @@
     "typeorm",
     "types",
     "utils",
-    "node_modules"
+    "node_modules",
+    "middlewares",
+    "index.ts",
+    "data-source.ts"
   ],
   "ext": ".ts,.js",
   "ignore": [],
