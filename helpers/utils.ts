@@ -2,17 +2,11 @@ import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
 
 import { JWTDataProps } from '../types/user';
-import { JWT_SECRET_KEY } from '@util/constants';
+import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/constants';
 
 export const generatePasswordHash = (password: string) => {
   return crypto
-    .pbkdf2Sync(
-      password,
-      process.env.PASSWORD_HASH_SECRET as string,
-      1000,
-      64,
-      'sha512'
-    )
+    .pbkdf2Sync(password, PASSWORD_HASH_SECRET, 1000, 64, 'sha512')
     .toString('hex');
 };
 
@@ -21,13 +15,7 @@ export const validatePassword = (
   comparePassword: string
 ) => {
   const generatedPasswordHash = crypto
-    .pbkdf2Sync(
-      reqPassword,
-      process.env.PASSWORD_HASH_SECRET!,
-      1000,
-      64,
-      'sha512'
-    )
+    .pbkdf2Sync(reqPassword, PASSWORD_HASH_SECRET, 1000, 64, 'sha512')
     .toString('hex');
 
   return generatedPasswordHash === comparePassword;
