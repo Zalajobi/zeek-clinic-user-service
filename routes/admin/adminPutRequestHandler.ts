@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { JWTDataProps } from '../../types/jwt';
 import {
   generatePasswordHash,
   validatePassword,

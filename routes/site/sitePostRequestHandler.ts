@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { adminCreateSite } from '@datastore/site/sitePostStore';
 import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
