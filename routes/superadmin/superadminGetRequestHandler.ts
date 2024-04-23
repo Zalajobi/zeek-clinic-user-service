@@ -26,7 +26,7 @@ superadminGetRouter.get(
     try {
       const requestBody = bearerTokenSchema.parse(req.headers);
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
       ]);
 
@@ -67,7 +67,7 @@ superadminGetRouter.get(
       });
 
       let roles: { name: string }[] = [];
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'SITE_ADMIN',
         'HOSPITAL_ADMIN',

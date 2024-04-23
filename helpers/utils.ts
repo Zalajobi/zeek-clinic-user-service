@@ -36,7 +36,9 @@ export const generateJSONTokenCredentials = (
 
 export const verifyJSONToken = (bearerToken: string) => {
   return jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
 
     return user?.data;
   });

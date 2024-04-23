@@ -17,16 +17,13 @@ departmentGetRequest.get(
       success = false;
 
     try {
-      const verifiedUser = await verifyUserPermission(
-        req?.headers?.token as string,
-        [
-          'SUPER_ADMIN',
-          'HOSPITAL_ADMIN',
-          'SITE_ADMIN',
-          'ADMIN',
-          'HUMAN_RESOURCES',
-        ]
-      );
+      const verifiedUser = verifyUserPermission(req?.headers?.token as string, [
+        'SUPER_ADMIN',
+        'HOSPITAL_ADMIN',
+        'SITE_ADMIN',
+        'ADMIN',
+        'HUMAN_RESOURCES',
+      ]);
 
       if (!verifiedUser)
         return JsonApiResponse(res, message, success, null, 200);
@@ -52,7 +49,7 @@ departmentGetRequest.get(
         ...req.headers,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',

@@ -35,7 +35,7 @@ sitePostRequest.post(
         ...req.body,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
       ]);

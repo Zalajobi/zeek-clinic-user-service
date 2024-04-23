@@ -21,7 +21,7 @@ departmentPutRequest.put(
 
       const { departmentId, token, ...updateBody } = requestBody;
 
-      const verifiedUser = await verifyUserPermission(token, [
+      const verifiedUser = verifyUserPermission(token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',

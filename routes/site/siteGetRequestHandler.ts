@@ -59,7 +59,7 @@ siteGetRequest.get(
         ...req.params,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
       ]);
@@ -103,7 +103,7 @@ siteGetRequest.get(
         ...req.headers,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
       ]);
@@ -155,16 +155,13 @@ siteGetRequest.get(
         ...req.headers,
       });
 
-      const verifiedUser = await verifyUserPermission(
-        requestBody.token as string,
-        [
-          'SUPER_ADMIN',
-          'HOSPITAL_ADMIN',
-          'SITE_ADMIN',
-          'ADMIN',
-          'HUMAN_RESOURCES',
-        ]
-      );
+      const verifiedUser = verifyUserPermission(requestBody.token as string, [
+        'SUPER_ADMIN',
+        'HOSPITAL_ADMIN',
+        'SITE_ADMIN',
+        'ADMIN',
+        'HUMAN_RESOURCES',
+      ]);
 
       if (!verifiedUser)
         return JsonApiResponse(res, message, success, null, 401);
@@ -206,7 +203,7 @@ siteGetRequest.get(
         ...req.params,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',
         'HUMAN_RESOURCES',

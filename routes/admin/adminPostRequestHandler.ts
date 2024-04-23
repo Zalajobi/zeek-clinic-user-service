@@ -86,10 +86,11 @@ adminPostRequestHandler.post(
 
       const { email, username, profileData } = requestBody;
 
-      const verifiedUser = await verifyUserPermission(
-        requestBody.token as string,
-        ['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']
-      );
+      const verifiedUser = verifyUserPermission(requestBody.token as string, [
+        'SUPER_ADMIN',
+        'HOSPITAL_ADMIN',
+        'SITE_ADMIN',
+      ]);
 
       if (!verifiedUser)
         return JsonApiResponse(res, message, success, null, 401);

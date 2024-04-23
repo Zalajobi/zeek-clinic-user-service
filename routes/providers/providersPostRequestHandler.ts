@@ -57,7 +57,7 @@ providersPostRequestHandler.post(
         ...req.body,
       });
 
-      const verifiedUser = await verifyUserPermission(
+      const verifiedUser = verifyUserPermission(
         requestBody.token,
         [
           'SUPER_ADMIN',
