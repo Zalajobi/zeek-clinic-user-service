@@ -19,9 +19,7 @@ adminGetRequestHandler.get(
   '/password/request-password/jwt_token/verify',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const verifyToken = <JWTDataProps>(
-        (<unknown>verifyJSONToken(req.query.token as string))
-      );
+      const verifyToken = verifyJSONToken(req.query.token as string);
 
       if (verifyToken)
         return JsonApiResponse(res, 'Token is valid', true, null, 200);

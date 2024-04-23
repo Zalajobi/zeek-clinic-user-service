@@ -34,7 +34,7 @@ export const generateJSONTokenCredentials = (
   );
 };
 
-export const verifyJSONToken = (bearerToken: string) => {
+export const verifyJSONToken = (bearerToken: string): JWTDataProps | null => {
   let jwtData: JWTDataProps | null = null;
 
   jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
