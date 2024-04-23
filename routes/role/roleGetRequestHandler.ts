@@ -1,33 +1,26 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { getRolePaginationDataWithUsersCount } from '@datastore/role/roleGetStore';
 import { getOrganisationRolesFilterRequestSchema } from '@lib/schemas/roleSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const roleGetRequest = Router();
 
 roleGetRequest.get(
   `/organization/roles/filters`,
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = getOrganisationRolesFilterRequestSchema.parse({
         ...req.headers,
         ...req.query,
       });
-
-      const verifiedUser = verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const roleData = await getRolePaginationDataWithUsersCount(
         requestBody.page,
@@ -50,7 +43,7 @@ roleGetRequest.get(
           200
         );
 
-      return JsonApiResponse(res, 'Something went wrong', success, null, 200);
+      return JsonApiResponse(res, 'Something went wrong', false, null, 200);
     } catch (error) {
       next(error);
     }

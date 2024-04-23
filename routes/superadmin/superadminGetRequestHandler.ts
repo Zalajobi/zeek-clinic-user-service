@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { getSuperAdminBaseData } from '@datastore/superAdmin/superadminGetStore';
 import { AdminRoles } from '@typeorm/entity/enums';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getDepartmentsBySiteIdRequestSchema } from '@lib/schemas/adminSchemas';
 import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
+import { verifyJSONToken } from '@helpers/utils';
 
 const superadminGetRouter = Router();
 
@@ -22,18 +23,14 @@ const superadminGetRouter = Router();
  */
 superadminGetRouter.get(
   '/profile/get-data',
+  authorizeRequest(['SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = bearerTokenSchema.parse(req.headers);
+      const { token } = bearerTokenSchema.parse(req.headers);
 
-      const verifiedUser = verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-      ]);
+      const user = verifyJSONToken(token);
 
-      if (!verifiedUser)
-        return JsonApiResponse(res, 'Not Authorized', false, null, 401);
-
-      const data = await getSuperAdminBaseData(verifiedUser?.id ?? '');
+      const data = await getSuperAdminBaseData(user?.id ?? '');
 
       if (data) return JsonApiResponse(res, 'Authorized', true, data, 200);
     } catch (error) {
@@ -57,9 +54,8 @@ superadminGetRouter.get(
  */
 superadminGetRouter.get(
   '/get/available-admin/roles_and_departments',
+  authorizeRequest(['SUPER_ADMIN', 'SITE_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
-    let success = false;
-
     try {
       const requestBody = getDepartmentsBySiteIdRequestSchema.parse({
         ...req.query,
@@ -67,15 +63,6 @@ superadminGetRouter.get(
       });
 
       let roles: { name: string }[] = [];
-      const verifiedUser = verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'SITE_ADMIN',
-        'HOSPITAL_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, 'Not Authorized', success, null, 500);
-
       Object.keys(AdminRoles).forEach((item) => {
         if (item !== 'HOSPITAL_ADMIN' && item !== 'SUPER_ADMIN') {
           roles.push({

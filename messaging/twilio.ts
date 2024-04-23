@@ -2,7 +2,7 @@ import {
   TWILLIO_ACCOUNT_SID,
   TWILLIO_AUTH_TOKEN,
   TWILLIO_PHONE_NUMBER,
-} from '@util/constants';
+} from '@util/config';
 
 const twilioClient = require('twilio')(TWILLIO_ACCOUNT_SID, TWILLIO_AUTH_TOKEN);
 

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import superadminRouter from '@routes/superadmin';
-import { BASE_URL } from '@util/constants';
+import { BASE_URL } from '@util/config';
 import siteRouter from '@routes/site';
 import hospitalRouter from '@routes/hospital';
 import roleRouter from '@routes/role';

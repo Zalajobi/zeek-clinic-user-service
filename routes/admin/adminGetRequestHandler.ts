@@ -9,7 +9,7 @@ import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
 import { getDepartmentUnitServiceAreaAndRoleRequestSchema } from '@lib/schemas/patientSchemas';
-import { verifyUserPermissionMiddleware } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const adminGetRequestHandler = Router();
 
@@ -32,7 +32,7 @@ adminGetRequestHandler.get(
 // Get Roles, Departments, Units and Service Area of a site
 adminGetRequestHandler.get(
   '/roles-departments-areas-units/:siteId',
-  verifyUserPermissionMiddleware([
+  authorizeRequest([
     'SUPER_ADMIN',
     'HOSPITAL_ADMIN',
     'SITE_ADMIN',

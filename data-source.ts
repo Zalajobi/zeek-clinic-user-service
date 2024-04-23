@@ -25,7 +25,7 @@ import {
   DATABASE_PASSWORD,
   DATABASE_PORT,
   DATABASE_USERNAME,
-} from '@util/constants';
+} from '@util/config';
 dotenv.config();
 
 export const AppDataSource = new DataSource({

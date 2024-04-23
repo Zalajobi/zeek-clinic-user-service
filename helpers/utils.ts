@@ -1,6 +1,6 @@
 import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
-import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/constants';
+import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/config';
 import { JWTDataProps } from '@typeDesc/jwt';
 
 export const generatePasswordHash = (password: string) => {

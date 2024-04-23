@@ -8,7 +8,7 @@ import {
 import { JsonApiResponse } from '@util/responses';
 import { sendResetPasswordEmail } from '@messaging/email';
 import { emitNewEvent } from '@messaging/rabbitMq';
-import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
+import { CREATE_ADMIN_QUEUE_NAME } from '@util/config';
 import {
   getAdminAndProfileDataByEmailOrUsername,
   lookupPrimaryAdminInfo,
@@ -21,7 +21,7 @@ import {
   createAdminRequestSchema,
   passwordResetRequestSchema,
 } from '@lib/schemas/adminSchemas';
-import { verifyUserPermissionMiddleware } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const adminPostRequestHandler = Router();
 
@@ -74,11 +74,7 @@ adminPostRequestHandler.post(
 // Create new admin
 adminPostRequestHandler.post(
   '/create',
-  verifyUserPermissionMiddleware([
-    'SUPER_ADMIN',
-    'HOSPITAL_ADMIN',
-    'SITE_ADMIN',
-  ]),
+  authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const requestBody = createAdminRequestSchema.parse({

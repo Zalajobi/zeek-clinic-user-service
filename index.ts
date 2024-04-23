@@ -13,20 +13,20 @@ import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
 import rootRouter from './routes';
 import 'dotenv/config';
 import { errorMiddleware } from '@middlewares/error';
-import { verifyUserPermissionMiddleware } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use('/', rootRouter);
-app.use(verifyUserPermissionMiddleware([]));
+app.use(authorizeRequest([]));
 app.use(errorMiddleware);
 
 AppDataSource.initialize()
   .then(async () => {
     console.log('Initialising TypeORM...');
-    const superAdminRepository = superAdminRepo();
+    // const superAdminRepository = superAdminRepo();
 
     console.log('Generating Superadmin...');
     const superAdmin1 = new SuperAdmin();

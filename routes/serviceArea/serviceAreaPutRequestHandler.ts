@@ -1,17 +1,21 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { updateServiceAreaDataByUnitId } from '@datastore/serviceArea/serviceAreaPutStore';
 import { updateServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const serviceAreaPutRequest = Router();
 
 serviceAreaPutRequest.put(
   '/update/:serviceAreaId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = updateServiceAreaRequestSchema.parse({
         ...req.headers,
@@ -20,17 +24,6 @@ serviceAreaPutRequest.put(
       });
 
       const { serviceAreaId, token, ...updateBody } = requestBody;
-
-      const verifiedUser = verifyUserPermission(token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const updatedData = await updateServiceAreaDataByUnitId(
         serviceAreaId,

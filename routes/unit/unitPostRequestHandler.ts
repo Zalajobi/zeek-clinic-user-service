@@ -4,32 +4,26 @@ import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { createNewUnit } from '@datastore/unit/unitPostStore';
 import { createUnitRequestSchema } from '@lib/schemas/unitSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const unitPostRequest = Router();
 
 // Create New Unit
 unitPostRequest.post(
   '/create',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = createUnitRequestSchema.parse({
         ...req.headers,
         ...req.body,
       });
-
-      const verifiedUser = verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const newRole = await createNewUnit(requestBody);
 

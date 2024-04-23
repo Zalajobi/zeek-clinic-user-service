@@ -3,15 +3,20 @@ import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { updateDepartmentDataByDepartmentId } from '@datastore/department/departmentPutStore';
 import { updateDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const departmentPutRequest = Router();
 
 departmentPutRequest.put(
   '/update/:departmentId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = updateDepartmentRequestSchema.parse({
         ...req.params,
@@ -20,17 +25,6 @@ departmentPutRequest.put(
       });
 
       const { departmentId, token, ...updateBody } = requestBody;
-
-      const verifiedUser = verifyUserPermission(token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const updatedData = await updateDepartmentDataByDepartmentId(
         departmentId,

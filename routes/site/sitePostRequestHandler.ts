@@ -3,6 +3,7 @@ import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { adminCreateSite } from '@datastore/site/sitePostStore';
 import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const sitePostRequest = Router();
 
@@ -25,23 +26,13 @@ const sitePostRequest = Router();
  */
 sitePostRequest.post(
   '/create',
+  authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = createSiteRequestSchema.parse({
         ...req.headers,
         ...req.body,
       });
-
-      const verifiedUser = verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const site = await adminCreateSite(requestBody);
 

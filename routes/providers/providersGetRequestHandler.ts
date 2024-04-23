@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import {
   adminGetProviderDetails,
@@ -9,34 +8,28 @@ import {
   getOrganisationProvidersFilterRequestSchema,
   getProviderDetailsRequestSchema,
 } from '@lib/schemas/providerSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const providersGetRequestHandler = Router();
 
 // Admin get the list of provider of a site by site ID - Paginated Data
 providersGetRequestHandler.get(
   `/organization/providers/filters`,
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = getOrganisationProvidersFilterRequestSchema.parse({
         ...req.headers,
         ...req.query,
       });
 
-      const verifiedUser = verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
-
-      const providersData = await fetchFilteredProviderData(
+      const providerData = await fetchFilteredProviderData(
         requestBody.page,
         requestBody.per_page,
         requestBody.search,
@@ -47,19 +40,19 @@ providersGetRequestHandler.get(
         requestBody.siteId
       );
 
-      if (providersData.success)
+      if (providerData.success)
         return JsonApiResponse(
           res,
-          providersData.message,
-          providersData.success,
+          providerData.message,
+          providerData.success,
           {
-            providers: providersData.data[0],
-            count: providersData.data[1],
+            providers: providerData.data[0],
+            count: providerData.data[1],
           },
           200
         );
 
-      return JsonApiResponse(res, 'Something went wrong', success, null, 401);
+      return JsonApiResponse(res, 'Something went wrong', false, null, 401);
     } catch (error) {
       next(error);
     }
@@ -69,29 +62,21 @@ providersGetRequestHandler.get(
 // Get provider details
 providersGetRequestHandler.get(
   `/details/:id`,
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = getProviderDetailsRequestSchema.parse({
         ...req.params,
         ...req.headers,
       });
 
-      const verifiedUser = verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
-
       const provider = await adminGetProviderDetails(requestBody.id);
-
       if (provider.success) {
         return JsonApiResponse(
           res,
@@ -102,7 +87,7 @@ providersGetRequestHandler.get(
         );
       }
 
-      return JsonApiResponse(res, 'Something went wrong', success, null, 401);
+      return JsonApiResponse(res, 'Something went wrong', false, null, 401);
     } catch (error) {
       next(error);
     }

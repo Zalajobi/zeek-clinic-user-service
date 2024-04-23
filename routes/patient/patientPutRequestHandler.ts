@@ -1,18 +1,22 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { verifyUserPermission } from '@lib/auth';
 import { updatePatientDetails } from '@datastore/patient/patientPutStore';
 import { updatePatientDetailsRequestSchema } from '@lib/schemas/patientSchemas';
 import { getPatientCountByEmail } from '@datastore/patient/patientGetStore';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const patientPutRequestHandler = Router();
 
 patientPutRequestHandler.put(
   '/update/:id',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const { token, id, ...updateBody } =
         updatePatientDetailsRequestSchema.parse({
@@ -20,17 +24,6 @@ patientPutRequestHandler.put(
           ...req.headers,
           ...req.params,
         });
-
-      const verifiedUser = verifyUserPermission(token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       if (updateBody.email) {
         const emailExists = await getPatientCountByEmail(updateBody.email);
