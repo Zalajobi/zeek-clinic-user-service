@@ -21,6 +21,7 @@ export const emergencyContactSchema = z.object({
   gender: z.string(),
   occupation: z.string().optional(),
   siteId: z.string().optional(),
+  patientId: z.string().optional(),
 });
 
 export const createPatientRequestSchema = bearerTokenSchema

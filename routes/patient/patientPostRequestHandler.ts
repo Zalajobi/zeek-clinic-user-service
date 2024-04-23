@@ -10,6 +10,11 @@ import { remapObjectKeys } from '@util/index';
 import { createNewPatient } from '@datastore/patient/patientPostStore';
 import { z } from 'zod';
 import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
+import { emitNewEvent } from '@messaging/rabbitMq';
+import {
+  CREATE_ADMIN_QUEUE_NAME,
+  CREATE_PATIENT_QUEUE_NAME,
+} from '@util/constants';
 
 const patientPostRequestHandler = Router();
 
@@ -65,13 +70,33 @@ patientPostRequestHandler.post(
         requestBody.password ?? tempPassword
       );
 
-      // const newPatient = await createNewPatient(remapObjectKeys(requestBody, patientKeys) as z.infer<typeof createPatientRequestSchema>, remapObjectKeys(requestBody, personalInfoKeys) as z.infer<typeof profileDataRequestSchema>)
+      const newPatient = await createNewPatient(
+        remapObjectKeys(requestBody, patientKeys) as z.infer<
+          typeof createPatientRequestSchema
+        >,
+        remapObjectKeys(requestBody, personalInfoKeys) as z.infer<
+          typeof profileDataRequestSchema
+        >,
+        requestBody.employer,
+        requestBody.emergencyContacts
+      );
+
+      console.log(newPatient);
+
+      if (newPatient.success as boolean) {
+        emitNewEvent(CREATE_PATIENT_QUEUE_NAME, {
+          email: requestBody?.email,
+          firstName: requestBody.first_name,
+          lastName: requestBody.last_name,
+          tempPassword,
+        });
+      }
 
       return JsonApiResponse(
         res,
-        'Patient Created Successfully',
-        true,
-        requestBody,
+        newPatient?.message,
+        <boolean>newPatient?.success,
+        null,
         201
       );
     } catch (error) {

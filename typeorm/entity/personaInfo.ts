@@ -150,7 +150,9 @@ export class PersonalInformation {
   @OneToOne(() => Provider, (provider) => provider.personalInfo)
   provider?: Provider;
 
-  @OneToOne(() => Patients, (patient) => patient.personalInfo)
+  @OneToOne(() => Patients, (patient) => patient.personalInfo, {
+    onDelete: 'CASCADE',
+  })
   patient?: Patients;
 
   @OneToOne(() => Admin, (admin) => admin.personalInfo)

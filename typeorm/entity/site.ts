@@ -20,6 +20,7 @@ import { Admin } from '@typeorm/entity/admin';
 import { SiteStatus } from '@typeorm/entity/enums';
 import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
 import { z } from 'zod';
+import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 
 @Entity()
 export class Site {
@@ -277,4 +278,9 @@ export class Site {
     onDelete: 'CASCADE',
   })
   patientEmployer: PatientEmployer[];
+
+  @OneToMany((type) => EmergencyContacts, (contacts) => contacts.site, {
+    onDelete: 'CASCADE',
+  })
+  emergencyContacts: EmergencyContacts[];
 }

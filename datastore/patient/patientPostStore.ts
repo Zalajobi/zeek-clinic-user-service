@@ -9,23 +9,28 @@ import {
 } from '@lib/schemas/patientSchemas';
 import { DefaultJsonResponse } from '@util/responses';
 import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
+import { createEmployer } from '@datastore/employerStore';
+import { Patients } from '@typeorm/entity/patient';
+import { PatientEmployer } from '@typeorm/entity/patientEmployer';
+import { batchSaveEmergencyContacts } from '@datastore/emergencyContactsStore';
 
 export const createNewPatient = async (
-  patient: z.infer<typeof createPatientRequestSchema>,
-  personalInfo: z.infer<typeof profileDataRequestSchema>,
-  employer?: z.infer<typeof employerSchema>,
-  emergencyContacts?: z.infer<typeof emergencyContactSchema>[]
+  patientData: z.infer<typeof createPatientRequestSchema>,
+  personalInfoData: z.infer<typeof profileDataRequestSchema>,
+  employerData?: z.infer<typeof employerSchema>,
+  emergencyContactsData?: z.infer<typeof emergencyContactSchema>[]
 ) => {
-  let newEmployer = null;
+  let newEmployer: PatientEmployer | null = null,
+    newPatient: Patients | null = null;
   const patientRepository = patientRepo();
 
   const [infoCountByPhone, patientCount] = await Promise.all([
-    getPersonalInfoCountByPhone(personalInfo.phone),
+    getPersonalInfoCountByPhone(personalInfoData.phone),
 
     patientRepository
       .createQueryBuilder('patient')
       .where('LOWER(patient.email) LIKE :email', {
-        email: patient.email,
+        email: patientData.email,
       })
       .getCount(),
   ]);
@@ -42,14 +47,31 @@ export const createNewPatient = async (
     return DefaultJsonResponse('Patient with email address exist', null, false);
   }
 
-  if (employer) {
-    // newEmployer =
+  if (employerData) {
+    newEmployer = await createEmployer(employerData);
+  }
+  const personalInfo = await createNewPersonalInfo(personalInfoData);
+
+  if (personalInfo) {
+    const patient = new Patients(patientData);
+    patient.personalInfo = personalInfo;
+
+    // New Employer
+    if (newEmployer) patient.employer = newEmployer;
+
+    newPatient = await patientRepository.save(patient);
   }
 
-  const newPersonalInfo = await createNewPersonalInfo(personalInfo);
+  if (newPatient && emergencyContactsData) {
+    emergencyContactsData?.map(
+      (contact) => (contact.patientId = newPatient?.id)
+    );
+    await batchSaveEmergencyContacts(emergencyContactsData);
+  }
 
-  return {
-    infoCountByPhone,
-    patientCount,
-  };
+  return DefaultJsonResponse(
+    newPatient ? 'New Patient Created' : 'Something Went Wrong',
+    null,
+    !!newPatient
+  );
 };
