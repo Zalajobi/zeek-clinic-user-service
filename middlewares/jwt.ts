@@ -3,7 +3,13 @@ import { verifyUserPermission } from '@lib/auth';
 
 // Verify User has permission to access the endpoint... Skip verification for whitelisted endpoints
 export const verifyUserPermissionMiddleware = (permissions: string[]) => {
-  const whitelistedEndpoints = ['/admin/login', '/super-admin/login'];
+  const whitelistedEndpoints = [
+    '/admin/login',
+    '/super-admin/login',
+    '/admin/password-reset-requests',
+    '/admin/password/reset/user_verification/sms',
+    '/admin/password-reset-requests',
+  ];
 
   return (req: Request, res: Response, next: NextFunction) => {
     if (whitelistedEndpoints.some((whitelist) => req.url.includes(whitelist))) {

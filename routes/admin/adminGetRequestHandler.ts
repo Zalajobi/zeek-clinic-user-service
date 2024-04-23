@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { JWTDataProps } from '@typeDesc/jwt';
 import { verifyJSONToken } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';

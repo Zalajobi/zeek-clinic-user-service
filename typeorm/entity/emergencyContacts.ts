@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { CreateEmergencyContactsDataProps } from '@typeorm/objectsTypes/emergencyContactsObjectTypes';
 import { Patients } from '@typeorm/entity/patient';
 import { Site } from '@typeorm/entity/site';
 import { emergencyContactSchema } from '@lib/schemas/patientSchemas';

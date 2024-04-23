@@ -6,9 +6,7 @@ import {
   validatePassword,
 } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
-import { verifyUserPermission } from '@lib/auth';
 import { sendResetPasswordEmail } from '@messaging/email';
-import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 import { emitNewEvent } from '@messaging/rabbitMq';
 import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
 import {
@@ -23,6 +21,7 @@ import {
   createAdminRequestSchema,
   passwordResetRequestSchema,
 } from '@lib/schemas/adminSchemas';
+import { verifyUserPermissionMiddleware } from '@middlewares/jwt';
 
 const adminPostRequestHandler = Router();
 
@@ -72,12 +71,15 @@ adminPostRequestHandler.post(
   }
 );
 
+// Create new admin
 adminPostRequestHandler.post(
   '/create',
+  verifyUserPermissionMiddleware([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = createAdminRequestSchema.parse({
         ...req.headers,
@@ -85,15 +87,6 @@ adminPostRequestHandler.post(
       });
 
       const { email, username, profileData } = requestBody;
-
-      const verifiedUser = verifyUserPermission(requestBody.token as string, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const tempPassword = generateTemporaryPassCode();
       requestBody.password = generatePasswordHash(tempPassword);
@@ -206,7 +199,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminModelProps;
+        };
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -253,7 +246,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminModelProps;
+        };
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 
@@ -300,7 +293,7 @@ adminPostRequestHandler.post(
           ...adminData,
           password_reset_code: passwordResetCode,
           password_reset_request_timestamp: new Date(),
-        } as AdminModelProps;
+        };
 
         const updatedUser = await updateAdminData(user.id, updateUser);
 

@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Site } from '@typeorm/entity/site';
-import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 import { AdminRoles } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
 import { createAdminRequestSchema } from '@lib/schemas/adminSchemas';

@@ -1,5 +1,4 @@
 import { adminRepo } from '@typeorm/repositories/adminRepository';
-import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 
 export const updateAdminPasswordByAdminId = async (
   id: string,
@@ -17,7 +16,7 @@ export const updateAdminPasswordByAdminId = async (
   );
 };
 
-export const updateAdminData = async (id: string, data: AdminModelProps) => {
+export const updateAdminData = async (id: string, data: Object) => {
   const adminRepository = adminRepo();
 
   return await adminRepository.update(

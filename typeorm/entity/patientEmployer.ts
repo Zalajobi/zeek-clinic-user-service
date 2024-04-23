@@ -4,11 +4,9 @@ import {
   Column,
   ManyToOne,
   OneToOne,
-  JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
 
-import { CreatePatientEmployerProps } from '@typeorm/objectsTypes/patientEmployerObjectType';
 import { Patients } from '@typeorm/entity/patient';
 import { Site } from '@typeorm/entity/site';
 import { z } from 'zod';
