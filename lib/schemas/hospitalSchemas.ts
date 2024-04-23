@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import {
+  bearerTokenSchema,
+  globalStatusSchema,
+} from '@lib/schemas/commonSchemas';
 
 export const createHospitalRequestSchema = bearerTokenSchema
   .extend({
@@ -30,5 +33,5 @@ export const getOrganisationHospitalsFilterRequestSchema =
     from_date: z.string().optional(),
     to_date: z.string().optional(),
     country: z.string().optional(),
-    status: z.string().optional(),
+    status: globalStatusSchema.optional(),
   });

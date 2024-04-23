@@ -35,16 +35,7 @@ export const createPatientRequestSchema = bearerTokenSchema
     unitId: z.string(),
     careGiverId: z.string(),
     password: z.string().optional(),
-    status: z
-      .enum([
-        'ACTIVE',
-        'PENDING',
-        'DISCHARGED',
-        'DECEASED',
-        'INPATIENT',
-        'OUTPATIENT',
-      ])
-      .default('PENDING'),
+    status: globalStatusSchema.default('PENDING'),
     phone: z.string(),
     first_name: z.string(),
     last_name: z.string(),

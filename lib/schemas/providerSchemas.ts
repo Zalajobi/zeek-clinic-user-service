@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import {
+  bearerTokenSchema,
+  globalStatusSchema,
+} from '@lib/schemas/commonSchemas';
 
 export const createProviderRequestSchema = bearerTokenSchema
   .extend({
@@ -20,7 +23,7 @@ export const createProviderRequestSchema = bearerTokenSchema
     city: z.string().default(''),
     staff_id: z.string(),
     zip_code: z.string(),
-    marital_status: z.string(),
+    marital_status: globalStatusSchema,
     religion: z.string(),
     password: z.string().default(''),
     username: z.string().optional(),
@@ -51,7 +54,7 @@ export const updateProviderRequestSchema = bearerTokenSchema.extend({
   staff_id: z.string().optional(),
   siteId: z.string().optional(),
   username: z.string().optional(),
-  marital_status: z.string().optional(),
+  marital_status: globalStatusSchema.optional(),
   religion: z.string().optional(),
   departmentId: z.string().optional(),
   primaryRoleId: z.string().optional(),
@@ -78,7 +81,7 @@ export const getOrganisationProvidersFilterRequestSchema =
     from_date: z.string().optional(),
     to_date: z.string().optional(),
     country: z.string().optional(),
-    status: z.string().optional(),
+    status: globalStatusSchema.optional(),
   });
 
 export const getProviderDetailsRequestSchema = bearerTokenSchema.extend({
