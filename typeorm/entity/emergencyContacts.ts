@@ -46,7 +46,9 @@ export class EmergencyContacts {
   @Column()
   gender: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   occupation?: string;
 
   @CreateDateColumn()

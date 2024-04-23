@@ -13,3 +13,18 @@ export const LoginRequestSchema = z
 export const bearerTokenSchema = z.object({
   token: z.string(),
 });
+
+export const maritalStatusSchema = z.enum([
+  'SINGLE',
+  'IN_A_RELATIONSHIP',
+  'ENGAGED',
+  'MARRIED',
+  'DIVORCED',
+  'WIDOWED',
+  'SEPARATED',
+  'COMPLICATED',
+  'OPEN_RELATIONSHIP',
+  'CIVIL_UNION',
+  'DOMESTIC_PARTNERSHIP',
+  'OTHERS',
+]);

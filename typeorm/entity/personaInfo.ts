@@ -17,7 +17,6 @@ import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 })
 export class PersonalInformation {
   constructor(data: z.infer<typeof profileDataRequestSchema>) {
-    // this.patientId = data?.patientId ?? '';
     this.phone = data?.phone;
     this.first_name = data?.first_name;
     this.last_name = data?.last_name;
@@ -45,11 +44,11 @@ export class PersonalInformation {
   // })
   // providerId?: string;
 
-  @Column({
-    nullable: true,
-    unique: true,
-  })
-  patientId?: string;
+  // @Column({
+  //   nullable: true,
+  //   unique: true,
+  // })
+  // patientId?: string;
 
   // @Column({
   //   nullable: true,

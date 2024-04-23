@@ -44,7 +44,9 @@ export class PatientEmployer {
   @Column()
   company_name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   company_phone: string;
 
   @Column()
