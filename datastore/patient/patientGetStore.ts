@@ -1,7 +1,7 @@
 import { patientRepo } from '@typeorm/repositories/patientRepository';
 import { DefaultJsonResponse } from '@util/responses';
 
-export const getPatientsDetailsByCareGiverId = async (providerId: string) => {
+export const getCareGiverPrimaryPatients = async (providerId: string) => {
   const patientRepository = patientRepo();
 
   const patientData = await patientRepository

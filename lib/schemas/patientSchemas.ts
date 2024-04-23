@@ -92,3 +92,7 @@ export const updatePatientDetailsRequestSchema = bearerTokenSchema
 
     return true;
   });
+
+export const getProviderPrimaryPatientRequestSchema = bearerTokenSchema.extend({
+  id: z.string(),
+});

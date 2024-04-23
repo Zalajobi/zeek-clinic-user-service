@@ -22,6 +22,6 @@ rootRouter.use(`${BASE_URL}/unit`, unitRouter);
 rootRouter.use(`${BASE_URL}/service-area`, serviceAreaRouter);
 rootRouter.use(`${BASE_URL}/admin`, adminRouter);
 rootRouter.use(`${BASE_URL}/providers`, providersRouter);
-rootRouter.use(`${BASE_URL}/patients`, patientRouter);
+rootRouter.use(`${BASE_URL}/patient`, patientRouter);
 
 export default rootRouter;
