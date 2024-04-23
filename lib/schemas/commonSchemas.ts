@@ -28,3 +28,20 @@ export const maritalStatusSchema = z.enum([
   'DOMESTIC_PARTNERSHIP',
   'OTHERS',
 ]);
+
+export const globalStatusSchema = z.enum([
+  'ACTIVE',
+  'PENDING',
+  'ON_LEAVE',
+  'ON_BREAK',
+  'SUSPENDED',
+  'TERMINATED',
+  'UNAVAILABLE',
+  'ARCHIVED',
+  'DEACTIVATED',
+  'CLOSED',
+  'DISCHARGED',
+  'DECEASED',
+  'INPATIENT',
+  'OUTPATIENT',
+]);

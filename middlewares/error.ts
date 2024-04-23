@@ -2,10 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 import {
   EntityNotFoundError,
+  EntityPropertyNotFoundError,
   QueryFailedError,
   QueryRunnerAlreadyReleasedError,
   TransactionAlreadyStartedError,
   TransactionNotStartedError,
+  UpdateValuesMissingError,
 } from 'typeorm';
 import { JsonWebTokenError } from 'jsonwebtoken';
 
@@ -103,6 +105,34 @@ export const errorMiddleware = async (
     res.status(401).json({
       error: {
         type: 'jwt_error',
+        message: err.message,
+        name: err.name,
+        // errors: err,
+      },
+    });
+    return;
+  }
+
+  // Error Updating Data - Missing Columns to update
+  if (err instanceof UpdateValuesMissingError) {
+    console.log('Missing Update Body');
+    res.status(500).json({
+      error: {
+        type: 'postgres_error',
+        message: err.message,
+        name: err.name,
+        // errors: err,
+      },
+    });
+    return;
+  }
+
+  // Entity Not Found Error - TypeORM Error
+  if (err instanceof EntityPropertyNotFoundError) {
+    console.log('Entity Property Not Found');
+    res.status(500).json({
+      error: {
+        type: 'postgres_error',
         message: err.message,
         name: err.name,
         // errors: err,

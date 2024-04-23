@@ -81,8 +81,6 @@ patientPostRequestHandler.post(
         requestBody.emergencyContacts
       );
 
-      console.log(newPatient);
-
       if (newPatient.success as boolean) {
         emitNewEvent(CREATE_PATIENT_QUEUE_NAME, {
           email: requestBody?.email,

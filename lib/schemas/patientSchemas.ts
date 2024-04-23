@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   bearerTokenSchema,
+  globalStatusSchema,
   maritalStatusSchema,
 } from '@lib/schemas/commonSchemas';
 
@@ -76,6 +77,26 @@ export const createPatientRequestSchema = bearerTokenSchema
     // Refine and inject site ID to the emergency contacts
     if (data.emergencyContacts && data.emergencyContacts.length >= 0) {
       data.emergencyContacts.map((contact) => (contact.siteId = data.siteId));
+    }
+
+    return true;
+  });
+
+export const updatePatientDetailsRequestSchema = bearerTokenSchema
+  .extend({
+    id: z.string(),
+    personalInfoId: z.string().optional(),
+    departmentId: z.string().optional(),
+    serviceareaId: z.string().optional(),
+    unitId: z.string().optional(),
+    careGiverId: z.string().optional(),
+    email: z.string().optional(),
+    password: z.string().optional(),
+    status: globalStatusSchema.optional(),
+  })
+  .refine((data) => {
+    if (data?.email) {
+      !data.email.includes('+');
     }
 
     return true;

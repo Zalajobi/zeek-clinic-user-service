@@ -49,7 +49,7 @@ export const getHospitalDetails = async (hospitalId: string) => {
     siteRepository.count({
       where: {
         hospitalId: hospitalId,
-        status: SiteStatus.DEACTIVATE,
+        status: SiteStatus.DEACTIVATED,
       },
     }),
 

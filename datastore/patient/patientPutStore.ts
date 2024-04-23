@@ -1,7 +1,7 @@
 import { patientRepo } from '@typeorm/repositories/patientRepository';
 import { DefaultJsonResponse } from '@util/responses';
 
-export const movePatientWithinSite = async (id: string, data: Object) => {
+export const updatePatientDetails = async (id: string, data: Object) => {
   const patientRepository = patientRepo();
 
   const updatedData = await patientRepository.update(

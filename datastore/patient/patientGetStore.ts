@@ -61,3 +61,11 @@ export const getPatientCountByProviderId = async (providerId: string) => {
     })
     .getCount();
 };
+
+export const getPatientCountByEmail = async (email: string) => {
+  const patientRepository = patientRepo();
+
+  return await patientRepository.countBy({
+    email,
+  });
+};
