@@ -181,7 +181,7 @@ adminPostRequestHandler.post(
 // Verify Admin Email, Username data, and send SMS to user number
 adminPostRequestHandler.post(
   `/password/reset/user_verification/sms`,
-  async (req, res) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     let message = 'Passcode is send to the admin registered phone number',
       success = true;
 
@@ -220,10 +220,7 @@ adminPostRequestHandler.post(
 
       return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
-      let message = 'Something Went Wrong';
-      if (error instanceof Error) message = error.message;
-
-      return JsonApiResponse(res, message, false, null, 500);
+      next(error);
     }
   }
 );
@@ -231,7 +228,7 @@ adminPostRequestHandler.post(
 // Verify Admin Email, Username data, and Call user number
 adminPostRequestHandler.post(
   `/password/reset/user_verification/direct-call`,
-  async (req, res) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     let message = 'Passcode is send to the admin registered phone number',
       success = true;
 
@@ -270,10 +267,7 @@ adminPostRequestHandler.post(
 
       return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
-      let message = 'Something Went Wrong';
-      if (error instanceof Error) message = error.message;
-
-      return JsonApiResponse(res, message, false, null, 500);
+      next(error);
     }
   }
 );
@@ -281,7 +275,7 @@ adminPostRequestHandler.post(
 // Verify Admin Email, Username data, and send code to user WhatsApp
 adminPostRequestHandler.post(
   `/password/reset/user_verification/whatsApp`,
-  async (req, res) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     let message = 'Passcode is send to the admin registered phone number',
       success = true;
 
@@ -320,10 +314,7 @@ adminPostRequestHandler.post(
 
       return JsonApiResponse(res, message, success, null, 200);
     } catch (error) {
-      let message = 'Something Went Wrong';
-      if (error instanceof Error) message = error.message;
-
-      return JsonApiResponse(res, message, false, null, 500);
+      next(error);
     }
   }
 );

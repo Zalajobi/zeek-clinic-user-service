@@ -64,3 +64,9 @@ export const passwordResetRequestSchema = z
   .refine((data) => {
     return !data.email.includes('+');
   });
+
+export const updatePasswordRequestSchema = bearerTokenSchema.extend({
+  old_password: z.string(),
+  new_password: z.string(),
+  authorization: z.string(),
+});

@@ -96,3 +96,8 @@ export const updatePatientDetailsRequestSchema = bearerTokenSchema
 export const getProviderPrimaryPatientRequestSchema = bearerTokenSchema.extend({
   id: z.string(),
 });
+
+export const getDepartmentUnitServiceAreaAndRoleRequestSchema =
+  bearerTokenSchema.extend({
+    siteId: z.string(),
+  });
