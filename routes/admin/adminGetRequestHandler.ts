@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { JWTDataProps } from '@typeDesc/jwt';
 import { verifyJSONToken } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
@@ -10,6 +9,7 @@ import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
 import { getDepartmentUnitServiceAreaAndRoleRequestSchema } from '@lib/schemas/patientSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const adminGetRequestHandler = Router();
 
@@ -18,9 +18,7 @@ adminGetRequestHandler.get(
   '/password/request-password/jwt_token/verify',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const verifyToken = <JWTDataProps>(
-        (<unknown>verifyJSONToken(req.query.token as string))
-      );
+      const verifyToken = verifyJSONToken(req.query.token as string);
 
       if (verifyToken)
         return JsonApiResponse(res, 'Token is valid', true, null, 200);
@@ -34,27 +32,20 @@ adminGetRequestHandler.get(
 // Get Roles, Departments, Units and Service Area of a site
 adminGetRequestHandler.get(
   '/roles-departments-areas-units/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
-      const { siteId, token } =
-        getDepartmentUnitServiceAreaAndRoleRequestSchema.parse({
+      const { siteId } = getDepartmentUnitServiceAreaAndRoleRequestSchema.parse(
+        {
           ...req.headers,
           ...req.params,
-        });
-
-      const verifiedUser = await verifyUserPermission(token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser) {
-        return JsonApiResponse(res, message, success, null, 200);
-      }
+        }
+      );
 
       const response = await Promise.all([
         adminCreateProviderGetDepartmentDataBySiteId(siteId),
@@ -97,7 +88,7 @@ adminGetRequestHandler.get(
     try {
       const { token } = bearerTokenSchema.parse(req.headers);
 
-      const verifiedUser = await verifyUserPermission(token, [
+      const verifiedUser = verifyUserPermission(token, [
         'ADMIN',
         'RECORDS',
         'CASHIER',

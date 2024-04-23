@@ -70,3 +70,6 @@ export const updatePasswordRequestSchema = bearerTokenSchema.extend({
   new_password: z.string(),
   authorization: z.string(),
 });
+
+// For Password Reset timestamp
+// password_reset_request_timestamp

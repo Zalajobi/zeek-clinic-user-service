@@ -11,6 +11,7 @@ import {
   getOrganisationHospitalsFilterRequestSchema,
   hospitalDetailsRequestSchema,
 } from '@lib/schemas/hospitalSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const hospitalGetRequest = Router();
 
@@ -27,7 +28,7 @@ hospitalGetRequest.get(
         ...req.query,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
       ]);
 
@@ -60,7 +61,7 @@ hospitalGetRequest.get(
     try {
       const requestBody = bearerTokenSchema.parse(req.headers);
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
       ]);
 
@@ -87,34 +88,18 @@ hospitalGetRequest.get(
 
 hospitalGetRequest.get(
   '/details/:id',
+  authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = hospitalDetailsRequestSchema.parse({
         ...req.params,
         ...req.headers,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
-
       const hospitalData = await getHospitalDetails(requestBody.id);
 
       if (!hospitalData)
-        return JsonApiResponse(
-          res,
-          'Organization not found',
-          success,
-          null,
-          400
-        );
+        return JsonApiResponse(res, 'Organization not found', false, null, 400);
 
       return JsonApiResponse(res, 'Hospital data', true, hospitalData, 200);
     } catch (error) {

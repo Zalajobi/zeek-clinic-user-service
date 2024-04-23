@@ -1,4 +1,3 @@
-import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 import { adminRepo } from '@typeorm/repositories/adminRepository';
 import { customPromiseRequest } from '@lib/api';
 import { AdminRoles } from '@typeorm/entity/enums';

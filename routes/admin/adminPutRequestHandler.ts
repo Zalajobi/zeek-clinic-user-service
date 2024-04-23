@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { JWTDataProps } from '../../types/jwt';
 import {
   generatePasswordHash,
   validatePassword,
@@ -23,9 +22,7 @@ adminPutRequestHandler.put(
 
     let message = 'Error Updating Password';
     try {
-      const verifyToken = <JWTDataProps>(
-        (<unknown>verifyJSONToken(requestBody.authorization))
-      );
+      const verifyToken = verifyJSONToken(requestBody.authorization);
 
       if (verifyToken) {
         const admin = await getAdminBaseDataAndProfileDataByAdminId(

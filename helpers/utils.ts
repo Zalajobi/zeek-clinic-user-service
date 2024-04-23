@@ -1,6 +1,6 @@
 import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
-import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/constants';
+import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/config';
 import { JWTDataProps } from '@typeDesc/jwt';
 
 export const generatePasswordHash = (password: string) => {
@@ -34,12 +34,16 @@ export const generateJSONTokenCredentials = (
   );
 };
 
-export const verifyJSONToken = (bearerToken: string) => {
-  return jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
+export const verifyJSONToken = (bearerToken: string): JWTDataProps | null => {
+  let jwtData: JWTDataProps | null = null;
+
+  jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
     if (err) throw err;
 
-    return user?.data;
+    if (user?.data) jwtData = user.data;
   });
+
+  return jwtData;
 };
 
 export const generateCode = (length: number = 12): string => {

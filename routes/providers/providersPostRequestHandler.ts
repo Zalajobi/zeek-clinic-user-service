@@ -6,7 +6,7 @@ import {
   generatePasswordHash,
 } from '@helpers/utils';
 import { emitNewEvent } from '@messaging/rabbitMq';
-import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
+import { CREATE_ADMIN_QUEUE_NAME } from '@util/config';
 import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
 import { remapObjectKeys } from '@util/index';
@@ -57,7 +57,7 @@ providersPostRequestHandler.post(
         ...req.body,
       });
 
-      const verifiedUser = await verifyUserPermission(
+      const verifiedUser = verifyUserPermission(
         requestBody.token,
         [
           'SUPER_ADMIN',

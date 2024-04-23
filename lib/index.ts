@@ -1,5 +1,5 @@
 import ampq from 'amqplib';
-import { RABBITMQURL } from '@util/constants';
+import { RABBITMQURL } from '@util/config';
 // import {USER_SERVICE_EXCHANGE} from "../util/constants";
 
 export const getRabbitMQDefaultConnection = async (queName: string) => {

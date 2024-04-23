@@ -1,17 +1,21 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { updateUnitDataByUnitId } from '@datastore/unit/unitPutStore';
 import { updateUnitRequestSchema } from '@lib/schemas/unitSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const unitPutRequest = Router();
 
 unitPutRequest.put(
   '/update/:unitId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = updateUnitRequestSchema.parse({
         ...req.headers,
@@ -20,18 +24,6 @@ unitPutRequest.put(
       });
 
       const { unitId, token, ...updateBody } = requestBody;
-
-      const verifiedUser = await verifyUserPermission(token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
-
       const updatedData = await updateUnitDataByUnitId(unitId, updateBody);
 
       return JsonApiResponse(

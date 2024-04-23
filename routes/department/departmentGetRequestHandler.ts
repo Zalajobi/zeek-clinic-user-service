@@ -6,31 +6,23 @@ import {
   getDepartmentDataBySiteId,
 } from '@datastore/department/departmentGetStore';
 import { getOrganisationDepartmentsFilterRequestSchema } from '@lib/schemas/departmentSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const departmentGetRequest = Router();
 
 departmentGetRequest.get(
   '/get-all/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
     const siteId = req.params.siteId as string;
-    let message = 'Not Authorised',
-      success = false;
 
     try {
-      const verifiedUser = await verifyUserPermission(
-        req?.headers?.token as string,
-        [
-          'SUPER_ADMIN',
-          'HOSPITAL_ADMIN',
-          'SITE_ADMIN',
-          'ADMIN',
-          'HUMAN_RESOURCES',
-        ]
-      );
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 200);
-
       const departments = await getDepartmentDataBySiteId(siteId);
 
       return JsonApiResponse(res, 'Success', true, departments, 200);
@@ -52,7 +44,7 @@ departmentGetRequest.get(
         ...req.headers,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',

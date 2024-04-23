@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { verifyUserPermission } from '@lib/auth';
 import { getServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
@@ -16,6 +15,7 @@ import {
   getSiteDetailsRequestSchema,
   getSitesOrganizationalStructuresRequestSchema,
 } from '@lib/schemas/siteSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const siteGetRequest = Router();
 
@@ -50,22 +50,13 @@ siteGetRequest.get(
  */
 siteGetRequest.get(
   '/:hospitalId/locations/distinct',
+  authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
     try {
       const requestBody = getHospitalGeoDetailsRequestSchema.parse({
         ...req.headers,
         ...req.params,
       });
-
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const data = await getHospitalGeoDetails(requestBody.hospitalId);
       return JsonApiResponse(res, 'Success', true, data, 200);
@@ -93,23 +84,13 @@ siteGetRequest.get(
  */
 siteGetRequest.get(
   '/organization/sites/filters',
+  authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = getOrganisationSiteFilterRequestSchema.parse({
         ...req.query,
         ...req.headers,
       });
-
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const data = await fetchFilteredSiteData(
         requestBody.page,
@@ -145,32 +126,21 @@ siteGetRequest.get(
  */
 siteGetRequest.get(
   '/:siteId/details',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = getSiteDetailsRequestSchema.parse({
         ...req.params,
         ...req.headers,
       });
 
-      const verifiedUser = await verifyUserPermission(
-        requestBody.token as string,
-        [
-          'SUPER_ADMIN',
-          'HOSPITAL_ADMIN',
-          'SITE_ADMIN',
-          'ADMIN',
-          'HUMAN_RESOURCES',
-        ]
-      );
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
-
       const site = await loadSiteDetailsById(requestBody.siteId);
-
       return JsonApiResponse(
         res,
         site ? 'Site Info Request Success' : 'Something Went Wrong',
@@ -196,25 +166,18 @@ siteGetRequest.get(
  */
 siteGetRequest.get(
   '/:siteId/organizational-structures',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = getSitesOrganizationalStructuresRequestSchema.parse({
         ...req.headers,
         ...req.params,
       });
-
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'HUMAN_RESOURCES',
-        'SUPER_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const [department, role, serviceArea, unit] = await Promise.all([
         getDepartmentDataBySiteId(requestBody.siteId),

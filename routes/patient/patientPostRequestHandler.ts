@@ -11,15 +11,14 @@ import { createNewPatient } from '@datastore/patient/patientPostStore';
 import { z } from 'zod';
 import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 import { emitNewEvent } from '@messaging/rabbitMq';
-import {
-  CREATE_ADMIN_QUEUE_NAME,
-  CREATE_PATIENT_QUEUE_NAME,
-} from '@util/constants';
+import { CREATE_PATIENT_QUEUE_NAME } from '@util/config';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const patientPostRequestHandler = Router();
 
 patientPostRequestHandler.post(
   '/create',
+  authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     const patientKeys = [
         'email',
@@ -53,7 +52,7 @@ patientPostRequestHandler.post(
         ...req.body,
       });
 
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',

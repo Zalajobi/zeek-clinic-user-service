@@ -1,33 +1,26 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { fetchFilteredUnitData } from '@datastore/unit/unitGetStore';
 import { getOrganisationUnitsFilterRequestSchema } from '@lib/schemas/unitSchemas';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const unitGetRequest = Router();
 
 unitGetRequest.get(
   '/organization/roles/filters',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
       const requestBody = getOrganisationUnitsFilterRequestSchema.parse({
         ...req.headers,
         ...req.query,
       });
-
-      const verifiedUser = await verifyUserPermission(requestBody.token, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const deptData = await fetchFilteredUnitData(
         requestBody.page,
@@ -50,7 +43,7 @@ unitGetRequest.get(
           200
         );
 
-      return JsonApiResponse(res, 'Something went wrong', success, null, 200);
+      return JsonApiResponse(res, 'Something went wrong', false, null, 200);
     } catch (error) {
       next(error);
     }

@@ -1,7 +1,5 @@
 import { adminRepo } from '@typeorm/repositories/adminRepository';
-import { AdminModelProps } from '@typeorm/objectsTypes/adminObjectTypes';
 import { Admin } from '@typeorm/entity/admin';
-import { PersonalInformation } from '@typeorm/entity/personaInfo';
 import { ObjectLiteral } from 'typeorm';
 
 export const getAdminPrimaryLoginInformation = async (
@@ -69,10 +67,12 @@ export const getAdminBaseDataAndProfileDataByAdminId = async (id: string) => {
   });
 };
 
-export const getOneAdminDataById = async (id: string) => {
+export const getOneAdminDataById = async (
+  id: string
+): Promise<Admin | null> => {
   const adminRepository = adminRepo();
 
-  return <AdminModelProps>await adminRepository.findOneBy({
+  return await adminRepository.findOneBy({
     id,
   });
 };

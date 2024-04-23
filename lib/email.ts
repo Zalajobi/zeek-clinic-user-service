@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { GMAIL_SMTP_EMAIL, GMAIL_SMTP_SECRET } from '@util/constants';
+import { GMAIL_SMTP_EMAIL, GMAIL_SMTP_SECRET } from '@util/config';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',

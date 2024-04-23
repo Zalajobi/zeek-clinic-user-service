@@ -97,6 +97,7 @@ export const errorMiddleware = async (
         // errors: err,
       },
     });
+    return;
   }
 
   // JWT Error
