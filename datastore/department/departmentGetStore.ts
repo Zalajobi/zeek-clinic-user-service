@@ -1,5 +1,6 @@
 import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 import { DefaultJsonResponse } from '@util/responses';
+import { Departments } from '@typeorm/entity/departments';
 
 export const adminCreateProviderGetDepartmentDataBySiteId = async (
   siteId: string
@@ -18,12 +19,12 @@ export const adminCreateProviderGetDepartmentDataBySiteId = async (
 };
 
 // Get Departments in a site by the SiteId and their provider count
-export const adminGetDepartmentsAndProvidersCount = async (
+export const fetchFilteredDepartmentData = async (
   page: number,
   perPage: number,
-  query: string,
-  from: string,
-  to: string,
+  query: string | undefined,
+  from: string | undefined,
+  to: string | undefined,
   siteId: string
 ) => {
   const deptRepository = departmentRepo();
@@ -85,7 +86,9 @@ export const adminGetDepartmentsAndProvidersCount = async (
 };
 
 // Get Department By SiteId
-export const getDepartmentDataBySiteId = async (siteId: string) => {
+export const getDepartmentDataBySiteId = async (
+  siteId: string
+): Promise<Departments[] | null> => {
   const deptRepository = departmentRepo();
 
   return await deptRepository.find({

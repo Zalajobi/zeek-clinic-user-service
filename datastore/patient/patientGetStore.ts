@@ -1,7 +1,7 @@
 import { patientRepo } from '@typeorm/repositories/patientRepository';
 import { DefaultJsonResponse } from '@util/responses';
 
-export const getPatientsDetailsByCareGiverId = async (providerId: string) => {
+export const getCareGiverPrimaryPatients = async (providerId: string) => {
   const patientRepository = patientRepo();
 
   const patientData = await patientRepository
@@ -60,4 +60,12 @@ export const getPatientCountByProviderId = async (providerId: string) => {
       careGiverId: providerId,
     })
     .getCount();
+};
+
+export const getPatientCountByEmail = async (email: string) => {
+  const patientRepository = patientRepo();
+
+  return await patientRepository.countBy({
+    email,
+  });
 };

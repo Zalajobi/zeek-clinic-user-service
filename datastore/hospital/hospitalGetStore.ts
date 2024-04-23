@@ -49,7 +49,7 @@ export const getHospitalDetails = async (hospitalId: string) => {
     siteRepository.count({
       where: {
         hospitalId: hospitalId,
-        status: SiteStatus.DEACTIVATE,
+        status: SiteStatus.DEACTIVATED,
       },
     }),
 
@@ -75,14 +75,14 @@ export const getHospitalDetails = async (hospitalId: string) => {
   };
 };
 
-export const superAdminGetHospitals = async (
+export const fetchFilteredHospitalData = async (
   page: number,
   perPage: number,
-  query: string,
-  from: string,
-  to: string,
-  country: string,
-  status: string
+  query: string | undefined,
+  from: string | undefined,
+  to: string | undefined,
+  country: string | undefined,
+  status: string | undefined
 ) => {
   let skip = Number(perPage * page),
     take = Number(perPage),

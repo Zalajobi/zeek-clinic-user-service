@@ -1,9 +1,12 @@
-import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
 import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { Site } from '@typeorm/entity/site';
+import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import { z } from 'zod';
 
-export const adminCreateSite = async (data: siteModelProps) => {
+export const adminCreateSite = async (
+  data: z.infer<typeof createSiteRequestSchema>
+) => {
   const siteRepository = siteRepo();
   const hospitalRepository = hospitalRepo();
 
@@ -23,7 +26,7 @@ export const adminCreateSite = async (data: siteModelProps) => {
       message: 'Site with email address or phone number already exists',
     };
 
-  await siteRepository.save(new Site(data as siteModelProps));
+  await siteRepository.save(new Site(data));
 
   await hospitalRepository.update(
     {

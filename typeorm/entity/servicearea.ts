@@ -7,20 +7,21 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ServiceAreaType } from '@typeorm/entity/enums';
-import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
 import { Patients } from '@typeorm/entity/patient';
+import { createServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas';
+import { z } from 'zod';
 
 @Entity({
   name: 'service_area',
 })
 export class Servicearea {
-  constructor(data: CreateServiceAreaDataProps) {
+  constructor(data: z.infer<typeof createServiceAreaRequestSchema>) {
     this.name = data?.name;
     this.siteId = data?.siteId;
     this.description = data?.description;
-    this.type = data?.type;
+    this.type = data?.type as ServiceAreaType;
   }
 
   @PrimaryGeneratedColumn('uuid')

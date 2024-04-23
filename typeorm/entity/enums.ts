@@ -9,7 +9,7 @@ export enum SiteStatus {
   ACTIVE = 'ACTIVE',
   CLOSED = 'CLOSED',
   PENDING = 'PENDING',
-  DEACTIVATE = 'DEACTIVATE',
+  DEACTIVATED = 'DEACTIVATED',
 }
 
 export enum AdminRoles {

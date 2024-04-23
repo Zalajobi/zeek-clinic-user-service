@@ -1,33 +1,64 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import {
   generateTemporaryPassCode,
   generatePasswordHash,
 } from '@helpers/utils';
-
-import { MartialStatus } from '@typeorm/entity/enums';
 import { emitNewEvent } from '@messaging/rabbitMq';
 import { CREATE_ADMIN_QUEUE_NAME } from '@util/constants';
-import {
-  createAndUpdateProviderRequestBody,
-  ProviderModelProps,
-} from '@typeorm/objectsTypes/providersObjectTypes';
 import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
-import { ProfileInfoModelProps } from '@typeDesc/index';
+import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { remapObjectKeys } from '@util/index';
 
 const providersPostRequestHandler = Router();
 
+// Create New Provider
 providersPostRequestHandler.post(
-  '/admin/create-new/provider',
-  async (req, res) => {
+  '/create',
+  async (req: Request, res: Response, next: NextFunction) => {
     let message = 'Not Authorised',
       success = false;
+    const providerKeys = [
+        'appointments',
+        'department',
+        'is_consultant',
+        'is_specialist',
+        'role',
+        'serviceArea',
+        'siteId',
+        'staff_id',
+        'unit',
+        'username',
+        'email',
+        'password',
+      ],
+      personalInfoKeys = [
+        'address',
+        'city',
+        'country',
+        'dob',
+        'first_name',
+        'gender',
+        'last_name',
+        'middle_name',
+        'state',
+        'title',
+        'zip_code',
+        'marital_status',
+        'phone',
+        'profile_pic',
+        'religion',
+      ];
 
     try {
-      const data = req.body as createAndUpdateProviderRequestBody;
+      const requestBody = createProviderRequestSchema.parse({
+        ...req.headers,
+        ...req.body,
+      });
+
       const verifiedUser = await verifyUserPermission(
-        req?.headers?.token as string,
+        requestBody.token,
         [
           'SUPER_ADMIN',
           'HOSPITAL_ADMIN',
@@ -37,59 +68,30 @@ providersPostRequestHandler.post(
         ] // Remove HUMAN_RESOURCES later, this is for testing purpose for July 23, 2023 session 8AM - 2PM
       );
 
-      if (!verifiedUser)
+      if (!verifiedUser) {
         return JsonApiResponse(res, message, success, null, 200);
+      }
 
       const tempPassword = generateTemporaryPassCode();
+      requestBody.password = generatePasswordHash(tempPassword);
+      requestBody.username = requestBody.username ?? requestBody.staff_id;
 
-      const providersData: ProviderModelProps = {
-        appointments: data.appointments,
-        departmentId: data.department,
-        is_consultant: data.is_consultant,
-        is_specialist: data.is_specialist,
-        primaryRoleId: data.role,
-        serviceareaId: data.serviceArea,
-        siteId: data.siteId,
-        staff_id: data.staff_id,
-        unitId: data.unit,
-        username: data.username,
-        email: data.email,
-        password: generatePasswordHash(tempPassword),
-        personalInfoId: '',
-      };
-
-      const personalInfoData: ProfileInfoModelProps = {
-        address: data?.address ?? '',
-        city: data?.city ?? '',
-        country: data.country ?? '',
-        dob: data?.dob ?? '',
-        first_name: data?.first_name ?? '',
-        gender: data.gender ?? '',
-        last_name: data.last_name ?? '',
-        middle_name: data.middle_name ?? '',
-        state: data.state ?? '',
-        title: data.title ?? '',
-        zip_code: data.zip_code ?? '',
-        marital_status: data?.relationship_status as MartialStatus,
-        phone: data?.phone ?? '',
-        profile_pic: data?.profilePic ?? '',
-        religion: data?.religion ?? '',
-        // providerId: '',
-      };
+      const providerData = remapObjectKeys(requestBody, providerKeys);
+      const personalInfoData = remapObjectKeys(requestBody, personalInfoKeys);
 
       const newAdmin = await adminCreateNewProvider(
-        providersData,
+        providerData,
         personalInfoData,
-        data.phone
+        requestBody.phone
       );
 
       if (newAdmin.success as boolean) {
         await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
-          email: providersData.email,
+          email: providerData?.email,
           firstName: personalInfoData.first_name,
           lastName: personalInfoData.last_name,
           tempPassword: tempPassword,
-          userName: providersData.username,
+          userName: providerData.username,
         });
       }
 
@@ -98,12 +100,10 @@ providersPostRequestHandler.post(
         <string>newAdmin?.message,
         <boolean>newAdmin?.success,
         null,
-        200
+        201
       );
     } catch (error) {
-      if (error instanceof Error) message = error.message;
-
-      return JsonApiResponse(res, message, success, null, 401);
+      next(error);
     }
   }
 );

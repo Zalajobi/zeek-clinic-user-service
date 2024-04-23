@@ -8,7 +8,7 @@
     "routes",
     "typeorm",
     "types",
-    "utils",
+    "util",
     "node_modules",
     "middlewares",
     "index.ts",

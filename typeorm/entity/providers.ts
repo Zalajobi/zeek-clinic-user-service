@@ -8,7 +8,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProviderModelProps } from '@typeorm/objectsTypes/providersObjectTypes';
 import { ProviderStatus } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
 import { Patients } from '@typeorm/entity/patient';
@@ -17,23 +16,24 @@ import { Roles } from '@typeorm/entity/roles';
 import { Departments } from '@typeorm/entity/departments';
 import { Units } from '@typeorm/entity/units';
 import { Servicearea } from '@typeorm/entity/servicearea';
+import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { z } from 'zod';
 
 @Entity()
 export class Provider {
-  constructor(data: ProviderModelProps) {
-    this.siteId = data?.siteId as string;
-    this.primaryRoleId = data?.primaryRoleId as string;
-    this.departmentId = data?.departmentId as string;
-    this.serviceareaId = data?.serviceareaId as string;
-    // this.personalInfoId = data?.personalInfoId as string;
-    this.unitId = data?.unitId as string;
-    this.email = data?.email as string;
-    this.password = data?.password as string;
-    this.username = data?.username as string;
-    this.staff_id = data?.staff_id as string;
-    this.is_consultant = data?.is_consultant as boolean;
-    this.is_specialist = data?.is_specialist as boolean;
-    this.appointments = data?.appointments as boolean;
+  constructor(data: z.infer<typeof createProviderRequestSchema>) {
+    this.siteId = data?.siteId;
+    this.primaryRoleId = data?.role;
+    this.departmentId = data?.department;
+    this.serviceareaId = data?.serviceArea;
+    this.unitId = data?.unit;
+    this.email = data?.email;
+    this.password = data?.password;
+    this.username = data?.username ?? '';
+    this.staff_id = data?.staff_id;
+    this.is_consultant = data?.is_consultant;
+    this.is_specialist = data?.is_specialist;
+    this.appointments = data?.appointments;
   }
 
   @PrimaryGeneratedColumn('uuid')

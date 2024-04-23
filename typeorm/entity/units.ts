@@ -6,14 +6,15 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { createUnitDataProps } from '@typeorm/objectsTypes/unitObjectTypes';
 import { Patients } from '@typeorm/entity/patient';
 import { Provider } from '@typeorm/entity/providers';
 import { Site } from '@typeorm/entity/site';
+import { createUnitRequestSchema } from '@lib/schemas/unitSchemas';
+import { z } from 'zod';
 
 @Entity()
 export class Units {
-  constructor(data: createUnitDataProps) {
+  constructor(data: z.infer<typeof createUnitRequestSchema>) {
     this.name = data?.name;
     this.siteId = data?.siteId;
     this.description = data?.description;

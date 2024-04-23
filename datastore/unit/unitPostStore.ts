@@ -1,9 +1,12 @@
-import { unitModelProps } from '@typeDesc/index';
 import { unitRepo } from '@typeorm/repositories/unitRepositories';
 import { DefaultJsonResponse } from '@util/responses';
 import { Units } from '@typeorm/entity/units';
+import { createUnitRequestSchema } from '@lib/schemas/unitSchemas';
+import { z } from 'zod';
 
-export const createNewUnit = async (data: unitModelProps) => {
+export const createNewUnit = async (
+  data: z.infer<typeof createUnitRequestSchema>
+) => {
   const unitRepository = unitRepo();
 
   // If Unit already exists in the same site, do no create

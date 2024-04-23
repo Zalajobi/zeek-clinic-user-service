@@ -1,59 +1,60 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import { getServiceAreaPaginationDataWithUsersCount } from '@datastore/serviceArea/serviceAreaGetStore';
+import { fetchFilteredServiceAreaData } from '@datastore/serviceArea/serviceAreaGetStore';
+import { getOrganisationServiceAreaFilterRequestSchema } from '@lib/schemas/serviceAreaSchemas';
 
 const serviceAreaGetRequest = Router();
 
-serviceAreaGetRequest.get('/admin/list/paginated/:siteId', async (req, res) => {
-  const siteId = req.params.siteId as string;
-  let message = 'Not Authorised',
-    success = false;
+serviceAreaGetRequest.get(
+  '/organization/service-areas/filters',
+  async (req: Request, res: Response, next: NextFunction) => {
+    let message = 'Not Authorised',
+      success = false;
 
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      [
+    try {
+      const requestBody = getOrganisationServiceAreaFilterRequestSchema.parse({
+        ...req.query,
+        ...req.headers,
+      });
+
+      const verifiedUser = await verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',
         'ADMIN',
         'HUMAN_RESOURCES',
-      ]
-    );
+      ]);
 
-    const { page, per_page, from_date, to_date, search, country, status } =
-      req.query;
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
-
-    const deptData = await getServiceAreaPaginationDataWithUsersCount(
-      page as unknown as number,
-      per_page as unknown as number,
-      search as unknown as string,
-      from_date as unknown as string,
-      to_date as unknown as string,
-      siteId as string
-    );
-
-    if (deptData.success)
-      return JsonApiResponse(
-        res,
-        deptData.message,
-        <boolean>deptData?.success,
-        {
-          area: deptData.data[0],
-          count: deptData.data[1],
-        },
-        200
+      const deptData = await fetchFilteredServiceAreaData(
+        requestBody.page,
+        requestBody.per_page,
+        requestBody.search,
+        requestBody.from_date,
+        requestBody.to_date,
+        requestBody.siteId
       );
 
-    return JsonApiResponse(res, 'Something went wrong', success, null, 200);
-  } catch (error) {
-    if (error instanceof Error) message = error.message;
+      if (deptData.success)
+        return JsonApiResponse(
+          res,
+          deptData.message,
+          <boolean>deptData?.success,
+          {
+            area: deptData.data[0],
+            count: deptData.data[1],
+          },
+          200
+        );
 
-    return JsonApiResponse(res, message, success, null, 500);
+      return JsonApiResponse(res, 'Something went wrong', success, null, 200);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 export default serviceAreaGetRequest;

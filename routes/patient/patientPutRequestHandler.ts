@@ -1,44 +1,62 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
-import { movePatientWithinSite } from '@datastore/patient/patientPutStore';
+import { updatePatientDetails } from '@datastore/patient/patientPutStore';
+import { updatePatientDetailsRequestSchema } from '@lib/schemas/patientSchemas';
+import { getPatientCountByEmail } from '@datastore/patient/patientGetStore';
 
 const patientPutRequestHandler = Router();
 
-patientPutRequestHandler.put('/move/:id', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false;
+patientPutRequestHandler.put(
+  '/update/:id',
+  async (req: Request, res: Response, next: NextFunction) => {
+    let message = 'Not Authorised',
+      success = false;
 
-  const id = req.params.id;
+    try {
+      const { token, id, ...updateBody } =
+        updatePatientDetailsRequestSchema.parse({
+          ...req.body,
+          ...req.headers,
+          ...req.params,
+        });
 
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      [
+      const verifiedUser = await verifyUserPermission(token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',
         'ADMIN',
         'HUMAN_RESOURCES',
-      ]
-    );
+      ]);
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
 
-    const response = await movePatientWithinSite(req.params.id, req.body);
+      if (updateBody.email) {
+        const emailExists = await getPatientCountByEmail(updateBody.email);
+        if (emailExists >= 1) {
+          return JsonApiResponse(
+            res,
+            'Patient with Email Exists',
+            false,
+            null,
+            400
+          );
+        }
+      }
 
-    return JsonApiResponse(
-      res,
-      response.message,
-      response.success as boolean,
-      null,
-      response?.success ? 200 : 400
-    );
-  } catch (error) {
-    let message = 'Not Authorized';
-    if (error instanceof Error) message = error.message;
+      const response = await updatePatientDetails(id, updateBody);
 
-    return JsonApiResponse(res, message, success, null, 500);
+      return JsonApiResponse(
+        res,
+        response.message,
+        response.success as boolean,
+        null,
+        response?.success ? 200 : 400
+      );
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 export default patientPutRequestHandler;

@@ -1,59 +1,60 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { getRolePaginationDataWithUsersCount } from '@datastore/role/roleGetStore';
+import { getOrganisationRolesFilterRequestSchema } from '@lib/schemas/roleSchemas';
 
 const roleGetRequest = Router();
 
-roleGetRequest.get(`/admin/list/paginated/:siteId`, async (req, res) => {
-  const siteId = req.params.siteId as string;
-  let message = 'Not Authorised',
-    success = false;
+roleGetRequest.get(
+  `/organization/roles/filters`,
+  async (req: Request, res: Response, next: NextFunction) => {
+    let message = 'Not Authorised',
+      success = false;
 
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      [
+    try {
+      const requestBody = getOrganisationRolesFilterRequestSchema.parse({
+        ...req.headers,
+        ...req.query,
+      });
+
+      const verifiedUser = await verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',
         'ADMIN',
         'HUMAN_RESOURCES',
-      ]
-    );
+      ]);
 
-    const { page, per_page, from_date, to_date, search, country, status } =
-      req.query;
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
-
-    const roleData = await getRolePaginationDataWithUsersCount(
-      page as unknown as number,
-      per_page as unknown as number,
-      search as unknown as string,
-      from_date as unknown as string,
-      to_date as unknown as string,
-      siteId as string
-    );
-
-    if (roleData.success)
-      return JsonApiResponse(
-        res,
-        roleData.message,
-        <boolean>roleData?.success,
-        {
-          role: roleData.data[0],
-          count: roleData.data[1],
-        },
-        200
+      const roleData = await getRolePaginationDataWithUsersCount(
+        requestBody.page,
+        requestBody.per_page,
+        requestBody.search ?? '',
+        requestBody.from_date ?? '',
+        requestBody.to_date ?? '',
+        requestBody.siteId
       );
 
-    return JsonApiResponse(res, 'Something went wrong', success, null, 200);
-  } catch (error) {
-    if (error instanceof Error) message = error.message;
+      if (roleData.success)
+        return JsonApiResponse(
+          res,
+          roleData.message,
+          <boolean>roleData?.success,
+          {
+            role: roleData.data[0],
+            count: roleData.data[1],
+          },
+          200
+        );
 
-    return JsonApiResponse(res, message, success, null, 500);
+      return JsonApiResponse(res, 'Something went wrong', success, null, 200);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 export default roleGetRequest;

@@ -1,4 +1,3 @@
-import { ProfileInfoModelProps } from '@typeDesc/index';
 import { personalInfoRepo } from '@typeorm/repositories/personalInfoRepository';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
 import { AppDataSource } from '../../data-source';

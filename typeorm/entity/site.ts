@@ -18,11 +18,13 @@ import { BankAccount } from '@typeorm/entity/bankAccount';
 import { Hospital } from '@typeorm/entity/hospital';
 import { Admin } from '@typeorm/entity/admin';
 import { SiteStatus } from '@typeorm/entity/enums';
-import { siteModelProps } from '@typeorm/objectsTypes/siteObjectTypes';
+import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import { z } from 'zod';
+import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 
 @Entity()
 export class Site {
-  constructor(data: siteModelProps) {
+  constructor(data: z.infer<typeof createSiteRequestSchema>) {
     this.address = data?.address;
     this.name = data?.name;
     this.email = data?.email;
@@ -32,7 +34,7 @@ export class Site {
     this.logo = data?.logo as string;
     this.time_zone = data?.time_zone as string;
     this.phone = data?.phone;
-    this.zip_code = data?.zip_code as string;
+    this.zip_code = data?.zip_code?.toString();
     this.is_private = data?.is_private as boolean;
     this.has_appointment = data?.has_appointment as boolean;
     this.has_caregiver = data?.has_caregiver as boolean;
@@ -276,4 +278,9 @@ export class Site {
     onDelete: 'CASCADE',
   })
   patientEmployer: PatientEmployer[];
+
+  @OneToMany((type) => EmergencyContacts, (contacts) => contacts.site, {
+    onDelete: 'CASCADE',
+  })
+  emergencyContacts: EmergencyContacts[];
 }

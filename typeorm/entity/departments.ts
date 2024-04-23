@@ -7,14 +7,15 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { departmentModelProps } from '../../types';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
 import { Patients } from '@typeorm/entity/patient';
+import { z } from 'zod';
+import { createDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
 
 @Entity()
 export class Departments {
-  constructor(data: departmentModelProps) {
+  constructor(data: z.infer<typeof createDepartmentRequestSchema>) {
     this.name = data?.name;
     this.siteId = data?.siteId;
     this.description = data?.description;

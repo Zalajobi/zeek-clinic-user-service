@@ -5,14 +5,14 @@ import { DefaultJsonResponse } from '@util/responses';
 import { getPatientCountByProviderId } from '@datastore/patient/patientGetStore';
 
 // Get Providers Pagination Data
-export const adminGetProvidersInfoPagination = async (
+export const fetchFilteredProviderData = async (
   page: number,
   perPage: number,
-  query: string,
-  from: string,
-  to: string,
-  country: string,
-  status: string,
+  query: string | undefined,
+  from: string | undefined,
+  to: string | undefined,
+  country: string | undefined,
+  status: string | undefined,
   siteId: string
 ) => {
   const providerRepository = providerRepo();

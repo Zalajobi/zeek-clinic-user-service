@@ -8,13 +8,16 @@ import {
 
 import { CreateEmergencyContactsDataProps } from '@typeorm/objectsTypes/emergencyContactsObjectTypes';
 import { Patients } from '@typeorm/entity/patient';
+import { Site } from '@typeorm/entity/site';
+import { emergencyContactSchema } from '@lib/schemas/patientSchemas';
+import { z } from 'zod';
 
 @Entity({
   name: 'emergency_contacts',
 })
 export class EmergencyContacts {
-  constructor(data: CreateEmergencyContactsDataProps) {
-    this.patientId = data?.patientId;
+  constructor(data: z.infer<typeof emergencyContactSchema>) {
+    this.patientId = data?.patientId ?? '';
     this.name = data?.name;
     this.phone = data?.phone;
     this.address = data?.address;
@@ -46,7 +49,9 @@ export class EmergencyContacts {
   @Column()
   gender: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   occupation?: string;
 
   @CreateDateColumn()
@@ -56,6 +61,11 @@ export class EmergencyContacts {
   updated_at: Date;
 
   // Relations
-  @ManyToOne(() => Patients, (patients) => patients.emergencyContacts)
+  @ManyToOne(() => Patients, (patients) => patients.emergencyContacts, {
+    onDelete: 'CASCADE',
+  })
   patient: Patients;
+
+  @ManyToOne((type) => Site, (site) => site.emergencyContacts)
+  site: Site;
 }

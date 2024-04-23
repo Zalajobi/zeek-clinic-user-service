@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { JWTDataProps } from '../../types/jwt';
 import {
   generatePasswordHash,
@@ -8,20 +8,23 @@ import {
 import { JsonApiResponse } from '@util/responses';
 import { getAdminBaseDataAndProfileDataByAdminId } from '@datastore/admin/adminGetStore';
 import { updateAdminPasswordByAdminId } from '@datastore/admin/adminPutStore';
+import { updatePasswordRequestSchema } from '@lib/schemas/adminSchemas';
 
 const adminPutRequestHandler = Router();
 
 // Change Password When via password reset token
 adminPutRequestHandler.put(
-  `/admin/password/change_password`,
-  async (req, res) => {
-    const { authorization } = req.headers,
-      { old_password, new_password } = req.body;
-    let message = 'Error Updating Password';
+  `/password/change-password`,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const requestBody = updatePasswordRequestSchema.parse({
+      ...req.body,
+      ...req.headers,
+    });
 
+    let message = 'Error Updating Password';
     try {
       const verifyToken = <JWTDataProps>(
-        (<unknown>verifyJSONToken(authorization as string))
+        (<unknown>verifyJSONToken(requestBody.authorization))
       );
 
       if (verifyToken) {
@@ -29,8 +32,8 @@ adminPutRequestHandler.put(
           verifyToken?.id ?? ''
         );
 
-        if (validatePassword(old_password, admin?.password ?? '')) {
-          const password = generatePasswordHash(new_password);
+        if (validatePassword(requestBody.old_password, admin?.password ?? '')) {
+          const password = generatePasswordHash(requestBody.new_password);
 
           if (
             await updateAdminPasswordByAdminId(verifyToken?.id ?? '', password)
@@ -41,10 +44,7 @@ adminPutRequestHandler.put(
 
       return JsonApiResponse(res, message, true, null, 200);
     } catch (error) {
-      let message = 'Something Went Wrong';
-      if (error instanceof Error) message = error.message;
-
-      return JsonApiResponse(res, message, false, null, 500);
+      next(error);
     }
   }
 );

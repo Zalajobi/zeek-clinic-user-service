@@ -9,29 +9,29 @@ import { Provider } from '@typeorm/entity/providers';
 import { Admin } from '@typeorm/entity/admin';
 import { MartialStatus } from '@typeorm/entity/enums';
 import { Patients } from '@typeorm/entity/patient';
-import { ProfileInfoModelProps } from '@typeDesc/index';
+import { z } from 'zod';
+import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 
 @Entity({
   name: 'personal_info',
 })
 export class PersonalInformation {
-  constructor(data: ProfileInfoModelProps) {
-    this.patientId = data?.patientId as string;
-    this.phone = data?.phone as string;
+  constructor(data: z.infer<typeof profileDataRequestSchema>) {
+    this.phone = data?.phone;
     this.first_name = data?.first_name;
     this.last_name = data?.last_name;
-    this.middle_name = data?.middle_name;
+    this.middle_name = data?.middle_name ?? '';
     this.title = data?.title;
     this.gender = data?.gender;
     this.dob = new Date(data?.dob);
     this.address = data?.address;
-    this.address_two = data?.address_two as string;
+    this.address_two = data?.address_two ?? '';
     this.city = data?.city;
     this.state = data?.state;
     this.country = data?.country;
     this.zip_code = data?.zip_code;
-    this.profile_pic = data?.profile_pic as string;
-    this.religion = data?.religion as string;
+    this.profile_pic = data?.profile_pic ?? '';
+    this.religion = data?.religion ?? '';
     this.marital_status = data?.marital_status as MartialStatus;
   }
 
@@ -44,11 +44,11 @@ export class PersonalInformation {
   // })
   // providerId?: string;
 
-  @Column({
-    nullable: true,
-    unique: true,
-  })
-  patientId?: string;
+  // @Column({
+  //   nullable: true,
+  //   unique: true,
+  // })
+  // patientId?: string;
 
   // @Column({
   //   nullable: true,
@@ -98,6 +98,7 @@ export class PersonalInformation {
 
   @Column({
     default: '',
+    nullable: true,
   })
   address_two?: string;
 
@@ -149,7 +150,9 @@ export class PersonalInformation {
   @OneToOne(() => Provider, (provider) => provider.personalInfo)
   provider?: Provider;
 
-  @OneToOne(() => Patients, (patient) => patient.personalInfo)
+  @OneToOne(() => Patients, (patient) => patient.personalInfo, {
+    onDelete: 'CASCADE',
+  })
   patient?: Patients;
 
   @OneToOne(() => Admin, (admin) => admin.personalInfo)

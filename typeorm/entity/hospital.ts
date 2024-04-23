@@ -9,11 +9,12 @@ import {
 import { HospitalStatus } from '@typeorm/entity/enums';
 
 import { Site } from '@typeorm/entity/site';
-import { hospitalModelProps } from '@typeDesc/index';
+import { createHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
+import { z } from 'zod';
 
 @Entity()
 export class Hospital {
-  constructor(data: hospitalModelProps) {
+  constructor(data: z.infer<typeof createHospitalRequestSchema>) {
     this.name = data?.name;
     this.email = data?.email;
     this.phone = data?.phone;
@@ -22,7 +23,7 @@ export class Hospital {
     this.state = data?.state;
     this.country = data?.country;
     this.logo = data?.logo;
-    this.zip_code = data?.zip_code;
+    this.zip_code = data?.zip_code?.toString();
     this.country_code = data?.country_code;
   }
 

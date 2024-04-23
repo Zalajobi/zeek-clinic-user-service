@@ -1,9 +1,12 @@
-import { CreateServiceAreaDataProps } from '@typeorm/objectsTypes/serviceAreaObjectType';
 import { serviceAreaRepo } from '@typeorm/repositories/serviceAreaRepository';
 import { Servicearea } from '@typeorm/entity/servicearea';
 import { DefaultJsonResponse } from '@util/responses';
+import { createServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas';
+import { z } from 'zod';
 
-export const createServiceArea = async (data: CreateServiceAreaDataProps) => {
+export const createServiceArea = async (
+  data: z.infer<typeof createServiceAreaRequestSchema>
+) => {
   const serviceAreaRepository = serviceAreaRepo();
 
   // If Service Area already exists in the same site, do no create

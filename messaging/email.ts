@@ -1,7 +1,7 @@
 import transporter from '../lib/email';
 import { signupMessage } from './templates/signup';
 import { resetPasswordTemplate } from './templates/password';
-import { GMAIL_SMTP_EMAIL } from '@util/constants';
+import { GMAIL_SMTP_EMAIL, GMAIL_SMTP_SECRET } from '@util/constants';
 
 export const sendTextEmail = (to: string, subject: string, text: string) => {
   transporter.sendMail(

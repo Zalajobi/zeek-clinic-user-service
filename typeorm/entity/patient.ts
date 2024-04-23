@@ -8,7 +8,6 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { CreatePatientsDataProps } from '@typeorm/objectsTypes/patientObjectTypes';
 import { PatientStatus } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personaInfo';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
@@ -18,17 +17,19 @@ import { Provider } from '@typeorm/entity/providers';
 import { Departments } from '@typeorm/entity/departments';
 import { Units } from '@typeorm/entity/units';
 import { Servicearea } from '@typeorm/entity/servicearea';
+import { z } from 'zod';
+import { createPatientRequestSchema } from '@lib/schemas/patientSchemas';
 
 @Entity()
 export class Patients {
-  constructor(data: CreatePatientsDataProps) {
+  constructor(data: z.infer<typeof createPatientRequestSchema>) {
     this.siteId = data?.siteId;
     this.departmentId = data?.departmentId;
     this.serviceareaId = data?.serviceareaId;
     this.unitId = data?.unitId;
     this.email = data?.email;
-    this.password = data?.password;
-    this.status = data?.status;
+    this.password = data?.password ?? '';
+    this.status = data?.status as PatientStatus;
     this.careGiverId = data?.careGiverId;
   }
 
@@ -106,7 +107,9 @@ export class Patients {
   @JoinColumn()
   personalInfo: PersonalInformation;
 
-  @OneToOne(() => PatientEmployer, (employer) => employer.patient)
+  @OneToOne(() => PatientEmployer, (employer) => employer.patient, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   employer?: PatientEmployer;
 

@@ -4,13 +4,17 @@ import { customPromiseRequest } from '@lib/api';
 import { AdminRoles } from '@typeorm/entity/enums';
 import { DefaultJsonResponse } from '@util/responses';
 import { Admin } from '@typeorm/entity/admin';
-import { ProfileInfoModelProps } from '@typeDesc/index';
 import { getPersonalInfoCountByPhone } from '@datastore/personalInfo/personalInfoGetStore';
 import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
+import { z } from 'zod';
+import {
+  createAdminRequestSchema,
+  profileDataRequestSchema,
+} from '@lib/schemas/adminSchemas';
 
 export const createNewAdmin = async (
-  adminData: AdminModelProps,
-  profileInfoData: ProfileInfoModelProps
+  adminData: z.infer<typeof createAdminRequestSchema>,
+  profileInfoData: z.infer<typeof profileDataRequestSchema>
 ) => {
   const adminRepository = adminRepo();
 

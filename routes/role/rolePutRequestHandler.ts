@@ -1,44 +1,50 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { updateRoleDataByRoleId } from '@datastore/role/rolePutStore';
+import { createAndUpdateRoleRequestSchema } from '@lib/schemas/roleSchemas';
 
 const rolePutRequest = Router();
 
-rolePutRequest.put('/admin/update/:roleId', async (req, res) => {
-  const roleId = req.params.roleId as string;
-  let message = 'Not Authorised',
-    success = false;
+rolePutRequest.put(
+  '/update/:roleId',
+  async (req: Request, res: Response, next: NextFunction) => {
+    let message = 'Not Authorised',
+      success = false;
 
-  try {
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      [
+    try {
+      const requestBody = createAndUpdateRoleRequestSchema.parse({
+        ...req.headers,
+        ...req.body,
+        ...req.params,
+      });
+
+      const { roleId, token, ...updateBody } = requestBody;
+
+      const verifiedUser = await verifyUserPermission(token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',
         'ADMIN',
         'HUMAN_RESOURCES',
-      ]
-    );
+      ]);
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
 
-    const updatedData = await updateRoleDataByRoleId(roleId, req.body);
+      const updatedData = await updateRoleDataByRoleId(roleId, updateBody);
 
-    return JsonApiResponse(
-      res,
-      updatedData.message,
-      updatedData.success as boolean,
-      null,
-      updatedData?.success ? 200 : 400
-    );
-  } catch (error) {
-    let message = 'Not Authorized';
-    if (error instanceof Error) message = error.message;
-
-    return JsonApiResponse(res, message, success, null, 500);
+      return JsonApiResponse(
+        res,
+        updatedData.message,
+        updatedData.success as boolean,
+        null,
+        updatedData?.success ? 200 : 400
+      );
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 export default rolePutRequest;

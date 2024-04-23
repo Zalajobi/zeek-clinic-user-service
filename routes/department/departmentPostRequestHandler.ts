@@ -1,45 +1,47 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { createNewDepartment } from '@datastore/department/departmentPostStore';
-import { departmentModelProps } from '@typeDesc/index';
+import { createDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
 
 const departmentPostRequest = Router();
 
-departmentPostRequest.post('/admin/create', async (req, res) => {
-  let message = 'Not Authorised',
-    success = false;
+departmentPostRequest.post(
+  '/create',
+  async (req: Request, res: Response, next: NextFunction) => {
+    let message = 'Not Authorised',
+      success = false;
 
-  try {
-    const data = req.body as departmentModelProps;
+    try {
+      const requestBody = createDepartmentRequestSchema.parse({
+        ...req.body,
+        ...req.headers,
+      });
 
-    const verifiedUser = await verifyUserPermission(
-      req?.headers?.token as string,
-      [
+      const verifiedUser = await verifyUserPermission(requestBody.token, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',
         'ADMIN',
         'HUMAN_RESOURCES',
-      ]
-    );
+      ]);
 
-    if (!verifiedUser) return JsonApiResponse(res, message, success, null, 401);
+      if (!verifiedUser)
+        return JsonApiResponse(res, message, success, null, 401);
 
-    const newRole = await createNewDepartment(data);
+      const newRole = await createNewDepartment(requestBody);
 
-    return JsonApiResponse(
-      res,
-      newRole.message,
-      <boolean>newRole.success,
-      null,
-      newRole?.success ? 201 : 500
-    );
-  } catch (error) {
-    if (error instanceof Error) message = error.message;
-
-    return JsonApiResponse(res, message, success, null, 500);
+      return JsonApiResponse(
+        res,
+        newRole.message,
+        <boolean>newRole.success,
+        null,
+        newRole?.success ? 201 : 500
+      );
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 export default departmentPostRequest;
