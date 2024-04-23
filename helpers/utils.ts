@@ -35,13 +35,15 @@ export const generateJSONTokenCredentials = (
 };
 
 export const verifyJSONToken = (bearerToken: string) => {
-  return jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
-    if (err) {
-      throw err;
-    }
+  let jwtData: JWTDataProps | null = null;
 
-    return user?.data;
+  jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
+    if (err) throw err;
+
+    if (user?.data) jwtData = user.data;
   });
+
+  return jwtData;
 };
 
 export const generateCode = (length: number = 12): string => {

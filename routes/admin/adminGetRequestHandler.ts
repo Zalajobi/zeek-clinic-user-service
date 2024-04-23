@@ -43,11 +43,12 @@ adminGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { siteId, token } =
-        getDepartmentUnitServiceAreaAndRoleRequestSchema.parse({
+      const { siteId } = getDepartmentUnitServiceAreaAndRoleRequestSchema.parse(
+        {
           ...req.headers,
           ...req.params,
-        });
+        }
+      );
 
       const response = await Promise.all([
         adminCreateProviderGetDepartmentDataBySiteId(siteId),
