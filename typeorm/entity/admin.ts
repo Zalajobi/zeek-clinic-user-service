@@ -36,10 +36,10 @@ export class Admin {
   })
   siteId: string;
 
-  // @Column({
-  //   nullable: true,
-  // })
-  // personalInfoId?: string;
+  @Column({
+    nullable: true,
+  })
+  personalInfoId?: string;
 
   @Column({
     type: 'enum',

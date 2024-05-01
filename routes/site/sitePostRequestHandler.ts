@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { adminCreateSite } from '@datastore/site/sitePostStore';
-import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import {
+  createSiteRequestSchema,
+  searchSiteRequestSchema,
+} from '@lib/schemas/siteSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchSiteData } from '@datastore/site/siteGetStore';
 
 const sitePostRequest = Router();
 
@@ -42,6 +46,25 @@ sitePostRequest.post(
         null,
         200
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+sitePostRequest.post(
+  '/search',
+  authorizeRequest(['SITE_ADMIN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchSiteRequestSchema.parse({
+        ...req.headers,
+        ...req.body,
+      });
+
+      const queryData = await getSearchSiteData(requestBody);
+
+      return JsonApiResponse(res, 'Success', true, queryData, 200);
     } catch (error) {
       next(error);
     }

@@ -1,6 +1,9 @@
 import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { SiteStatus } from '@typeorm/entity/enums';
 import { Site } from '@typeorm/entity/site';
+import { searchSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import { z } from 'zod';
+import { extractPerPageAndPage } from '@helpers/utils';
 
 export const fetchFilteredSiteData = async (
   page: number,
@@ -136,4 +139,51 @@ export const loadSiteDetailsById = async (siteId: string) => {
       status: true,
     },
   });
+};
+
+export const getSearchSiteData = async (
+  requestBody: z.infer<typeof searchSiteRequestSchema>
+) => {
+  const siteRepository = siteRepo();
+  const { page, perPage } = extractPerPageAndPage(
+    requestBody.endRow,
+    requestBody.endRow - requestBody.startRow
+  );
+
+  const siteQuery = siteRepository.createQueryBuilder('site').orderBy({
+    [`${requestBody.sortModel.colId}`]:
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
+  });
+
+  if (requestBody.hospitalId)
+    siteQuery.where('site.hospitalId = :hospitalId', {
+      hospitalId: requestBody.hospitalId,
+    });
+
+  if (requestBody.id)
+    siteQuery.where('site.id = :id', {
+      id: requestBody.id,
+    });
+
+  if (requestBody.country)
+    siteQuery.andWhere('LOWER(site.country) LIKE :country', {
+      country: `%${requestBody.country.toLowerCase()}%`,
+    });
+
+  if (requestBody.state)
+    siteQuery.andWhere('LOWER(site.state) LIKE :state', {
+      state: `%${requestBody.state.toLowerCase()}%`,
+    });
+
+  if (requestBody?.range.from)
+    siteQuery.andWhere('site.created_at > :fromDate', {
+      fromDate: requestBody.range.from,
+    });
+
+  if (requestBody?.range.to)
+    siteQuery.andWhere('site.created_at < :toDate', {
+      toDate: requestBody.range.to,
+    });
+
+  return await siteQuery.getManyAndCount();
 };

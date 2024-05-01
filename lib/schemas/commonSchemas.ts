@@ -1,4 +1,28 @@
 import { z } from 'zod';
+import { getIsoDateBackdatedByMonth, isISODate } from '@helpers/utils';
+
+export const ONE_MILLION = 1000000;
+
+export const SortModelSchema = z.object({
+  sort: z.enum(['asc', 'desc']),
+  colId: z.string(),
+});
+
+export const DateRangeSchema = z.object({
+  from: z
+    .string()
+    .refine(isISODate, {
+      message: 'Not a valid ISO string date.',
+    })
+    .default(getIsoDateBackdatedByMonth(12)),
+  to: z
+    .string()
+    .refine(isISODate, {
+      message: 'Not a valid ISO string date.',
+    })
+    .optional()
+    .default(getIsoDateBackdatedByMonth(0)),
+});
 
 export const LoginRequestSchema = z
   .object({

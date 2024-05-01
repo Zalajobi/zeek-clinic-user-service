@@ -2,6 +2,7 @@ import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
 import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/config';
 import { JWTDataProps } from '@typeDesc/jwt';
+import { isoDateRegExp } from '@lib/patterns';
 
 export const generatePasswordHash = (password: string) => {
   return crypto
@@ -74,4 +75,22 @@ export const generateTemporaryPassCode = (length: number = 12): string => {
 
 export const generateTemporaryPassword = () => {
   return crypto.randomBytes(5).toString('hex').toUpperCase();
+};
+
+export const extractPerPageAndPage = (endRow: number, perPage = 10) => {
+  const page = endRow / perPage;
+  return {
+    page,
+    perPage,
+  };
+};
+
+export function isISODate(str: string) {
+  return isoDateRegExp.test(str);
+}
+
+export const getIsoDateBackdatedByMonth = (month?: number): string => {
+  const currentDate = new Date();
+  currentDate.setUTCMonth(currentDate.getUTCMonth() - (month ?? 12));
+  return currentDate.toISOString();
 };

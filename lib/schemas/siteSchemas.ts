@@ -1,8 +1,12 @@
 import { z } from 'zod';
 import {
+  ONE_MILLION,
   bearerTokenSchema,
   globalStatusSchema,
+  SortModelSchema,
+  DateRangeSchema,
 } from '@lib/schemas/commonSchemas';
+import { getIsoDateBackdatedByMonth } from '@helpers/utils';
 
 export const createSiteRequestSchema = bearerTokenSchema
   .extend({
@@ -65,4 +69,29 @@ export const getSiteDetailsRequestSchema = bearerTokenSchema.extend({
 export const getSitesOrganizationalStructuresRequestSchema =
   bearerTokenSchema.extend({
     siteId: z.string(),
+  });
+
+export const searchSiteRequestSchema = bearerTokenSchema
+  .extend({
+    id: z.string().optional(),
+    startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
+    endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
+    search: z.string().optional(),
+    hospitalId: z.string().optional(),
+    country: z.string().optional(),
+    state: z.string().optional(),
+    range: DateRangeSchema.default({
+      from: getIsoDateBackdatedByMonth(12),
+      to: getIsoDateBackdatedByMonth(0),
+    }),
+    sortModel: SortModelSchema.default({
+      sort: 'desc',
+      colId: 'created_at',
+    }),
+    greaterThan: z.string().optional(),
+    status: globalStatusSchema.optional(),
+  })
+  .refine((data) => data.endRow > data.startRow, {
+    message: 'endRow must be greater than startRow',
+    path: ['endRow'],
   });
