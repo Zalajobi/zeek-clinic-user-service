@@ -77,8 +77,10 @@ export const generateTemporaryPassword = () => {
   return crypto.randomBytes(5).toString('hex').toUpperCase();
 };
 
-export const extractPerPageAndPage = (endRow: number, perPage = 10) => {
-  const page = endRow / perPage;
+export const extractPerPageAndPage = (endRow: number, startRow = 10) => {
+  const perPage = endRow - startRow;
+  const page = Math.ceil(startRow / perPage);
+
   return {
     page,
     perPage,

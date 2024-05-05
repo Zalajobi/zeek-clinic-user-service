@@ -147,7 +147,7 @@ export const getSearchSiteData = async (
   const siteRepository = siteRepo();
   const { page, perPage } = extractPerPageAndPage(
     requestBody.endRow,
-    requestBody.endRow - requestBody.startRow
+    requestBody.startRow
   );
 
   const siteQuery = siteRepository.createQueryBuilder('site').orderBy({
@@ -155,35 +155,74 @@ export const getSearchSiteData = async (
       requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
   });
 
-  if (requestBody.hospitalId)
+  if (requestBody.hospitalId) {
     siteQuery.where('site.hospitalId = :hospitalId', {
       hospitalId: requestBody.hospitalId,
     });
+  }
 
-  if (requestBody.id)
+  if (requestBody.id) {
     siteQuery.where('site.id = :id', {
       id: requestBody.id,
     });
+  }
 
-  if (requestBody.country)
+  if (requestBody.country) {
     siteQuery.andWhere('LOWER(site.country) LIKE :country', {
       country: `%${requestBody.country.toLowerCase()}%`,
     });
+  }
 
-  if (requestBody.state)
+  if (requestBody.state) {
     siteQuery.andWhere('LOWER(site.state) LIKE :state', {
       state: `%${requestBody.state.toLowerCase()}%`,
     });
+  }
 
-  if (requestBody?.range.from)
+  if (requestBody.city) {
+    siteQuery.andWhere('LOWER(site.city) LIKE :city', {
+      city: `%${requestBody.city.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody?.range.from) {
     siteQuery.andWhere('site.created_at > :fromDate', {
       fromDate: requestBody.range.from,
     });
+  }
 
-  if (requestBody?.range.to)
+  if (requestBody?.range.to) {
     siteQuery.andWhere('site.created_at < :toDate', {
       toDate: requestBody.range.to,
     });
+  }
 
-  return await siteQuery.getManyAndCount();
+  if (requestBody.zipCode) {
+    siteQuery.andWhere('site.zip_code = :zipCode', {
+      zipCode: requestBody.zipCode,
+    });
+  }
+
+  if (requestBody.email) {
+    siteQuery.andWhere('LOWER(site.email) LIKE :email', {
+      email: `%${requestBody.email.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.status) {
+    siteQuery.andWhere('site.status = :status', {
+      status: requestBody.status,
+    });
+  }
+
+  if (requestBody.search && requestBody.searchKey) {
+    siteQuery.andWhere(`LOWER(site.${requestBody.searchKey}) LIKE :search`, {
+      search: `%${requestBody.search.toLowerCase()}%`,
+    });
+  }
+
+  return await siteQuery
+    .skip(perPage * page)
+    .take(perPage)
+    .getManyAndCount();
 };

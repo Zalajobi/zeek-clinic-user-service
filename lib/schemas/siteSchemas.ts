@@ -74,12 +74,15 @@ export const getSitesOrganizationalStructuresRequestSchema =
 export const searchSiteRequestSchema = bearerTokenSchema
   .extend({
     id: z.string().optional(),
-    startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
-    endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
     search: z.string().optional(),
+    searchKey: z.string().optional(),
+    zipCode: z.string().optional(),
     hospitalId: z.string().optional(),
     country: z.string().optional(),
     state: z.string().optional(),
+    city: z.string().optional(),
+    name: z.string().optional(),
+    email: z.string().optional(),
     range: DateRangeSchema.default({
       from: getIsoDateBackdatedByMonth(12),
       to: getIsoDateBackdatedByMonth(0),
@@ -90,6 +93,8 @@ export const searchSiteRequestSchema = bearerTokenSchema
     }),
     greaterThan: z.string().optional(),
     status: globalStatusSchema.optional(),
+    startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
+    endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
   })
   .refine((data) => data.endRow > data.startRow, {
     message: 'endRow must be greater than startRow',

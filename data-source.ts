@@ -17,8 +17,6 @@ import { Patients } from '@typeorm/entity/patient';
 import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
 
-// Using environment variables
-import dotenv from 'dotenv';
 import {
   DATABASE_HOST,
   DATABASE_NAME,
@@ -26,7 +24,6 @@ import {
   DATABASE_PORT,
   DATABASE_USERNAME,
 } from '@util/config';
-dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
