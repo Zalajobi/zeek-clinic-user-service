@@ -93,7 +93,7 @@ export const searchSiteRequestSchema = bearerTokenSchema
     }),
     greaterThan: z.string().optional(),
     status: globalStatusSchema.optional().transform((data) => {
-      if (data === 'ALL') data = undefined;
+      if (data !== 'ALL') return data;
     }),
     startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
     endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
