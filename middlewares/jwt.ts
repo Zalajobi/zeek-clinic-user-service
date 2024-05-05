@@ -19,8 +19,8 @@ export const authorizeRequest = (permissions: string[]) => {
     if (whitelistedEndpoints.some((whitelist) => req.url.includes(whitelist))) {
       next();
     } else {
-      const { token } = bearerTokenSchema.parse(req.headers);
-      const verifiedUser = verifyUserPermission(token, permissions);
+      const { authorization } = bearerTokenSchema.parse(req.headers);
+      const verifiedUser = verifyUserPermission(authorization, permissions);
 
       if (!verifiedUser) {
         return res.status(401).json({

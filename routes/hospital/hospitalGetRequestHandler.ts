@@ -28,7 +28,7 @@ hospitalGetRequest.get(
         ...req.query,
       });
 
-      const verifiedUser = verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.authorization, [
         'SUPER_ADMIN',
       ]);
 
@@ -61,7 +61,7 @@ hospitalGetRequest.get(
     try {
       const requestBody = bearerTokenSchema.parse(req.headers);
 
-      const verifiedUser = verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.authorization, [
         'SUPER_ADMIN',
       ]);
 

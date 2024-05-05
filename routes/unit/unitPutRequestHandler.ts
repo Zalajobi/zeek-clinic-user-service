@@ -23,7 +23,7 @@ unitPutRequest.put(
         ...req.params,
       });
 
-      const { unitId, token, ...updateBody } = requestBody;
+      const { unitId, authorization, ...updateBody } = requestBody;
       const updatedData = await updateUnitDataByUnitId(unitId, updateBody);
 
       return JsonApiResponse(

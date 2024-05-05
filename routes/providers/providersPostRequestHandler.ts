@@ -58,7 +58,7 @@ providersPostRequestHandler.post(
       });
 
       const verifiedUser = verifyUserPermission(
-        requestBody.token,
+        requestBody.authorization,
         [
           'SUPER_ADMIN',
           'HOSPITAL_ADMIN',

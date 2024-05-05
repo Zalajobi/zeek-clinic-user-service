@@ -21,7 +21,7 @@ adminGetRequestHandler.get(
   '/password/request-password/jwt_token/verify',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const verifyToken = verifyJSONToken(req.query.token as string);
+      const verifyToken = verifyJSONToken(req.query.authorization as string);
 
       if (verifyToken)
         return JsonApiResponse(res, 'Token is valid', true, null, 200);
@@ -94,8 +94,8 @@ adminGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token } = bearerTokenSchema.parse(req.headers);
-      const userData = verifyJSONToken(token);
+      const { authorization } = bearerTokenSchema.parse(req.headers);
+      const userData = verifyJSONToken(authorization);
 
       const data = await getAdminFullProfileData(userData?.id as string);
 
@@ -115,8 +115,8 @@ adminGetRequestHandler.get(
   authorizeRequest(AUTHORIZE_ALL_ADMINS),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token } = bearerTokenSchema.parse(req.headers);
-      const userData = verifyJSONToken(token);
+      const { authorization } = bearerTokenSchema.parse(req.headers);
+      const userData = verifyJSONToken(authorization);
 
       const adminData = await getAdminDetails(userData?.id ?? '');
 

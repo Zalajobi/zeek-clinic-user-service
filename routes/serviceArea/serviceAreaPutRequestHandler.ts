@@ -23,7 +23,7 @@ serviceAreaPutRequest.put(
         ...req.params,
       });
 
-      const { serviceAreaId, token, ...updateBody } = requestBody;
+      const { serviceAreaId, authorization, ...updateBody } = requestBody;
 
       const updatedData = await updateServiceAreaDataByUnitId(
         serviceAreaId,

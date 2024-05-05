@@ -18,7 +18,7 @@ patientPutRequestHandler.put(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token, id, ...updateBody } =
+      const { authorization, id, ...updateBody } =
         updatePatientDetailsRequestSchema.parse({
           ...req.body,
           ...req.headers,

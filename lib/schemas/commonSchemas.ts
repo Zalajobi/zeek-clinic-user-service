@@ -35,7 +35,12 @@ export const LoginRequestSchema = z
   });
 
 export const bearerTokenSchema = z.object({
-  token: z.string(),
+  authorization: z
+    .string()
+    .refine((data) => data.startsWith('Bearer '), {
+      message: "Authorization header must start with 'Bearer '",
+    })
+    .transform((data) => data.replace('Bearer ', '')),
 });
 
 export const maritalStatusSchema = z.enum([
