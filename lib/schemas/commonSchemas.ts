@@ -59,6 +59,7 @@ export const maritalStatusSchema = z.enum([
 ]);
 
 export const globalStatusSchema = z.enum([
+  'ALL',
   'ACTIVE',
   'PENDING',
   'ON_LEAVE',

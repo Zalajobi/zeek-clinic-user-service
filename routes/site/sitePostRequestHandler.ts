@@ -52,6 +52,7 @@ sitePostRequest.post(
   }
 );
 
+// Search for site data based on the provided filters
 sitePostRequest.post(
   '/search',
   authorizeRequest(['SITE_ADMIN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']),
@@ -61,10 +62,18 @@ sitePostRequest.post(
         ...req.headers,
         ...req.body,
       });
-
       const queryData = await getSearchSiteData(requestBody);
 
-      return JsonApiResponse(res, 'Success', true, queryData, 200);
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          sites: queryData[0],
+          totalRows: queryData[1],
+        },
+        200
+      );
     } catch (error) {
       next(error);
     }

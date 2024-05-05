@@ -92,7 +92,9 @@ export const searchSiteRequestSchema = bearerTokenSchema
       colId: 'created_at',
     }),
     greaterThan: z.string().optional(),
-    status: globalStatusSchema.optional(),
+    status: globalStatusSchema.optional().transform((data) => {
+      if (data === 'ALL') data = undefined;
+    }),
     startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
     endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
   })

@@ -230,7 +230,7 @@ export const getSearchSiteData = async (
 export const getSiteStatusCountsByHospitalId = async (hospitalId: string) => {
   const siteRepository = siteRepo();
 
-  const [activeSites, closedSites, pendingSites, deactivatedSites] =
+  const [activeSites, closedSites, pendingSites, deactivatedSites, totalSites] =
     await Promise.all([
       siteRepository.count({
         where: {
@@ -259,6 +259,12 @@ export const getSiteStatusCountsByHospitalId = async (hospitalId: string) => {
           status: SiteStatus.DEACTIVATED,
         },
       }),
+
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+        },
+      }),
     ]);
 
   return {
@@ -266,5 +272,6 @@ export const getSiteStatusCountsByHospitalId = async (hospitalId: string) => {
     closedSites,
     pendingSites,
     deactivatedSites,
+    totalSites,
   };
 };
