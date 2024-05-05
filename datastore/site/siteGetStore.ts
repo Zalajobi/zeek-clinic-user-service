@@ -226,3 +226,45 @@ export const getSearchSiteData = async (
     .take(perPage)
     .getManyAndCount();
 };
+
+export const getSiteStatusCountsByHospitalId = async (hospitalId: string) => {
+  const siteRepository = siteRepo();
+
+  const [activeSites, closedSites, pendingSites, deactivatedSites] =
+    await Promise.all([
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+          status: SiteStatus.ACTIVE,
+        },
+      }),
+
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+          status: SiteStatus.CLOSED,
+        },
+      }),
+
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+          status: SiteStatus.PENDING,
+        },
+      }),
+
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+          status: SiteStatus.DEACTIVATED,
+        },
+      }),
+    ]);
+
+  return {
+    activeSites,
+    closedSites,
+    pendingSites,
+    deactivatedSites,
+  };
+};

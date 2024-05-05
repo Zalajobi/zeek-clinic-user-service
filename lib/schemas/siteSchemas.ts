@@ -100,3 +100,7 @@ export const searchSiteRequestSchema = bearerTokenSchema
     message: 'endRow must be greater than startRow',
     path: ['endRow'],
   });
+
+export const siteStatusCountsRequestSchema = z.object({
+  hospitalId: z.string(),
+});
