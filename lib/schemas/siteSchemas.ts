@@ -39,7 +39,6 @@ export const createSiteRequestSchema = bearerTokenSchema
     has_vital: z.boolean().default(false),
     has_wallet: z.boolean().default(false),
     hospital_id: z.string(),
-    totalSites: z.coerce.number(),
     time_zone: z.string().optional(),
   })
   .refine((data) => {
@@ -83,10 +82,7 @@ export const searchSiteRequestSchema = bearerTokenSchema
     city: z.string().optional(),
     name: z.string().optional(),
     email: z.string().optional(),
-    range: DateRangeSchema.default({
-      from: getIsoDateBackdatedByMonth(12),
-      to: getIsoDateBackdatedByMonth(0),
-    }),
+    range: DateRangeSchema.optional(),
     sortModel: SortModelSchema.default({
       sort: 'desc',
       colId: 'created_at',

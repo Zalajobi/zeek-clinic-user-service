@@ -185,13 +185,13 @@ export const getSearchSiteData = async (
     });
   }
 
-  if (requestBody?.range.from) {
+  if (requestBody?.range && requestBody.range.from) {
     siteQuery.andWhere('site.created_at > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
-  if (requestBody?.range.to) {
+  if (requestBody?.range && requestBody.range.to) {
     siteQuery.andWhere('site.created_at < :toDate', {
       toDate: requestBody.range.to,
     });

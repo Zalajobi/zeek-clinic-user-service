@@ -81,12 +81,12 @@ export class Site {
   email: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
   })
   city: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
   })
   state: string;
 

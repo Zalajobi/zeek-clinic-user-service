@@ -7,6 +7,7 @@ import {
 } from '@lib/schemas/siteSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchSiteData } from '@datastore/site/siteGetStore';
+import { incrementTotalSiteCount } from '@datastore/hospital/hospitalPutStore';
 
 const sitePostRequest = Router();
 
@@ -38,6 +39,7 @@ sitePostRequest.post(
       });
 
       const site = await adminCreateSite(requestBody);
+      if (site.success) await incrementTotalSiteCount(requestBody?.hospital_id);
 
       return JsonApiResponse(
         res,
