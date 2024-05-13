@@ -28,7 +28,9 @@ superadminPostRequest.post(
 
         jwtSignData = generateJSONTokenCredentials(
           jwtData,
-          Math.floor(Date.now() / 1000) + 60 * 360
+          requestBody.rememberMe
+            ? Math.floor(Date.now() / 1000) + 60 * 360
+            : Math.floor(Date.now() / 1000) + 60 * (360 + 60 * 360)
         );
 
         responseMessage = 'Login Successful';

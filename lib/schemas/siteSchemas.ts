@@ -102,3 +102,7 @@ export const searchSiteRequestSchema = bearerTokenSchema
 export const siteStatusCountsRequestSchema = z.object({
   hospitalId: z.string(),
 });
+
+export const deleteSiteRequestSchema = z.object({
+  id: z.string(),
+});
