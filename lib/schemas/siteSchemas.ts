@@ -106,3 +106,30 @@ export const siteStatusCountsRequestSchema = z.object({
 export const deleteSiteRequestSchema = z.object({
   id: z.string(),
 });
+
+export const updateSiteRequestSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  logo: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  status: globalStatusSchema.optional(),
+  is_private: z.boolean().optional(),
+  has_appointment: z.boolean().optional(),
+  has_caregiver: z.boolean().optional(),
+  has_clinical: z.boolean().optional(),
+  has_doctor: z.boolean().optional(),
+  has_emergency: z.boolean().optional(),
+  has_laboratory: z.boolean().optional(),
+  has_medical_supply: z.boolean().optional(),
+  has_nursing: z.boolean().optional(),
+  has_inpatient: z.boolean().optional(),
+  has_outpatient: z.boolean().optional(),
+  has_pharmacy: z.boolean().optional(),
+  has_physical_therapy: z.boolean().optional(),
+  has_procedure: z.boolean().optional(),
+  has_radiology: z.boolean().optional(),
+  has_unit: z.boolean().optional(),
+  has_vital: z.boolean().optional(),
+  has_wallet: z.boolean().optional(),
+});
