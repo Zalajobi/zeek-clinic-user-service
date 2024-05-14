@@ -275,3 +275,21 @@ export const getSiteStatusCountsByHospitalId = async (hospitalId: string) => {
     totalSites,
   };
 };
+
+export const getSiteCountByEmail = async (email: string) => {
+  const siteRepository = siteRepo();
+  return siteRepository.count({
+    where: {
+      email,
+    },
+  });
+};
+
+export const getSiteCountByPhone = async (phone: string) => {
+  const siteRepository = siteRepo();
+  return siteRepository.count({
+    where: {
+      phone,
+    },
+  });
+};

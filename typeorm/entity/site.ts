@@ -1,4 +1,5 @@
 import {
+  AfterUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -235,6 +236,11 @@ export class Site {
 
   @CreateDateColumn()
   updated_at: Date;
+
+  @AfterUpdate()
+  updateTimestamps() {
+    this.updated_at = new Date();
+  }
 
   // Relations
   @OneToMany((type) => Admin, (admin) => admin.site, { onDelete: 'CASCADE' })

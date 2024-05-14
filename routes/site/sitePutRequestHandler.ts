@@ -11,13 +11,13 @@ sitePutRequestHandler.put(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, ...siteData } = updateSiteRequestSchema.parse({
+      const requestBody = updateSiteRequestSchema.parse({
         ...req.params,
         ...req.body,
       });
 
       // Call to update site
-      await updateSingleSiteById(id, siteData);
+      await updateSingleSiteById(requestBody.id, requestBody);
 
       return JsonApiResponse(res, 'Site Updated Successfully', true, {}, 202);
     } catch (error) {
