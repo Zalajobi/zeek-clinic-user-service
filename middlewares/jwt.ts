@@ -19,12 +19,11 @@ export const authorizeRequest = (permissions: string[]) => {
     if (whitelistedEndpoints.some((whitelist) => req.url.includes(whitelist))) {
       next();
     } else {
-      const { token } = bearerTokenSchema.parse(req.headers);
-      const verifiedUser = verifyUserPermission(token, permissions);
-
+      const { authorization } = bearerTokenSchema.parse(req.headers);
+      const verifiedUser = verifyUserPermission(authorization, permissions);
       if (!verifiedUser) {
+        console.log('User is not Authorized');
         return res.status(401).json({
-          message: 'Not Authorized',
           success: false,
           data: null,
         });

@@ -26,9 +26,9 @@ superadminGetRouter.get(
   authorizeRequest(['SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token } = bearerTokenSchema.parse(req.headers);
+      const { authorization } = bearerTokenSchema.parse(req.headers);
 
-      const user = verifyJSONToken(token);
+      const user = verifyJSONToken(authorization);
 
       const data = await getSuperAdminBaseData(user?.id ?? '');
 

@@ -8,7 +8,7 @@ import { SuperAdmin } from '@typeorm/entity/superAdmin';
 
 import { generatePasswordHash } from '@helpers/utils';
 
-import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
+// import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
 
 import rootRouter from './routes';
 import 'dotenv/config';

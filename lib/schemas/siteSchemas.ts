@@ -1,8 +1,12 @@
 import { z } from 'zod';
 import {
+  ONE_MILLION,
   bearerTokenSchema,
   globalStatusSchema,
+  SortModelSchema,
+  DateRangeSchema,
 } from '@lib/schemas/commonSchemas';
+import { getIsoDateBackdatedByMonth } from '@helpers/utils';
 
 export const createSiteRequestSchema = bearerTokenSchema
   .extend({
@@ -35,7 +39,6 @@ export const createSiteRequestSchema = bearerTokenSchema
     has_vital: z.boolean().default(false),
     has_wallet: z.boolean().default(false),
     hospital_id: z.string(),
-    totalSites: z.coerce.number(),
     time_zone: z.string().optional(),
   })
   .refine((data) => {
@@ -66,3 +69,67 @@ export const getSitesOrganizationalStructuresRequestSchema =
   bearerTokenSchema.extend({
     siteId: z.string(),
   });
+
+export const searchSiteRequestSchema = bearerTokenSchema
+  .extend({
+    id: z.string().optional(),
+    search: z.string().optional(),
+    searchKey: z.string().optional(),
+    zipCode: z.string().optional(),
+    hospitalId: z.string().optional(),
+    country: z.string().optional(),
+    state: z.string().optional(),
+    city: z.string().optional(),
+    name: z.string().optional(),
+    email: z.string().optional(),
+    range: DateRangeSchema.optional(),
+    sortModel: SortModelSchema.default({
+      sort: 'desc',
+      colId: 'created_at',
+    }),
+    greaterThan: z.string().optional(),
+    status: globalStatusSchema.optional().transform((data) => {
+      if (data !== 'ALL') return data;
+    }),
+    startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
+    endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
+  })
+  .refine((data) => data.endRow > data.startRow, {
+    message: 'endRow must be greater than startRow',
+    path: ['endRow'],
+  });
+
+export const siteStatusCountsRequestSchema = z.object({
+  hospitalId: z.string(),
+});
+
+export const deleteSiteRequestSchema = z.object({
+  id: z.string(),
+});
+
+export const updateSiteRequestSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  logo: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  status: globalStatusSchema.optional(),
+  is_private: z.boolean().optional(),
+  has_appointment: z.boolean().optional(),
+  has_caregiver: z.boolean().optional(),
+  has_clinical: z.boolean().optional(),
+  has_doctor: z.boolean().optional(),
+  has_emergency: z.boolean().optional(),
+  has_laboratory: z.boolean().optional(),
+  has_medical_supply: z.boolean().optional(),
+  has_nursing: z.boolean().optional(),
+  has_inpatient: z.boolean().optional(),
+  has_outpatient: z.boolean().optional(),
+  has_pharmacy: z.boolean().optional(),
+  has_physical_therapy: z.boolean().optional(),
+  has_procedure: z.boolean().optional(),
+  has_radiology: z.boolean().optional(),
+  has_unit: z.boolean().optional(),
+  has_vital: z.boolean().optional(),
+  has_wallet: z.boolean().optional(),
+});

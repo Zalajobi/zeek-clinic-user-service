@@ -24,7 +24,7 @@ departmentPutRequest.put(
         ...req.headers,
       });
 
-      const { departmentId, token, ...updateBody } = requestBody;
+      const { departmentId, authorization, ...updateBody } = requestBody;
 
       const updatedData = await updateDepartmentDataByDepartmentId(
         departmentId,

@@ -2,9 +2,9 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import {
-  getHospitalDetails,
   selectAllAvailableCountries,
   fetchFilteredHospitalData,
+  getHospitalDetailsById,
 } from '@datastore/hospital/hospitalGetStore';
 import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
 import {
@@ -28,7 +28,7 @@ hospitalGetRequest.get(
         ...req.query,
       });
 
-      const verifiedUser = verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.authorization, [
         'SUPER_ADMIN',
       ]);
 
@@ -61,7 +61,7 @@ hospitalGetRequest.get(
     try {
       const requestBody = bearerTokenSchema.parse(req.headers);
 
-      const verifiedUser = verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.authorization, [
         'SUPER_ADMIN',
       ]);
 
@@ -86,6 +86,28 @@ hospitalGetRequest.get(
   }
 );
 
+// hospitalGetRequest.get(
+//   '/details/:id',
+//   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const requestBody = hospitalDetailsRequestSchema.parse({
+//         ...req.params,
+//         ...req.headers,
+//       });
+//
+//       const hospitalData = await getHospitalDetails(requestBody.id);
+//
+//       if (!hospitalData)
+//         return JsonApiResponse(res, 'Organization not found', false, null, 400);
+//
+//       return JsonApiResponse(res, 'Hospital data', true, hospitalData, 200);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
 hospitalGetRequest.get(
   '/details/:id',
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
@@ -96,7 +118,7 @@ hospitalGetRequest.get(
         ...req.headers,
       });
 
-      const hospitalData = await getHospitalDetails(requestBody.id);
+      const hospitalData = await getHospitalDetailsById(requestBody.id);
 
       if (!hospitalData)
         return JsonApiResponse(res, 'Organization not found', false, null, 400);

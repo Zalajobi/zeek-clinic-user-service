@@ -1,4 +1,5 @@
 import {
+  AfterUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -81,12 +82,12 @@ export class Site {
   email: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
   })
   city: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
   })
   state: string;
 
@@ -111,7 +112,7 @@ export class Site {
   phone: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
   })
   zip_code: string;
 
@@ -235,6 +236,11 @@ export class Site {
 
   @CreateDateColumn()
   updated_at: Date;
+
+  @AfterUpdate()
+  updateTimestamps() {
+    this.updated_at = new Date();
+  }
 
   // Relations
   @OneToMany((type) => Admin, (admin) => admin.site, { onDelete: 'CASCADE' })

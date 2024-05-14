@@ -1,8 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { adminCreateSite } from '@datastore/site/sitePostStore';
-import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import {
+  createSiteRequestSchema,
+  searchSiteRequestSchema,
+} from '@lib/schemas/siteSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchSiteData } from '@datastore/site/siteGetStore';
+import { incrementTotalSiteCount } from '@datastore/hospital/hospitalPutStore';
 
 const sitePostRequest = Router();
 
@@ -34,12 +39,41 @@ sitePostRequest.post(
       });
 
       const site = await adminCreateSite(requestBody);
+      if (site.success) await incrementTotalSiteCount(requestBody?.hospital_id);
 
       return JsonApiResponse(
         res,
         site?.message as string,
         site?.success as boolean,
         null,
+        200
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Search for site data based on the provided filters
+sitePostRequest.post(
+  '/search',
+  authorizeRequest(['SITE_ADMIN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchSiteRequestSchema.parse({
+        ...req.headers,
+        ...req.body,
+      });
+      const queryData = await getSearchSiteData(requestBody);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          sites: queryData[0],
+          totalRows: queryData[1],
+        },
         200
       );
     } catch (error) {

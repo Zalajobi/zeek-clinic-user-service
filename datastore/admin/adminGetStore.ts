@@ -94,7 +94,7 @@ export const getAdminAndProfileDataByEmailOrUsername = async (
     .getOne();
 };
 
-export const getAdminHeaderBaseTemplateData = async (id: string) => {
+export const getAdminFullProfileData = async (id: string) => {
   const adminRepository = adminRepo();
 
   return await adminRepository
@@ -107,6 +107,9 @@ export const getAdminHeaderBaseTemplateData = async (id: string) => {
       'admin.role',
       'admin.siteId',
       'admin.email',
+      'admin.username',
+      'admin.created_at',
+      'admin.staff_id',
       'admin.id',
       'admin.staff_id',
       'profile.first_name',
@@ -124,6 +127,27 @@ export const getAdminHeaderBaseTemplateData = async (id: string) => {
       'profile.middle_name',
       'profile.religion',
       'profile.marital_status',
+      'profile.id',
     ])
     .getOne();
+};
+
+export const getAdminDetails = async (id: string): Promise<Admin | null> => {
+  const adminRepository = adminRepo();
+
+  return await adminRepository.findOne({
+    where: {
+      id,
+    },
+    select: {
+      siteId: true,
+      role: true,
+      email: true,
+      username: true,
+      staff_id: true,
+      id: true,
+      created_at: true,
+      personalInfoId: true,
+    },
+  });
 };

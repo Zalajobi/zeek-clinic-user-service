@@ -1,6 +1,9 @@
 import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { SiteStatus } from '@typeorm/entity/enums';
 import { Site } from '@typeorm/entity/site';
+import { searchSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import { z } from 'zod';
+import { extractPerPageAndPage } from '@helpers/utils';
 
 export const fetchFilteredSiteData = async (
   page: number,
@@ -134,6 +137,159 @@ export const loadSiteDetailsById = async (siteId: string) => {
       phone: true,
       created_at: true,
       status: true,
+    },
+  });
+};
+
+export const getSearchSiteData = async (
+  requestBody: z.infer<typeof searchSiteRequestSchema>
+) => {
+  const siteRepository = siteRepo();
+  const { page, perPage } = extractPerPageAndPage(
+    requestBody.endRow,
+    requestBody.startRow
+  );
+
+  const siteQuery = siteRepository.createQueryBuilder('site').orderBy({
+    [`${requestBody.sortModel.colId}`]:
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
+  });
+
+  if (requestBody.hospitalId) {
+    siteQuery.where('site.hospitalId = :hospitalId', {
+      hospitalId: requestBody.hospitalId,
+    });
+  }
+
+  if (requestBody.id) {
+    siteQuery.where('site.id = :id', {
+      id: requestBody.id,
+    });
+  }
+
+  if (requestBody.country) {
+    siteQuery.andWhere('LOWER(site.country) LIKE :country', {
+      country: `%${requestBody.country.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.state) {
+    siteQuery.andWhere('LOWER(site.state) LIKE :state', {
+      state: `%${requestBody.state.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.city) {
+    siteQuery.andWhere('LOWER(site.city) LIKE :city', {
+      city: `%${requestBody.city.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody?.range && requestBody.range.from) {
+    siteQuery.andWhere('site.created_at > :fromDate', {
+      fromDate: requestBody.range.from,
+    });
+  }
+
+  if (requestBody?.range && requestBody.range.to) {
+    siteQuery.andWhere('site.created_at < :toDate', {
+      toDate: requestBody.range.to,
+    });
+  }
+
+  if (requestBody.zipCode) {
+    siteQuery.andWhere('site.zip_code = :zipCode', {
+      zipCode: requestBody.zipCode,
+    });
+  }
+
+  if (requestBody.email) {
+    siteQuery.andWhere('LOWER(site.email) LIKE :email', {
+      email: `%${requestBody.email.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.status) {
+    siteQuery.andWhere('site.status = :status', {
+      status: requestBody.status,
+    });
+  }
+
+  if (requestBody.search && requestBody.searchKey) {
+    siteQuery.andWhere(`LOWER(site.${requestBody.searchKey}) LIKE :search`, {
+      search: `%${requestBody.search.toLowerCase()}%`,
+    });
+  }
+
+  return await siteQuery
+    .skip(perPage * page)
+    .take(perPage)
+    .getManyAndCount();
+};
+
+export const getSiteStatusCountsByHospitalId = async (hospitalId: string) => {
+  const siteRepository = siteRepo();
+
+  const [activeSites, closedSites, pendingSites, deactivatedSites, totalSites] =
+    await Promise.all([
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+          status: SiteStatus.ACTIVE,
+        },
+      }),
+
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+          status: SiteStatus.CLOSED,
+        },
+      }),
+
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+          status: SiteStatus.PENDING,
+        },
+      }),
+
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+          status: SiteStatus.DEACTIVATED,
+        },
+      }),
+
+      siteRepository.count({
+        where: {
+          hospitalId: hospitalId,
+        },
+      }),
+    ]);
+
+  return {
+    activeSites,
+    closedSites,
+    pendingSites,
+    deactivatedSites,
+    totalSites,
+  };
+};
+
+export const getSiteCountByEmail = async (email: string) => {
+  const siteRepository = siteRepo();
+  return siteRepository.count({
+    where: {
+      email,
+    },
+  });
+};
+
+export const getSiteCountByPhone = async (phone: string) => {
+  const siteRepository = siteRepo();
+  return siteRepository.count({
+    where: {
+      phone,
     },
   });
 };

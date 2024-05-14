@@ -8,7 +8,6 @@ export const adminCreateSite = async (
   data: z.infer<typeof createSiteRequestSchema>
 ) => {
   const siteRepository = siteRepo();
-  const hospitalRepository = hospitalRepo();
 
   const isUnique = await siteRepository
     .createQueryBuilder('site')
@@ -25,17 +24,7 @@ export const adminCreateSite = async (
       success: false,
       message: 'Site with email address or phone number already exists',
     };
-
   await siteRepository.save(new Site(data));
-
-  await hospitalRepository.update(
-    {
-      id: data.hospital_id,
-    },
-    {
-      site_count: data?.totalSites + 1,
-    }
-  );
 
   return {
     success: true,

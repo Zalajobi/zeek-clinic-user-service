@@ -1,15 +1,18 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { verifyJSONToken } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
-import { verifyUserPermission } from '@lib/auth';
 import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
-import { getAdminHeaderBaseTemplateData } from '@datastore/admin/adminGetStore';
+import {
+  getAdminDetails,
+  getAdminFullProfileData,
+} from '@datastore/admin/adminGetStore';
 import { adminCreateProviderGetDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
 import { getDepartmentUnitServiceAreaAndRoleRequestSchema } from '@lib/schemas/patientSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { AUTHORIZE_ALL_ADMINS } from '@util/config';
 
 const adminGetRequestHandler = Router();
 
@@ -18,7 +21,7 @@ adminGetRequestHandler.get(
   '/password/request-password/jwt_token/verify',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const verifyToken = verifyJSONToken(req.query.token as string);
+      const verifyToken = verifyJSONToken(req.query.authorization as string);
 
       if (verifyToken)
         return JsonApiResponse(res, 'Token is valid', true, null, 200);
@@ -82,28 +85,19 @@ adminGetRequestHandler.get(
 // Get Admin Base Data for Dashboard header
 adminGetRequestHandler.get(
   '/profile/details',
+  authorizeRequest([
+    'ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'HUMAN_RESOURCES',
+    'HMO_ADMIN',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let success = false,
-      message = 'Not Authorized';
     try {
-      const { token } = bearerTokenSchema.parse(req.headers);
+      const { authorization } = bearerTokenSchema.parse(req.headers);
+      const userData = verifyJSONToken(authorization);
 
-      const verifiedUser = verifyUserPermission(token, [
-        'ADMIN',
-        'RECORDS',
-        'CASHIER',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'HUMAN_RESOURCES',
-        'HMO_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
-
-      const data = await getAdminHeaderBaseTemplateData(
-        verifiedUser?.id as string
-      );
+      const data = await getAdminFullProfileData(userData?.id as string);
 
       if (!data)
         return JsonApiResponse(res, 'Something Went Wrong', false, null, 401);
@@ -114,5 +108,25 @@ adminGetRequestHandler.get(
     }
   }
 );
+
+// Get Admin Data
+adminGetRequestHandler.get(
+  '/details',
+  authorizeRequest(AUTHORIZE_ALL_ADMINS),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { authorization } = bearerTokenSchema.parse(req.headers);
+      const userData = verifyJSONToken(authorization);
+
+      const adminData = await getAdminDetails(userData?.id ?? '');
+
+      return JsonApiResponse(res, 'Success', true, adminData, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Get Admin Personal Info Data
 
 export default adminGetRequestHandler;

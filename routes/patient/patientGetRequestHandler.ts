@@ -18,10 +18,11 @@ patientGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token, id } = getProviderPrimaryPatientRequestSchema.parse({
-        ...req.params,
-        ...req.headers,
-      });
+      const { authorization, id } =
+        getProviderPrimaryPatientRequestSchema.parse({
+          ...req.params,
+          ...req.headers,
+        });
       const patientData = await getCareGiverPrimaryPatients(id);
 
       return JsonApiResponse(

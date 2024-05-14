@@ -1,6 +1,5 @@
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
-import { siteRepo } from '@typeorm/repositories/siteRepository';
-import { HospitalStatus, SiteStatus } from '@typeorm/entity/enums';
+import { HospitalStatus } from '@typeorm/entity/enums';
 
 export const selectAllAvailableCountries = async () => {
   const hospitalRepository = hospitalRepo();
@@ -14,65 +13,14 @@ export const selectAllAvailableCountries = async () => {
     .getRawMany();
 };
 
-export const getHospitalDetails = async (hospitalId: string) => {
+export const getHospitalDetailsById = async (hospitalId: string) => {
   const hospitalRepository = hospitalRepo();
-  const siteRepository = siteRepo();
 
-  const response = await Promise.all([
-    hospitalRepository.findOne({
-      where: {
-        id: hospitalId,
-      },
-    }),
-
-    siteRepository.count({
-      where: {
-        hospitalId: hospitalId,
-        status: SiteStatus.ACTIVE,
-      },
-    }),
-
-    siteRepository.count({
-      where: {
-        hospitalId: hospitalId,
-        status: SiteStatus.CLOSED,
-      },
-    }),
-
-    siteRepository.count({
-      where: {
-        hospitalId: hospitalId,
-        status: SiteStatus.PENDING,
-      },
-    }),
-
-    siteRepository.count({
-      where: {
-        hospitalId: hospitalId,
-        status: SiteStatus.DEACTIVATED,
-      },
-    }),
-
-    siteRepository.findAndCount({
-      where: {
-        hospitalId: hospitalId,
-      },
-    }),
-  ]);
-
-  return {
-    hospital: {
-      ...response[0],
-      activeSites: response[1],
-      closedSites: response[2],
-      pendingSites: response[3],
-      deactivatedSites: response[4],
+  return await hospitalRepository.findOne({
+    where: {
+      id: hospitalId,
     },
-    sites: response[5][0],
-    tableData: {
-      sites: response[5][1],
-    },
-  };
+  });
 };
 
 export const fetchFilteredHospitalData = async (

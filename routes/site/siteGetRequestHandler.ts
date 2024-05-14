@@ -7,6 +7,7 @@ import {
   getHospitalGeoDetails,
   loadSiteDetailsById,
   fetchFilteredSiteData,
+  getSiteStatusCountsByHospitalId,
 } from '@datastore/site/siteGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 import {
@@ -14,6 +15,7 @@ import {
   getOrganisationSiteFilterRequestSchema,
   getSiteDetailsRequestSchema,
   getSitesOrganizationalStructuresRequestSchema,
+  siteStatusCountsRequestSchema,
 } from '@lib/schemas/siteSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 
@@ -201,6 +203,28 @@ siteGetRequest.get(
         },
         200
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+siteGetRequest.get(
+  '/status-counts/organization/:hospitalId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = siteStatusCountsRequestSchema.parse(req.params);
+
+      const data = await getSiteStatusCountsByHospitalId(
+        requestBody.hospitalId
+      );
+      return JsonApiResponse(res, 'Success', true, data, 200);
     } catch (error) {
       next(error);
     }

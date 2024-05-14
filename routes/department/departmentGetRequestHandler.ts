@@ -44,7 +44,7 @@ departmentGetRequest.get(
         ...req.headers,
       });
 
-      const verifiedUser = verifyUserPermission(requestBody.token, [
+      const verifiedUser = verifyUserPermission(requestBody.authorization, [
         'SUPER_ADMIN',
         'HOSPITAL_ADMIN',
         'SITE_ADMIN',
