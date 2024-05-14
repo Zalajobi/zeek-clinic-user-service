@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { createNewHospital } from '@datastore/hospital/hospitalPostStore';
-import { createHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
+import {
+  createHospitalRequestSchema,
+  searchHospitalRequestSchema,
+} from '@lib/schemas/hospitalSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchHospitalData } from '@datastore/hospital/hospitalGetStore';
 
 const hospitalPostRequest = Router();
 
@@ -12,8 +16,6 @@ hospitalPostRequest.post(
   '/create',
   authorizeRequest(['SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised';
-
     try {
       const requestBody = createHospitalRequestSchema.parse({
         ...req.body,
@@ -33,6 +35,31 @@ hospitalPostRequest.post(
       }
 
       return JsonApiResponse(res, 'New Organization Added', true, null, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+hospitalPostRequest.post(
+  '/search',
+  authorizeRequest(['SUPER_ADMIN']),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const responseBody = searchHospitalRequestSchema.parse(req.body);
+
+      const hospitalData = await getSearchHospitalData(responseBody);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          hospitals: hospitalData[0],
+          totalRows: hospitalData[1],
+        },
+        200
+      );
     } catch (error) {
       next(error);
     }

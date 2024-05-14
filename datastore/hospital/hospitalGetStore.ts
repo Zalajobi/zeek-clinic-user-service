@@ -1,5 +1,8 @@
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { HospitalStatus } from '@typeorm/entity/enums';
+import { z } from 'zod';
+import { searchHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
+import { extractPerPageAndPage } from '@helpers/utils';
 
 export const selectAllAvailableCountries = async () => {
   const hospitalRepository = hospitalRepo();
@@ -91,4 +94,97 @@ export const fetchFilteredHospitalData = async (
     hospitals: hospital[0],
     count: hospital[1],
   };
+};
+
+export const getSearchHospitalData = async (
+  requestBody: z.infer<typeof searchHospitalRequestSchema>
+) => {
+  const hospitalRepository = hospitalRepo();
+
+  const { page, perPage } = extractPerPageAndPage(
+    requestBody.endRow,
+    requestBody.startRow
+  );
+
+  const hospitalQuery = hospitalRepository
+    .createQueryBuilder('hospital')
+    .orderBy({
+      [`${requestBody.sortModel.colId}`]:
+        requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
+    });
+
+  if (requestBody.id) {
+    hospitalQuery.andWhere('hospital.id = :id', {
+      id: requestBody.id,
+    });
+  }
+
+  if (requestBody.name) {
+    hospitalQuery.andWhere('LOWER(hospital.name) LIKE :name', {
+      name: `%${requestBody.name.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.email) {
+    hospitalQuery.andWhere('LOWER(hospital.email) LIKE :email', {
+      email: `%${requestBody.email.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.phone) {
+    hospitalQuery.andWhere('hospital.phone = :phone', {
+      phone: requestBody.phone,
+    });
+  }
+
+  if (requestBody.address) {
+    hospitalQuery.andWhere('LOWER(hospital.address) LIKE :address', {
+      address: `%${requestBody.address.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.city) {
+    hospitalQuery.andWhere('LOWER(hospital.city) LIKE :city', {
+      city: `%${requestBody.city.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.state) {
+    hospitalQuery.andWhere('LOWER(hospital.state) LIKE :city', {
+      state: `%${requestBody.state.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.country) {
+    hospitalQuery.andWhere('LOWER(hospital.country) LIKE :country', {
+      country: `%${requestBody.country.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.status) {
+    hospitalQuery.andWhere('hospital.status = :status', {
+      status: requestBody.status,
+    });
+  }
+
+  if (requestBody.zipCode) {
+    hospitalQuery.andWhere('hospital.zip_code = :zipCode', {
+      zipCode: requestBody.zipCode,
+    });
+  }
+
+  if (requestBody?.range) {
+    hospitalQuery.andWhere('hospital.created_at > :fromDate', {
+      fromDate: requestBody.range.from,
+    });
+
+    hospitalQuery.andWhere('hospital.created_at < :toDate', {
+      toDate: requestBody.range.to,
+    });
+  }
+
+  return await hospitalQuery
+    .skip(perPage * page)
+    .take(perPage)
+    .getManyAndCount();
 };
