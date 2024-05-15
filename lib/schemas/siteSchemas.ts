@@ -70,8 +70,8 @@ export const getSitesOrganizationalStructuresRequestSchema =
     siteId: z.string(),
   });
 
-export const searchSiteRequestSchema = bearerTokenSchema
-  .extend({
+export const searchSiteRequestSchema = z
+  .object({
     id: z.string().optional(),
     search: z.string().optional(),
     searchKey: z.string().optional(),
