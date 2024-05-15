@@ -10,15 +10,21 @@ import { CREATE_ADMIN_QUEUE_NAME } from '@util/config';
 import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
 import { remapObjectKeys } from '@util/index';
+import { authorizeRequest } from '@middlewares/jwt';
 
 const providersPostRequestHandler = Router();
 
 // Create New Provider
 providersPostRequestHandler.post(
   '/create',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
     const providerKeys = [
         'appointments',
         'department',
@@ -56,21 +62,6 @@ providersPostRequestHandler.post(
         ...req.headers,
         ...req.body,
       });
-
-      const verifiedUser = verifyUserPermission(
-        requestBody.authorization,
-        [
-          'SUPER_ADMIN',
-          'HOSPITAL_ADMIN',
-          'SITE_ADMIN',
-          'ADMIN',
-          'HUMAN_RESOURCES',
-        ] // Remove HUMAN_RESOURCES later, this is for testing purpose for July 23, 2023 session 8AM - 2PM
-      );
-
-      if (!verifiedUser) {
-        return JsonApiResponse(res, message, success, null, 200);
-      }
 
       const tempPassword = generateTemporaryPassCode();
       requestBody.password = generatePasswordHash(tempPassword);
