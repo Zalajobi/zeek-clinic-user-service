@@ -51,6 +51,7 @@ export const searchHospitalRequestSchema = z
     city: z.string().optional(),
     state: z.string().optional(),
     country: z.string().optional(),
+    site_count: z.string().optional(),
     status: globalStatusSchema.optional().transform((data) => {
       if (data !== 'ALL') return data;
     }),

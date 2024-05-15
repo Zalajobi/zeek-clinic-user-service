@@ -119,6 +119,12 @@ export const getSearchHospitalData = async (
     });
   }
 
+  if (requestBody.site_count) {
+    hospitalQuery.andWhere('hospital.site_count = :site_count', {
+      site_count: requestBody.site_count,
+    });
+  }
+
   if (requestBody.name) {
     hospitalQuery.andWhere('LOWER(hospital.name) LIKE :name', {
       name: `%${requestBody.name.toLowerCase()}%`,
@@ -181,6 +187,15 @@ export const getSearchHospitalData = async (
     hospitalQuery.andWhere('hospital.created_at < :toDate', {
       toDate: requestBody.range.to,
     });
+  }
+
+  if (requestBody.search && requestBody.searchKey) {
+    hospitalQuery.andWhere(
+      `LOWER(hospital.${requestBody.searchKey}) LIKE :search`,
+      {
+        search: `%${requestBody.search.toLowerCase()}%`,
+      }
+    );
   }
 
   return await hospitalQuery
