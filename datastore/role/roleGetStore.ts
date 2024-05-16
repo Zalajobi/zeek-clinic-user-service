@@ -1,5 +1,12 @@
 import { roleRepo } from '@typeorm/repositories/roleRepository';
 import { DefaultJsonResponse } from '@util/responses';
+import {
+  createAndUpdateRoleRequestSchema,
+  searchRoleRequestSchema,
+} from '@lib/schemas/roleSchemas';
+import { z } from 'zod';
+import { unitRepo } from '@typeorm/repositories/unitRepositories';
+import { extractPerPageAndPage } from '@helpers/utils';
 
 export const getRoleDataBySiteId = async (siteId: string) => {
   const roleRepository = roleRepo();
@@ -95,4 +102,289 @@ export const getRolePaginationDataWithUsersCount = async (
     role,
     !!role
   );
+};
+
+export const getSearchRoleData = async (
+  requestBody: z.infer<typeof searchRoleRequestSchema>
+) => {
+  const roleRepository = roleRepo();
+
+  const { page, perPage } = extractPerPageAndPage(
+    requestBody.endRow,
+    requestBody.startRow
+  );
+
+  const roleQuery = roleRepository.createQueryBuilder('role').orderBy({
+    [`${requestBody.sortModel.colId}`]:
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
+  });
+
+  if (requestBody.siteId) {
+    roleQuery.where('role.siteId = :siteId', {
+      siteId: requestBody.siteId,
+    });
+  }
+
+  if (requestBody.id) {
+    roleQuery.where('role.id = :id', {
+      id: requestBody.id,
+    });
+  }
+
+  if (requestBody.name) {
+    roleQuery.where('role.name = :name', {
+      name: requestBody.name,
+    });
+  }
+
+  if (requestBody.description) {
+    roleQuery.where('role.description = :description', {
+      description: requestBody.description,
+    });
+  }
+
+  if (requestBody.prescription) {
+    roleQuery.andWhere('role.prescription = :prescription', {
+      prescription: requestBody.prescription,
+    });
+  }
+
+  if (requestBody.note) {
+    roleQuery.andWhere('role.note = :note', {
+      note: requestBody.note,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.appointment) {
+    roleQuery.andWhere('role.appointment = :appointment', {
+      appointment: requestBody.appointment,
+    });
+  }
+
+  if (requestBody.vitals) {
+    roleQuery.andWhere('role.vitals = :vitals', {
+      vitals: requestBody.vitals,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.procedure) {
+    roleQuery.andWhere('role.procedure = :procedure', {
+      procedure: requestBody.procedure,
+    });
+  }
+
+  if (requestBody.med_supply) {
+    roleQuery.andWhere('role.med_supply = :med_supply', {
+      med_supply: requestBody.med_supply,
+    });
+  }
+
+  if (requestBody.admit_patient) {
+    roleQuery.andWhere('role.admit_patient = :admit_patient', {
+      admit_patient: requestBody.admit_patient,
+    });
+  }
+
+  if (requestBody.transfer_patient) {
+    roleQuery.andWhere('role.transfer_patient = :transfer_patient', {
+      transfer_patient: requestBody.transfer_patient,
+    });
+  }
+
+  if (requestBody.move_patient) {
+    roleQuery.andWhere('role.move_patient = :move_patient', {
+      move_patient: requestBody.move_patient,
+    });
+  }
+
+  if (requestBody.discharge) {
+    roleQuery.andWhere('role.discharge = :discharge', {
+      discharge: requestBody.discharge,
+    });
+  }
+
+  if (requestBody.time_of_death) {
+    roleQuery.andWhere('role.time_of_death = :time_of_death', {
+      time_of_death: requestBody.time_of_death,
+    });
+  }
+
+  if (requestBody.review) {
+    roleQuery.andWhere('role.review = :review', {
+      review: requestBody.review,
+    });
+  }
+
+  if (requestBody.logs) {
+    roleQuery.andWhere('role.logs = :logs', {
+      logs: requestBody.logs,
+    });
+  }
+
+  if (requestBody.dental) {
+    roleQuery.andWhere('role.dental = :dental', {
+      dental: requestBody.dental,
+    });
+  }
+
+  if (requestBody.dental) {
+    roleQuery.andWhere('role.dental = :dental', {
+      dental: requestBody.dental,
+    });
+  }
+
+  if (requestBody.radiology) {
+    roleQuery.andWhere('role.radiology = :radiology', {
+      radiology: requestBody.radiology,
+    });
+  }
+
+  if (requestBody.consult) {
+    roleQuery.andWhere('role.consult = :consult', {
+      consult: requestBody.consult,
+    });
+  }
+
+  if (requestBody.referral) {
+    roleQuery.andWhere('role.referral = :referral', {
+      referral: requestBody.referral,
+    });
+  }
+
+  if (requestBody.refer_outpx) {
+    roleQuery.andWhere('role.refer_outpx = :refer_outpx', {
+      refer_outpx: requestBody.refer_outpx,
+    });
+  }
+
+  if (requestBody.upload) {
+    roleQuery.andWhere('role.upload = :upload', {
+      upload: requestBody.upload,
+    });
+  }
+
+  if (requestBody.charts) {
+    roleQuery.andWhere('role.charts = :charts', {
+      charts: requestBody.charts,
+    });
+  }
+
+  if (requestBody.charts) {
+    roleQuery.andWhere('role.charts = :charts', {
+      charts: requestBody.charts,
+    });
+  }
+
+  if (requestBody.plan) {
+    roleQuery.andWhere('role.plan = :plan', {
+      plan: requestBody.plan,
+    });
+  }
+
+  if (requestBody?.range && requestBody.range.from) {
+    roleQuery.andWhere('role.created_at > :fromDate', {
+      fromDate: requestBody.range.from,
+    });
+  }
+
+  if (requestBody?.range && requestBody.range.to) {
+    roleQuery.andWhere('role.created_at < :toDate', {
+      toDate: requestBody.range.to,
+    });
+  }
+
+  if (requestBody.search && requestBody.searchKey) {
+    roleQuery.andWhere(`LOWER(role.${requestBody.searchKey}) LIKE :search`, {
+      search: `%${requestBody.search.toLowerCase()}%`,
+    });
+  }
+
+  return await roleQuery
+    .skip(perPage * page)
+    .take(perPage)
+    .getManyAndCount();
 };

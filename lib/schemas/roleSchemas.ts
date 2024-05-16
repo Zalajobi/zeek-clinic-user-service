@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import {
+  bearerTokenSchema,
+  DateRangeSchema,
+  ONE_MILLION,
+  SortModelSchema,
+} from '@lib/schemas/commonSchemas';
 
 export const getOrganisationRolesFilterRequestSchema = bearerTokenSchema.extend(
   {
@@ -12,7 +17,7 @@ export const getOrganisationRolesFilterRequestSchema = bearerTokenSchema.extend(
   }
 );
 
-export const createAndUpdateRoleRequestSchema = bearerTokenSchema.extend({
+export const createAndUpdateRoleRequestSchema = z.object({
   description: z.string().min(50),
   name: z.string().min(4),
   siteId: z.string().default(''),
@@ -41,4 +46,44 @@ export const createAndUpdateRoleRequestSchema = bearerTokenSchema.extend({
   charts: z.boolean().default(false),
   nursing: z.boolean().default(false),
   plan: z.boolean().default(false),
+});
+
+export const searchRoleRequestSchema = z.object({
+  search: z.string().optional(),
+  searchKey: z.string().optional(),
+  id: z.string().optional(),
+  siteId: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  prescription: z.boolean().optional(),
+  note: z.boolean().optional(),
+  procedure: z.boolean().optional(),
+  lab_test: z.boolean().optional(),
+  appointment: z.boolean().optional(),
+  vitals: z.boolean().optional(),
+  med_supply: z.boolean().optional(),
+  admit_patient: z.boolean().optional(),
+  transfer_patient: z.boolean().optional(),
+  move_patient: z.boolean().optional(),
+  discharge: z.boolean().optional(),
+  time_of_death: z.boolean().optional(),
+  review: z.boolean().optional(),
+  logs: z.boolean().optional(),
+  dental: z.boolean().optional(),
+  clerking: z.boolean().optional(),
+  radiology: z.boolean().optional(),
+  consult: z.boolean().optional(),
+  referral: z.boolean().optional(),
+  refer_outpx: z.boolean().optional(),
+  upload: z.boolean().optional(),
+  charts: z.boolean().optional(),
+  nursing: z.boolean().optional(),
+  plan: z.boolean().optional(),
+  range: DateRangeSchema.optional(),
+  sortModel: SortModelSchema.default({
+    sort: 'desc',
+    colId: 'created_at',
+  }),
+  startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
+  endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
 });
