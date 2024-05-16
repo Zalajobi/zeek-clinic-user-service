@@ -3,12 +3,14 @@ import { JsonApiResponse } from '@util/responses';
 import {
   adminGetProviderDetails,
   fetchFilteredProviderData,
+  getProviderCountBySiteId,
 } from '@datastore/provider/providerGetStore';
 import {
   getOrganisationProvidersFilterRequestSchema,
   getProviderDetailsRequestSchema,
 } from '@lib/schemas/providerSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const providersGetRequestHandler = Router();
 
@@ -88,6 +90,37 @@ providersGetRequestHandler.get(
       }
 
       return JsonApiResponse(res, 'Something went wrong', false, null, 401);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Get Provider Count by SiteId
+providersGetRequestHandler.get(
+  '/count/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+
+    try {
+      const count = await getProviderCountBySiteId(siteId);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          totalRows: count,
+        },
+        200
+      );
     } catch (error) {
       next(error);
     }

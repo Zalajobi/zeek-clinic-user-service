@@ -163,3 +163,13 @@ export const getSearchDepartmentData = async (
     .take(perPage)
     .getManyAndCount();
 };
+
+export const getDepartmentCountBySiteId = async (siteId: string) => {
+  const deptRepository = departmentRepo();
+
+  return await deptRepository.count({
+    where: {
+      siteId,
+    },
+  });
+};

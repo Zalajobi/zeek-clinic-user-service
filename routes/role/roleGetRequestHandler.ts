@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { getRolePaginationDataWithUsersCount } from '@datastore/role/roleGetStore';
+import {
+  getRoleCountBySiteId,
+  getRolePaginationDataWithUsersCount,
+} from '@datastore/role/roleGetStore';
 import { getOrganisationRolesFilterRequestSchema } from '@lib/schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const roleGetRequest = Router();
 
@@ -39,6 +43,38 @@ roleGetRequest.get(
           {
             role: roleData.data[0],
             count: roleData.data[1],
+          },
+          200
+        );
+
+      return JsonApiResponse(res, 'Something went wrong', false, null, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+roleGetRequest.get(
+  '/count/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+      const count = await getRoleCountBySiteId(siteId);
+
+      if (count)
+        return JsonApiResponse(
+          res,
+          'Role count retrieved successfully',
+          true,
+          {
+            totalRows: count,
           },
           200
         );

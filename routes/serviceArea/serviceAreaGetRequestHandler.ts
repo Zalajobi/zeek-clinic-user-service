@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { fetchFilteredServiceAreaData } from '@datastore/serviceArea/serviceAreaGetStore';
+import {
+  fetchFilteredServiceAreaData,
+  getServiceAreaCountBySiteId,
+} from '@datastore/serviceArea/serviceAreaGetStore';
 import { getOrganisationServiceAreaFilterRequestSchema } from '@lib/schemas/serviceAreaSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const serviceAreaGetRequest = Router();
 
@@ -44,6 +48,36 @@ serviceAreaGetRequest.get(
         );
 
       return JsonApiResponse(res, 'Something went wrong', false, null, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+serviceAreaGetRequest.get(
+  '/count/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+
+    try {
+      const count = await getServiceAreaCountBySiteId(siteId);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          totalRows: count,
+        },
+        200
+      );
     } catch (error) {
       next(error);
     }

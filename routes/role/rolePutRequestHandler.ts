@@ -23,7 +23,7 @@ rolePutRequest.put(
         ...req.params,
       });
 
-      const { roleId, authorization, ...updateBody } = requestBody;
+      const { roleId, ...updateBody } = requestBody;
 
       const updatedData = await updateRoleDataByRoleId(roleId, updateBody);
       return JsonApiResponse(

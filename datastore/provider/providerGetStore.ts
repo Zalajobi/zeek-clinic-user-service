@@ -152,3 +152,12 @@ export const adminGetProviderDetails = async (id: string) => {
     true
   );
 };
+
+// Get Provider Count by SiteId
+export const getProviderCountBySiteId = async (siteId: string) => {
+  const providerRepository = providerRepo();
+
+  return await providerRepository.count({
+    where: { siteId },
+  });
+};

@@ -139,6 +139,7 @@ export const loadSiteDetailsById = async (siteId: string) => {
       status: true,
       country_code: true,
       time_zone: true,
+      zip_code: true,
     },
   });
 };

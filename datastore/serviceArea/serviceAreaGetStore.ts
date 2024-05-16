@@ -101,3 +101,11 @@ export const fetchFilteredServiceAreaData = async (
     !!serviceAreas
   );
 };
+
+export const getServiceAreaCountBySiteId = async (siteId: string) => {
+  const serviceAreaRepository = serviceAreaRepo();
+
+  return await serviceAreaRepository.count({
+    where: { siteId },
+  });
+};

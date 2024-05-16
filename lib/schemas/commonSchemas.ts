@@ -87,3 +87,7 @@ export const globalStatusSchema = z.enum([
   'DOMESTIC_PARTNERSHIP',
   'OTHERS',
 ]);
+
+export const getCountBySiteIdRequestSchema = z.object({
+  siteId: z.string(),
+});
