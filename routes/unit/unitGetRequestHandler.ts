@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { fetchFilteredUnitData } from '@datastore/unit/unitGetStore';
+import {
+  fetchFilteredUnitData,
+  getUnitCountBySiteId,
+} from '@datastore/unit/unitGetStore';
 import { getOrganisationUnitsFilterRequestSchema } from '@lib/schemas/unitSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const unitGetRequest = Router();
 
@@ -44,6 +48,36 @@ unitGetRequest.get(
         );
 
       return JsonApiResponse(res, 'Something went wrong', false, null, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+unitGetRequest.get(
+  '/count/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+
+    try {
+      const count = await getUnitCountBySiteId(siteId);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          totalRows: count,
+        },
+        200
+      );
     } catch (error) {
       next(error);
     }

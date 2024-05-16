@@ -147,3 +147,11 @@ export const getSearchUnitData = async (
     .take(perPage)
     .getManyAndCount();
 };
+
+export const getUnitCountBySiteId = async (siteId: string) => {
+  const unitRepository = unitRepo();
+
+  return await unitRepository.count({
+    where: { siteId },
+  });
+};
