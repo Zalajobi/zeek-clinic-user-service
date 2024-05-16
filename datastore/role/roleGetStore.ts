@@ -1,5 +1,4 @@
 import { roleRepo } from '@typeorm/repositories/roleRepository';
-import { serviceAreaRepo } from '@typeorm/repositories/serviceAreaRepository';
 import { DefaultJsonResponse } from '@util/responses';
 
 export const getRoleDataBySiteId = async (siteId: string) => {

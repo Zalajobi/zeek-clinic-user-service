@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { createNewUnit } from '@datastore/unit/unitPostStore';
-import { createUnitRequestSchema } from '@lib/schemas/unitSchemas';
+import {
+  createUnitRequestSchema,
+  searchUnitRequestSchema,
+} from '@lib/schemas/unitSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchUnitData } from '@datastore/unit/unitGetStore';
 
 const unitPostRequest = Router();
 
@@ -38,4 +42,34 @@ unitPostRequest.post(
   }
 );
 
+unitPostRequest.post(
+  '/search',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchUnitRequestSchema.parse(req.body);
+
+      const queryData = await getSearchUnitData(requestBody);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          units: queryData[0],
+          totalRows: queryData[1],
+        },
+        200
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 export default unitPostRequest;
