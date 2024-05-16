@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { getCareGiverPrimaryPatients } from '@datastore/patient/patientGetStore';
+import {
+  getCareGiverPrimaryPatients,
+  getPatientCountBySiteId,
+} from '@datastore/patient/patientGetStore';
 import { getProviderPrimaryPatientRequestSchema } from '@lib/schemas/patientSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const patientGetRequestHandler = Router();
 
@@ -18,11 +22,7 @@ patientGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { authorization, id } =
-        getProviderPrimaryPatientRequestSchema.parse({
-          ...req.params,
-          ...req.headers,
-        });
+      const { id } = getProviderPrimaryPatientRequestSchema.parse(req.params);
       const patientData = await getCareGiverPrimaryPatients(id);
 
       return JsonApiResponse(
@@ -31,6 +31,36 @@ patientGetRequestHandler.get(
         patientData.success as boolean,
         patientData?.data,
         patientData.data ? 200 : 400
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+patientGetRequestHandler.get(
+  '/count/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+
+    try {
+      const patientCount = await getPatientCountBySiteId(siteId);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          totalRows: patientCount,
+        },
+        200
       );
     } catch (error) {
       next(error);
