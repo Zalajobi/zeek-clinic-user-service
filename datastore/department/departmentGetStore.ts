@@ -1,6 +1,9 @@
 import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 import { DefaultJsonResponse } from '@util/responses';
 import { Departments } from '@typeorm/entity/departments';
+import { searchDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
+import { z } from 'zod';
+import { extractPerPageAndPage } from '@helpers/utils';
 
 export const adminCreateProviderGetDepartmentDataBySiteId = async (
   siteId: string
@@ -101,4 +104,62 @@ export const getDepartmentDataBySiteId = async (
       description: true,
     },
   });
+};
+
+// Search Department
+export const getSearchDepartmentData = async (
+  requestBody: z.infer<typeof searchDepartmentRequestSchema>
+) => {
+  const deptRepository = departmentRepo();
+
+  const { page, perPage } = extractPerPageAndPage(
+    requestBody.endRow,
+    requestBody.startRow
+  );
+
+  const deptQuery = deptRepository.createQueryBuilder('dept').orderBy({
+    [`${requestBody.sortModel.colId}`]:
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
+  });
+
+  if (requestBody.siteId) {
+    deptQuery.where('dept.siteId = :siteId', {
+      siteId: requestBody.siteId,
+    });
+  }
+
+  if (requestBody.id) {
+    deptQuery.where('dept.id = :id', {
+      id: requestBody.id,
+    });
+  }
+
+  if (requestBody.name) {
+    deptQuery.where('dept.name = :name', {
+      name: requestBody.name,
+    });
+  }
+
+  if (requestBody?.range && requestBody.range.from) {
+    deptQuery.andWhere('dept.created_at > :fromDate', {
+      fromDate: requestBody.range.from,
+    });
+  }
+
+  if (requestBody?.range && requestBody.range.to) {
+    deptQuery.andWhere('dept.created_at < :toDate', {
+      toDate: requestBody.range.to,
+    });
+  }
+
+  if (requestBody.search && requestBody.searchKey) {
+    deptQuery.andWhere(`LOWER(dept.${requestBody.searchKey}) LIKE :search`, {
+      search: `%${requestBody.search.toLowerCase()}%`,
+    });
+  }
+
+  return await deptQuery
+    .skip(perPage * page)
+    .take(perPage)
+    .getManyAndCount();
 };

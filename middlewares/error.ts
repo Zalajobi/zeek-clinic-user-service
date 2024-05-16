@@ -142,6 +142,20 @@ export const errorMiddleware = async (
     return;
   }
 
+  // Badly Formed JSON Error From Post request
+  if (err instanceof SyntaxError && 'body' in err) {
+    console.log('Bad JSON');
+    res.status(400).json({
+      error: {
+        type: 'bad_json',
+        message: err.message,
+        name: err.name,
+        // errors: err,
+      },
+    });
+    return;
+  }
+
   // Generic Error
   if (err instanceof Error) {
     console.log('General Error');

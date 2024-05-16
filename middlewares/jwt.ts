@@ -22,7 +22,6 @@ export const authorizeRequest = (permissions: string[]) => {
       const { authorization } = bearerTokenSchema.parse(req.headers);
       const verifiedUser = verifyUserPermission(authorization, permissions);
       if (!verifiedUser) {
-        console.log('User is not Authorized');
         return res.status(401).json({
           success: false,
           data: null,

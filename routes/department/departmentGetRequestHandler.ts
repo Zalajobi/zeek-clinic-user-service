@@ -34,29 +34,21 @@ departmentGetRequest.get(
 
 departmentGetRequest.get(
   '/organization/roles/filters',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
     try {
-      const requestBody = getOrganisationDepartmentsFilterRequestSchema.parse({
-        ...req.query,
-        ...req.headers,
-      });
-
-      const verifiedUser = verifyUserPermission(requestBody.authorization, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
+      const requestBody = getOrganisationDepartmentsFilterRequestSchema.parse(
+        req.query
+      );
 
       const { page, per_page, from_date, to_date, search, country, status } =
         req.query;
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
 
       const deptData = await fetchFilteredDepartmentData(
         requestBody.page,
@@ -79,7 +71,7 @@ departmentGetRequest.get(
           200
         );
 
-      return JsonApiResponse(res, 'Something went wrong', success, null, 200);
+      return JsonApiResponse(res, 'Something went wrong', false, null, 200);
     } catch (error) {
       next(error);
     }
