@@ -3,10 +3,12 @@ import { JsonApiResponse } from '@util/responses';
 import { verifyUserPermission } from '@lib/auth';
 import {
   fetchFilteredDepartmentData,
+  getDepartmentCountBySiteId,
   getDepartmentDataBySiteId,
 } from '@datastore/department/departmentGetStore';
 import { getOrganisationDepartmentsFilterRequestSchema } from '@lib/schemas/departmentSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const departmentGetRequest = Router();
 
@@ -72,6 +74,38 @@ departmentGetRequest.get(
         );
 
       return JsonApiResponse(res, 'Something went wrong', false, null, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+departmentGetRequest.get(
+  '/count/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+
+    try {
+      const count = await getDepartmentCountBySiteId(siteId);
+
+      if (count) {
+        return JsonApiResponse(
+          res,
+          'Success',
+          true,
+          {
+            totalRows: count,
+          },
+          200
+        );
+      }
     } catch (error) {
       next(error);
     }
