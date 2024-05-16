@@ -1,11 +1,7 @@
 import { roleRepo } from '@typeorm/repositories/roleRepository';
 import { DefaultJsonResponse } from '@util/responses';
-import {
-  createAndUpdateRoleRequestSchema,
-  searchRoleRequestSchema,
-} from '@lib/schemas/roleSchemas';
+import { searchRoleRequestSchema } from '@lib/schemas/roleSchemas';
 import { z } from 'zod';
-import { unitRepo } from '@typeorm/repositories/unitRepositories';
 import { extractPerPageAndPage } from '@helpers/utils';
 
 export const getRoleDataBySiteId = async (siteId: string) => {
@@ -387,4 +383,14 @@ export const getSearchRoleData = async (
     .skip(perPage * page)
     .take(perPage)
     .getManyAndCount();
+};
+
+export const getRoleCountBySiteId = async (siteId: string) => {
+  const roleRepository = roleRepo();
+
+  return await roleRepository.count({
+    where: {
+      siteId,
+    },
+  });
 };
