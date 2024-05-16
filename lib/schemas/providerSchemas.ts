@@ -4,8 +4,8 @@ import {
   globalStatusSchema,
 } from '@lib/schemas/commonSchemas';
 
-export const createProviderRequestSchema = bearerTokenSchema
-  .extend({
+export const createProviderRequestSchema = z
+  .object({
     title: z.string(),
     first_name: z.string().min(4),
     last_name: z.string().min(4),
@@ -19,7 +19,7 @@ export const createProviderRequestSchema = bearerTokenSchema
     serviceArea: z.string(),
     unit: z.string(),
     country: z.string(),
-    state: z.string(),
+    state: z.string().default(''),
     city: z.string().default(''),
     staff_id: z.string(),
     zip_code: z.string(),

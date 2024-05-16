@@ -127,7 +127,7 @@ siteGetRequest.get(
  *                   response with a failure status and the error message.
  */
 siteGetRequest.get(
-  '/:siteId/details',
+  '/details/:siteId',
   authorizeRequest([
     'SUPER_ADMIN',
     'HOSPITAL_ADMIN',

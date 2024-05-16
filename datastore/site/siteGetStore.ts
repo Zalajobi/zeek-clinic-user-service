@@ -137,6 +137,8 @@ export const loadSiteDetailsById = async (siteId: string) => {
       phone: true,
       created_at: true,
       status: true,
+      country_code: true,
+      time_zone: true,
     },
   });
 };

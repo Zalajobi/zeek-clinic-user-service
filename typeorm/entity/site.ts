@@ -35,6 +35,7 @@ export class Site {
     this.logo = data?.logo as string;
     this.time_zone = data?.time_zone as string;
     this.phone = data?.phone;
+    this.country_code = data?.country_code ?? '';
     this.zip_code = data?.zip_code?.toString();
     this.is_private = data?.is_private as boolean;
     this.has_appointment = data?.has_appointment as boolean;
@@ -110,6 +111,11 @@ export class Site {
     nullable: false,
   })
   phone: string;
+
+  @Column({
+    nullable: true,
+  })
+  country_code: string;
 
   @Column({
     nullable: true,
