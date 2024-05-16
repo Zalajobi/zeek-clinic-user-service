@@ -51,14 +51,14 @@ patientGetRequestHandler.get(
     const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
 
     try {
-      const patientCount = await getPatientCountBySiteId(siteId);
+      const count = await getPatientCountBySiteId(siteId);
 
       return JsonApiResponse(
         res,
         'Success',
         true,
         {
-          totalRows: patientCount,
+          totalRows: count,
         },
         200
       );
