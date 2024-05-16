@@ -1,7 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { createServiceArea } from '@datastore/serviceArea/serviceAreaPostStore';
-import { createServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas';
+import {
+  createServiceArea,
+  getSearchServiceAreaData,
+} from '@datastore/serviceArea/serviceAreaPostStore';
+import {
+  createServiceAreaRequestSchema,
+  searchServiceAreaRequestSchema,
+} from '@lib/schemas/serviceAreaSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 
 const serviceAreaPostRequest = Router();
@@ -26,6 +32,37 @@ serviceAreaPostRequest.post(
         <boolean>newRole.success,
         null,
         newRole?.success ? 201 : 500
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+serviceAreaPostRequest.post(
+  '/search',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchServiceAreaRequestSchema.parse(req.body);
+
+      const queryData = await getSearchServiceAreaData(requestBody);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          serviceAreas: queryData[0],
+          totalRows: queryData[1],
+        },
+        200
       );
     } catch (error) {
       next(error);
