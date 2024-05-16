@@ -394,3 +394,27 @@ export const getRoleCountBySiteId = async (siteId: string) => {
     },
   });
 };
+
+export const countRoleItemsByMonth = async (
+  fromDate: Date,
+  toDate: Date,
+  groupBy: string,
+  siteId?: string | undefined
+) => {
+  const roleRepository = roleRepo();
+
+  const roleQuery = roleRepository
+    .createQueryBuilder('role')
+    .select(`DATE_TRUNC('${groupBy}', role.created_at) AS date_group`)
+    .addSelect('COUNT(*) AS count')
+    .where('role.created_at >= :fromDate', { fromDate })
+    .andWhere('role.created_at <= :toDate', { toDate });
+
+  if (siteId) {
+    roleQuery.andWhere('role.siteId = :siteId', { siteId });
+  }
+
+  return await roleQuery
+    .groupBy(`DATE_TRUNC('${groupBy}', role.created_at)`)
+    .getRawMany();
+};
