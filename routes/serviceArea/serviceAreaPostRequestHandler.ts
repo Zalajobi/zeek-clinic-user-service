@@ -17,10 +17,7 @@ serviceAreaPostRequest.post(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createServiceAreaRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = createServiceAreaRequestSchema.parse(req.body);
 
       const newRole = await createServiceArea(requestBody);
       return JsonApiResponse(

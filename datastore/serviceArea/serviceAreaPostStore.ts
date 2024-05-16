@@ -11,18 +11,21 @@ export const createServiceArea = async (
 
   // If Service Area already exists in the same site, do no create
   const isUnique = await serviceAreaRepository
-    .createQueryBuilder('unit')
-    .where('LOWER(unit.name) LIKE LOWER(:name)', {
+    .createQueryBuilder('service-area')
+    .where('LOWER(service-area.name) LIKE LOWER(:name)', {
       name: data.name,
     })
-    .andWhere('unit.siteId = :siteId', {
+    .andWhere('service-area.siteId = :siteId', {
       siteId: data?.siteId,
+    })
+    .andWhere('service-area.type = :type', {
+      type: data.type,
     })
     .getCount();
 
   if (isUnique >= 1)
     return DefaultJsonResponse(
-      'Service Area with name already exists',
+      'Service Area with NAME and TYPE already exists',
       null,
       false
     );
