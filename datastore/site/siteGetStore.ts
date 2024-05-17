@@ -3,7 +3,7 @@ import { SiteStatus } from '@typeorm/entity/enums';
 import { Site } from '@typeorm/entity/site';
 import { searchSiteRequestSchema } from '@lib/schemas/siteSchemas';
 import { z } from 'zod';
-import { extractPerPageAndPage } from '@helpers/utils';
+import { extractPerPageAndPage } from '@util/index';
 
 export const fetchFilteredSiteData = async (
   page: number,

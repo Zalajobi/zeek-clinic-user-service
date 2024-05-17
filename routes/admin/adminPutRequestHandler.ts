@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import {
-  generatePasswordHash,
-  validatePassword,
-  verifyJSONToken,
-} from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { getAdminBaseDataAndProfileDataByAdminId } from '@datastore/admin/adminGetStore';
 import { updateAdminPasswordByAdminId } from '@datastore/admin/adminPutStore';
 import { updatePasswordRequestSchema } from '@lib/schemas/adminSchemas';
+import {
+  generatePasswordHash,
+  validatePassword,
+  verifyJSONToken,
+} from '@util/index';
 
 const adminPutRequestHandler = Router();
 

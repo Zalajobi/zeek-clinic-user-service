@@ -30,7 +30,7 @@ export const createServiceAreaRequestSchema = z.object({
   description: z.string().min(20),
 });
 
-export const updateServiceAreaRequestSchema = bearerTokenSchema.extend({
+export const updateServiceAreaRequestSchema = z.object({
   serviceAreaId: z.string(),
   name: z.string().min(4).optional(),
   type: z

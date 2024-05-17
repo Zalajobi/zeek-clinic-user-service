@@ -1,10 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import {
-  generateTemporaryPassCode,
-  generateJSONTokenCredentials,
-  generatePasswordHash,
-  validatePassword,
-} from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { sendResetPasswordEmail } from '@messaging/email';
 import { emitNewEvent } from '@messaging/rabbitMq';
@@ -22,6 +16,15 @@ import {
   passwordResetRequestSchema,
 } from '@lib/schemas/adminSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import {
+  generateJSONTokenCredentials,
+  generateJWTAccessToken,
+  generateJWTRefreshToken,
+  generatePasswordHash,
+  generateTemporaryPassCode,
+  setRedisKey,
+  validatePassword,
+} from '@util/index';
 
 const adminPostRequestHandler = Router();
 
@@ -29,7 +32,6 @@ adminPostRequestHandler.post(
   `/login`,
   async (req: Request, res: Response, next: NextFunction) => {
     let responseMessage = 'Incorrect Credentials',
-      jwtSignData = null,
       success = false;
     try {
       const requestBody = LoginRequestSchema.parse(req.body);
@@ -42,15 +44,27 @@ adminPostRequestHandler.post(
           email: admin?.email,
           role: admin?.role,
           siteId: admin?.siteId,
+          rememberMe: requestBody.rememberMe,
         };
 
-        // if remember me, set the date expiration of the jwt to 1 day
-        jwtSignData = generateJSONTokenCredentials(
+        const accessToken = generateJWTAccessToken(
           jwtData,
-          requestBody?.rememberMe
-            ? Math.floor(Date.now() / 1000) + 240 * 360
-            : Math.floor(Date.now() / 1000) + 60 * 360
+          requestBody.rememberMe
         );
+        const refreshToken = generateJWTRefreshToken(
+          jwtData,
+          requestBody.rememberMe
+        );
+
+        setRedisKey(
+          admin?.id ?? '',
+          refreshToken,
+          requestBody?.rememberMe ? 7 * 24 * 60 * 60 : 24 * 60 * 60
+        );
+        res.cookie('accessToken', accessToken, {
+          httpOnly: true,
+          secure: true,
+        });
         responseMessage = 'Login Successful';
         success = true;
       }
@@ -60,7 +74,6 @@ adminPostRequestHandler.post(
         responseMessage,
         success,
         {
-          token: jwtSignData,
           role: admin?.role,
         },
         200

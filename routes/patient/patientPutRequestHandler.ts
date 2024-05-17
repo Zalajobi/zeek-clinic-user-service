@@ -18,12 +18,10 @@ patientPutRequestHandler.put(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { authorization, id, ...updateBody } =
-        updatePatientDetailsRequestSchema.parse({
-          ...req.body,
-          ...req.headers,
-          ...req.params,
-        });
+      const { id, ...updateBody } = updatePatientDetailsRequestSchema.parse({
+        ...req.body,
+        ...req.params,
+      });
 
       if (updateBody.email) {
         const emailExists = await getPatientCountByEmail(updateBody.email);

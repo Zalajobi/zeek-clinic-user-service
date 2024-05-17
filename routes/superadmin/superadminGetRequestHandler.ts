@@ -6,7 +6,7 @@ import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetSt
 import { getDepartmentsBySiteIdRequestSchema } from '@lib/schemas/adminSchemas';
 import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { verifyJSONToken } from '@helpers/utils';
+import { verifyJSONToken } from '@util/index';
 
 const superadminGetRouter = Router();
 
@@ -26,9 +26,9 @@ superadminGetRouter.get(
   authorizeRequest(['SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { authorization } = bearerTokenSchema.parse(req.headers);
+      const { cookie } = bearerTokenSchema.parse(req.headers);
 
-      const user = verifyJSONToken(authorization);
+      const user = verifyJSONToken(cookie ?? '');
 
       const data = await getSuperAdminBaseData(user?.id ?? '');
 

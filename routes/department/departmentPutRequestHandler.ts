@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { updateDepartmentDataByDepartmentId } from '@datastore/department/departmentPutStore';
 import { updateDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
@@ -21,10 +20,9 @@ departmentPutRequest.put(
       const requestBody = updateDepartmentRequestSchema.parse({
         ...req.params,
         ...req.body,
-        ...req.headers,
       });
 
-      const { departmentId, authorization, ...updateBody } = requestBody;
+      const { departmentId, ...updateBody } = requestBody;
 
       const updatedData = await updateDepartmentDataByDepartmentId(
         departmentId,

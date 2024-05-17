@@ -1,15 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
-import {
-  generateTemporaryPassCode,
-  generatePasswordHash,
-} from '@helpers/utils';
-import { emitNewEvent } from '@messaging/rabbitMq';
-import { CREATE_ADMIN_QUEUE_NAME } from '@util/config';
 import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
-import { remapObjectKeys } from '@util/index';
+import {
+  generatePasswordHash,
+  generateTemporaryPassCode,
+  remapObjectKeys,
+} from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
 
 const providersPostRequestHandler = Router();

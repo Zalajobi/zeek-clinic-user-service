@@ -14,7 +14,7 @@ export const createUnitRequestSchema = z.object({
   occupied_beds: z.coerce.number().default(0),
 });
 
-export const updateUnitRequestSchema = bearerTokenSchema.extend({
+export const updateUnitRequestSchema = z.object({
   unitId: z.string(),
   name: z.string().optional(),
   description: z.string().min(50).optional(),

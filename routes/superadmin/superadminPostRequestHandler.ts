@@ -1,9 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getSuperAdminLoginData } from '@datastore/superAdmin/superadminGetStore';
-import { generateJSONTokenCredentials, validatePassword } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
-import * as console from 'console';
+import {
+  generateJWTAccessToken,
+  generateJWTRefreshToken,
+  setRedisKey,
+  validatePassword,
+} from '@util/index';
 
 const superadminPostRequest = Router();
 
@@ -11,7 +15,6 @@ superadminPostRequest.post(
   '/auth/login',
   async (req: Request, res: Response, next: NextFunction) => {
     let responseMessage = 'Incorrect Credentials',
-      jwtSignData = null,
       success = false;
 
     try {
@@ -24,28 +27,32 @@ superadminPostRequest.post(
           id: admin?.id,
           email: admin?.email,
           role: admin?.role,
+          rememberMe: requestBody.rememberMe,
         };
 
-        jwtSignData = generateJSONTokenCredentials(
+        const accessToken = generateJWTAccessToken(
           jwtData,
           requestBody.rememberMe
-            ? Math.floor(Date.now() / 1000) + 60 * 360
-            : Math.floor(Date.now() / 1000) + 60 * (360 + 60 * 360)
+        );
+        const refreshToken = generateJWTRefreshToken(
+          jwtData,
+          requestBody.rememberMe
         );
 
+        setRedisKey(
+          admin?.id ?? '',
+          refreshToken,
+          requestBody?.rememberMe ? 7 * 24 * 60 * 60 : 24 * 60 * 60
+        );
+        res.cookie('accessToken', accessToken, {
+          httpOnly: true,
+          secure: true,
+        });
         responseMessage = 'Login Successful';
         success = true;
       }
 
-      return JsonApiResponse(
-        res,
-        responseMessage,
-        success,
-        {
-          token: jwtSignData,
-        },
-        200
-      );
+      return JsonApiResponse(res, responseMessage, success, null, 200);
     } catch (error) {
       next(error);
     }

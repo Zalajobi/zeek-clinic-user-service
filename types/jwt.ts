@@ -13,4 +13,7 @@ export interface JWTDataProps {
   email?: string;
   role?: string;
   siteId?: string;
+  iat?: number;
+  exp?: number;
+  rememberMe?: boolean;
 }

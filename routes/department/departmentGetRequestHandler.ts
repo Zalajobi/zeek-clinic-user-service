@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { verifyUserPermission } from '@lib/auth';
 import {
   fetchFilteredDepartmentData,
   getDepartmentCountBySiteId,

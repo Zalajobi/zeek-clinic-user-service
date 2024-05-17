@@ -2,7 +2,7 @@ import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { HospitalStatus } from '@typeorm/entity/enums';
 import { z } from 'zod';
 import { searchHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
-import { extractPerPageAndPage } from '@helpers/utils';
+import { extractPerPageAndPage } from '@util/index';
 
 export const selectAllAvailableCountries = async () => {
   const hospitalRepository = hospitalRepo();
