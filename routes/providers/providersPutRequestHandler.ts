@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { generatePasswordHash } from '@helpers/utils';
-import { remapObjectKeys } from '@util/index';
+import { generatePasswordHash, remapObjectKeys } from '@util/index';
 import { updateProviderDetails } from '@datastore/provider/providerPutStore';
 import { updateProviderRequestSchema } from '@lib/schemas/providerSchemas';
 import { authorizeRequest } from '@middlewares/jwt';

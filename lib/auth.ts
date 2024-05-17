@@ -1,5 +1,4 @@
-import { verifyJSONToken } from '@helpers/utils';
-import { JWTDataProps } from '@typeDesc/jwt';
+import { verifyJSONToken } from '@util/index';
 
 export const verifyUserPermission = (token: string, roleRequired: string[]) => {
   const tokenUser = verifyJSONToken(token);

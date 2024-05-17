@@ -5,7 +5,7 @@ import {
   ONE_MILLION,
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
-import { getIsoDateBackdatedByMonth, isISODate } from '@helpers/utils';
+import { isISODate } from '@util/index';
 
 export const getOrganisationRolesFilterRequestSchema = bearerTokenSchema.extend(
   {

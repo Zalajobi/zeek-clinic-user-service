@@ -2,7 +2,7 @@ import { unitRepo } from '@typeorm/repositories/unitRepositories';
 import { DefaultJsonResponse } from '@util/responses';
 import { searchUnitRequestSchema } from '@lib/schemas/unitSchemas';
 import { z } from 'zod';
-import { extractPerPageAndPage } from '@helpers/utils';
+import { extractPerPageAndPage } from '@util/index';
 
 // Get Unit in a site by the SiteId and their provider count
 export const fetchFilteredUnitData = async (

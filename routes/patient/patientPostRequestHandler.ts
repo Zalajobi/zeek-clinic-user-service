@@ -5,8 +5,8 @@ import { verifyUserPermission } from '@lib/auth';
 import {
   generatePasswordHash,
   generateTemporaryPassCode,
-} from '@helpers/utils';
-import { remapObjectKeys } from '@util/index';
+  remapObjectKeys,
+} from '@util/index';
 import { createNewPatient } from '@datastore/patient/patientPostStore';
 import { z } from 'zod';
 import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
@@ -18,7 +18,13 @@ const patientPostRequestHandler = Router();
 
 patientPostRequestHandler.post(
   '/create',
-  authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'ADMIN']),
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
   async (req: Request, res: Response, next: NextFunction) => {
     const patientKeys = [
         'email',
@@ -51,17 +57,6 @@ patientPostRequestHandler.post(
         ...req.headers,
         ...req.body,
       });
-
-      const verifiedUser = verifyUserPermission(requestBody.authorization, [
-        'SUPER_ADMIN',
-        'HOSPITAL_ADMIN',
-        'SITE_ADMIN',
-        'ADMIN',
-        'HUMAN_RESOURCES',
-      ]);
-      if (!verifiedUser) {
-        return JsonApiResponse(res, 'Not Authorized', false, null, 401);
-      }
 
       // Generate temporary password and hash the password... Hash password from schema if it exists
       const tempPassword = generateTemporaryPassCode();

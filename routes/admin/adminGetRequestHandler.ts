@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyJSONToken } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
 import {
@@ -13,6 +12,7 @@ import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
 import { getDepartmentUnitServiceAreaAndRoleRequestSchema } from '@lib/schemas/patientSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { AUTHORIZE_ALL_ADMINS } from '@util/config';
+import { verifyJSONToken } from '@util/index';
 
 const adminGetRequestHandler = Router();
 
@@ -94,8 +94,8 @@ adminGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { authorization } = bearerTokenSchema.parse(req.headers);
-      const userData = verifyJSONToken(authorization);
+      const { cookie } = bearerTokenSchema.parse(req.headers);
+      const userData = verifyJSONToken(cookie ?? '');
 
       const data = await getAdminFullProfileData(userData?.id as string);
 
@@ -115,8 +115,8 @@ adminGetRequestHandler.get(
   authorizeRequest(AUTHORIZE_ALL_ADMINS),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { authorization } = bearerTokenSchema.parse(req.headers);
-      const userData = verifyJSONToken(authorization);
+      const { cookie } = bearerTokenSchema.parse(req.headers);
+      const userData = verifyJSONToken(cookie ?? '');
 
       const adminData = await getAdminDetails(userData?.id ?? '');
 

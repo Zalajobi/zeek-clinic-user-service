@@ -3,7 +3,7 @@ import { DefaultJsonResponse } from '@util/responses';
 import { Departments } from '@typeorm/entity/departments';
 import { searchDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
 import { z } from 'zod';
-import { extractPerPageAndPage } from '@helpers/utils';
+import { extractPerPageAndPage } from '@util/index';
 
 export const adminCreateProviderGetDepartmentDataBySiteId = async (
   siteId: string

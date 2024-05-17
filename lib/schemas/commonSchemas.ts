@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { getIsoDateBackdatedByMonth, isISODate } from '@helpers/utils';
+import {
+  getCookieDataByKey,
+  getIsoDateBackdatedByMonth,
+  isISODate,
+} from '@util/index';
 
 export const ONE_MILLION = 1000000;
 
@@ -35,12 +39,15 @@ export const LoginRequestSchema = z
   });
 
 export const bearerTokenSchema = z.object({
-  authorization: z
+  // authorization: z
+  //   .string()
+  //   .refine((data) => data.startsWith('Bearer '), {
+  //     message: "Authorization header must start with 'Bearer '",
+  //   })
+  //   .transform((data) => data.replace('Bearer ', '')),
+  cookie: z
     .string()
-    .refine((data) => data.startsWith('Bearer '), {
-      message: "Authorization header must start with 'Bearer '",
-    })
-    .transform((data) => data.replace('Bearer ', '')),
+    .transform((data) => getCookieDataByKey(data, 'accessToken')),
 });
 
 export const maritalStatusSchema = z.enum([

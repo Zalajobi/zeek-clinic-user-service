@@ -2,7 +2,7 @@ import { roleRepo } from '@typeorm/repositories/roleRepository';
 import { DefaultJsonResponse } from '@util/responses';
 import { searchRoleRequestSchema } from '@lib/schemas/roleSchemas';
 import { z } from 'zod';
-import { extractPerPageAndPage } from '@helpers/utils';
+import { extractPerPageAndPage } from '@util/index';
 
 export const getRoleDataBySiteId = async (siteId: string) => {
   const roleRepository = roleRepo();

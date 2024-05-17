@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getSuperAdminLoginData } from '@datastore/superAdmin/superadminGetStore';
+import { JsonApiResponse } from '@util/responses';
+import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
 import {
   generateJWTAccessToken,
   generateJWTRefreshToken,
   setRedisKey,
   validatePassword,
-} from '@helpers/utils';
-import { JsonApiResponse } from '@util/responses';
-import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
+} from '@util/index';
 
 const superadminPostRequest = Router();
 
@@ -19,6 +19,9 @@ superadminPostRequest.post(
 
     try {
       const requestBody = LoginRequestSchema.parse(req.body);
+      console.log({
+        ...req?.headers,
+      });
 
       const admin = await getSuperAdminLoginData(requestBody.email);
 

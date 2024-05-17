@@ -6,7 +6,6 @@ import {
   SortModelSchema,
   DateRangeSchema,
 } from '@lib/schemas/commonSchemas';
-import { getIsoDateBackdatedByMonth } from '@helpers/utils';
 
 export const createSiteRequestSchema = bearerTokenSchema
   .extend({

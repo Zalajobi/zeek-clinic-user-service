@@ -6,7 +6,7 @@ import {
   searchServiceAreaRequestSchema,
 } from '@lib/schemas/serviceAreaSchemas';
 import { z } from 'zod';
-import { extractPerPageAndPage } from '@helpers/utils';
+import { extractPerPageAndPage } from '@util/index';
 
 export const createServiceArea = async (
   data: z.infer<typeof createServiceAreaRequestSchema>

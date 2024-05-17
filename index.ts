@@ -5,16 +5,21 @@ import cors = require('cors');
 
 import { AppDataSource } from './data-source';
 import { SuperAdmin } from '@typeorm/entity/superAdmin';
-import { generatePasswordHash } from '@helpers/utils';
 import rootRouter from './routes';
 import 'dotenv/config';
 import { errorMiddleware } from '@middlewares/error';
 import { authorizeRequest } from '@middlewares/jwt';
+import { generatePasswordHash } from '@util/index';
 
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use('/', rootRouter);
 app.use(authorizeRequest([]));
 app.use(errorMiddleware);
