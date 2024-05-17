@@ -26,10 +26,9 @@ providersGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getOrganisationProvidersFilterRequestSchema.parse({
-        ...req.headers,
-        ...req.query,
-      });
+      const requestBody = getOrganisationProvidersFilterRequestSchema.parse(
+        req.query
+      );
 
       const providerData = await fetchFilteredProviderData(
         requestBody.page,
@@ -73,10 +72,7 @@ providersGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getProviderDetailsRequestSchema.parse({
-        ...req.params,
-        ...req.headers,
-      });
+      const requestBody = getProviderDetailsRequestSchema.parse(req.params);
 
       const provider = await adminGetProviderDetails(requestBody.id);
       if (provider.success) {

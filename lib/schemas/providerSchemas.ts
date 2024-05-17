@@ -1,7 +1,10 @@
 import { z } from 'zod';
 import {
   bearerTokenSchema,
+  DateRangeSchema,
   globalStatusSchema,
+  ONE_MILLION,
+  SortModelSchema,
 } from '@lib/schemas/commonSchemas';
 
 export const createProviderRequestSchema = z
@@ -73,18 +76,45 @@ export const updateProviderRequestSchema = bearerTokenSchema.extend({
   gender: z.string().optional(),
 });
 
-export const getOrganisationProvidersFilterRequestSchema =
-  bearerTokenSchema.extend({
-    siteId: z.string(),
-    page: z.coerce.number().default(0),
-    per_page: z.coerce.number().default(20),
-    search: z.string().optional(),
-    from_date: z.string().optional(),
-    to_date: z.string().optional(),
-    country: z.string().optional(),
-    status: globalStatusSchema.optional(),
-  });
+export const getOrganisationProvidersFilterRequestSchema = z.object({
+  siteId: z.string(),
+  page: z.coerce.number().default(0),
+  per_page: z.coerce.number().default(20),
+  search: z.string().optional(),
+  from_date: z.string().optional(),
+  to_date: z.string().optional(),
+  country: z.string().optional(),
+  status: globalStatusSchema.optional(),
+});
 
-export const getProviderDetailsRequestSchema = bearerTokenSchema.extend({
+export const getProviderDetailsRequestSchema = z.object({
   id: z.string(),
+});
+
+export const searchProviderRequestSchema = z.object({
+  search: z.string().optional(),
+  searchKey: z.string().optional(),
+  id: z.string().optional(),
+  siteId: z.string().optional(),
+  primaryRoleId: z.string().optional(),
+  personalInfoId: z.string().optional(),
+  departmentId: z.string().optional(),
+  serviceareaId: z.string().optional(),
+  unitId: z.string().optional(),
+  email: z.string().optional(),
+  username: z.string().optional(),
+  staff_id: z.string().optional(),
+  is_consultant: z.boolean().optional(),
+  is_specialist: z.boolean().optional(),
+  appointments: z.boolean().optional(),
+  status: globalStatusSchema.optional().transform((data) => {
+    if (data !== 'ALL') return data;
+  }),
+  range: DateRangeSchema.optional(),
+  sortModel: SortModelSchema.default({
+    sort: 'desc',
+    colId: 'created_at',
+  }),
+  startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
+  endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
 });

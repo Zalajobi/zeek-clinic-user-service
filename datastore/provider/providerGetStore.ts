@@ -3,6 +3,9 @@ import { HospitalStatus } from '@typeorm/entity/enums';
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { DefaultJsonResponse } from '@util/responses';
 import { getPatientCountByProviderId } from '@datastore/patient/patientGetStore';
+import { z } from 'zod';
+import { searchProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { extractPerPageAndPage } from '@util/index';
 
 // Get Providers Pagination Data
 export const fetchFilteredProviderData = async (
@@ -160,4 +163,133 @@ export const getProviderCountBySiteId = async (siteId: string) => {
   return await providerRepository.count({
     where: { siteId },
   });
+};
+
+// Search Service Area
+export const getSearchProviderData = async (
+  requestBody: z.infer<typeof searchProviderRequestSchema>
+) => {
+  const providerRepository = providerRepo();
+
+  const { page, perPage } = extractPerPageAndPage(
+    requestBody.endRow,
+    requestBody.startRow
+  );
+
+  const serviceAreaQuery = providerRepository
+    .createQueryBuilder('provider')
+    .orderBy({
+      [`${requestBody.sortModel.colId}`]:
+        requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
+    });
+
+  if (requestBody.siteId) {
+    serviceAreaQuery.where('provider.siteId = :siteId', {
+      siteId: requestBody.siteId,
+    });
+  }
+
+  if (requestBody.id) {
+    serviceAreaQuery.where('provider.id = :id', {
+      id: requestBody.id,
+    });
+  }
+
+  if (requestBody.primaryRoleId) {
+    serviceAreaQuery.where('provider.primaryRoleId = :primaryRoleId', {
+      primaryRoleId: requestBody.primaryRoleId,
+    });
+  }
+
+  if (requestBody.personalInfoId) {
+    serviceAreaQuery.where('provider.personalInfoId = :personalInfoId', {
+      personalInfoId: requestBody.personalInfoId,
+    });
+  }
+
+  if (requestBody.departmentId) {
+    serviceAreaQuery.where('provider.departmentId = :departmentId', {
+      departmentId: requestBody.departmentId,
+    });
+  }
+
+  if (requestBody.serviceareaId) {
+    serviceAreaQuery.where('provider.serviceareaId = :serviceareaId', {
+      serviceareaId: requestBody.serviceareaId,
+    });
+  }
+
+  if (requestBody.unitId) {
+    serviceAreaQuery.where('provider.unitId = :unitId', {
+      unitId: requestBody.unitId,
+    });
+  }
+
+  if (requestBody.email) {
+    serviceAreaQuery.where('LOWER(provider.email) LIKE :email', {
+      email: `%${requestBody.email.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.username) {
+    serviceAreaQuery.where('LOWER(provider.username) LIKE :username', {
+      username: `%${requestBody.username.toLowerCase()}%`,
+    });
+  }
+
+  if (requestBody.staff_id) {
+    serviceAreaQuery.where('provider.staff_id = :staff_id', {
+      staff_id: requestBody.staff_id,
+    });
+  }
+
+  if (requestBody.is_consultant) {
+    serviceAreaQuery.where('provider.is_consultant = :is_consultant', {
+      is_consultant: requestBody.is_consultant,
+    });
+  }
+
+  if (requestBody.is_specialist) {
+    serviceAreaQuery.where('provider.is_specialist = :is_specialist', {
+      is_specialist: requestBody.is_specialist,
+    });
+  }
+
+  if (requestBody.appointments) {
+    serviceAreaQuery.where('provider.appointments = :appointments', {
+      appointments: requestBody.appointments,
+    });
+  }
+
+  if (requestBody.status) {
+    serviceAreaQuery.where('provider.status = :status', {
+      status: requestBody.status,
+    });
+  }
+
+  if (requestBody?.range && requestBody.range.from) {
+    serviceAreaQuery.andWhere('provider.created_at > :fromDate', {
+      fromDate: requestBody.range.from,
+    });
+  }
+
+  if (requestBody?.range && requestBody.range.to) {
+    serviceAreaQuery.andWhere('provider.created_at < :toDate', {
+      toDate: requestBody.range.to,
+    });
+  }
+
+  if (requestBody.search && requestBody.searchKey) {
+    serviceAreaQuery.andWhere(
+      `LOWER(provider.${requestBody.searchKey}) LIKE :search`,
+      {
+        search: `%${requestBody.search.toLowerCase()}%`,
+      }
+    );
+  }
+
+  return await serviceAreaQuery
+    .skip(perPage * page)
+    .take(perPage)
+    .getManyAndCount();
 };

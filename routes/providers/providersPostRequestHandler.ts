@@ -1,13 +1,17 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
-import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import {
+  createProviderRequestSchema,
+  searchProviderRequestSchema,
+} from '@lib/schemas/providerSchemas';
 import {
   generatePasswordHash,
   generateTemporaryPassCode,
   remapObjectKeys,
 } from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchProviderData } from '@datastore/provider/providerGetStore';
 
 const providersPostRequestHandler = Router();
 
@@ -90,6 +94,36 @@ providersPostRequestHandler.post(
       );
     } catch (error) {
       next(error);
+    }
+  }
+);
+
+providersPostRequestHandler.post(
+  '/search',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchProviderRequestSchema.parse(req.body);
+
+      const queryData = await getSearchProviderData(requestBody);
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          providers: queryData[0],
+          totalRows: queryData[1],
+        },
+        200
+      );
+    } catch (err) {
+      next(err);
     }
   }
 );

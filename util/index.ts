@@ -97,7 +97,7 @@ export const generateJWTAccessToken = (
 ) => {
   return jwt.sign(data, JWT_ACCESS_TOKEN, {
     // expiresIn: rememberMe ? '365d' : '15m', // Test purpose
-    expiresIn: rememberMe ? '1h' : '6m',
+    expiresIn: rememberMe ? '60m' : '15m',
   });
 };
 
