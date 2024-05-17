@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import { updateDepartmentDataByDepartmentId } from '@datastore/department/departmentPutStore';
 import { updateDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';

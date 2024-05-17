@@ -28,16 +28,15 @@ export const hospitalDetailsRequestSchema = bearerTokenSchema.extend({
   id: z.string(),
 });
 
-export const getOrganisationHospitalsFilterRequestSchema =
-  bearerTokenSchema.extend({
-    page: z.number().default(0),
-    per_page: z.coerce.number().default(20),
-    search: z.string().optional(),
-    from_date: z.string().optional(),
-    to_date: z.string().optional(),
-    country: z.string().optional(),
-    status: globalStatusSchema.optional(),
-  });
+export const getOrganisationHospitalsFilterRequestSchema = z.object({
+  page: z.number().default(0),
+  per_page: z.coerce.number().default(20),
+  search: z.string().optional(),
+  from_date: z.string().optional(),
+  to_date: z.string().optional(),
+  country: z.string().optional(),
+  status: globalStatusSchema.optional(),
+});
 
 export const searchHospitalRequestSchema = z
   .object({

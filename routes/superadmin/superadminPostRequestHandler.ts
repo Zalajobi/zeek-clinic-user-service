@@ -19,9 +19,6 @@ superadminPostRequest.post(
 
     try {
       const requestBody = LoginRequestSchema.parse(req.body);
-      console.log({
-        ...req?.headers,
-      });
 
       const admin = await getSuperAdminLoginData(requestBody.email);
 

@@ -1,12 +1,10 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { verifyUserPermission } from '@lib/auth';
 import { JsonApiResponse } from '@util/responses';
 import {
   selectAllAvailableCountries,
   fetchFilteredHospitalData,
   getHospitalDetailsById,
 } from '@datastore/hospital/hospitalGetStore';
-import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
 import {
   getOrganisationHospitalsFilterRequestSchema,
   hospitalDetailsRequestSchema,
@@ -19,21 +17,12 @@ const hospitalGetRequest = Router();
 // https://winter-meadow-170239.postman.co/workspace/Zeek-Clinic~4c6a2e42-dfd1-40d9-a781-84902ac84071/request/6089823-93216433-fd31-4743-87d4-f0262b122825?active-environment=c506b532-0a33-49bd-abdb-a162a8e72932
 hospitalGetRequest.get(
   '/organization/hospitals/filters',
+  authorizeRequest(['SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
     try {
-      const requestBody = getOrganisationHospitalsFilterRequestSchema.parse({
-        ...req.headers,
-        ...req.query,
-      });
-
-      const verifiedUser = verifyUserPermission(requestBody.cookie ?? '', [
-        'SUPER_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
+      const requestBody = getOrganisationHospitalsFilterRequestSchema.parse(
+        req.query
+      );
 
       const data = await fetchFilteredHospitalData(
         requestBody.page,
@@ -54,24 +43,13 @@ hospitalGetRequest.get(
 
 hospitalGetRequest.get(
   '/distinct-countries',
-  async (req: Request, res: Response, next: NextFunction) => {
-    let message = 'Not Authorised',
-      success = false;
-
+  authorizeRequest(['SUPER_ADMIN']),
+  async (_req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = bearerTokenSchema.parse(req.headers);
-
-      const verifiedUser = verifyUserPermission(requestBody.cookie ?? '', [
-        'SUPER_ADMIN',
-      ]);
-
-      if (!verifiedUser)
-        return JsonApiResponse(res, message, success, null, 401);
-
       const distinctHospitals = await selectAllAvailableCountries();
 
       if (!distinctHospitals)
-        return JsonApiResponse(res, 'Something went wrong', success, null, 401);
+        return JsonApiResponse(res, 'Something went wrong', false, null, 401);
       else
         return JsonApiResponse(
           res,

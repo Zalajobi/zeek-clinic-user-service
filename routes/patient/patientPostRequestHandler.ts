@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { createPatientRequestSchema } from '@lib/schemas/patientSchemas';
 import { JsonApiResponse } from '@util/responses';
-import { verifyUserPermission } from '@lib/auth';
 import {
   generatePasswordHash,
   generateTemporaryPassCode,

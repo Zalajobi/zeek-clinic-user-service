@@ -96,6 +96,7 @@ export const generateJWTAccessToken = (
   rememberMe: boolean
 ) => {
   return jwt.sign(data, JWT_ACCESS_TOKEN, {
+    // expiresIn: rememberMe ? '365d' : '15m', // Test purpose
     expiresIn: rememberMe ? '1h' : '15m',
   });
 };
@@ -115,7 +116,7 @@ export const verifyJSONToken = (bearerToken: string): JWTDataProps | null => {
   jwt.verify(bearerToken, JWT_ACCESS_TOKEN, (err: any, user: any) => {
     if (err) throw err;
 
-    if (user?.data) jwtData = user.data;
+    if (user) jwtData = user;
   });
 
   return jwtData;
