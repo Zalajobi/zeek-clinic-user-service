@@ -16,7 +16,7 @@ export const createDepartmentRequestSchema = z.object({
   description: z.string().min(20),
 });
 
-export const updateDepartmentRequestSchema = bearerTokenSchema.extend({
+export const updateDepartmentRequestSchema = z.object({
   departmentId: z.string(),
   name: z.string().min(4).optional(),
   description: z.string().min(50).optional(),

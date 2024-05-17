@@ -18,12 +18,11 @@ unitPutRequest.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const requestBody = updateUnitRequestSchema.parse({
-        ...req.headers,
         ...req.body,
         ...req.params,
       });
 
-      const { unitId, authorization, ...updateBody } = requestBody;
+      const { unitId, ...updateBody } = requestBody;
       const updatedData = await updateUnitDataByUnitId(unitId, updateBody);
 
       return JsonApiResponse(

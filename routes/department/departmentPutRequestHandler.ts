@@ -21,10 +21,9 @@ departmentPutRequest.put(
       const requestBody = updateDepartmentRequestSchema.parse({
         ...req.params,
         ...req.body,
-        ...req.headers,
       });
 
-      const { departmentId, authorization, ...updateBody } = requestBody;
+      const { departmentId, ...updateBody } = requestBody;
 
       const updatedData = await updateDepartmentDataByDepartmentId(
         departmentId,

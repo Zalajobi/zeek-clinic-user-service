@@ -73,8 +73,8 @@ export const createPatientRequestSchema = bearerTokenSchema
     return true;
   });
 
-export const updatePatientDetailsRequestSchema = bearerTokenSchema
-  .extend({
+export const updatePatientDetailsRequestSchema = z
+  .object({
     id: z.string(),
     personalInfoId: z.string().optional(),
     departmentId: z.string().optional(),
