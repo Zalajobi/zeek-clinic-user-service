@@ -1,9 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getSuperAdminLoginData } from '@datastore/superAdmin/superadminGetStore';
-import { generateJSONTokenCredentials, validatePassword } from '@helpers/utils';
+import {
+  generateJSONTokenCredentials,
+  generateJWTAccessToken,
+  generateJWTRefreshToken,
+  validatePassword,
+} from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
-import * as console from 'console';
+import redisClient from '@util/redis';
 
 const superadminPostRequest = Router();
 
@@ -26,26 +31,27 @@ superadminPostRequest.post(
           role: admin?.role,
         };
 
-        jwtSignData = generateJSONTokenCredentials(
+        const accessToken = generateJWTAccessToken(
           jwtData,
           requestBody.rememberMe
-            ? Math.floor(Date.now() / 1000) + 60 * 360
-            : Math.floor(Date.now() / 1000) + 60 * (360 + 60 * 360)
+        );
+        const refreshToken = generateJWTRefreshToken(
+          jwtData,
+          requestBody.rememberMe
         );
 
+        const client = redisClient.getClient();
+
+        res.cookie('accessToken', accessToken, {
+          httpOnly: true,
+          secure: true,
+        });
+        // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
         responseMessage = 'Login Successful';
         success = true;
       }
 
-      return JsonApiResponse(
-        res,
-        responseMessage,
-        success,
-        {
-          token: jwtSignData,
-        },
-        200
-      );
+      return JsonApiResponse(res, responseMessage, success, null, 200);
     } catch (error) {
       next(error);
     }

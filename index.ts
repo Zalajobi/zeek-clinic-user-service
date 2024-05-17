@@ -5,11 +5,7 @@ import cors = require('cors');
 
 import { AppDataSource } from './data-source';
 import { SuperAdmin } from '@typeorm/entity/superAdmin';
-
 import { generatePasswordHash } from '@helpers/utils';
-
-// import { superAdminRepo } from '@typeorm/repositories/superAdminRepository';
-
 import rootRouter from './routes';
 import 'dotenv/config';
 import { errorMiddleware } from '@middlewares/error';

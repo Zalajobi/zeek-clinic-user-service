@@ -1,8 +1,9 @@
 import crypto = require('crypto');
 import jwt = require('jsonwebtoken');
-import { JWT_SECRET_KEY, PASSWORD_HASH_SECRET } from '@util/config';
+import { JWT_ACCESS_TOKEN, PASSWORD_HASH_SECRET } from '@util/config';
 import { JWTDataProps } from '@typeDesc/jwt';
 import { isoDateRegExp } from '@lib/patterns';
+import redisClient from '@util/redis';
 
 export const generatePasswordHash = (password: string) => {
   return crypto
@@ -31,14 +32,32 @@ export const generateJSONTokenCredentials = (
       exp, // Expire in 6hrs by default
       // expiresIn: '356 days' //Expire in 365 Days - Meant to test
     },
-    JWT_SECRET_KEY
+    JWT_ACCESS_TOKEN
   );
+};
+
+export const generateJWTAccessToken = (
+  data: JWTDataProps,
+  rememberMe: boolean
+) => {
+  return jwt.sign(data, JWT_ACCESS_TOKEN, {
+    expiresIn: rememberMe ? '1h' : '15m',
+  });
+};
+
+export const generateJWTRefreshToken = (
+  data: JWTDataProps,
+  rememberMe: boolean
+) => {
+  return jwt.sign(data, JWT_ACCESS_TOKEN, {
+    expiresIn: rememberMe ? '7d' : '1d',
+  });
 };
 
 export const verifyJSONToken = (bearerToken: string): JWTDataProps | null => {
   let jwtData: JWTDataProps | null = null;
 
-  jwt.verify(bearerToken, JWT_SECRET_KEY, (err: any, user: any) => {
+  jwt.verify(bearerToken, JWT_ACCESS_TOKEN, (err: any, user: any) => {
     if (err) throw err;
 
     if (user?.data) jwtData = user.data;
@@ -87,12 +106,20 @@ export const extractPerPageAndPage = (endRow: number, startRow = 10) => {
   };
 };
 
-export function isISODate(str: string) {
+export const isISODate = (str: string) => {
   return isoDateRegExp.test(str);
-}
+};
 
 export const getIsoDateBackdatedByMonth = (month?: number): string => {
   const currentDate = new Date();
   currentDate.setUTCMonth(currentDate.getUTCMonth() - (month ?? 12));
   return currentDate.toISOString();
+};
+
+export const setRedisKey = (key: string, value: string, expiry: number) => {
+  const client = redisClient.getClient();
+  client.set(key, value, {
+    EX: expiry,
+    NX: true,
+  });
 };
