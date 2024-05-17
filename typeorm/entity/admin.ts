@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Site } from '@typeorm/entity/site';
 import { AdminRoles } from '@typeorm/entity/enums';
-import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { PersonalInformation } from '@typeorm/entity/personalInfo';
 import { createAdminRequestSchema } from '@lib/schemas/adminSchemas';
 import { z } from 'zod';
 

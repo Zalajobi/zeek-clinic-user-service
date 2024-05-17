@@ -1,5 +1,5 @@
 import { personalInfoRepo } from '@typeorm/repositories/personalInfoRepository';
-import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { PersonalInformation } from '@typeorm/entity/personalInfo';
 import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 import { z } from 'zod';
 

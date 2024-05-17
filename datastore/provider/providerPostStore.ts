@@ -22,12 +22,12 @@ export const adminCreateNewProvider = async (
 
       providerRepository
         .createQueryBuilder('provider')
-        .where('LOWER(provider.email) LIKE :email', {
-          email: data.email,
+        .where('LOWER(provider.email) = :email', {
+          email: data?.email?.toLowerCase(),
         })
-        .orWhere('LOWER(provider.username) LIKE :username', {
-          username: data.username,
-        })
+        // .orWhere('LOWER(provider.username) LIKE LOWER(:username)', {
+        //   username: data.username,
+        // })
         .getCount(),
 
       providerRepository

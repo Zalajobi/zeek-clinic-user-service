@@ -9,7 +9,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { PatientStatus } from '@typeorm/entity/enums';
-import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { PersonalInformation } from '@typeorm/entity/personalInfo';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
 import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 import { Site } from '@typeorm/entity/site';
