@@ -15,4 +15,5 @@ export interface JWTDataProps {
   siteId?: string;
   iat?: number;
   exp?: number;
+  rememberMe?: boolean;
 }

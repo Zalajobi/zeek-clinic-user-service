@@ -27,6 +27,7 @@ superadminPostRequest.post(
           id: admin?.id,
           email: admin?.email,
           role: admin?.role,
+          rememberMe: requestBody.rememberMe,
         };
 
         const accessToken = generateJWTAccessToken(

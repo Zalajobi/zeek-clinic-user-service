@@ -156,6 +156,20 @@ export const errorMiddleware = async (
     return;
   }
 
+  // JWT TOKEN Expired Error
+  if (err.name === 'TokenExpiredError') {
+    console.log('JWT Token Expired');
+    res.status(401).json({
+      error: {
+        type: 'jwt_error',
+        message: 'Token Expired',
+        name: err.name,
+        // errors: err,
+      },
+    });
+    return;
+  }
+
   // Generic Error
   if (err instanceof Error) {
     console.log('General Error');

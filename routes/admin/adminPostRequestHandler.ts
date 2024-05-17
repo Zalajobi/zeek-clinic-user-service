@@ -44,6 +44,7 @@ adminPostRequestHandler.post(
           email: admin?.email,
           role: admin?.role,
           siteId: admin?.siteId,
+          rememberMe: requestBody.rememberMe,
         };
 
         const accessToken = generateJWTAccessToken(
