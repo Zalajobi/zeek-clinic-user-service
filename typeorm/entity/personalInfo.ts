@@ -33,6 +33,7 @@ export class PersonalInformation {
     this.profile_pic = data?.profile_pic ?? '';
     this.religion = data?.religion ?? '';
     this.marital_status = data?.marital_status as MartialStatus;
+    this.country_code = data?.country_code;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -116,6 +117,11 @@ export class PersonalInformation {
     nullable: true,
   })
   country: string;
+
+  @Column({
+    nullable: true,
+  })
+  country_code: string;
 
   @Column({
     default: 'unspecified',

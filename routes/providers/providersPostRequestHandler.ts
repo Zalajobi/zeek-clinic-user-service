@@ -43,6 +43,7 @@ providersPostRequestHandler.post(
         'address',
         'city',
         'country',
+        'country_code',
         'dob',
         'first_name',
         'gender',
@@ -58,10 +59,7 @@ providersPostRequestHandler.post(
       ];
 
     try {
-      const requestBody = createProviderRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = createProviderRequestSchema.parse(req.body);
 
       const tempPassword = generateTemporaryPassCode();
       requestBody.password = generatePasswordHash(tempPassword);
@@ -76,15 +74,15 @@ providersPostRequestHandler.post(
         requestBody.phone
       );
 
-      if (newAdmin.success as boolean) {
-        await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
-          email: providerData?.email,
-          firstName: personalInfoData.first_name,
-          lastName: personalInfoData.last_name,
-          tempPassword: tempPassword,
-          userName: providerData.username,
-        });
-      }
+      // if (newAdmin.success as boolean) {
+      //   await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
+      //     email: providerData?.email,
+      //     firstName: personalInfoData.first_name,
+      //     lastName: personalInfoData.last_name,
+      //     tempPassword: tempPassword,
+      //     userName: providerData.username,
+      //   });
+      // }
 
       return JsonApiResponse(
         res,

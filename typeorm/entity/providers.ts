@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProviderStatus } from '@typeorm/entity/enums';
-import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { PersonalInformation } from '@typeorm/entity/personalInfo';
 import { Patients } from '@typeorm/entity/patient';
 import { Site } from '@typeorm/entity/site';
 import { Roles } from '@typeorm/entity/roles';

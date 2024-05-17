@@ -1,5 +1,5 @@
 import { personalInfoRepo } from '@typeorm/repositories/personalInfoRepository';
-import { PersonalInformation } from '@typeorm/entity/personaInfo';
+import { PersonalInformation } from '@typeorm/entity/personalInfo';
 import { AppDataSource } from '../../data-source';
 
 export const updatePersonalInfoById = async (

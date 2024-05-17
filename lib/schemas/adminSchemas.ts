@@ -14,6 +14,7 @@ export const profileDataRequestSchema = z.object({
   city: z.string(),
   state: z.string(),
   country: z.string(),
+  country_code: z.string(),
   zip_code: z.string(),
   profile_pic: z.string().optional(),
   religion: z.string().optional(),

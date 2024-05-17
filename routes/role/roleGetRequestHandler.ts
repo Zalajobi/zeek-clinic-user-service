@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import {
+  countRoleItemsByMonth,
   getRoleCountBySiteId,
   getRolePaginationDataWithUsersCount,
 } from '@datastore/role/roleGetStore';
-import { getOrganisationRolesFilterRequestSchema } from '@lib/schemas/roleSchemas';
+import {
+  getOrganisationRolesFilterRequestSchema,
+  getRoleChartRequestSchema,
+} from '@lib/schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
@@ -76,6 +80,43 @@ roleGetRequest.get(
           {
             totalRows: count,
           },
+          200
+        );
+
+      return JsonApiResponse(res, 'Something went wrong', false, null, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+roleGetRequest.get(
+  '/chart',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { fromDate, toDate, siteId, groupBy } =
+        getRoleChartRequestSchema.parse(req.query);
+
+      const roleData = await countRoleItemsByMonth(
+        new Date(fromDate),
+        new Date(toDate),
+        groupBy,
+        siteId
+      );
+
+      if (roleData)
+        return JsonApiResponse(
+          res,
+          'Role chart data retrieved successfully',
+          true,
+          roleData,
           200
         );
 

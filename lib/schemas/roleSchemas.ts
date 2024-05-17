@@ -5,6 +5,7 @@ import {
   ONE_MILLION,
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
+import { getIsoDateBackdatedByMonth, isISODate } from '@helpers/utils';
 
 export const getOrganisationRolesFilterRequestSchema = bearerTokenSchema.extend(
   {
@@ -86,4 +87,29 @@ export const searchRoleRequestSchema = z.object({
   }),
   startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
   endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
+});
+
+export const getRoleChartRequestSchema = z.object({
+  siteId: z.string().optional(),
+  fromDate: z
+    .string()
+    .refine(isISODate, {
+      message: 'Not a valid ISO string date.',
+    })
+    .transform((value) => {
+      const date = new Date(value);
+      date.setHours(0, 0, 0, 0);
+      return date.toISOString();
+    }),
+  toDate: z
+    .string()
+    .refine(isISODate, {
+      message: 'Not a valid ISO string date.',
+    })
+    .transform((value) => {
+      const date = new Date(value);
+      date.setHours(23, 59, 59, 999);
+      return date.toISOString();
+    }),
+  groupBy: z.enum(['day', 'week', 'month', 'year', 'hour']).default('day'),
 });
