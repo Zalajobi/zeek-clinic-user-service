@@ -123,3 +123,9 @@ export const setRedisKey = (key: string, value: string, expiry: number) => {
     NX: true,
   });
 };
+
+export const getRedisKey = async (key: string) => {
+  const client = redisClient.getClient();
+
+  return await client.get(key);
+};

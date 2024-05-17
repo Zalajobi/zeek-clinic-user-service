@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getSuperAdminLoginData } from '@datastore/superAdmin/superadminGetStore';
 import {
-  generateJSONTokenCredentials,
   generateJWTAccessToken,
   generateJWTRefreshToken,
+  setRedisKey,
   validatePassword,
 } from '@helpers/utils';
 import { JsonApiResponse } from '@util/responses';
 import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
-import redisClient from '@util/redis';
 
 const superadminPostRequest = Router();
 
@@ -16,7 +15,6 @@ superadminPostRequest.post(
   '/auth/login',
   async (req: Request, res: Response, next: NextFunction) => {
     let responseMessage = 'Incorrect Credentials',
-      jwtSignData = null,
       success = false;
 
     try {
@@ -40,13 +38,15 @@ superadminPostRequest.post(
           requestBody.rememberMe
         );
 
-        const client = redisClient.getClient();
-
+        setRedisKey(
+          admin?.id ?? '',
+          refreshToken,
+          requestBody?.rememberMe ? 7 * 24 * 60 * 60 : 24 * 60 * 60
+        );
         res.cookie('accessToken', accessToken, {
           httpOnly: true,
           secure: true,
         });
-        // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
         responseMessage = 'Login Successful';
         success = true;
       }
