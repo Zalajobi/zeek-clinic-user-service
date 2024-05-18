@@ -1,9 +1,13 @@
-import crypto = require('crypto');
-import jwt = require('jsonwebtoken');
-import { JWT_ACCESS_TOKEN, PASSWORD_HASH_SECRET } from '@util/config';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import {
+  JWT_ACCESS_TOKEN,
+  JWT_REFRESH_TOKEN,
+  PASSWORD_HASH_SECRET,
+} from '@util/config';
 import { JWTDataProps } from '@typeDesc/jwt';
 import { isoDateRegExp } from '@lib/patterns';
-import redisClient from '@util/redis';
+import redisClient from '@lib/redis';
 
 export const excludeKeys = (object: any, keys: string[]) => {
   for (let key of keys) {
@@ -105,7 +109,7 @@ export const generateJWTRefreshToken = (
   data: JWTDataProps,
   rememberMe: boolean
 ) => {
-  return jwt.sign(data, JWT_ACCESS_TOKEN, {
+  return jwt.sign(data, JWT_REFRESH_TOKEN, {
     expiresIn: rememberMe ? '7d' : '1d',
   });
 };

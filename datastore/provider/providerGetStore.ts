@@ -179,9 +179,50 @@ export const getSearchProviderData = async (
   const serviceAreaQuery = providerRepository
     .createQueryBuilder('provider')
     .orderBy({
-      [`${requestBody.sortModel.colId}`]:
+      [`provider.${requestBody.sortModel.colId}`]:
         requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-    });
+    })
+    .innerJoin('provider.primary_role', 'role')
+    .innerJoin('provider.personalInfo', 'profile')
+    .innerJoin('provider.unit', 'unit')
+    .innerJoin('provider.department', 'department')
+    .innerJoin('provider.servicearea', 'servicearea')
+    .select([
+      'provider.id AS id',
+      'provider.siteId AS site_id',
+      'provider.primaryRoleId AS role_id',
+      'provider.personalInfoId AS profile_id',
+      'provider.departmentId AS dept_id',
+      'provider.serviceareaId AS area_id',
+      'provider.unitId AS unit_id',
+      'provider.email AS email',
+      'provider.staff_id AS staff_id',
+      'provider.is_consultant AS is_consultant',
+      'provider.is_specialist AS is_specialist',
+      'provider.appointments AS appointments',
+      'provider.status AS status',
+      'provider.created_at AS created_at',
+      'role.name AS role',
+      'department.name AS dept',
+      'servicearea.name AS area',
+      'unit.name AS unit',
+      'profile.phone AS phone',
+      'profile.first_name AS first_name',
+      'profile.last_name AS last_name',
+      'profile.middle_name AS middle_name',
+      'profile.title AS title',
+      'profile.gender AS gender',
+      'profile.dob AS dob',
+      'profile.address AS address',
+      'profile.address_two AS address_two',
+      'profile.city AS city',
+      'profile.state AS state',
+      'profile.country AS country',
+      'profile.religion AS religion',
+      'profile.marital_status AS marital_status',
+      'profile.zip_code AS zip_code',
+      'profile.profile_pic AS profile_pic',
+    ]);
 
   if (requestBody.siteId) {
     serviceAreaQuery.where('provider.siteId = :siteId', {
@@ -291,5 +332,5 @@ export const getSearchProviderData = async (
   return await serviceAreaQuery
     .skip(perPage * page)
     .take(perPage)
-    .getManyAndCount();
+    .getRawMany();
 };

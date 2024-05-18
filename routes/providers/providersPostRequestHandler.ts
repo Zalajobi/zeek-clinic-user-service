@@ -117,8 +117,10 @@ providersPostRequestHandler.post(
         'Success',
         true,
         {
-          providers: queryData[0],
-          totalRows: queryData[1],
+          providers: queryData,
+          // totalRows: queryData[1],
+          // providers: queryData[0],
+          // totalRows: queryData[1],
         },
         200
       );
