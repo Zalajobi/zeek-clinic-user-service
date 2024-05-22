@@ -28,7 +28,7 @@ superadminGetRouter.get(
     try {
       const { cookie } = bearerTokenSchema.parse(req.headers);
 
-      const user = verifyJSONToken(cookie ?? '');
+      const user = verifyJSONToken(cookie, false);
 
       const data = await getSuperAdminBaseData(user?.id ?? '');
 

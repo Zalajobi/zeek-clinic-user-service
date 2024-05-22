@@ -16,21 +16,21 @@ import { verifyJSONToken } from '@util/index';
 
 const adminGetRequestHandler = Router();
 
-// Verify Token with JWT and update Password
-adminGetRequestHandler.get(
-  '/password/request-password/jwt_token/verify',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const verifyToken = verifyJSONToken(req.query.authorization as string);
-
-      if (verifyToken)
-        return JsonApiResponse(res, 'Token is valid', true, null, 200);
-      else return JsonApiResponse(res, 'Token is invalid', false, null, 401);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+// // Verify Token with JWT and update Password
+// adminGetRequestHandler.get(
+//   '/password/request-password/jwt_token/verify',
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const verifyToken = verifyJSONToken(req.query.authorization as string);
+//
+//       if (verifyToken)
+//         return JsonApiResponse(res, 'Token is valid', true, null, 200);
+//       else return JsonApiResponse(res, 'Token is invalid', false, null, 401);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
 
 // Get Roles, Departments, Units and Service Area of a site
 adminGetRequestHandler.get(
@@ -95,7 +95,7 @@ adminGetRequestHandler.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { cookie } = bearerTokenSchema.parse(req.headers);
-      const userData = verifyJSONToken(cookie ?? '');
+      const userData = verifyJSONToken(cookie, false);
 
       const data = await getAdminFullProfileData(userData?.id as string);
 
@@ -116,7 +116,7 @@ adminGetRequestHandler.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { cookie } = bearerTokenSchema.parse(req.headers);
-      const userData = verifyJSONToken(cookie ?? '');
+      const userData = verifyJSONToken(cookie, false);
 
       const adminData = await getAdminDetails(userData?.id ?? '');
 

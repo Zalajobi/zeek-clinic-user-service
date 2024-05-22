@@ -9,30 +9,13 @@ import { JWTDataProps } from '@typeDesc/jwt';
 import { isoDateRegExp } from '@lib/patterns';
 import redisClient from '@lib/redis';
 
-export const excludeKeys = (object: any, keys: string[]) => {
-  for (let key of keys) {
-    delete object[key];
-  }
-
-  return object;
-};
-
-export const purgeObjectOfNullOrEmptyValues = (
-  obj: Record<string, any>
-): Record<string, any> => {
-  const cleanedObject: Record<string, any> = {};
-
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      const value = obj[key];
-      if (value !== null && value !== undefined && value !== '') {
-        cleanedObject[key] = value;
-      }
-    }
-  }
-
-  return cleanedObject;
-};
+// export const excludeKeys = (object: any, keys: string[]) => {
+//   for (let key of keys) {
+//     delete object[key];
+//   }
+//
+//   return object;
+// };
 
 export const isObjectEmpty = (obj: Record<string, any>): boolean => {
   for (const key in obj) {
@@ -114,14 +97,21 @@ export const generateJWTRefreshToken = (
   });
 };
 
-export const verifyJSONToken = (bearerToken: string): JWTDataProps | null => {
-  let jwtData: JWTDataProps | null = null;
+export const verifyJSONToken = (
+  bearerToken: string,
+  isRefreshToken: boolean
+): JWTDataProps | null => {
+  let jwtData: JWTDataProps = {};
 
-  jwt.verify(bearerToken, JWT_ACCESS_TOKEN, (err: any, user: any) => {
-    if (err) throw err;
+  jwt.verify(
+    bearerToken,
+    isRefreshToken ? JWT_REFRESH_TOKEN : JWT_ACCESS_TOKEN,
+    (err: any, user: any) => {
+      if (err) throw err;
 
-    if (user) jwtData = user;
-  });
+      if (user) jwtData = user;
+    }
+  );
 
   return jwtData;
 };
@@ -180,17 +170,16 @@ export const setRedisKey = (key: string, value: string, expiry: number) => {
   const client = redisClient.getClient();
   client.set(key, value, {
     EX: expiry,
-    NX: true,
   });
 };
 
 export const getRedisKey = async (key: string) => {
   const client = redisClient.getClient();
 
-  return await client.get(key);
+  return (await client.get(key)) as string;
 };
 
-export const getCookieDataByKey = (cookie: string, key: string) => {
+export const getCookieDataByKey = (cookie: string, key: string): string => {
   const cookies = cookie.split(';').map((cookie) => cookie.trim());
   for (const cookie of cookies) {
     const [name, value] = cookie.split('=');
@@ -198,5 +187,5 @@ export const getCookieDataByKey = (cookie: string, key: string) => {
       return decodeURIComponent(value);
     }
   }
-  return null;
+  return '';
 };
