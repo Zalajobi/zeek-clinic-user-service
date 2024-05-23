@@ -41,6 +41,10 @@ export const REDIS_PASSWORD = process.env.REDIS_PASSWORD!;
 
 export const REDIS_PORT = process.env.REDIS_PORT!;
 
+export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60; // 24 hours in seconds
+
+export const SEVEN_TWO_DAYS_SECONDS = 7 * 24 * 60 * 60; // 24 hours in seconds
+
 // export const AUTHORIZE_SUPER = ['SUPER_ADMIN'];
 //
 // export const AUTHORIZE_ASHS = ['ADMIN', 'SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN'];

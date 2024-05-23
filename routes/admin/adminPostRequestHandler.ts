@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { sendResetPasswordEmail } from '@messaging/email';
-import { emitNewEvent } from '@messaging/rabbitMq';
-import { CREATE_ADMIN_QUEUE_NAME } from '@util/config';
 import {
   getAdminAndProfileDataByEmailOrUsername,
   lookupPrimaryAdminInfo,
@@ -25,6 +23,10 @@ import {
   setRedisKey,
   validatePassword,
 } from '@util/index';
+import {
+  SEVEN_TWO_DAYS_SECONDS,
+  TWENTY_FOUR_HOURS_SECONDS,
+} from '@util/config';
 
 const adminPostRequestHandler = Router();
 
@@ -59,7 +61,9 @@ adminPostRequestHandler.post(
         setRedisKey(
           admin?.id ?? '',
           refreshToken,
-          requestBody?.rememberMe ? 7 * 24 * 60 * 60 : 24 * 60 * 60
+          requestBody?.rememberMe
+            ? SEVEN_TWO_DAYS_SECONDS
+            : TWENTY_FOUR_HOURS_SECONDS
         );
         res.cookie('accessToken', accessToken, {
           httpOnly: true,
@@ -94,8 +98,10 @@ adminPostRequestHandler.post(
 
       // Set a temporary password if no password is set
       const tempPassword = generateTemporaryPassCode();
-      if (!requestBody.password)
-        requestBody.password = generatePasswordHash(tempPassword);
+
+      requestBody.password = generatePasswordHash(
+        requestBody?.password ?? tempPassword
+      );
 
       const newAdmin = await createNewAdmin(requestBody);
 

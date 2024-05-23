@@ -1,26 +1,29 @@
 import { adminRepo } from '@typeorm/repositories/adminRepository';
 import { Admin } from '@typeorm/entity/admin';
 import { ObjectLiteral } from 'typeorm';
+import { DefaultJsonResponse } from '@util/responses';
 
-export const getAdminPrimaryLoginInformation = async (
-  value: string
-): Promise<Admin | null> => {
+export const getAdminPrimaryLoginInformation = async (value: string) => {
   const adminRepository = adminRepo();
 
-  return await adminRepository
+  const adminData = adminRepository
     .createQueryBuilder('admin')
-    .where('admin.email = :email OR admin.username = :username', {
+    .where('LOWER(admin.email) = :email OR LOWER(admin.staffId) = :staffId', {
       email: value,
-      username: value,
+      staffId: value,
     })
     .select([
-      'admin.password',
-      'admin.role',
-      'admin.email',
       'admin.id',
       'admin.siteId',
+      'admin.email',
+      'admin.password',
+      'admin.role',
     ])
     .getOne();
+
+  if (!adminData) throw new Error('Incorrect Credentials');
+
+  return adminData;
 };
 
 export const lookupPrimaryAdminInfo = async (
