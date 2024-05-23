@@ -50,7 +50,7 @@ export const searchHospitalRequestSchema = z
     city: z.string().optional(),
     state: z.string().optional(),
     country: z.string().optional(),
-    site_count: z.string().optional(),
+    siteCount: z.string().optional(),
     status: globalStatusSchema.optional().transform((data) => {
       if (data !== 'ALL') return data;
     }),
@@ -58,7 +58,7 @@ export const searchHospitalRequestSchema = z
     range: DateRangeSchema.optional(),
     sortModel: SortModelSchema.default({
       sort: 'desc',
-      colId: 'created_at',
+      colId: 'createdAt',
     }),
     startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
     endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),

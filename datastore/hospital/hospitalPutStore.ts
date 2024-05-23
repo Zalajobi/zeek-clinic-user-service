@@ -8,7 +8,7 @@ export const incrementTotalSiteCount = async (hospitalId: string) => {
     await hospitalRepository
       .createQueryBuilder()
       .update(Hospital)
-      .set({ siteCount: () => 'site_count + 1' })
+      .set({ siteCount: () => 'siteCount + 1' })
       .where('id = :id', { id: hospitalId })
       .execute();
   } catch (error) {
