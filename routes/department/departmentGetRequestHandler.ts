@@ -21,7 +21,7 @@ departmentGetRequest.get(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const siteId = req.params.siteId as string;
+    const { siteId } = siteIdRequestSchema.parse(req.params);
 
     try {
       const departments = await getDepartmentDataBySiteId(siteId);

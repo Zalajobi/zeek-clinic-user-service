@@ -117,10 +117,12 @@ export const getSearchDepartmentData = async (
     requestBody.startRow
   );
 
-  const deptQuery = deptRepository.createQueryBuilder('dept').orderBy({
-    [`${requestBody.sortModel.colId}`]:
-      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-  });
+  const deptQuery = deptRepository
+    .createQueryBuilder('dept')
+    .orderBy(
+      `dept.${requestBody.sortModel.colId}`,
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
+    );
 
   if (requestBody.siteId) {
     deptQuery.where('dept.siteId = :siteId', {
@@ -158,10 +160,16 @@ export const getSearchDepartmentData = async (
     });
   }
 
-  return await deptQuery
+  const department = await deptQuery
     .skip(perPage * page)
     .take(perPage)
     .getManyAndCount();
+
+  return DefaultJsonResponse(
+    department ? 'Department Data Retrieval Success' : 'Something Went Wong',
+    department,
+    !!department
+  );
 };
 
 export const getDepartmentCountBySiteId = async (siteId: string) => {

@@ -28,7 +28,7 @@ departmentPostRequest.post(
       return JsonApiResponse(
         res,
         newRole.message,
-        <boolean>newRole.success,
+        newRole.success,
         null,
         newRole?.success ? 201 : 500
       );
@@ -55,11 +55,11 @@ departmentPostRequest.post(
 
       return JsonApiResponse(
         res,
-        'Success',
-        true,
+        queryData?.message,
+        queryData?.success,
         {
-          depts: queryData[0],
-          totalRows: queryData[1],
+          depts: queryData?.data[0],
+          totalRows: queryData?.data[1],
         },
         200
       );

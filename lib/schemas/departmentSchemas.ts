@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import {
-  bearerTokenSchema,
   DateRangeSchema,
-  globalStatusSchema,
   ONE_MILLION,
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
