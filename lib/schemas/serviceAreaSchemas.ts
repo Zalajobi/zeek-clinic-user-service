@@ -1,20 +1,18 @@
 import { z } from 'zod';
 import {
-  bearerTokenSchema,
   DateRangeSchema,
   ONE_MILLION,
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
 
-export const getOrganisationServiceAreaFilterRequestSchema =
-  bearerTokenSchema.extend({
-    siteId: z.string(),
-    page: z.coerce.number(),
-    per_page: z.coerce.number(),
-    search: z.string().optional(),
-    from_date: z.string().optional(),
-    to_date: z.string().optional(),
-  });
+export const getOrganisationServiceAreaFilterRequestSchema = z.object({
+  siteId: z.string(),
+  page: z.coerce.number(),
+  per_page: z.coerce.number(),
+  search: z.string().optional(),
+  from_date: z.string().optional(),
+  to_date: z.string().optional(),
+});
 
 export const createServiceAreaRequestSchema = z.object({
   siteId: z.string(),

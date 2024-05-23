@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import {
-  bearerTokenSchema,
   DateRangeSchema,
   ONE_MILLION,
   SortModelSchema,

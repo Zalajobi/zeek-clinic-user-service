@@ -58,10 +58,10 @@ export const getSearchServiceAreaData = async (
 
   const serviceAreaQuery = serviceAreaRepository
     .createQueryBuilder('service-area')
-    .orderBy({
-      [`${requestBody.sortModel.colId}`]:
-        requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-    });
+    .orderBy(
+      `service-area.${requestBody.sortModel.colId}`,
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
+    );
 
   if (requestBody.siteId) {
     serviceAreaQuery.where('service-area.siteId = :siteId', {
@@ -108,8 +108,16 @@ export const getSearchServiceAreaData = async (
     );
   }
 
-  return await serviceAreaQuery
+  const areaData = await serviceAreaQuery
     .skip(perPage * page)
     .take(perPage)
     .getManyAndCount();
+
+  return DefaultJsonResponse(
+    areaData
+      ? 'Service Area Data Retrieved Successfully'
+      : 'Something Went Wrong',
+    areaData,
+    !!areaData
+  );
 };
