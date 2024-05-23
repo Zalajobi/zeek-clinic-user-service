@@ -10,14 +10,12 @@ import {
   getSiteStatusCountsByHospitalId,
 } from '@datastore/site/siteGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
-import {
-  getHospitalGeoDetailsRequestSchema,
-  getOrganisationSiteFilterRequestSchema,
-  getSiteDetailsRequestSchema,
-  getSitesOrganizationalStructuresRequestSchema,
-  siteStatusCountsRequestSchema,
-} from '@lib/schemas/siteSchemas';
+import { getOrganisationSiteFilterRequestSchema } from '@lib/schemas/siteSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import {
+  hospitalIdRequestSchema,
+  siteIdRequestSchema,
+} from '@lib/schemas/commonSchemas';
 
 const siteGetRequest = Router();
 
@@ -55,10 +53,7 @@ siteGetRequest.get(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getHospitalGeoDetailsRequestSchema.parse({
-        ...req.headers,
-        ...req.params,
-      });
+      const requestBody = hospitalIdRequestSchema.parse(req.params);
 
       const data = await getHospitalGeoDetails(requestBody.hospitalId);
       return JsonApiResponse(res, 'Success', true, data, 200);
@@ -137,10 +132,7 @@ siteGetRequest.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getSiteDetailsRequestSchema.parse({
-        ...req.params,
-        ...req.headers,
-      });
+      const requestBody = siteIdRequestSchema.parse(req.params);
 
       const site = await loadSiteDetailsById(requestBody.siteId);
       return JsonApiResponse(
@@ -176,10 +168,7 @@ siteGetRequest.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getSitesOrganizationalStructuresRequestSchema.parse({
-        ...req.headers,
-        ...req.params,
-      });
+      const requestBody = siteIdRequestSchema.parse(req.params);
 
       const [department, role, serviceArea, unit] = await Promise.all([
         getDepartmentDataBySiteId(requestBody.siteId),
@@ -219,7 +208,7 @@ siteGetRequest.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = siteStatusCountsRequestSchema.parse(req.params);
+      const requestBody = hospitalIdRequestSchema.parse(req.params);
 
       const data = await getSiteStatusCountsByHospitalId(
         requestBody.hospitalId

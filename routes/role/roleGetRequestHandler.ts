@@ -10,7 +10,7 @@ import {
   getRoleChartRequestSchema,
 } from '@lib/schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const roleGetRequest = Router();
 
@@ -69,7 +69,7 @@ roleGetRequest.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+      const { siteId } = siteIdRequestSchema.parse(req.params);
       const count = await getRoleCountBySiteId(siteId);
 
       if (count)

@@ -6,7 +6,7 @@ import {
 } from '@datastore/patient/patientGetStore';
 import { getProviderPrimaryPatientRequestSchema } from '@lib/schemas/patientSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const patientGetRequestHandler = Router();
 
@@ -48,7 +48,7 @@ patientGetRequestHandler.get(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+    const { siteId } = siteIdRequestSchema.parse(req.params);
 
     try {
       const count = await getPatientCountBySiteId(siteId);

@@ -10,7 +10,7 @@ import {
   getProviderDetailsRequestSchema,
 } from '@lib/schemas/providerSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const providersGetRequestHandler = Router();
 
@@ -107,7 +107,7 @@ providersGetRequestHandler.get(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+    const { siteId } = siteIdRequestSchema.parse(req.params);
 
     try {
       const count = await getProviderCountBySiteId(siteId);

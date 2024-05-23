@@ -7,7 +7,7 @@ import {
 } from '@datastore/department/departmentGetStore';
 import { getOrganisationDepartmentsFilterRequestSchema } from '@lib/schemas/departmentSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const departmentGetRequest = Router();
 
@@ -89,7 +89,7 @@ departmentGetRequest.get(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+    const { siteId } = siteIdRequestSchema.parse(req.params);
 
     try {
       const count = await getDepartmentCountBySiteId(siteId);

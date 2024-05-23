@@ -45,7 +45,7 @@ patientPostRequestHandler.post(
         'middle_name',
         'state',
         'title',
-        'zip_code',
+        'zipCode',
         'marital_status',
         'phone',
         'profile_pic',

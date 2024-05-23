@@ -4,6 +4,7 @@ import { Site } from '@typeorm/entity/site';
 import { searchSiteRequestSchema } from '@lib/schemas/siteSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
+import { DefaultJsonResponse } from '@util/responses';
 
 export const fetchFilteredSiteData = async (
   page: number,
@@ -225,10 +226,16 @@ export const getSearchSiteData = async (
     });
   }
 
-  return await siteQuery
+  const siteData = await siteQuery
     .skip(perPage * page)
     .take(perPage)
     .getManyAndCount();
+
+  return DefaultJsonResponse(
+    siteData ? 'Success' : 'Failed',
+    siteData,
+    !!siteData
+  );
 };
 
 export const getSiteStatusCountsByHospitalId = async (hospitalId: string) => {

@@ -118,7 +118,7 @@ export const getAdminFullProfileData = async (id: string) => {
       'profile.address',
       'profile.city',
       'profile.country',
-      'profile.zip_code',
+      'profile.zipCode',
       'profile.profile_pic',
       'profile.createdAt',
       'profile.middle_name',

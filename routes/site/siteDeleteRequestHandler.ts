@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { authorizeRequest } from '@middlewares/jwt';
-import { deleteSiteRequestSchema } from '@lib/schemas/siteSchemas';
 import { deleteSingleSiteById } from '@datastore/site/siteDeleteStore';
 import { JsonApiResponse } from '@util/responses';
+import { idRequestSchema } from '@lib/schemas/commonSchemas';
 
 const siteDeleteRequest = Router();
 
@@ -11,10 +11,7 @@ siteDeleteRequest.delete(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = deleteSiteRequestSchema.parse({
-        ...req.headers,
-        ...req.params,
-      });
+      const requestBody = idRequestSchema.parse(req.params);
 
       const { affected } = await deleteSingleSiteById(requestBody.id);
 

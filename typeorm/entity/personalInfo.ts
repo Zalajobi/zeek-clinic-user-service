@@ -29,11 +29,11 @@ export class PersonalInformation {
     this.city = data?.city;
     this.state = data?.state;
     this.country = data?.country;
-    this.zip_code = data?.zip_code;
+    this.zipCode = data?.zipCode;
     this.profile_pic = data?.profile_pic ?? '';
     this.religion = data?.religion ?? '';
     this.marital_status = data?.marital_status as MartialStatus;
-    this.country_code = data?.country_code;
+    this.countryCode = data?.countryCode;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -121,7 +121,7 @@ export class PersonalInformation {
   @Column({
     nullable: true,
   })
-  country_code: string;
+  countryCode: string;
 
   @Column({
     default: 'unspecified',
@@ -139,7 +139,7 @@ export class PersonalInformation {
   @Column({
     nullable: true,
   })
-  zip_code: string;
+  zipCode: string;
 
   @Column({
     nullable: true,

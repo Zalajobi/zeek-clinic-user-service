@@ -95,6 +95,14 @@ export const globalStatusSchema = z.enum([
   'OTHERS',
 ]);
 
-export const getCountBySiteIdRequestSchema = z.object({
+export const siteIdRequestSchema = z.object({
   siteId: z.string(),
+});
+
+export const hospitalIdRequestSchema = z.object({
+  hospitalId: z.string(),
+});
+
+export const idRequestSchema = z.object({
+  id: z.string(),
 });

@@ -23,7 +23,7 @@ const sitePostRequest = Router();
  *                            name (min 4 chars), email (valid email format), and various boolean
  *                            flags indicating the availability of different services at the site.
  *                            `hospital_id` and `totalSites` are required.
- *                            Optional fields include `logo`, `country_code`, and `time_zone`.
+ *                            Optional fields include `logo`, `countryCode`, and `time_zone`.
  * @returns {JSON} A JSON response indicating the success or failure of the operation.
  *                 Successful requests return the created or updated site information,
  *                 while failures return an error message and corresponding status code.
@@ -56,13 +56,13 @@ sitePostRequest.post(
 
       return JsonApiResponse(
         res,
-        'Success',
-        true,
+        queryData.message,
+        queryData.success,
         {
-          sites: queryData[0],
-          totalRows: queryData[1],
+          sites: queryData?.data[0],
+          totalRows: queryData?.data[1],
         },
-        200
+        queryData.success ? 200 : 400
       );
     } catch (error) {
       next(error);

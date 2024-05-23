@@ -48,7 +48,7 @@ export const createPatientRequestSchema = bearerTokenSchema
     city: z.string(),
     state: z.string(),
     country: z.string(),
-    zip_code: z.coerce.string().optional(),
+    zipCode: z.coerce.string().optional(),
     profile_pic: z.string().optional(),
     religion: z.string().optional(),
     marital_status: maritalStatusSchema,

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import {
   ONE_MILLION,
-  bearerTokenSchema,
   globalStatusSchema,
   SortModelSchema,
   DateRangeSchema,
@@ -43,11 +42,7 @@ export const createSiteRequestSchema = z
     return !data.email.includes('+');
   });
 
-export const getHospitalGeoDetailsRequestSchema = bearerTokenSchema.extend({
-  hospitalId: z.string(),
-});
-
-export const getOrganisationSiteFilterRequestSchema = bearerTokenSchema.extend({
+export const getOrganisationSiteFilterRequestSchema = z.object({
   page: z.coerce.number(),
   per_page: z.coerce.number(),
   search: z.string().optional(),
@@ -58,15 +53,6 @@ export const getOrganisationSiteFilterRequestSchema = bearerTokenSchema.extend({
   state: z.string().optional(),
   hospital_id: z.string(),
 });
-
-export const getSiteDetailsRequestSchema = bearerTokenSchema.extend({
-  siteId: z.string(),
-});
-
-export const getSitesOrganizationalStructuresRequestSchema =
-  bearerTokenSchema.extend({
-    siteId: z.string(),
-  });
 
 export const searchSiteRequestSchema = z
   .object({
@@ -96,14 +82,6 @@ export const searchSiteRequestSchema = z
     message: 'endRow must be greater than startRow',
     path: ['endRow'],
   });
-
-export const siteStatusCountsRequestSchema = z.object({
-  hospitalId: z.string(),
-});
-
-export const deleteSiteRequestSchema = z.object({
-  id: z.string(),
-});
 
 export const updateSiteRequestSchema = z.object({
   id: z.string(),
