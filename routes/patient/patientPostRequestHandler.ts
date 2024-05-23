@@ -8,7 +8,6 @@ import {
 } from '@util/index';
 import { createNewPatient } from '@datastore/patient/patientPostStore';
 import { z } from 'zod';
-import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 import { emitNewEvent } from '@messaging/rabbitMq';
 import { CREATE_PATIENT_QUEUE_NAME } from '@util/config';
 import { authorizeRequest } from '@middlewares/jwt';
@@ -67,9 +66,7 @@ patientPostRequestHandler.post(
         remapObjectKeys(requestBody, patientKeys) as z.infer<
           typeof createPatientRequestSchema
         >,
-        remapObjectKeys(requestBody, personalInfoKeys) as z.infer<
-          typeof profileDataRequestSchema
-        >,
+        remapObjectKeys(requestBody, personalInfoKeys),
         requestBody.employer,
         requestBody.emergencyContacts
       );

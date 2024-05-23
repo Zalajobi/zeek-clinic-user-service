@@ -1,9 +1,6 @@
 import { z } from 'zod';
-import {
-  bearerTokenSchema,
-  globalStatusSchema,
-  maritalStatusSchema,
-} from '@lib/schemas/commonSchemas';
+import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import { globalStatusSchema, maritalStatusSchema } from '@lib/schemas/enums';
 
 export const employerSchema = z.object({
   occupation: z.string(),

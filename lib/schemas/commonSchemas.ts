@@ -4,12 +4,33 @@ import {
   getIsoDateBackdatedByMonth,
   isISODate,
 } from '@util/index';
+import { maritalStatusSchema } from '@lib/schemas/enums';
 
 export const ONE_MILLION = 1000000;
 
 export const SortModelSchema = z.object({
   sort: z.enum(['asc', 'desc']),
   colId: z.string(),
+});
+
+export const profileInformationSchema = z.object({
+  title: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  middleName: z.string().optional(),
+  phone: z.string(),
+  gender: z.enum(['Male', 'Female', 'Others']),
+  dob: z.string(),
+  address: z.string(),
+  alternateAddress: z.string().optional(),
+  city: z.string(),
+  state: z.string(),
+  country: z.string(),
+  countryCode: z.string(),
+  zipCode: z.string(),
+  profilePic: z.string().optional(),
+  religion: z.string().optional(),
+  maritalStatus: maritalStatusSchema,
 });
 
 export const DateRangeSchema = z.object({
@@ -49,51 +70,6 @@ export const bearerTokenSchema = z.object({
     .string()
     .transform((data) => getCookieDataByKey(data, 'accessToken')),
 });
-
-export const maritalStatusSchema = z.enum([
-  'SINGLE',
-  'IN_A_RELATIONSHIP',
-  'ENGAGED',
-  'MARRIED',
-  'DIVORCED',
-  'WIDOWED',
-  'SEPARATED',
-  'COMPLICATED',
-  'OPEN_RELATIONSHIP',
-  'CIVIL_UNION',
-  'DOMESTIC_PARTNERSHIP',
-  'OTHERS',
-]);
-
-export const globalStatusSchema = z.enum([
-  'ALL',
-  'ACTIVE',
-  'PENDING',
-  'ON_LEAVE',
-  'ON_BREAK',
-  'SUSPENDED',
-  'TERMINATED',
-  'UNAVAILABLE',
-  'ARCHIVED',
-  'DEACTIVATED',
-  'CLOSED',
-  'DISCHARGED',
-  'DECEASED',
-  'INPATIENT',
-  'OUTPATIENT',
-  'SINGLE',
-  'IN_A_RELATIONSHIP',
-  'ENGAGED',
-  'MARRIED',
-  'DIVORCED',
-  'WIDOWED',
-  'SEPARATED',
-  'COMPLICATED',
-  'OPEN_RELATIONSHIP',
-  'CIVIL_UNION',
-  'DOMESTIC_PARTNERSHIP',
-  'OTHERS',
-]);
 
 export const siteIdRequestSchema = z.object({
   siteId: z.string(),

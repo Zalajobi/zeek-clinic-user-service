@@ -31,7 +31,6 @@ export class Patients {
     this.email = data?.email;
     this.password = data?.password ?? '';
     this.status = data?.status as PatientStatus;
-    this.providerId = data?.careGiverId;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -124,7 +123,7 @@ export class Patients {
   gender: string;
 
   @Column({
-    nullable: true,
+    nullable: false,
   })
   dob: Date;
 
@@ -133,6 +132,12 @@ export class Patients {
     length: 150,
   })
   address: string;
+
+  @Column({
+    nullable: true,
+    length: 150,
+  })
+  alternateAddress: string;
 
   @Column({
     nullable: false,

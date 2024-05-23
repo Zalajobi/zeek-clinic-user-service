@@ -1,8 +1,6 @@
 import { z } from 'zod';
-import {
-  bearerTokenSchema,
-  globalStatusSchema,
-} from '@lib/schemas/commonSchemas';
+import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import { globalStatusSchema } from '@lib/schemas/enums';
 
 export const createProviderRequestSchema = z
   .object({

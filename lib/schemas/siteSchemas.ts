@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import {
   ONE_MILLION,
-  globalStatusSchema,
   SortModelSchema,
   DateRangeSchema,
 } from '@lib/schemas/commonSchemas';
+import { globalStatusSchema } from '@lib/schemas/enums';
 
 export const createSiteRequestSchema = z
   .object({

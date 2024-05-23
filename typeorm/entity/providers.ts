@@ -119,7 +119,7 @@ export class Provider {
   gender: string;
 
   @Column({
-    nullable: true,
+    nullable: false,
   })
   dob: Date;
 
@@ -128,6 +128,12 @@ export class Provider {
     length: 150,
   })
   address: string;
+
+  @Column({
+    nullable: true,
+    length: 150,
+  })
+  alternateAddress: string;
 
   @Column({
     nullable: false,

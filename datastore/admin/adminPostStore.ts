@@ -4,38 +4,34 @@ import { AdminRoles } from '@typeorm/entity/enums';
 import { DefaultJsonResponse } from '@util/responses';
 import { Admin } from '@typeorm/entity/admin';
 import { z } from 'zod';
-import {
-  createAdminRequestSchema,
-  profileDataRequestSchema,
-} from '@lib/schemas/adminSchemas';
+import { createAdminRequestSchema } from '@lib/schemas/adminSchemas';
 
 export const createNewAdmin = async (
-  adminData: z.infer<typeof createAdminRequestSchema>,
-  profileInfoData: z.infer<typeof profileDataRequestSchema>
+  adminData: z.infer<typeof createAdminRequestSchema>
 ) => {
   const adminRepository = adminRepo();
 
   const [adminCount, staffIdAndCount]: any = await customPromiseRequest([
     adminRepository
       .createQueryBuilder('admin')
-      .where('LOWER(admin.email) LIKE :email', {
-        email: adminData.email,
+      .where('LOWER(admin.email) = :email', {
+        email: adminData.email.toLowerCase(),
       })
-      .orWhere('LOWER(admin.username) LIKE :username', {
-        username: adminData.username,
+      .andWhere('admin.siteId = :siteId', {
+        siteId: adminData.siteId,
       })
       .getCount(),
 
     adminRepository
       .createQueryBuilder('admin')
       .where('LOWER(admin.staff_id) = :staffId AND admin.siteId = :siteId', {
-        staffId: adminData.staff_id,
+        staffId: adminData.staffId,
         siteId: adminData.siteId,
       })
       .getCount(),
   ]);
 
-  adminData.staff_id = adminData.staff_id.toLowerCase();
+  adminData.staffId = adminData.staffId.toLowerCase();
   adminData.role = adminData.role.replace(' ', '_') as AdminRoles;
 
   if (

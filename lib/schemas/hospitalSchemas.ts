@@ -1,11 +1,10 @@
 import { z } from 'zod';
 import {
-  bearerTokenSchema,
   DateRangeSchema,
-  globalStatusSchema,
   ONE_MILLION,
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
+import { globalStatusSchema } from '@lib/schemas/enums';
 
 export const createHospitalRequestSchema = z
   .object({

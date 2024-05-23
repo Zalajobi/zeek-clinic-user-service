@@ -1,16 +1,12 @@
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { customPromiseRequest } from '@lib/api';
 import { DefaultJsonResponse } from '@util/responses';
-import { Provider } from '@typeorm/entity/providers';
 import { z } from 'zod';
-import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
 
 // Post Requests Stores
 export const adminCreateNewProvider = async (
-  data: z.infer<typeof createProviderRequestSchema> | any,
-  personalInfoData: z.infer<typeof profileDataRequestSchema> | any,
-  phone: string
+  data: z.infer<typeof createProviderRequestSchema>
 ) => {
   const providerRepository = providerRepo();
 

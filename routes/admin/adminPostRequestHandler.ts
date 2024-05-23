@@ -95,20 +95,19 @@ adminPostRequestHandler.post(
         ...req.body,
       });
 
-      const { email, username, profileData } = requestBody;
+      const { email } = requestBody;
 
       const tempPassword = generateTemporaryPassCode();
       requestBody.password = generatePasswordHash(tempPassword);
 
-      const newAdmin = await createNewAdmin(requestBody, profileData);
+      const newAdmin = await createNewAdmin(requestBody);
 
       if (newAdmin.success as boolean) {
         emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
           email: email,
-          firstName: profileData?.first_name,
-          lastName: profileData?.last_name,
+          firstName: requestBody?.firstName,
+          lastName: requestBody?.lastName,
           tempPassword: tempPassword,
-          userName: username,
         });
       }
 

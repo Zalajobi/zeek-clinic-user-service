@@ -2,14 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Site } from '@typeorm/entity/site';
-import { AdminRoles } from '@typeorm/entity/enums';
-// import { PersonalInformation } from '@typeorm/entity/personalInfo';
+import { AdminRoles, MartialStatus } from '@typeorm/entity/enums';
 import { createAdminRequestSchema } from '@lib/schemas/adminSchemas';
 import { z } from 'zod';
 
@@ -20,12 +17,26 @@ export class Admin {
     this.role = data?.role as AdminRoles;
     this.email = data?.email as string;
     this.password = data?.password as string;
-    this.username = data?.username as string;
-    this.staff_id = data?.staff_id as string;
-    this.password_reset_request_timestamp =
-      data?.password_reset_request_timestamp
-        ? new Date(data?.password_reset_request_timestamp)
-        : new Date();
+    this.staffId = data?.staffId;
+
+    // Personal Info
+    this.title = data?.title;
+    this.firstName = data?.firstName;
+    this.lastName = data?.lastName;
+    this.middleName = data?.middleName ?? '';
+    this.phone = data?.phone;
+    this.gender = data?.gender;
+    this.dob = new Date(data?.dob);
+    this.address = data?.address;
+    this.alternateAddress = data?.alternateAddress ?? '';
+    this.city = data?.city;
+    this.state = data?.state ?? '';
+    this.country = data?.country;
+    this.countryCode = data?.countryCode;
+    this.zipCode = data?.zipCode;
+    this.profilePic = data?.profilePic ?? '';
+    this.religion = data?.religion ?? '';
+    this.maritalStatus = data?.maritalStatus as MartialStatus;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -35,11 +46,6 @@ export class Admin {
     nullable: false,
   })
   siteId: string;
-
-  @Column({
-    nullable: true,
-  })
-  personalInfoId?: string;
 
   @Column({
     type: 'enum',
@@ -61,25 +67,112 @@ export class Admin {
   password: string;
 
   @Column({
-    unique: true,
     nullable: false,
   })
-  username: string;
+  staffId: string;
 
   @Column({
     nullable: false,
+    length: 25,
   })
-  staff_id: string;
+  phone: string;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  title: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  firstName: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  lastName: string;
 
   @Column({
     nullable: true,
+    length: 25,
   })
-  password_reset_code: string;
+  middleName: string;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  gender: string;
+
+  @Column({
+    nullable: false,
+  })
+  dob: Date;
+
+  @Column({
+    nullable: false,
+    length: 150,
+  })
+  address: string;
 
   @Column({
     nullable: true,
+    length: 150,
   })
-  password_reset_request_timestamp: Date;
+  alternateAddress: string;
+
+  @Column({
+    nullable: false,
+    length: 50,
+  })
+  city: string;
+
+  @Column({
+    nullable: true,
+    length: 50,
+  })
+  state: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  country: string;
+
+  @Column({
+    nullable: false,
+    length: 5,
+  })
+  countryCode: string;
+
+  @Column({
+    nullable: true,
+    length: 50,
+  })
+  religion: string;
+
+  @Column({
+    type: 'enum',
+    enum: MartialStatus,
+    default: MartialStatus.OTHERS,
+    nullable: false,
+  })
+  maritalStatus: MartialStatus;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  zipCode: string;
+
+  @Column({
+    nullable: true,
+    length: 150,
+  })
+  profilePic: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -87,13 +180,7 @@ export class Admin {
   @CreateDateColumn()
   updatedAt: Date;
 
-  // // Relations
-  // @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin, {
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinColumn()
-  // personalInfo?: PersonalInformation;
-
+  // Relations
   @ManyToOne(() => Site, (site) => site.admins)
   site: Site;
 }

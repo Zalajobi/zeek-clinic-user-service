@@ -1,6 +1,5 @@
 import { patientRepo } from '@typeorm/repositories/patientRepository';
 import { z } from 'zod';
-import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 import {
   createPatientRequestSchema,
   emergencyContactSchema,
@@ -14,7 +13,7 @@ import { batchSaveEmergencyContacts } from '@datastore/emergencyContactsStore';
 
 export const createNewPatient = async (
   patientData: z.infer<typeof createPatientRequestSchema>,
-  personalInfoData: z.infer<typeof profileDataRequestSchema>,
+  personalInfoData: any,
   employerData?: z.infer<typeof employerSchema>,
   emergencyContactsData?: z.infer<typeof emergencyContactSchema>[]
 ) => {

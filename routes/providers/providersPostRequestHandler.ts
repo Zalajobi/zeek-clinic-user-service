@@ -22,39 +22,6 @@ providersPostRequestHandler.post(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const providerKeys = [
-        'appointments',
-        'department',
-        'is_consultant',
-        'is_specialist',
-        'role',
-        'serviceArea',
-        'siteId',
-        'staff_id',
-        'unit',
-        'username',
-        'email',
-        'password',
-      ],
-      personalInfoKeys = [
-        'address',
-        'city',
-        'country',
-        'countryCode',
-        'dob',
-        'first_name',
-        'gender',
-        'last_name',
-        'middle_name',
-        'state',
-        'title',
-        'zipCode',
-        'marital_status',
-        'phone',
-        'profile_pic',
-        'religion',
-      ];
-
     try {
       const requestBody = createProviderRequestSchema.parse(req.body);
 
@@ -62,14 +29,7 @@ providersPostRequestHandler.post(
       requestBody.password = generatePasswordHash(tempPassword);
       requestBody.username = requestBody.username ?? requestBody.staff_id;
 
-      const providerData = remapObjectKeys(requestBody, providerKeys);
-      const personalInfoData = remapObjectKeys(requestBody, personalInfoKeys);
-
-      const newAdmin = await adminCreateNewProvider(
-        providerData,
-        personalInfoData,
-        requestBody.phone
-      );
+      const newAdmin = await adminCreateNewProvider(requestBody);
 
       // if (newAdmin.success as boolean) {
       //   await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
