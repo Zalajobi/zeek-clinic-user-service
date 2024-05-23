@@ -26,10 +26,10 @@ export const fetchFilteredProviderData = async (
   const providerQuery = providerRepository
     .createQueryBuilder('provider')
     .where('provider.siteId = :siteId', { siteId })
-    .andWhere('provider.created_at > :fromDate', {
+    .andWhere('provider.createdAt > :fromDate', {
       fromDate,
     })
-    .andWhere('provider.created_at < :toDate', {
+    .andWhere('provider.createdAt < :toDate', {
       toDate,
     })
     .leftJoinAndSelect('provider.personalInfo', 'profile')
@@ -41,7 +41,7 @@ export const fetchFilteredProviderData = async (
       'provider.id',
       'provider.email',
       'provider.status',
-      'provider.created_at',
+      'provider.createdAt',
       'provider.siteId',
       'profile.first_name',
       'profile.last_name',
@@ -114,7 +114,7 @@ export const adminGetProviderDetails = async (id: string) => {
         'provider.id',
         'provider.email',
         'provider.status',
-        'provider.created_at',
+        'provider.createdAt',
         'provider.siteId',
         'profile.first_name',
         'profile.last_name',

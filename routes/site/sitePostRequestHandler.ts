@@ -33,21 +33,12 @@ sitePostRequest.post(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createSiteRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = createSiteRequestSchema.parse(req.body);
 
       const site = await adminCreateSite(requestBody);
       if (site.success) await incrementTotalSiteCount(requestBody?.hospital_id);
 
-      return JsonApiResponse(
-        res,
-        site?.message as string,
-        site?.success as boolean,
-        null,
-        200
-      );
+      return JsonApiResponse(res, site?.message, site?.success, null, 200);
     } catch (error) {
       next(error);
     }
@@ -60,10 +51,7 @@ sitePostRequest.post(
   authorizeRequest(['SITE_ADMIN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = searchSiteRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = searchSiteRequestSchema.parse(req.body);
       const queryData = await getSearchSiteData(requestBody);
 
       return JsonApiResponse(

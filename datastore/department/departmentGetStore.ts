@@ -40,10 +40,10 @@ export const fetchFilteredDepartmentData = async (
   const deptQuery = deptRepository
     .createQueryBuilder('department')
     .where('department.siteId = :siteId', { siteId })
-    .andWhere('department.created_at > :fromDate', {
+    .andWhere('department.createdAt > :fromDate', {
       fromDate,
     })
-    .andWhere('department.created_at < :toDate', {
+    .andWhere('department.createdAt < :toDate', {
       toDate,
     })
     .loadRelationCountAndMap(
@@ -61,8 +61,8 @@ export const fetchFilteredDepartmentData = async (
       'department.siteId',
       'department.description',
       'department.name',
-      'department.created_at',
-      'department.updated_at',
+      'department.createdAt',
+      'department.updatedAt',
     ]);
 
   if (query) {
@@ -141,13 +141,13 @@ export const getSearchDepartmentData = async (
   }
 
   if (requestBody?.range && requestBody.range.from) {
-    deptQuery.andWhere('dept.created_at > :fromDate', {
+    deptQuery.andWhere('dept.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
   if (requestBody?.range && requestBody.range.to) {
-    deptQuery.andWhere('dept.created_at < :toDate', {
+    deptQuery.andWhere('dept.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }

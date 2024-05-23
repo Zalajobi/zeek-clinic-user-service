@@ -37,10 +37,10 @@ export const getRolePaginationDataWithUsersCount = async (
   const roleQuery = roleRepository
     .createQueryBuilder('role')
     .where('role.siteId = :siteId', { siteId })
-    .andWhere('role.created_at > :fromDate', {
+    .andWhere('role.createdAt > :fromDate', {
       fromDate,
     })
-    .andWhere('role.created_at < :toDate', {
+    .andWhere('role.createdAt < :toDate', {
       toDate,
     })
     .loadRelationCountAndMap('role.providers', 'role.providers', 'providers')
@@ -49,8 +49,8 @@ export const getRolePaginationDataWithUsersCount = async (
       'role.siteId',
       'role.description',
       'role.name',
-      'role.created_at',
-      'role.updated_at',
+      'role.createdAt',
+      'role.updatedAt',
       'role.plan',
       'role.prescription',
       'role.note',
@@ -362,13 +362,13 @@ export const getSearchRoleData = async (
   }
 
   if (requestBody?.range && requestBody.range.from) {
-    roleQuery.andWhere('role.created_at > :fromDate', {
+    roleQuery.andWhere('role.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
   if (requestBody?.range && requestBody.range.to) {
-    roleQuery.andWhere('role.created_at < :toDate', {
+    roleQuery.andWhere('role.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }
@@ -405,16 +405,16 @@ export const countRoleItemsByMonth = async (
 
   const roleQuery = roleRepository
     .createQueryBuilder('role')
-    .select(`DATE_TRUNC('${groupBy}', role.created_at) AS date_group`)
+    .select(`DATE_TRUNC('${groupBy}', role.createdAt) AS date_group`)
     .addSelect('COUNT(*) AS count')
-    .where('role.created_at >= :fromDate', { fromDate })
-    .andWhere('role.created_at <= :toDate', { toDate });
+    .where('role.createdAt >= :fromDate', { fromDate })
+    .andWhere('role.createdAt <= :toDate', { toDate });
 
   if (siteId) {
     roleQuery.andWhere('role.siteId = :siteId', { siteId });
   }
 
   return await roleQuery
-    .groupBy(`DATE_TRUNC('${groupBy}', role.created_at)`)
+    .groupBy(`DATE_TRUNC('${groupBy}', role.createdAt)`)
     .getRawMany();
 };

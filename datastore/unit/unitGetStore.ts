@@ -23,10 +23,10 @@ export const fetchFilteredUnitData = async (
   const unitQuery = unitRepository
     .createQueryBuilder('unit')
     .where('unit.siteId = :siteId', { siteId })
-    .andWhere('unit.created_at > :fromDate', {
+    .andWhere('unit.createdAt > :fromDate', {
       fromDate,
     })
-    .andWhere('unit.created_at < :toDate', {
+    .andWhere('unit.createdAt < :toDate', {
       toDate,
     })
     .loadRelationCountAndMap('unit.providers', 'unit.providers', 'providers')
@@ -38,8 +38,8 @@ export const fetchFilteredUnitData = async (
       'unit.name',
       'unit.total_beds',
       'unit.occupied_beds',
-      'unit.created_at',
-      'unit.updated_at',
+      'unit.createdAt',
+      'unit.updatedAt',
     ]);
 
   if (query) {
@@ -125,13 +125,13 @@ export const getSearchUnitData = async (
   // }
 
   if (requestBody?.range && requestBody.range.from) {
-    unitQuery.andWhere('dept.created_at > :fromDate', {
+    unitQuery.andWhere('dept.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
   if (requestBody?.range && requestBody.range.to) {
-    unitQuery.andWhere('dept.created_at < :toDate', {
+    unitQuery.andWhere('dept.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }

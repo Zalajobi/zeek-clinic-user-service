@@ -88,13 +88,13 @@ export const getSearchServiceAreaData = async (
   }
 
   if (requestBody?.range && requestBody.range.from) {
-    serviceAreaQuery.andWhere('service-area.created_at > :fromDate', {
+    serviceAreaQuery.andWhere('service-area.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
   if (requestBody?.range && requestBody.range.to) {
-    serviceAreaQuery.andWhere('service-area.created_at < :toDate', {
+    serviceAreaQuery.andWhere('service-area.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }

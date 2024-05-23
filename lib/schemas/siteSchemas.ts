@@ -7,9 +7,9 @@ import {
   DateRangeSchema,
 } from '@lib/schemas/commonSchemas';
 
-export const createSiteRequestSchema = bearerTokenSchema
-  .extend({
-    zip_code: z.coerce.number(),
+export const createSiteRequestSchema = z
+  .object({
+    zipCode: z.string(),
     country: z.string(),
     state: z.string(),
     city: z.string(),
@@ -17,8 +17,8 @@ export const createSiteRequestSchema = bearerTokenSchema
     phone: z.string(),
     name: z.string().min(4),
     email: z.string().email(),
-    logo: z.string().optional(),
-    country_code: z.string().optional(),
+    logo: z.string().default(''),
+    countryCode: z.string(),
     is_private: z.boolean().default(false),
     has_appointment: z.boolean().default(false),
     has_caregiver: z.boolean().default(false),
@@ -38,7 +38,6 @@ export const createSiteRequestSchema = bearerTokenSchema
     has_vital: z.boolean().default(false),
     has_wallet: z.boolean().default(false),
     hospital_id: z.string(),
-    time_zone: z.string().optional(),
   })
   .refine((data) => {
     return !data.email.includes('+');
@@ -84,7 +83,7 @@ export const searchSiteRequestSchema = z
     range: DateRangeSchema.optional(),
     sortModel: SortModelSchema.default({
       sort: 'desc',
-      colId: 'created_at',
+      colId: 'createdAt',
     }),
     greaterThan: z.string().optional(),
     status: globalStatusSchema.optional().transform((data) => {
