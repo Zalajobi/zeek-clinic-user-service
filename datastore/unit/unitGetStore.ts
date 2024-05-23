@@ -89,10 +89,12 @@ export const getSearchUnitData = async (
     requestBody.startRow
   );
 
-  const unitQuery = unitRepository.createQueryBuilder('dept').orderBy({
-    [`${requestBody.sortModel.colId}`]:
-      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-  });
+  const unitQuery = unitRepository
+    .createQueryBuilder('dept')
+    .orderBy(
+      `dept.${requestBody.sortModel.colId}`,
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
+    );
 
   if (requestBody.siteId) {
     unitQuery.where('dept.siteId = :siteId', {
@@ -112,17 +114,17 @@ export const getSearchUnitData = async (
     });
   }
 
-  // if (requestBody.total_beds) {
-  //   unitQuery.where('dept.total_beds >= :total_beds', {
-  //     total_beds: requestBody.total_beds,
-  //   });
-  // }
-  //
-  // if (requestBody.occupied_beds) {
-  //   unitQuery.where('dept.occupied_beds >= :occupied_beds', {
-  //     occupied_beds: requestBody.occupied_beds,
-  //   });
-  // }
+  if (requestBody.totalBeds) {
+    unitQuery.where('dept.totalBeds >= :totalBeds', {
+      totalBeds: requestBody.totalBeds,
+    });
+  }
+
+  if (requestBody.occupiedBeds) {
+    unitQuery.where('dept.occupied_beds >= :occupied_beds', {
+      occupied_beds: requestBody.occupiedBeds,
+    });
+  }
 
   if (requestBody?.range && requestBody.range.from) {
     unitQuery.andWhere('dept.createdAt > :fromDate', {
@@ -142,10 +144,16 @@ export const getSearchUnitData = async (
     });
   }
 
-  return await unitQuery
+  const unitData = await unitQuery
     .skip(perPage * page)
     .take(perPage)
     .getManyAndCount();
+
+  return DefaultJsonResponse(
+    unitData ? 'Unit Data Retrieval Success' : 'Something Went Wrong',
+    unitData,
+    !!unitData
+  );
 };
 
 export const getUnitCountBySiteId = async (siteId: string) => {

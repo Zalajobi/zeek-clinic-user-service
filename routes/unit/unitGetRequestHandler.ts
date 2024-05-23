@@ -21,10 +21,9 @@ unitGetRequest.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getOrganisationUnitsFilterRequestSchema.parse({
-        ...req.headers,
-        ...req.query,
-      });
+      const requestBody = getOrganisationUnitsFilterRequestSchema.parse(
+        req.query
+      );
 
       const deptData = await fetchFilteredUnitData(
         requestBody.page,
@@ -39,7 +38,7 @@ unitGetRequest.get(
         return JsonApiResponse(
           res,
           deptData.message,
-          <boolean>deptData?.success,
+          deptData?.success,
           {
             units: deptData.data[0],
             count: deptData.data[1],

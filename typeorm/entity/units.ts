@@ -20,8 +20,8 @@ export class Units {
     this.name = data?.name;
     this.siteId = data?.siteId;
     this.description = data?.description;
-    this.total_beds = data?.total_beds;
-    this.occupied_beds = data?.occupied_beds as number;
+    this.totalBeds = data?.totalBeds;
+    this.occupiedBeds = data?.occupiedBeds;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -46,13 +46,13 @@ export class Units {
     nullable: false,
     default: 0,
   })
-  total_beds: number;
+  totalBeds: number;
 
   @Column({
     nullable: false,
     default: 0,
   })
-  occupied_beds: number;
+  occupiedBeds: number;
 
   @CreateDateColumn()
   createdAt: Date;
