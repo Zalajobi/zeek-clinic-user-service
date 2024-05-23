@@ -90,31 +90,29 @@ adminPostRequestHandler.post(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createAdminRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = createAdminRequestSchema.parse(req.body);
 
-      const { email } = requestBody;
-
+      // Set a temporary password if no password is set
       const tempPassword = generateTemporaryPassCode();
-      requestBody.password = generatePasswordHash(tempPassword);
+      if (!requestBody.password)
+        requestBody.password = generatePasswordHash(tempPassword);
 
       const newAdmin = await createNewAdmin(requestBody);
 
-      if (newAdmin.success as boolean) {
-        emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
-          email: email,
-          firstName: requestBody?.firstName,
-          lastName: requestBody?.lastName,
-          tempPassword: tempPassword,
-        });
-      }
+      // // If password is set, then do not publish the tempPassword
+      // if (newAdmin.success as boolean) {
+      //   emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
+      //     email: requestBody.email,
+      //     firstName: requestBody?.firstName,
+      //     lastName: requestBody?.lastName,
+      //     tempPassword: tempPassword,
+      //   });
+      // }
 
       return JsonApiResponse(
         res,
         newAdmin.message,
-        newAdmin.success as boolean,
+        newAdmin.success,
         null,
         200
       );

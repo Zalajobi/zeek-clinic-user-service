@@ -15,7 +15,7 @@ export const createAdminRequestSchema = profileInformationSchema
     siteId: z.string(),
     role: AdminRoleSchema,
     email: z.string(),
-    password: z.string().min(6),
+    password: z.string().optional(),
     staffId: z.string(),
   })
   .refine((data) => {

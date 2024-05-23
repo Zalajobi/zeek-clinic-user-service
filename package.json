@@ -8,7 +8,8 @@
     "precommit": "pretty-quick --staged",
     "prepare": "husky install .husky",
     "start": "npx ts-node index.ts",
-    "start:dev": "npx nodemon"
+    "start:dev": "npx nodemon",
+    "typeorm": "typeorm-ts-node-esm"
   },
   "_moduleAliases": {
     "@data": "data",

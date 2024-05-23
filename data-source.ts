@@ -33,6 +33,8 @@ export const AppDataSource = new DataSource({
   database: DATABASE_NAME,
   synchronize: true,
   logging: false,
+  // logging: "all",
+  migrationsTableName: 'migrations',
   entities: [
     Hospital,
     Site,

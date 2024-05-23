@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -59,6 +60,9 @@ export class Admin {
     unique: true,
     nullable: false,
   })
+  @Index({
+    unique: true,
+  })
   email: string;
 
   @Column({
@@ -69,11 +73,17 @@ export class Admin {
   @Column({
     nullable: false,
   })
+  @Index({
+    unique: false,
+  })
   staffId: string;
 
   @Column({
     nullable: false,
     length: 25,
+  })
+  @Index({
+    unique: false,
   })
   phone: string;
 
