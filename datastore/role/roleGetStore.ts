@@ -110,10 +110,12 @@ export const getSearchRoleData = async (
     requestBody.startRow
   );
 
-  const roleQuery = roleRepository.createQueryBuilder('role').orderBy({
-    [`${requestBody.sortModel.colId}`]:
-      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-  });
+  const roleQuery = roleRepository
+    .createQueryBuilder('role')
+    .orderBy(
+      `role.${requestBody.sortModel.colId}`,
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
+    );
 
   if (requestBody.siteId) {
     roleQuery.where('role.siteId = :siteId', {
@@ -379,10 +381,16 @@ export const getSearchRoleData = async (
     });
   }
 
-  return await roleQuery
+  const roleData = await roleQuery
     .skip(perPage * page)
     .take(perPage)
     .getManyAndCount();
+
+  return DefaultJsonResponse(
+    roleData ? 'Role Data Retrieval Success' : 'Something Went Wong',
+    roleData,
+    !!roleData
+  );
 };
 
 export const getRoleCountBySiteId = async (siteId: string) => {
