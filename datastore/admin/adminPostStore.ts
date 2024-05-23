@@ -3,8 +3,6 @@ import { customPromiseRequest } from '@lib/api';
 import { AdminRoles } from '@typeorm/entity/enums';
 import { DefaultJsonResponse } from '@util/responses';
 import { Admin } from '@typeorm/entity/admin';
-import { getPersonalInfoCountByPhone } from '@datastore/personalInfo/personalInfoGetStore';
-import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
 import { z } from 'zod';
 import {
   createAdminRequestSchema,
@@ -17,34 +15,30 @@ export const createNewAdmin = async (
 ) => {
   const adminRepository = adminRepo();
 
-  const [infoCountByPhone, adminCount, staffIdAndCount]: any =
-    await customPromiseRequest([
-      getPersonalInfoCountByPhone(profileInfoData?.phone ?? ''),
+  const [adminCount, staffIdAndCount]: any = await customPromiseRequest([
+    adminRepository
+      .createQueryBuilder('admin')
+      .where('LOWER(admin.email) LIKE :email', {
+        email: adminData.email,
+      })
+      .orWhere('LOWER(admin.username) LIKE :username', {
+        username: adminData.username,
+      })
+      .getCount(),
 
-      adminRepository
-        .createQueryBuilder('admin')
-        .where('LOWER(admin.email) LIKE :email', {
-          email: adminData.email,
-        })
-        .orWhere('LOWER(admin.username) LIKE :username', {
-          username: adminData.username,
-        })
-        .getCount(),
-
-      adminRepository
-        .createQueryBuilder('admin')
-        .where('LOWER(admin.staff_id) = :staffId AND admin.siteId = :siteId', {
-          staffId: adminData.staff_id,
-          siteId: adminData.siteId,
-        })
-        .getCount(),
-    ]);
+    adminRepository
+      .createQueryBuilder('admin')
+      .where('LOWER(admin.staff_id) = :staffId AND admin.siteId = :siteId', {
+        staffId: adminData.staff_id,
+        siteId: adminData.siteId,
+      })
+      .getCount(),
+  ]);
 
   adminData.staff_id = adminData.staff_id.toLowerCase();
   adminData.role = adminData.role.replace(' ', '_') as AdminRoles;
 
   if (
-    infoCountByPhone.status.toString() === 'fulfilled' &&
     adminCount.status.toString() === 'fulfilled' &&
     staffIdAndCount.status.toString() === 'fulfilled'
   ) {
@@ -54,8 +48,6 @@ export const createNewAdmin = async (
         null,
         false
       );
-    } else if (Number(infoCountByPhone?.value.toString()) >= 1) {
-      return DefaultJsonResponse('User with phone already exists', null, false);
     } else if (Number(adminCount?.value.toString()) >= 1) {
       return DefaultJsonResponse(
         'Admin with Username or Email already exits',
@@ -65,7 +57,6 @@ export const createNewAdmin = async (
     }
   }
 
-  const personalInfo = await createNewPersonalInfo(profileInfoData);
   const newAdmin = new Admin(adminData);
 
   const admin = await adminRepository.save(newAdmin);
@@ -76,7 +67,7 @@ export const createNewAdmin = async (
         ? 'Admin Creation Successful'
         : 'Something happened. Error happened while creating Admin',
       admin,
-      admin ? true : false
+      !!admin
     );
   }
 

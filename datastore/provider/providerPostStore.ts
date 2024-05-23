@@ -1,8 +1,6 @@
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { customPromiseRequest } from '@lib/api';
-import { getPersonalInfoCountByPhone } from '@datastore/personalInfo/personalInfoGetStore';
 import { DefaultJsonResponse } from '@util/responses';
-import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
 import { Provider } from '@typeorm/entity/providers';
 import { z } from 'zod';
 import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
@@ -16,34 +14,30 @@ export const adminCreateNewProvider = async (
 ) => {
   const providerRepository = providerRepo();
 
-  const [infoCountByPhone, providerCount, staffIdAndCount]: any =
-    await customPromiseRequest([
-      getPersonalInfoCountByPhone(phone),
+  const [providerCount, staffIdAndCount]: any = await customPromiseRequest([
+    providerRepository
+      .createQueryBuilder('provider')
+      .where('LOWER(provider.email) = :email', {
+        email: data?.email?.toLowerCase(),
+      })
+      // .orWhere('LOWER(provider.username) LIKE LOWER(:username)', {
+      //   username: data.username,
+      // })
+      .getCount(),
 
-      providerRepository
-        .createQueryBuilder('provider')
-        .where('LOWER(provider.email) = :email', {
-          email: data?.email?.toLowerCase(),
-        })
-        // .orWhere('LOWER(provider.username) LIKE LOWER(:username)', {
-        //   username: data.username,
-        // })
-        .getCount(),
-
-      providerRepository
-        .createQueryBuilder('provider')
-        .where(
-          'LOWER(provider.staff_id) = :staffId AND provider.siteId = :siteId',
-          {
-            staffId: data.staff_id,
-            siteId: data.siteId,
-          }
-        )
-        .getCount(),
-    ]);
+    providerRepository
+      .createQueryBuilder('provider')
+      .where(
+        'LOWER(provider.staff_id) = :staffId AND provider.siteId = :siteId',
+        {
+          staffId: data.staff_id,
+          siteId: data.siteId,
+        }
+      )
+      .getCount(),
+  ]);
 
   if (
-    infoCountByPhone.status.toString() === 'fulfilled' &&
     providerCount.status.toString() === 'fulfilled' &&
     staffIdAndCount.status.toString() === 'fulfilled'
   ) {
@@ -53,8 +47,6 @@ export const adminCreateNewProvider = async (
         null,
         false
       );
-    } else if (Number(infoCountByPhone?.value.toString()) >= 1) {
-      return DefaultJsonResponse('User with phone already exists', null, false);
     } else if (Number(providerCount?.value.toString()) >= 1) {
       return DefaultJsonResponse(
         'Provider with Username or Email already exits',
@@ -62,17 +54,6 @@ export const adminCreateNewProvider = async (
         false
       );
     }
-  }
-
-  const personalInfo = await createNewPersonalInfo(personalInfoData);
-
-  if (personalInfo) {
-    const provider = new Provider(data);
-    // provider.personalInfo = personalInfo;
-
-    const newProvider = await providerRepository.save(provider);
-
-    return DefaultJsonResponse('New Provider Added', newProvider, true);
   }
 
   return DefaultJsonResponse('Something Went Wrong', null, false);

@@ -1,5 +1,4 @@
 import { patientRepo } from '@typeorm/repositories/patientRepository';
-import { getPersonalInfoCountByPhone } from '@datastore/personalInfo/personalInfoGetStore';
 import { z } from 'zod';
 import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 import {
@@ -8,7 +7,6 @@ import {
   employerSchema,
 } from '@lib/schemas/patientSchemas';
 import { DefaultJsonResponse } from '@util/responses';
-import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
 import { createEmployer } from '@datastore/employerStore';
 import { Patients } from '@typeorm/entity/patient';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
@@ -24,24 +22,12 @@ export const createNewPatient = async (
     newPatient: Patients | null = null;
   const patientRepository = patientRepo();
 
-  const [infoCountByPhone, patientCount] = await Promise.all([
-    getPersonalInfoCountByPhone(personalInfoData.phone),
-
-    patientRepository
-      .createQueryBuilder('patient')
-      .where('LOWER(patient.email) LIKE :email', {
-        email: patientData.email,
-      })
-      .getCount(),
-  ]);
-
-  if (infoCountByPhone >= 1) {
-    return DefaultJsonResponse(
-      'User with phone number already exists',
-      null,
-      false
-    );
-  }
+  const patientCount = await patientRepository
+    .createQueryBuilder('patient')
+    .where('LOWER(patient.email) LIKE :email', {
+      email: patientData.email,
+    })
+    .getCount();
 
   if (patientCount >= 1) {
     return DefaultJsonResponse('Patient with email address exist', null, false);
@@ -49,17 +35,6 @@ export const createNewPatient = async (
 
   if (employerData) {
     newEmployer = await createEmployer(employerData);
-  }
-  const personalInfo = await createNewPersonalInfo(personalInfoData);
-
-  if (personalInfo) {
-    const patient = new Patients(patientData);
-    // patient.personalInfo = personalInfo;
-
-    // // New Employer
-    // if (newEmployer) patient.employer = newEmployer;
-
-    newPatient = await patientRepository.save(patient);
   }
 
   if (newPatient && emergencyContactsData) {

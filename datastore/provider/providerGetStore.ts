@@ -32,7 +32,7 @@ export const fetchFilteredProviderData = async (
     .andWhere('provider.createdAt < :toDate', {
       toDate,
     })
-    .leftJoinAndSelect('provider.personalInfo', 'profile')
+    // .leftJoinAndSelect('provider.personalInfo', 'profile')
     .leftJoinAndSelect('provider.department', 'department')
     .leftJoinAndSelect('provider.unit', 'unit')
     .leftJoinAndSelect('provider.servicearea', 'servicearea')
@@ -43,15 +43,15 @@ export const fetchFilteredProviderData = async (
       'provider.status',
       'provider.createdAt',
       'provider.siteId',
-      'profile.first_name',
-      'profile.last_name',
-      'profile.id',
-      'profile.phone',
-      'profile.title',
-      'profile.gender',
-      'profile.country',
-      'profile.profile_pic',
-      'profile.middle_name',
+      // 'profile.first_name',
+      // 'profile.last_name',
+      // 'profile.id',
+      // 'profile.phone',
+      // 'profile.title',
+      // 'profile.gender',
+      // 'profile.country',
+      // 'profile.profile_pic',
+      // 'profile.middle_name',
       'department.id',
       'department.name',
       'unit.id',
@@ -62,15 +62,15 @@ export const fetchFilteredProviderData = async (
       'role.name',
     ]);
 
-  if (query) {
-    providerQuery.where(
-      'LOWER(profile.first_name) LIKE :name OR LOWER(profile.middle_name) LIKE :name OR LOWER(profile.last_name) LIKE :name OR LOWER(provider.email) LIKE :email',
-      {
-        name: `%${query.toLowerCase()}%`,
-        email: `%${query.toLowerCase()}%`,
-      }
-    );
-  }
+  // if (query) {
+  //   providerQuery.where(
+  //     'LOWER(profile.first_name) LIKE :name OR LOWER(profile.middle_name) LIKE :name OR LOWER(profile.last_name) LIKE :name OR LOWER(provider.email) LIKE :email',
+  //     {
+  //       name: `%${query.toLowerCase()}%`,
+  //       email: `%${query.toLowerCase()}%`,
+  //     }
+  //   );
+  // }
 
   if (country) {
     providerQuery.andWhere('LOWER(provider.country) LIKE :country', {
@@ -105,7 +105,7 @@ export const adminGetProviderDetails = async (id: string) => {
     providerRepository
       .createQueryBuilder('provider')
       .where('provider.id = :id', { id })
-      .leftJoinAndSelect('provider.personalInfo', 'profile')
+      // .leftJoinAndSelect('provider.personalInfo', 'profile')
       .leftJoinAndSelect('provider.department', 'department')
       .leftJoinAndSelect('provider.unit', 'unit')
       .leftJoinAndSelect('provider.servicearea', 'servicearea')
@@ -116,19 +116,19 @@ export const adminGetProviderDetails = async (id: string) => {
         'provider.status',
         'provider.createdAt',
         'provider.siteId',
-        'profile.first_name',
-        'profile.last_name',
-        'profile.id',
-        'profile.phone',
-        'profile.dob',
-        'profile.title',
-        'profile.gender',
-        'profile.country',
-        'profile.profile_pic',
-        'profile.middle_name',
-        'profile.state',
-        'profile.city',
-        'profile.address',
+        // 'profile.first_name',
+        // 'profile.last_name',
+        // 'profile.id',
+        // 'profile.phone',
+        // 'profile.dob',
+        // 'profile.title',
+        // 'profile.gender',
+        // 'profile.country',
+        // 'profile.profile_pic',
+        // 'profile.middle_name',
+        // 'profile.state',
+        // 'profile.city',
+        // 'profile.address',
         'department.id',
         'department.name',
         'unit.id',

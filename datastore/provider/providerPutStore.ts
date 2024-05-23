@@ -1,8 +1,6 @@
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { isObjectEmpty } from '@util/index';
 import { DefaultJsonResponse } from '@util/responses';
-import { updatePersonalInfoById } from '@datastore/personalInfo/personalInfoPut';
-import { getPersonalInfoCountByPhoneAndNotSameId } from '@datastore/personalInfo/personalInfoGetStore';
 
 // Update provider information
 export const updateProviderDetails = async (
@@ -21,7 +19,7 @@ export const updateProviderDetails = async (
   const personalInfo = await providerRepository
     .createQueryBuilder('provider')
     .where('provider.id = :id', { id })
-    .select(['provider.personalInfoId'])
+    // .select(['provider.personalInfoId'])
     .getOne();
 
   if (!isObjectEmpty(providerRecord)) {

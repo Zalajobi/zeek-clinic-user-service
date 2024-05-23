@@ -36,14 +36,7 @@ export const lookupPrimaryAdminInfo = async (
     .orWhere('admin.username = :username', {
       username: value,
     })
-    .leftJoinAndSelect('admin.personalInfo', 'profile')
-    .select([
-      'admin.password',
-      'admin.role',
-      'admin.email',
-      'admin.id',
-      'profile.first_name',
-    ])
+    .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
     .getOne();
 };
 
@@ -87,7 +80,6 @@ export const getAdminAndProfileDataByEmailOrUsername = async (
     .orWhere('admin.username = :username', {
       username: value,
     })
-    .leftJoinAndSelect('admin.personalInfo', 'profile')
     .getOne();
 };
 
@@ -99,7 +91,6 @@ export const getAdminFullProfileData = async (id: string) => {
     .where('admin.id = :id', {
       id,
     })
-    .leftJoinAndSelect('admin.personalInfo', 'profile')
     .select([
       'admin.role',
       'admin.siteId',
@@ -109,22 +100,22 @@ export const getAdminFullProfileData = async (id: string) => {
       'admin.staff_id',
       'admin.id',
       'admin.staff_id',
-      'profile.first_name',
-      'profile.last_name',
-      'profile.phone',
-      'profile.title',
-      'profile.gender',
-      'profile.dob',
-      'profile.address',
-      'profile.city',
-      'profile.country',
-      'profile.zipCode',
-      'profile.profile_pic',
-      'profile.createdAt',
-      'profile.middle_name',
-      'profile.religion',
-      'profile.marital_status',
-      'profile.id',
+      // 'profile.first_name',
+      // 'profile.last_name',
+      // 'profile.phone',
+      // 'profile.title',
+      // 'profile.gender',
+      // 'profile.dob',
+      // 'profile.address',
+      // 'profile.city',
+      // 'profile.country',
+      // 'profile.zipCode',
+      // 'profile.profile_pic',
+      // 'profile.createdAt',
+      // 'profile.middle_name',
+      // 'profile.religion',
+      // 'profile.marital_status',
+      // 'profile.id',
     ])
     .getOne();
 };
@@ -144,7 +135,6 @@ export const getAdminDetails = async (id: string): Promise<Admin | null> => {
       staff_id: true,
       id: true,
       createdAt: true,
-      personalInfoId: true,
     },
   });
 };
