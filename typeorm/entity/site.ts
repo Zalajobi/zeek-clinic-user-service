@@ -238,10 +238,10 @@ export class Site {
   has_wallet: boolean;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   @AfterUpdate()
   updateTimestamps() {
@@ -249,49 +249,49 @@ export class Site {
   }
 
   // Relations
-  @OneToMany((type) => Admin, (admin) => admin.site, { onDelete: 'CASCADE' })
-  admins: Admin[];
-
-  @ManyToOne((type) => Hospital, (hospital) => hospital.sites)
-  hospital: Hospital;
-
-  @OneToMany((type) => BankAccount, (bankAccounts) => bankAccounts.site, {
-    onDelete: 'CASCADE',
-  })
-  bankAccounts: BankAccount[];
-
-  @OneToMany((type) => Roles, (roles) => roles.site, { onDelete: 'CASCADE' })
-  roles: Roles[];
-
-  @OneToMany((type) => Departments, (roles) => roles.site, {
-    onDelete: 'CASCADE',
-  })
-  departments: Departments[];
-
-  @OneToMany((type) => Units, (units) => units.site, { onDelete: 'CASCADE' })
-  units: Units[];
-
-  @OneToMany((type) => Servicearea, (serviceareas) => serviceareas.site, {
-    onDelete: 'CASCADE',
-  })
-  serviceareas: Servicearea[];
-
-  @OneToMany((type) => Provider, (provider) => provider.site, {
+  @OneToMany(() => Provider, (provider) => provider.site, {
     onDelete: 'CASCADE',
   })
   providers: Provider[];
 
-  @OneToMany((type) => Patients, (patients) => patients.site, {
+  @OneToMany(() => Admin, (admin) => admin.site, { onDelete: 'CASCADE' })
+  admins: Admin[];
+
+  @ManyToOne(() => Hospital, (hospital) => hospital.sites)
+  hospital: Hospital;
+
+  @OneToMany(() => BankAccount, (bankAccounts) => bankAccounts.site, {
+    onDelete: 'CASCADE',
+  })
+  bankAccounts: BankAccount[];
+
+  @OneToMany(() => Roles, (roles) => roles.site, { onDelete: 'CASCADE' })
+  roles: Roles[];
+
+  @OneToMany(() => Departments, (roles) => roles.site, {
+    onDelete: 'CASCADE',
+  })
+  departments: Departments[];
+
+  @OneToMany(() => Units, (units) => units.site, { onDelete: 'CASCADE' })
+  units: Units[];
+
+  @OneToMany(() => Servicearea, (serviceareas) => serviceareas.site, {
+    onDelete: 'CASCADE',
+  })
+  serviceareas: Servicearea[];
+
+  @OneToMany(() => Patients, (patients) => patients.site, {
     onDelete: 'CASCADE',
   })
   patients: Patients[];
 
-  @OneToMany((type) => PatientEmployer, (employer) => employer.site, {
+  @OneToMany(() => PatientEmployer, (employer) => employer.site, {
     onDelete: 'CASCADE',
   })
   patientEmployer: PatientEmployer[];
 
-  @OneToMany((type) => EmergencyContacts, (contacts) => contacts.site, {
+  @OneToMany(() => EmergencyContacts, (contacts) => contacts.site, {
     onDelete: 'CASCADE',
   })
   emergencyContacts: EmergencyContacts[];

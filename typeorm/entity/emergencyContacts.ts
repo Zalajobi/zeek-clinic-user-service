@@ -12,7 +12,7 @@ import { emergencyContactSchema } from '@lib/schemas/patientSchemas';
 import { z } from 'zod';
 
 @Entity({
-  name: 'emergency_contacts',
+  name: 'emergencyContact',
 })
 export class EmergencyContacts {
   constructor(data: z.infer<typeof emergencyContactSchema>) {
@@ -54,10 +54,10 @@ export class EmergencyContacts {
   occupation?: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
   @ManyToOne(() => Patients, (patients) => patients.emergencyContacts, {

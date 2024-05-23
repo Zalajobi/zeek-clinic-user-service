@@ -147,19 +147,14 @@ export class PersonalInformation {
   profile_pic: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
-  @OneToOne(() => Provider, (provider) => provider.personalInfo)
-  provider?: Provider;
-
-  @OneToOne(() => Patients, (patient) => patient.personalInfo, {
-    onDelete: 'CASCADE',
-  })
-  patient?: Patients;
+  // @OneToOne(() => Provider, (provider) => provider.personalInfo)
+  // provider?: Provider;
 
   @OneToOne(() => Admin, (admin) => admin.personalInfo)
   admin: Admin;

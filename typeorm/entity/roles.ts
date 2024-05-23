@@ -11,7 +11,7 @@ import { Site } from '@typeorm/entity/site';
 import { z } from 'zod';
 import { createAndUpdateRoleRequestSchema } from '@lib/schemas/roleSchemas';
 
-@Entity({ name: 'roles' })
+@Entity({ name: 'role' })
 export class Roles {
   constructor(data: z.infer<typeof createAndUpdateRoleRequestSchema>) {
     this.description = data?.description as string;
@@ -208,15 +208,17 @@ export class Roles {
   description: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
-  @OneToMany((type) => Provider, (provider) => provider.primary_role)
+  @OneToMany(() => Provider, (provider) => provider.primaryRole, {
+    onDelete: 'CASCADE',
+  })
   providers: Provider[];
 
-  @ManyToOne((type) => Site, (site) => site.roles)
+  @ManyToOne(() => Site, (site) => site.roles)
   site: Site;
 }

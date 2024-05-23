@@ -54,10 +54,10 @@ export const createNewPatient = async (
 
   if (personalInfo) {
     const patient = new Patients(patientData);
-    patient.personalInfo = personalInfo;
+    // patient.personalInfo = personalInfo;
 
-    // New Employer
-    if (newEmployer) patient.employer = newEmployer;
+    // // New Employer
+    // if (newEmployer) patient.employer = newEmployer;
 
     newPatient = await patientRepository.save(patient);
   }

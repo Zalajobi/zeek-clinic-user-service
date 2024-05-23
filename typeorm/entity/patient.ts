@@ -8,7 +8,7 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { PatientStatus } from '@typeorm/entity/enums';
+import { MartialStatus, PatientStatus } from '@typeorm/entity/enums';
 import { PersonalInformation } from '@typeorm/entity/personalInfo';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
 import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
@@ -20,17 +20,19 @@ import { Servicearea } from '@typeorm/entity/servicearea';
 import { z } from 'zod';
 import { createPatientRequestSchema } from '@lib/schemas/patientSchemas';
 
-@Entity()
+@Entity({
+  name: 'patient',
+})
 export class Patients {
   constructor(data: z.infer<typeof createPatientRequestSchema>) {
     this.siteId = data?.siteId;
     this.departmentId = data?.departmentId;
-    this.serviceareaId = data?.serviceareaId;
+    this.serviceAreaId = data?.serviceareaId;
     this.unitId = data?.unitId;
     this.email = data?.email;
     this.password = data?.password ?? '';
     this.status = data?.status as PatientStatus;
-    this.careGiverId = data?.careGiverId;
+    this.providerId = data?.careGiverId;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -40,11 +42,6 @@ export class Patients {
     nullable: false,
   })
   siteId: string;
-
-  @Column({
-    nullable: true,
-  })
-  personalInfoId: string;
 
   @Column({
     nullable: true,
@@ -59,7 +56,7 @@ export class Patients {
   @Column({
     nullable: false,
   })
-  serviceareaId: string;
+  serviceAreaId: string;
 
   @Column({
     nullable: false,
@@ -67,9 +64,9 @@ export class Patients {
   unitId: string;
 
   @Column({
-    nullable: true,
+    nullable: false,
   })
-  careGiverId: string;
+  providerId: string;
 
   @Column({
     unique: true,
@@ -78,7 +75,7 @@ export class Patients {
   email: string;
 
   @Column({
-    unique: true,
+    unique: false,
     nullable: false,
   })
   password: string;
@@ -91,24 +88,117 @@ export class Patients {
   })
   status: PatientStatus;
 
-  @CreateDateColumn()
-  created_at: Date;
-
-  @Column('timestamp', {
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
+  @Column({
+    nullable: false,
+    length: 25,
   })
-  updated_at: Date;
+  phone: string;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  title: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  firstName: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  lastName: string;
+
+  @Column({
+    nullable: true,
+    length: 25,
+  })
+  middleName: string;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  gender: string;
+
+  @Column({
+    nullable: true,
+  })
+  dob: Date;
+
+  @Column({
+    nullable: false,
+    length: 150,
+  })
+  address: string;
+
+  @Column({
+    nullable: false,
+    length: 50,
+  })
+  city: string;
+
+  @Column({
+    nullable: true,
+    length: 50,
+  })
+  state: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  country: string;
+
+  @Column({
+    nullable: false,
+    length: 5,
+  })
+  countryCode: string;
+
+  @Column({
+    nullable: true,
+    length: 50,
+  })
+  religion: string;
+
+  @Column({
+    type: 'enum',
+    enum: MartialStatus,
+    default: MartialStatus.OTHERS,
+    nullable: false,
+  })
+  maritalStatus: MartialStatus;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  zipCode: string;
+
+  @Column({
+    nullable: true,
+    length: 150,
+  })
+  profilePic: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  // @Column('timestamp', {
+  //   default: () => 'CURRENT_TIMESTAMP',
+  //   onUpdate: 'CURRENT_TIMESTAMP',
+  // })
+  @CreateDateColumn()
+  updatedAt: Date;
 
   // Relations
-  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.patient, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  personalInfo: PersonalInformation;
-
   @OneToOne(() => PatientEmployer, (employer) => employer.patient, {
     onDelete: 'CASCADE',
+    nullable: true,
   })
   @JoinColumn()
   employer?: PatientEmployer;
@@ -116,20 +206,20 @@ export class Patients {
   @OneToMany(() => EmergencyContacts, (emergency) => emergency.patient)
   emergencyContacts: EmergencyContacts[];
 
-  @ManyToOne((type) => Site, (site) => site.patients)
+  @ManyToOne(() => Site, (site) => site.patients)
   site: Site;
 
-  @ManyToOne((type) => Provider, (provider) => provider.patients)
-  careGiver: Provider;
+  @ManyToOne(() => Provider, (provider) => provider.patients)
+  provider: Provider;
 
-  @ManyToOne((type) => Departments, (department) => department.patients)
+  @ManyToOne(() => Departments, (department) => department.patients)
   department: Departments;
 
-  @ManyToOne((type) => Units, (unit) => unit.patients)
+  @ManyToOne(() => Units, (unit) => unit.patients)
   unit: Units;
 
-  @ManyToOne((type) => Servicearea, (unit) => unit.patients)
-  servicearea: Servicearea;
+  @ManyToOne(() => Servicearea, (unit) => unit.patients)
+  serviceArea: Servicearea;
 
   /// Add, complains, medications, allergies, diagnosis and visit
 }

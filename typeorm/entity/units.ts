@@ -12,7 +12,9 @@ import { Site } from '@typeorm/entity/site';
 import { createUnitRequestSchema } from '@lib/schemas/unitSchemas';
 import { z } from 'zod';
 
-@Entity()
+@Entity({
+  name: 'unit',
+})
 export class Units {
   constructor(data: z.infer<typeof createUnitRequestSchema>) {
     this.name = data?.name;
@@ -53,18 +55,22 @@ export class Units {
   occupied_beds: number;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
-  @OneToMany((type) => Provider, (provider) => provider.unit)
+  @OneToMany(() => Provider, (provider) => provider.unit, {
+    onDelete: 'CASCADE',
+  })
   providers: Provider[];
 
-  @OneToMany((type) => Patients, (patient) => patient.unit)
+  @OneToMany(() => Patients, (patient) => patient.unit, {
+    onDelete: 'CASCADE',
+  })
   patients: Patients[];
 
-  @ManyToOne((type) => Site, (site) => site.departments)
+  @ManyToOne(() => Site, (site) => site.departments)
   site: Site;
 }

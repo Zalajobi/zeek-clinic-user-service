@@ -94,10 +94,10 @@ export class Hospital {
   country_code?: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
   @OneToMany((type) => Site, (site) => site.hospital, { onDelete: 'CASCADE' })

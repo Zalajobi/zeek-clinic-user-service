@@ -69,26 +69,26 @@ export const updateProviderDetails = async (
       .execute();
   }
 
-  if (!isObjectEmpty(personalInfoRecord)) {
-    if (personalInfoRecord?.phone) {
-      phoneCount = await getPersonalInfoCountByPhoneAndNotSameId(
-        personalInfoRecord?.phone,
-        <string>personalInfo?.personalInfoId
-      );
-    }
-
-    if (phoneCount >= 1)
-      return DefaultJsonResponse(
-        'A user with the same phone number already exists.',
-        null,
-        false
-      );
-
-    updatedPersonalInfo = await updatePersonalInfoById(
-      <string>personalInfo?.personalInfoId,
-      personalInfoRecord
-    );
-  }
+  // if (!isObjectEmpty(personalInfoRecord)) {
+  //   if (personalInfoRecord?.phone) {
+  //     phoneCount = await getPersonalInfoCountByPhoneAndNotSameId(
+  //       personalInfoRecord?.phone,
+  //       <string>personalInfo?.personalInfoId
+  //     );
+  //   }
+  //
+  //   if (phoneCount >= 1)
+  //     return DefaultJsonResponse(
+  //       'A user with the same phone number already exists.',
+  //       null,
+  //       false
+  //     );
+  //
+  //   updatedPersonalInfo = await updatePersonalInfoById(
+  //     <string>personalInfo?.personalInfoId,
+  //     personalInfoRecord
+  //   );
+  // }
 
   return DefaultJsonResponse(
     updatedProvider && updatedPersonalInfo

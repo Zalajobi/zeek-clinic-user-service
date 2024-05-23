@@ -68,7 +68,7 @@ export const adminCreateNewProvider = async (
 
   if (personalInfo) {
     const provider = new Provider(data);
-    provider.personalInfo = personalInfo;
+    // provider.personalInfo = personalInfo;
 
     const newProvider = await providerRepository.save(provider);
 

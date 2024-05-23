@@ -82,10 +82,10 @@ export class Admin {
   password_reset_request_timestamp: Date;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
   @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin, {

@@ -7,7 +7,9 @@ import {
 } from 'typeorm';
 import { Site } from '@typeorm/entity/site';
 
-@Entity()
+@Entity({
+  name: 'bankAccount',
+})
 export class BankAccount {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -33,10 +35,10 @@ export class BankAccount {
   account_officer?: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   @ManyToOne((type) => Site, (site) => site.bankAccounts)
   site: Site;
