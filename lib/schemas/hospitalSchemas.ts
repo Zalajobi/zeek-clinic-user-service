@@ -24,7 +24,7 @@ export const createHospitalRequestSchema = z
     return !data.email.includes('+');
   });
 
-export const hospitalDetailsRequestSchema = bearerTokenSchema.extend({
+export const hospitalDetailsRequestSchema = z.object({
   id: z.string(),
 });
 

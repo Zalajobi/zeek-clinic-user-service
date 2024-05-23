@@ -3,6 +3,7 @@ import { HospitalStatus } from '@typeorm/entity/enums';
 import { z } from 'zod';
 import { searchHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
 import { extractPerPageAndPage } from '@util/index';
+import { DefaultJsonResponse } from '@util/responses';
 
 export const selectAllAvailableCountries = async () => {
   const hospitalRepository = hospitalRepo();
@@ -19,11 +20,15 @@ export const selectAllAvailableCountries = async () => {
 export const getHospitalDetailsById = async (hospitalId: string) => {
   const hospitalRepository = hospitalRepo();
 
-  return await hospitalRepository.findOne({
+  const hospital = await hospitalRepository.findOne({
     where: {
       id: hospitalId,
     },
   });
+
+  if (!hospital) throw new Error('Hospital not found');
+
+  return DefaultJsonResponse('Success', hospital, !!hospital);
 };
 
 export const fetchFilteredHospitalData = async (

@@ -16,10 +16,7 @@ hospitalPostRequest.post(
   authorizeRequest(['SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createHospitalRequestSchema.parse({
-        ...req.body,
-        ...req?.headers,
-      });
+      const requestBody = createHospitalRequestSchema.parse(req.body);
 
       const hospital = await createNewHospital(requestBody);
 
