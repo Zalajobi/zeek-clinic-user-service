@@ -84,10 +84,9 @@ siteGetRequest.get(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getOrganisationSiteFilterRequestSchema.parse({
-        ...req.query,
-        ...req.headers,
-      });
+      const requestBody = getOrganisationSiteFilterRequestSchema.parse(
+        req.query
+      );
 
       const data = await fetchFilteredSiteData(
         requestBody.page,
