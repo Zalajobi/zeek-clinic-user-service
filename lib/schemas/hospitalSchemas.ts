@@ -7,8 +7,8 @@ import {
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
 
-export const createHospitalRequestSchema = bearerTokenSchema
-  .extend({
+export const createHospitalRequestSchema = z
+  .object({
     name: z.string().min(4),
     email: z.string(),
     phone: z.coerce.string(),
@@ -17,8 +17,8 @@ export const createHospitalRequestSchema = bearerTokenSchema
     state: z.string(),
     country: z.string(),
     logo: z.string(),
-    zip_code: z.coerce.number(),
-    country_code: z.string().optional(),
+    zipCode: z.coerce.number(),
+    countryCode: z.string().optional(),
   })
   .refine((data) => {
     return !data.email.includes('+');

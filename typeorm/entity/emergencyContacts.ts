@@ -65,6 +65,6 @@ export class EmergencyContacts {
   })
   patient: Patients;
 
-  @ManyToOne((type) => Site, (site) => site.emergencyContacts)
+  @ManyToOne(() => Site, (site) => site.emergencyContacts)
   site: Site;
 }

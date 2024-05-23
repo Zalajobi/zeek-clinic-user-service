@@ -40,6 +40,6 @@ export class BankAccount {
   @CreateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne((type) => Site, (site) => site.bankAccounts)
+  @ManyToOne(() => Site, (site) => site.bankAccounts)
   site: Site;
 }

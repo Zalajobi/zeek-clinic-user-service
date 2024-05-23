@@ -2,6 +2,7 @@ import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { Hospital } from '@typeorm/entity/hospital';
 import { z } from 'zod';
 import { createHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
+import { DefaultJsonResponse } from '@util/responses';
 
 export const createNewHospital = async (
   data: z.infer<typeof createHospitalRequestSchema>
@@ -18,11 +19,15 @@ export const createNewHospital = async (
     })
     .getOne();
 
-  if (isUnique) return false;
+  if (isUnique) {
+    throw new Error('Hospital with email or phone already exists');
+  }
 
   const hospital = await hospitalRepository.save(new Hospital(data));
 
-  if (hospital) {
-    return true;
+  if (!hospital) {
+    throw new Error('Failed to create hospital');
   }
+
+  return DefaultJsonResponse('Hospital created successfully', hospital, true);
 };

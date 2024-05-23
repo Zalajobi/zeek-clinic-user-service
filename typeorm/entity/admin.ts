@@ -94,6 +94,6 @@ export class Admin {
   // @JoinColumn()
   // personalInfo?: PersonalInformation;
 
-  @ManyToOne((type) => Site, (site) => site.admins)
+  @ManyToOne(() => Site, (site) => site.admins)
   site: Site;
 }
