@@ -135,7 +135,7 @@ export const loadSiteDetailsById = async (siteId: string) => {
       state: true,
       city: true,
       phone: true,
-      created_at: true,
+      createdAt: true,
       status: true,
       country_code: true,
       time_zone: true,

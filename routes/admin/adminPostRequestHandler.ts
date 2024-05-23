@@ -202,7 +202,7 @@ adminPostRequestHandler.post(
         //   `Your Temporary Code Is ${passwordResetCode}`
         // );
 
-        const { personalInfo, ...adminData } = user;
+        const { ...adminData } = user;
 
         const updateUser = {
           ...adminData,
@@ -249,7 +249,7 @@ adminPostRequestHandler.post(
         //   `Your Temporary Code Is ${passwordResetCode}`
         // );
 
-        const { personalInfo, ...adminData } = user;
+        const { ...adminData } = user;
 
         const updateUser = {
           ...adminData,
@@ -296,7 +296,7 @@ adminPostRequestHandler.post(
         //   `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`
         // );
 
-        const { personalInfo, ...adminData } = user;
+        const { ...adminData } = user;
 
         const updateUser = {
           ...adminData,

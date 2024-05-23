@@ -61,9 +61,6 @@ export const getAdminBaseDataAndProfileDataByAdminId = async (id: string) => {
       id: true,
       // profile: true,
     },
-    relations: {
-      personalInfo: true,
-    },
   });
 };
 
@@ -146,7 +143,7 @@ export const getAdminDetails = async (id: string): Promise<Admin | null> => {
       username: true,
       staff_id: true,
       id: true,
-      created_at: true,
+      createdAt: true,
       personalInfoId: true,
     },
   });

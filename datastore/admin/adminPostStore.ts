@@ -67,7 +67,6 @@ export const createNewAdmin = async (
 
   const personalInfo = await createNewPersonalInfo(profileInfoData);
   const newAdmin = new Admin(adminData);
-  newAdmin.personalInfo = personalInfo;
 
   const admin = await adminRepository.save(newAdmin);
 

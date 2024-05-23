@@ -7,7 +7,7 @@ import { BankAccount } from '@typeorm/entity/bankAccount';
 
 import { SuperAdmin } from '@typeorm/entity/superAdmin';
 import { Provider } from '@typeorm/entity/providers';
-import { PersonalInformation } from '@typeorm/entity/personalInfo';
+// import { PersonalInformation } from '@typeorm/entity/personalInfo';
 import { Roles } from '@typeorm/entity/roles';
 import { Departments } from '@typeorm/entity/departments';
 import { Admin } from '@typeorm/entity/admin';
@@ -40,7 +40,7 @@ export const AppDataSource = new DataSource({
     BankAccount,
     SuperAdmin,
     Provider,
-    PersonalInformation,
+    // PersonalInformation,
     Roles,
     Departments,
     Admin,
@@ -56,7 +56,7 @@ export const AppDataSource = new DataSource({
     BankAccount,
     SuperAdmin,
     Provider,
-    PersonalInformation,
+    // PersonalInformation,
     Roles,
     Departments,
     Admin,

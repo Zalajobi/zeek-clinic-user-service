@@ -151,11 +151,4 @@ export class PersonalInformation {
 
   @CreateDateColumn()
   updatedAt: Date;
-
-  // Relations
-  // @OneToOne(() => Provider, (provider) => provider.personalInfo)
-  // provider?: Provider;
-
-  @OneToOne(() => Admin, (admin) => admin.personalInfo)
-  admin: Admin;
 }

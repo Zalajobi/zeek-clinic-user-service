@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Site } from '@typeorm/entity/site';
 import { AdminRoles } from '@typeorm/entity/enums';
-import { PersonalInformation } from '@typeorm/entity/personalInfo';
+// import { PersonalInformation } from '@typeorm/entity/personalInfo';
 import { createAdminRequestSchema } from '@lib/schemas/adminSchemas';
 import { z } from 'zod';
 
@@ -87,12 +87,12 @@ export class Admin {
   @CreateDateColumn()
   updatedAt: Date;
 
-  // Relations
-  @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  personalInfo?: PersonalInformation;
+  // // Relations
+  // @OneToOne(() => PersonalInformation, (personalInfo) => personalInfo.admin, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn()
+  // personalInfo?: PersonalInformation;
 
   @ManyToOne((type) => Site, (site) => site.admins)
   site: Site;

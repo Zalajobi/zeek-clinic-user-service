@@ -245,7 +245,7 @@ export class Site {
 
   @AfterUpdate()
   updateTimestamps() {
-    this.updated_at = new Date();
+    this.updatedAt = new Date();
   }
 
   // Relations
