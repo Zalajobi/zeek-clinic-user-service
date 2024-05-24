@@ -26,10 +26,9 @@ providersGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getOrganisationProvidersFilterRequestSchema.parse({
-        ...req.headers,
-        ...req.query,
-      });
+      const requestBody = getOrganisationProvidersFilterRequestSchema.parse(
+        req.query
+      );
 
       const providerData = await fetchFilteredProviderData(
         requestBody.page,

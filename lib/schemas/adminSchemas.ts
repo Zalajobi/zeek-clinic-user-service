@@ -3,7 +3,7 @@ import {
   bearerTokenSchema,
   profileInformationSchema,
 } from '@lib/schemas/commonSchemas';
-import { AdminRoleSchema } from '@lib/schemas/enums';
+import { adminRoleSchema } from '@lib/schemas/enums';
 
 export const getDepartmentsBySiteIdRequestSchema = bearerTokenSchema.extend({
   siteId: z.string(),
@@ -13,7 +13,7 @@ export const getDepartmentsBySiteIdRequestSchema = bearerTokenSchema.extend({
 export const createAdminRequestSchema = profileInformationSchema
   .extend({
     siteId: z.string(),
-    role: AdminRoleSchema,
+    role: adminRoleSchema,
     email: z.string(),
     password: z.string().optional(),
     staffId: z.string(),

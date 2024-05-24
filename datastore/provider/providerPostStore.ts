@@ -3,54 +3,64 @@ import { customPromiseRequest } from '@lib/api';
 import { DefaultJsonResponse } from '@util/responses';
 import { z } from 'zod';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { Provider } from '@typeorm/entity/providers';
 
 // Post Requests Stores
-export const adminCreateNewProvider = async (
+export const createNewProvider = async (
   data: z.infer<typeof createProviderRequestSchema>
 ) => {
   const providerRepository = providerRepo();
 
-  const [providerCount, staffIdAndCount]: any = await customPromiseRequest([
+  const [isUniqueEmail, isUniqueStaffId, isUniquePhone] = await Promise.all([
     providerRepository
       .createQueryBuilder('provider')
       .where('LOWER(provider.email) = :email', {
-        email: data?.email?.toLowerCase(),
+        email: data.email.toLowerCase(),
       })
-      // .orWhere('LOWER(provider.username) LIKE LOWER(:username)', {
-      //   username: data.username,
-      // })
       .getCount(),
 
     providerRepository
       .createQueryBuilder('provider')
-      .where(
-        'LOWER(provider.staff_id) = :staffId AND provider.siteId = :siteId',
-        {
-          staffId: data.staff_id,
-          siteId: data.siteId,
-        }
-      )
+      .where('provider.staffId = :staffId AND provider.siteId = :siteId', {
+        staffId: data.staffId.toLowerCase(),
+        siteId: data.siteId,
+      })
       .getCount(),
+
+    providerRepository.countBy({
+      phone: data.phone,
+      siteId: data.siteId,
+    }),
   ]);
 
-  if (
-    providerCount.status.toString() === 'fulfilled' &&
-    staffIdAndCount.status.toString() === 'fulfilled'
-  ) {
-    if (Number(staffIdAndCount?.value.toString()) >= 1) {
-      return DefaultJsonResponse(
-        'Provider With Staff ID already exists',
-        null,
-        false
-      );
-    } else if (Number(providerCount?.value.toString()) >= 1) {
-      return DefaultJsonResponse(
-        'Provider with Username or Email already exits',
-        null,
-        false
-      );
-    }
-  }
+  if (isUniqueEmail >= 1)
+    return DefaultJsonResponse(
+      'Provider with Email already exists',
+      null,
+      false
+    );
 
-  return DefaultJsonResponse('Something Went Wrong', null, false);
+  if (isUniqueStaffId >= 1)
+    return DefaultJsonResponse(
+      'Provider with Staff ID already exists',
+      null,
+      false
+    );
+
+  if (isUniquePhone >= 1)
+    return DefaultJsonResponse(
+      'Provider with Phone Number already exists',
+      null,
+      false
+    );
+
+  data.staffId = data.staffId.toLowerCase();
+
+  const provider = await providerRepository.save(new Provider(data));
+
+  return DefaultJsonResponse(
+    provider ? 'Provider Created Successfully' : 'Failed to Create Provider',
+    provider,
+    !!provider
+  );
 };

@@ -1,38 +1,23 @@
 import { z } from 'zod';
-import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import {
+  bearerTokenSchema,
+  profileInformationSchema,
+} from '@lib/schemas/commonSchemas';
 import { globalStatusSchema } from '@lib/schemas/enums';
 
-export const createProviderRequestSchema = z
-  .object({
-    title: z.string(),
-    first_name: z.string().min(4),
-    last_name: z.string().min(4),
-    middle_name: z.string().default(''),
-    gender: z.string(),
-    dob: z.string().default(''),
+export const createProviderRequestSchema = profileInformationSchema
+  .extend({
     email: z.string(),
-    phone: z.string(),
     department: z.string(),
+    staffId: z.string(),
     role: z.string(),
     serviceArea: z.string(),
     unit: z.string(),
-    country: z.string(),
-    countryCode: z.string(),
-    state: z.string().default(''),
-    city: z.string().default(''),
-    staff_id: z.string().transform((val) => val.toUpperCase()),
-    zipCode: z.string(),
-    marital_status: globalStatusSchema,
-    religion: z.string(),
-    password: z.string().default(''),
-    username: z.string().optional(),
-    address: z.string(),
-    address_two: z.string().default(''),
+    password: z.string().optional(),
     siteId: z.string(),
     is_consultant: z.boolean().default(false),
     is_specialist: z.boolean().default(false),
     appointments: z.boolean().default(false),
-    profile_pic: z.string().default(''),
   })
   .refine((data) => {
     return !data.email.includes('+');
@@ -71,17 +56,16 @@ export const updateProviderRequestSchema = bearerTokenSchema.extend({
   gender: z.string().optional(),
 });
 
-export const getOrganisationProvidersFilterRequestSchema =
-  bearerTokenSchema.extend({
-    siteId: z.string(),
-    page: z.coerce.number().default(0),
-    per_page: z.coerce.number().default(20),
-    search: z.string().optional(),
-    from_date: z.string().optional(),
-    to_date: z.string().optional(),
-    country: z.string().optional(),
-    status: globalStatusSchema.optional(),
-  });
+export const getOrganisationProvidersFilterRequestSchema = z.object({
+  siteId: z.string(),
+  page: z.coerce.number().default(0),
+  per_page: z.coerce.number().default(20),
+  search: z.string().optional(),
+  from_date: z.string().optional(),
+  to_date: z.string().optional(),
+  country: z.string().optional(),
+  status: globalStatusSchema.optional(),
+});
 
 export const getProviderDetailsRequestSchema = bearerTokenSchema.extend({
   id: z.string(),

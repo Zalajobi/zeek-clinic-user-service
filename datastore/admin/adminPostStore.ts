@@ -1,5 +1,4 @@
 import { adminRepo } from '@typeorm/repositories/adminRepository';
-import { customPromiseRequest } from '@lib/api';
 import { AdminRoles } from '@typeorm/entity/enums';
 import { DefaultJsonResponse } from '@util/responses';
 import { Admin } from '@typeorm/entity/admin';
@@ -21,7 +20,7 @@ export const createNewAdmin = async (
 
     adminRepository
       .createQueryBuilder('admin')
-      .where('LOWER(admin.staffId) = :staffId AND admin.siteId = :siteId', {
+      .where('admin.staffId = :staffId AND admin.siteId = :siteId', {
         staffId: adminData.staffId.toLowerCase(),
         siteId: adminData.siteId,
       })
@@ -36,25 +35,22 @@ export const createNewAdmin = async (
   adminData.staffId = adminData.staffId.toLowerCase();
   adminData.role = adminData.role.replace(' ', '_') as AdminRoles;
 
-  if (isUniqueEmail >= 1) {
+  if (isUniqueEmail >= 1)
     return DefaultJsonResponse('Admin with Email already exists', null, false);
-  }
 
-  if (isUniqueStaffId >= 1) {
+  if (isUniqueStaffId >= 1)
     return DefaultJsonResponse(
       'Admin with Staff ID already exists',
       null,
       false
     );
-  }
 
-  if (isUniquePhone >= 1) {
+  if (isUniquePhone >= 1)
     return DefaultJsonResponse(
       'Admin with Phone Number already exists',
       null,
       false
     );
-  }
 
   const newAdmin = new Admin(adminData);
 

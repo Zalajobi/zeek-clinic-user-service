@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminRoleSchema = z.preprocess((val) => {
+export const adminRoleSchema = z.preprocess((val) => {
   if (typeof val === 'string') return val.toUpperCase();
 
   return val;
@@ -17,3 +17,9 @@ export const maritalStatusSchema = z.preprocess((val) => {
 
   return val;
 }, z.enum(['SINGLE', 'IN_A_RELATIONSHIP', 'ENGAGED', 'MARRIED', 'DIVORCED', 'WIDOWED', 'SEPARATED', 'COMPLICATED', 'OPEN_RELATIONSHIP', 'CIVIL_UNION', 'DOMESTIC_PARTNERSHIP', 'OTHERS']));
+
+export const genderSchema = z.preprocess((val) => {
+  if (typeof val === 'string') return val.toUpperCase();
+
+  return val;
+}, z.enum(['MALE', 'FEMALE', 'OTHERS']));

@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -27,11 +28,30 @@ export class Provider {
     this.serviceAreaId = data?.serviceArea;
     this.unitId = data?.unit;
     this.email = data?.email;
-    this.password = data?.password;
-    this.staffId = data?.staff_id;
+    this.password = data?.password ?? '';
+    this.staffId = data?.staffId;
     this.isConsultant = data?.is_consultant;
     this.isSpecialist = data?.is_specialist;
     this.appointments = data?.appointments;
+
+    // Personal Info
+    this.title = data?.title;
+    this.firstName = data?.firstName;
+    this.lastName = data?.lastName;
+    this.middleName = data?.middleName ?? '';
+    this.phone = data?.phone;
+    this.gender = data?.gender;
+    this.dob = new Date(data?.dob);
+    this.address = data?.address;
+    this.alternateAddress = data?.alternateAddress ?? '';
+    this.city = data?.city;
+    this.state = data?.state ?? '';
+    this.country = data?.country;
+    this.countryCode = data?.countryCode;
+    this.zipCode = data?.zipCode;
+    this.profilePic = data?.profilePic ?? '';
+    this.religion = data?.religion ?? '';
+    this.maritalStatus = data?.maritalStatus as MartialStatus;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -67,6 +87,9 @@ export class Provider {
     unique: true,
     length: 75,
   })
+  @Index({
+    unique: true,
+  })
   email: string;
 
   @Column({
@@ -80,11 +103,17 @@ export class Provider {
     nullable: false,
     length: 25,
   })
+  @Index({
+    unique: false,
+  })
   staffId: string;
 
   @Column({
     nullable: false,
     length: 25,
+  })
+  @Index({
+    unique: false,
   })
   phone: string;
 

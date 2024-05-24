@@ -4,7 +4,7 @@ import {
   getIsoDateBackdatedByMonth,
   isISODate,
 } from '@util/index';
-import { maritalStatusSchema } from '@lib/schemas/enums';
+import { genderSchema, maritalStatusSchema } from '@lib/schemas/enums';
 
 export const ONE_MILLION = 1000000;
 
@@ -19,7 +19,7 @@ export const profileInformationSchema = z.object({
   lastName: z.string(),
   middleName: z.string().optional(),
   phone: z.string(),
-  gender: z.enum(['Male', 'Female', 'Others']),
+  gender: genderSchema,
   dob: z.string(),
   address: z.string(),
   alternateAddress: z.string().optional(),

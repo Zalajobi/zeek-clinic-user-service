@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
+import { createNewProvider } from '@datastore/provider/providerPostStore';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
 import {
   generatePasswordHash,
@@ -25,11 +25,13 @@ providersPostRequestHandler.post(
     try {
       const requestBody = createProviderRequestSchema.parse(req.body);
 
+      // Set a temporary password if no password is set
       const tempPassword = generateTemporaryPassCode();
-      requestBody.password = generatePasswordHash(tempPassword);
-      requestBody.username = requestBody.username ?? requestBody.staff_id;
+      requestBody.password = generatePasswordHash(
+        requestBody?.password ?? tempPassword
+      );
 
-      const newAdmin = await adminCreateNewProvider(requestBody);
+      const { message, success } = await createNewProvider(requestBody);
 
       // if (newAdmin.success as boolean) {
       //   await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
@@ -41,13 +43,7 @@ providersPostRequestHandler.post(
       //   });
       // }
 
-      return JsonApiResponse(
-        res,
-        <string>newAdmin?.message,
-        <boolean>newAdmin?.success,
-        null,
-        201
-      );
+      return JsonApiResponse(res, message, success, null, success ? 201 : 400);
     } catch (error) {
       next(error);
     }
