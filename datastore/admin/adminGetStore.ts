@@ -86,57 +86,42 @@ export const getAdminAndProfileDataByEmailOrUsername = async (
     .getOne();
 };
 
-export const getAdminFullProfileData = async (id: string) => {
+export const getAdminDetails = async (id: string) => {
   const adminRepository = adminRepo();
 
-  return await adminRepository
-    .createQueryBuilder('admin')
-    .where('admin.id = :id', {
-      id,
-    })
-    .select([
-      'admin.role',
-      'admin.siteId',
-      'admin.email',
-      'admin.username',
-      'admin.createdAt',
-      'admin.staff_id',
-      'admin.id',
-      'admin.staff_id',
-      // 'profile.first_name',
-      // 'profile.last_name',
-      // 'profile.phone',
-      // 'profile.title',
-      // 'profile.gender',
-      // 'profile.dob',
-      // 'profile.address',
-      // 'profile.city',
-      // 'profile.country',
-      // 'profile.zipCode',
-      // 'profile.profile_pic',
-      // 'profile.createdAt',
-      // 'profile.middle_name',
-      // 'profile.religion',
-      // 'profile.marital_status',
-      // 'profile.id',
-    ])
-    .getOne();
-};
-
-export const getAdminDetails = async (id: string): Promise<Admin | null> => {
-  const adminRepository = adminRepo();
-
-  return await adminRepository.findOne({
+  const adminData = await adminRepository.findOne({
     where: {
-      id,
+      id: id,
     },
     select: {
-      siteId: true,
+      id: true,
       role: true,
+      siteId: true,
       email: true,
       staffId: true,
-      id: true,
+      firstName: true,
+      lastName: true,
+      middleName: true,
+      religion: true,
+      maritalStatus: true,
+      phone: true,
+      title: true,
+      gender: true,
+      dob: true,
+      address: true,
+      city: true,
+      country: true,
+      zipCode: true,
+      profilePic: true,
       createdAt: true,
     },
   });
+
+  if (!adminData) throw new Error('Admin not found');
+
+  return DefaultJsonResponse(
+    'Admin data retrieved successfully',
+    adminData,
+    true
+  );
 };
