@@ -55,6 +55,7 @@ export const createNewProvider = async (
     );
 
   data.staffId = data.staffId.toLowerCase();
+  data.email = data.email.toLowerCase();
 
   const provider = await providerRepository.save(new Provider(data));
 
