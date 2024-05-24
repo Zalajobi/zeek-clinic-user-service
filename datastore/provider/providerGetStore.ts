@@ -161,161 +161,230 @@ export const getSearchProviderData = async (
     requestBody.startRow
   );
 
-  const serviceAreaQuery = providerRepository
+  const providerQuery = providerRepository
     .createQueryBuilder('provider')
-    .orderBy({
-      [`provider.${requestBody.sortModel.colId}`]:
-        requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-    })
-    .innerJoin('provider.primary_role', 'role')
-    .innerJoin('provider.personalInfo', 'profile')
+    .orderBy(
+      `provider.${requestBody.sortModel.colId}`,
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
+    )
+    .innerJoin('provider.primaryRole', 'role')
     .innerJoin('provider.unit', 'unit')
     .innerJoin('provider.department', 'department')
-    .innerJoin('provider.servicearea', 'servicearea')
+    .innerJoin('provider.serviceArea', 'servicearea')
     .select([
       'provider.id AS id',
-      'provider.siteId AS site_id',
-      'provider.primaryRoleId AS role_id',
-      'provider.personalInfoId AS profile_id',
-      'provider.departmentId AS dept_id',
-      'provider.serviceareaId AS area_id',
-      'provider.unitId AS unit_id',
-      'provider.email AS email',
-      'provider.staff_id AS staff_id',
-      'provider.is_consultant AS is_consultant',
-      'provider.is_specialist AS is_specialist',
+      'provider.siteId AS siteId',
+      'provider.primaryRoleId AS primaryRoleId',
+      'provider.departmentId AS departmentId',
+      'provider.serviceAreaId AS serviceAreaId',
+      'provider.unitId AS unitId',
       'provider.appointments AS appointments',
       'provider.status AS status',
-      'provider.created_at AS created_at',
+      'provider.staffId AS staffId',
+      'provider.phone AS phone',
+      'provider.firstName AS firstName',
+      'provider.lastName AS lastName',
+      'provider.middleName AS middleName',
+      'provider.title AS title',
+      'provider.gender AS gender',
+      'provider.dob AS dob',
+      'provider.address AS address',
+      'provider.city AS city',
+      'provider.state AS state',
+      'provider.country AS country',
+      'provider.countryCode AS countryCode',
+      'provider.zipCode AS zipCode',
+      'provider.religion AS religion',
+      'provider.maritalStatus AS maritalStatus',
+      'provider.profilePic AS profilePic',
+      'provider.isConsultant AS isConsultant',
+      'provider.isSpecialist AS isSpecialist',
+      'provider.email AS email',
       'role.name AS role',
       'department.name AS dept',
       'servicearea.name AS area',
       'unit.name AS unit',
-      'profile.phone AS phone',
-      'profile.first_name AS first_name',
-      'profile.last_name AS last_name',
-      'profile.middle_name AS middle_name',
-      'profile.title AS title',
-      'profile.gender AS gender',
-      'profile.dob AS dob',
-      'profile.address AS address',
-      'profile.address_two AS address_two',
-      'profile.city AS city',
-      'profile.state AS state',
-      'profile.country AS country',
-      'profile.religion AS religion',
-      'profile.marital_status AS marital_status',
-      'profile.zip_code AS zip_code',
-      'profile.profile_pic AS profile_pic',
+      'provider.createdAt AS createdAt',
     ]);
 
-  if (requestBody.siteId) {
-    serviceAreaQuery.where('provider.siteId = :siteId', {
-      siteId: requestBody.siteId,
-    });
-  }
-
-  if (requestBody.id) {
-    serviceAreaQuery.where('provider.id = :id', {
-      id: requestBody.id,
-    });
-  }
-
-  if (requestBody.primaryRoleId) {
-    serviceAreaQuery.where('provider.primaryRoleId = :primaryRoleId', {
-      primaryRoleId: requestBody.primaryRoleId,
-    });
-  }
-
-  if (requestBody.personalInfoId) {
-    serviceAreaQuery.where('provider.personalInfoId = :personalInfoId', {
-      personalInfoId: requestBody.personalInfoId,
-    });
-  }
-
-  if (requestBody.departmentId) {
-    serviceAreaQuery.where('provider.departmentId = :departmentId', {
-      departmentId: requestBody.departmentId,
-    });
-  }
-
-  if (requestBody.serviceareaId) {
-    serviceAreaQuery.where('provider.serviceareaId = :serviceareaId', {
-      serviceareaId: requestBody.serviceareaId,
-    });
-  }
-
-  if (requestBody.unitId) {
-    serviceAreaQuery.where('provider.unitId = :unitId', {
-      unitId: requestBody.unitId,
-    });
-  }
-
-  if (requestBody.email) {
-    serviceAreaQuery.where('LOWER(provider.email) LIKE :email', {
-      email: `%${requestBody.email.toLowerCase()}%`,
-    });
-  }
-
-  if (requestBody.username) {
-    serviceAreaQuery.where('LOWER(provider.username) LIKE :username', {
-      username: `%${requestBody.username.toLowerCase()}%`,
-    });
-  }
-
-  if (requestBody.staff_id) {
-    serviceAreaQuery.where('provider.staff_id = :staff_id', {
-      staff_id: requestBody.staff_id,
-    });
-  }
-
-  if (requestBody.is_consultant) {
-    serviceAreaQuery.where('provider.is_consultant = :is_consultant', {
-      is_consultant: requestBody.is_consultant,
-    });
-  }
-
-  if (requestBody.is_specialist) {
-    serviceAreaQuery.where('provider.is_specialist = :is_specialist', {
-      is_specialist: requestBody.is_specialist,
-    });
-  }
-
-  if (requestBody.appointments) {
-    serviceAreaQuery.where('provider.appointments = :appointments', {
-      appointments: requestBody.appointments,
-    });
-  }
-
-  if (requestBody.status) {
-    serviceAreaQuery.where('provider.status = :status', {
-      status: requestBody.status,
-    });
-  }
-
-  if (requestBody?.range && requestBody.range.from) {
-    serviceAreaQuery.andWhere('provider.created_at > :fromDate', {
-      fromDate: requestBody.range.from,
-    });
-  }
-
-  if (requestBody?.range && requestBody.range.to) {
-    serviceAreaQuery.andWhere('provider.created_at < :toDate', {
-      toDate: requestBody.range.to,
-    });
-  }
-
-  if (requestBody.search && requestBody.searchKey) {
-    serviceAreaQuery.andWhere(
+  if (requestBody.search && requestBody.searchKey)
+    providerQuery.andWhere(
       `LOWER(provider.${requestBody.searchKey}) LIKE :search`,
       {
         search: `%${requestBody.search.toLowerCase()}%`,
       }
     );
+
+  if (requestBody.id)
+    providerQuery.where('provider.id = :id', {
+      id: requestBody.id,
+    });
+
+  if (requestBody.siteId)
+    providerQuery.where('provider.siteId = :siteId', {
+      siteId: requestBody.siteId,
+    });
+
+  if (requestBody.primaryRoleId)
+    providerQuery.where('provider.primaryRoleId = :primaryRoleId', {
+      primaryRoleId: requestBody.primaryRoleId,
+    });
+
+  if (requestBody.departmentId)
+    providerQuery.where('provider.departmentId = :departmentId', {
+      departmentId: requestBody.departmentId,
+    });
+
+  if (requestBody.serviceAreaId)
+    providerQuery.where('provider.serviceAreaId = :serviceAreaId', {
+      serviceAreaId: requestBody.serviceAreaId,
+    });
+
+  if (requestBody.unitId)
+    providerQuery.where('provider.unitId = :unitId', {
+      unitId: requestBody.unitId,
+    });
+
+  if (requestBody.appointments)
+    providerQuery.where('provider.appointments = :appointments', {
+      appointments: requestBody.appointments,
+    });
+
+  if (requestBody.staffId)
+    providerQuery.andWhere('LOWER(provider.staffId) LIKE :staffId', {
+      staffId: `%${requestBody.staffId.toLowerCase()}%`,
+    });
+
+  if (requestBody.phone)
+    providerQuery.andWhere('LOWER(provider.phone) LIKE :phone', {
+      phone: `%${requestBody.phone.toLowerCase()}%`,
+    });
+
+  if (requestBody.firstName)
+    providerQuery.andWhere('LOWER(provider.firstName) LIKE :firstName', {
+      firstName: `%${requestBody.firstName.toLowerCase()}%`,
+    });
+
+  if (requestBody.lastName)
+    providerQuery.andWhere('LOWER(provider.lastName) LIKE :lastName', {
+      lastName: `%${requestBody.lastName.toLowerCase()}%`,
+    });
+
+  if (requestBody.middleName)
+    providerQuery.andWhere('LOWER(provider.middleName) LIKE :middleName', {
+      middleName: `%${requestBody.middleName.toLowerCase()}%`,
+    });
+
+  if (requestBody.title)
+    providerQuery.andWhere('LOWER(provider.title) = :title', {
+      title: requestBody.title.toLowerCase(),
+    });
+
+  if (requestBody.gender)
+    providerQuery.andWhere('LOWER(provider.gender) = :gender', {
+      gender: requestBody.gender,
+    });
+
+  if (requestBody.address)
+    providerQuery.andWhere('LOWER(provider.address) LIKE :address', {
+      address: `%${requestBody.address.toLowerCase()}%`,
+    });
+
+  if (requestBody.alternateAddress)
+    providerQuery.andWhere(
+      'LOWER(provider.alternateAddress) LIKE :alternateAddress',
+      {
+        alternateAddress: `%${requestBody.alternateAddress.toLowerCase()}%`,
+      }
+    );
+
+  if (requestBody.city)
+    providerQuery.andWhere('LOWER(provider.city) LIKE :city', {
+      city: `%${requestBody.city.toLowerCase()}%`,
+    });
+
+  if (requestBody.state)
+    providerQuery.andWhere('LOWER(provider.state) LIKE :state', {
+      state: `%${requestBody.state.toLowerCase()}%`,
+    });
+
+  if (requestBody.country)
+    providerQuery.andWhere('LOWER(provider.country) LIKE :country', {
+      country: `%${requestBody.country.toLowerCase()}%`,
+    });
+
+  if (requestBody.countryCode)
+    providerQuery.andWhere('LOWER(provider.countryCode) LIKE :countryCode', {
+      countryCode: `%${requestBody.countryCode.toLowerCase()}%`,
+    });
+
+  if (requestBody.zipCode)
+    providerQuery.andWhere('LOWER(provider.zipCode) LIKE :zipCode', {
+      zipCode: `%${requestBody.zipCode.toLowerCase()}%`,
+    });
+
+  if (requestBody.religion)
+    providerQuery.andWhere('LOWER(provider.religion) LIKE :religion', {
+      religion: `%${requestBody.religion.toLowerCase()}%`,
+    });
+
+  if (requestBody.maritalStatus)
+    providerQuery.where('provider.maritalStatus = :maritalStatus', {
+      maritalStatus: requestBody.maritalStatus,
+    });
+
+  if (requestBody.profilePic)
+    providerQuery.andWhere('LOWER(provider.profilePic) LIKE :profilePic', {
+      profilePic: `%${requestBody.profilePic.toLowerCase()}%`,
+    });
+
+  if (requestBody.isSpecialist)
+    providerQuery.where('provider.isSpecialist = :isSpecialist', {
+      isSpecialist: requestBody.isSpecialist,
+    });
+
+  if (requestBody.isConsultant)
+    providerQuery.where('provider.isConsultant = :isConsultant', {
+      isConsultant: requestBody.isConsultant,
+    });
+
+  if (requestBody.email)
+    providerQuery.where('LOWER(provider.email) LIKE :email', {
+      email: `%${requestBody.email.toLowerCase()}%`,
+    });
+
+  if (requestBody.appointments)
+    providerQuery.where('provider.appointments = :appointments', {
+      appointments: requestBody.appointments,
+    });
+
+  if (requestBody.status)
+    providerQuery.where('provider.status = :status', {
+      status: requestBody.status,
+    });
+
+  if (requestBody?.range && requestBody.range.from) {
+    providerQuery.andWhere('provider.createdAt > :fromDate', {
+      fromDate: requestBody.range.from,
+    });
   }
 
-  return await serviceAreaQuery
+  if (requestBody?.range && requestBody.range.to) {
+    providerQuery.andWhere('provider.createdAt < :toDate', {
+      toDate: requestBody.range.to,
+    });
+  }
+
+  const providerData = await providerQuery
     .skip(perPage * page)
     .take(perPage)
     .getRawMany();
+
+  return DefaultJsonResponse(
+    providerData?.length >= 1
+      ? 'Provider Data Retrieval Success'
+      : 'No Provider Found',
+    providerData,
+    !!providerData
+  );
 };

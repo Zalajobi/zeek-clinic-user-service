@@ -13,6 +13,28 @@ export const SortModelSchema = z.object({
   colId: z.string(),
 });
 
+export const startDayDateSchema = z
+  .string()
+  .refine(isISODate, {
+    message: 'Not a valid ISO string date.',
+  })
+  .transform((value) => {
+    const date = new Date(value);
+    date.setHours(0, 0, 0, 0);
+    return date.toISOString();
+  });
+
+export const endDayDateSchema = z
+  .string()
+  .refine(isISODate, {
+    message: 'Not a valid ISO string date.',
+  })
+  .transform((value) => {
+    const date = new Date(value);
+    date.setHours(23, 59, 59, 999);
+    return date.toISOString();
+  });
+
 export const profileInformationSchema = z.object({
   title: z.string(),
   firstName: z.string(),
@@ -39,14 +61,14 @@ export const DateRangeSchema = z.object({
     .refine(isISODate, {
       message: 'Not a valid ISO string date.',
     })
-    .default(getIsoDateBackdatedByMonth(12)),
+    .default(getIsoDateBackdatedByMonth(false, 12)),
   to: z
     .string()
     .refine(isISODate, {
       message: 'Not a valid ISO string date.',
     })
     .optional()
-    .default(getIsoDateBackdatedByMonth(0)),
+    .default(getIsoDateBackdatedByMonth(true, 0)),
 });
 
 export const LoginRequestSchema = z

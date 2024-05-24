@@ -152,8 +152,13 @@ export const isISODate = (str: string) => {
   return isoDateRegExp.test(str);
 };
 
-export const getIsoDateBackdatedByMonth = (month?: number): string => {
+export const getIsoDateBackdatedByMonth = (
+  isEndOfDay: boolean,
+  month: number
+): string => {
   const currentDate = new Date();
+  if (isEndOfDay) currentDate.setHours(23, 59, 59, 999);
+  else currentDate.setHours(0, 0, 0, 0);
   currentDate.setUTCMonth(currentDate.getUTCMonth() - (month ?? 12));
   return currentDate.toISOString();
 };

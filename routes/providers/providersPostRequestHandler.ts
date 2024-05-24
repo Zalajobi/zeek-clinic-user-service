@@ -8,6 +8,7 @@ import {
 import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchProviderData } from '@datastore/provider/providerGetStore';
+import { date } from 'zod';
 
 const providersPostRequestHandler = Router();
 
@@ -63,16 +64,16 @@ providersPostRequestHandler.post(
     try {
       const requestBody = searchProviderRequestSchema.parse(req.body);
 
-      const queryData = await getSearchProviderData(requestBody);
+      const { data, success, message } = await getSearchProviderData(
+        requestBody
+      );
       return JsonApiResponse(
         res,
-        'Success',
-        true,
+        message,
+        success,
         {
-          providers: queryData,
-          // totalRows: queryData[1],
-          // providers: queryData[0],
-          // totalRows: queryData[1],
+          providers: data[0],
+          totalRows: data[1],
         },
         200
       );
