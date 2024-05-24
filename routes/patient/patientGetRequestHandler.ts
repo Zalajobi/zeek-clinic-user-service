@@ -4,9 +4,11 @@ import {
   getCareGiverPrimaryPatients,
   getPatientCountBySiteId,
 } from '@datastore/patient/patientGetStore';
-import { getProviderPrimaryPatientRequestSchema } from '@lib/schemas/patientSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import {
+  idRequestSchema,
+  siteIdRequestSchema,
+} from '@lib/schemas/commonSchemas';
 
 const patientGetRequestHandler = Router();
 
@@ -22,7 +24,7 @@ patientGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = getProviderPrimaryPatientRequestSchema.parse(req.params);
+      const { id } = idRequestSchema.parse(req.params);
       const patientData = await getCareGiverPrimaryPatients(id);
 
       return JsonApiResponse(

@@ -76,7 +76,3 @@ export const updatePatientDetailsRequestSchema = z
 
     return true;
   });
-
-export const getProviderPrimaryPatientRequestSchema = z.object({
-  id: z.string(),
-});
