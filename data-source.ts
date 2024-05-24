@@ -15,6 +15,7 @@ import { Servicearea } from '@typeorm/entity/servicearea';
 import { Patients } from '@typeorm/entity/patient';
 import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
+import { QueryLog } from '@typeorm/entity/queryLog';
 
 import {
   DATABASE_HOST,
@@ -23,6 +24,7 @@ import {
   DATABASE_PORT,
   DATABASE_USERNAME,
 } from '@util/config';
+import { CustomQueryLogger } from '@typeorm/subscribers/QueryLogSubscriber';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -32,8 +34,9 @@ export const AppDataSource = new DataSource({
   password: DATABASE_PASSWORD,
   database: DATABASE_NAME,
   synchronize: true,
-  logging: false,
-  // logging: "all",
+  logging: 'all',
+  logger: new CustomQueryLogger(),
+  subscribers: [],
   migrationsTableName: 'migrations',
   entities: [
     Hospital,
@@ -49,6 +52,7 @@ export const AppDataSource = new DataSource({
     Patients,
     EmergencyContacts,
     PatientEmployer,
+    QueryLog,
   ],
   migrations: [
     Hospital,
@@ -64,6 +68,6 @@ export const AppDataSource = new DataSource({
     Patients,
     EmergencyContacts,
     PatientEmployer,
+    QueryLog,
   ],
-  subscribers: [],
 });

@@ -64,3 +64,24 @@ export enum MartialStatus {
   DOMESTIC_PARTNERSHIP = 'DOMESTIC_PARTNERSHIP',
   OTHERS = 'OTHERS',
 }
+
+export enum QueryLogType {
+  QUERY = 'QUERY',
+  ERROR = 'ERROR',
+  SLOW = 'SLOW',
+  SCHEMA = 'SCHEMA',
+  MIGRATION = 'MIGRATION',
+  INFO = 'INFO',
+  WARN = 'WARN',
+  LOG = 'LOG',
+}
+
+// export enum QueryLogType {
+//   QUERY = 'query',
+//   ERROR = 'error',
+//   SLOW = 'slow',
+//   SCHEMA = 'schema',
+//   MIGRATION = 'migration',
+//   INFO = 'info',
+//   WARN = 'warn',
+// }
