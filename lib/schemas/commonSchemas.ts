@@ -4,6 +4,7 @@ import {
   getIsoDateBackdatedByMonth,
   isISODate,
 } from '@util/index';
+import { genderSchema, maritalStatusSchema } from '@lib/schemas/enums';
 
 export const ONE_MILLION = 1000000;
 
@@ -12,20 +13,62 @@ export const SortModelSchema = z.object({
   colId: z.string(),
 });
 
+export const startDayDateSchema = z
+  .string()
+  .refine(isISODate, {
+    message: 'Not a valid ISO string date.',
+  })
+  .transform((value) => {
+    const date = new Date(value);
+    date.setHours(0, 0, 0, 0);
+    return date.toISOString();
+  });
+
+export const endDayDateSchema = z
+  .string()
+  .refine(isISODate, {
+    message: 'Not a valid ISO string date.',
+  })
+  .transform((value) => {
+    const date = new Date(value);
+    date.setHours(23, 59, 59, 999);
+    return date.toISOString();
+  });
+
+export const profileInformationSchema = z.object({
+  title: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  middleName: z.string().optional(),
+  phone: z.string(),
+  gender: genderSchema,
+  dob: z.string(),
+  address: z.string(),
+  alternateAddress: z.string().optional(),
+  city: z.string(),
+  state: z.string(),
+  country: z.string(),
+  countryCode: z.string(),
+  zipCode: z.string(),
+  profilePic: z.string().optional(),
+  religion: z.string().optional(),
+  maritalStatus: maritalStatusSchema,
+});
+
 export const DateRangeSchema = z.object({
   from: z
     .string()
     .refine(isISODate, {
       message: 'Not a valid ISO string date.',
     })
-    .default(getIsoDateBackdatedByMonth(12)),
+    .default(getIsoDateBackdatedByMonth(false, 12)),
   to: z
     .string()
     .refine(isISODate, {
       message: 'Not a valid ISO string date.',
     })
     .optional()
-    .default(getIsoDateBackdatedByMonth(0)),
+    .default(getIsoDateBackdatedByMonth(true, 0)),
 });
 
 export const LoginRequestSchema = z
@@ -50,51 +93,14 @@ export const bearerTokenSchema = z.object({
     .transform((data) => getCookieDataByKey(data, 'accessToken')),
 });
 
-export const maritalStatusSchema = z.enum([
-  'SINGLE',
-  'IN_A_RELATIONSHIP',
-  'ENGAGED',
-  'MARRIED',
-  'DIVORCED',
-  'WIDOWED',
-  'SEPARATED',
-  'COMPLICATED',
-  'OPEN_RELATIONSHIP',
-  'CIVIL_UNION',
-  'DOMESTIC_PARTNERSHIP',
-  'OTHERS',
-]);
-
-export const globalStatusSchema = z.enum([
-  'ALL',
-  'ACTIVE',
-  'PENDING',
-  'ON_LEAVE',
-  'ON_BREAK',
-  'SUSPENDED',
-  'TERMINATED',
-  'UNAVAILABLE',
-  'ARCHIVED',
-  'DEACTIVATED',
-  'CLOSED',
-  'DISCHARGED',
-  'DECEASED',
-  'INPATIENT',
-  'OUTPATIENT',
-  'SINGLE',
-  'IN_A_RELATIONSHIP',
-  'ENGAGED',
-  'MARRIED',
-  'DIVORCED',
-  'WIDOWED',
-  'SEPARATED',
-  'COMPLICATED',
-  'OPEN_RELATIONSHIP',
-  'CIVIL_UNION',
-  'DOMESTIC_PARTNERSHIP',
-  'OTHERS',
-]);
-
-export const getCountBySiteIdRequestSchema = z.object({
+export const siteIdRequestSchema = z.object({
   siteId: z.string(),
+});
+
+export const hospitalIdRequestSchema = z.object({
+  hospitalId: z.string(),
+});
+
+export const idRequestSchema = z.object({
+  id: z.string(),
 });

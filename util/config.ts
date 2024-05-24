@@ -41,22 +41,13 @@ export const REDIS_PASSWORD = process.env.REDIS_PASSWORD!;
 
 export const REDIS_PORT = process.env.REDIS_PORT!;
 
-// export const AUTHORIZE_SUPER = ['SUPER_ADMIN'];
-//
-// export const AUTHORIZE_ASHS = ['ADMIN', 'SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN'];
-//
-// export const AUTHORIZE_ASH = ['ADMIN', 'SUPER_ADMIN', 'HOSPITAL_ADMIN'];
-//
-// export const AUTHORIZE_ASHR = ['ADMIN', 'SUPER_ADMIN', 'HOSPITAL_ADMIN', 'HUMAN_RESOURCES'];
+export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60; // 24 hours in seconds
 
-// ADMIN = 'ADMIN',
-//   SUPER_ADMIN = 'SUPER_ADMIN',
-//   RECORDS = 'RECORDS',
-//   CASHIER = 'CASHIER',
-//   HOSPITAL_ADMIN = 'HOSPITAL_ADMIN',
-//   SITE_ADMIN = 'SITE_ADMIN',
-//   HUMAN_RESOURCES = 'HUMAN_RESOURCES',
-//   HMO_ADMIN = 'HMO_ADMIN',
+export const SEVEN_TWO_DAYS_SECONDS = 7 * 24 * 60 * 60; // 24 hours in seconds
+
+export const SEVEN_DAYS_SECONDS = 7 * 24 * 60 * 60; // 24 hours in seconds
+
+export const FIVE_MINUTE = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export const AUTHORIZE_ALL_ADMINS = [
   'ADMIN',

@@ -17,58 +17,20 @@ providersPutRequestHandler.put(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const providerKeys = [
-        'appointments',
-        'email',
-        'is_consultant',
-        'is_specialist',
-        'password',
-        'staff_id',
-        'username',
-        'departmentId',
-        'primaryRoleId',
-        'serviceareaId',
-        'siteId',
-        'unitId',
-      ],
-      personalInfoKeys = [
-        'address',
-        'address_two',
-        'city',
-        'country',
-        'dob',
-        'first_name',
-        'gender',
-        'last_name',
-        'middle_name',
-        'state',
-        'title',
-        'zip_code',
-        'marital_status',
-        'phone',
-        'profile_pic',
-        'religion',
-      ];
-
     try {
-      const requestBody = updateProviderRequestSchema.parse({
-        ...req.headers,
+      const { id, site, ...updateData } = updateProviderRequestSchema.parse({
         ...req.params,
         ...req.body,
       });
 
-      if (requestBody?.password) {
-        requestBody.password = generatePasswordHash(requestBody.password);
+      if (updateData?.password) {
+        updateData.password = generatePasswordHash(updateData.password);
       }
 
-      const providerData = remapObjectKeys(requestBody, providerKeys);
-      const personalInfoData = remapObjectKeys(requestBody, personalInfoKeys);
-
       const updateProviderResponse = await updateProviderDetails(
-        requestBody.id,
-        requestBody.site,
-        providerData,
-        personalInfoData
+        id,
+        site,
+        updateData
       );
 
       return JsonApiResponse(
@@ -76,7 +38,7 @@ providersPutRequestHandler.put(
         updateProviderResponse.message,
         <boolean>updateProviderResponse.success,
         null,
-        updateProviderResponse.success ? 201 : 500
+        updateProviderResponse.success ? 200 : 500
       );
     } catch (error) {
       next(error);

@@ -1,3 +1,3 @@
-export const customPromiseRequest = async (requests: any[]) => {
-  return await Promise.allSettled(requests);
-};
+// export const customPromiseRequest = async (requests: any[]) => {
+//   return await Promise.allSettled(requests);
+// };

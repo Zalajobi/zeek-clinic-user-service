@@ -18,7 +18,6 @@ rolePutRequest.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const requestBody = createAndUpdateRoleRequestSchema.parse({
-        ...req.headers,
         ...req.body,
         ...req.params,
       });

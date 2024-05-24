@@ -56,11 +56,11 @@ serviceAreaPostRequest.post(
 
       return JsonApiResponse(
         res,
-        'Success',
-        true,
+        queryData.message,
+        queryData.success,
         {
-          serviceAreas: queryData[0],
-          totalRows: queryData[1],
+          serviceAreas: queryData?.data[0],
+          totalRows: queryData?.data[1],
         },
         200
       );

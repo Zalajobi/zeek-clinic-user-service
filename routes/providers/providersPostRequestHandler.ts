@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
-import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { createNewProvider } from '@datastore/provider/providerPostStore';
 import {
-  generatePasswordHash,
-  generateTemporaryPassCode,
-  remapObjectKeys,
-} from '@util/index';
+  createProviderRequestSchema,
+  searchProviderRequestSchema,
+} from '@lib/schemas/providerSchemas';
+import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchProviderData } from '@datastore/provider/providerGetStore';
+import { date } from 'zod';
 
 const providersPostRequestHandler = Router();
 
@@ -22,54 +23,16 @@ providersPostRequestHandler.post(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const providerKeys = [
-        'appointments',
-        'department',
-        'is_consultant',
-        'is_specialist',
-        'role',
-        'serviceArea',
-        'siteId',
-        'staff_id',
-        'unit',
-        'username',
-        'email',
-        'password',
-      ],
-      personalInfoKeys = [
-        'address',
-        'city',
-        'country',
-        'country_code',
-        'dob',
-        'first_name',
-        'gender',
-        'last_name',
-        'middle_name',
-        'state',
-        'title',
-        'zip_code',
-        'marital_status',
-        'phone',
-        'profile_pic',
-        'religion',
-      ];
-
     try {
       const requestBody = createProviderRequestSchema.parse(req.body);
 
+      // Set a temporary password if no password is set
       const tempPassword = generateTemporaryPassCode();
-      requestBody.password = generatePasswordHash(tempPassword);
-      requestBody.username = requestBody.username ?? requestBody.staff_id;
-
-      const providerData = remapObjectKeys(requestBody, providerKeys);
-      const personalInfoData = remapObjectKeys(requestBody, personalInfoKeys);
-
-      const newAdmin = await adminCreateNewProvider(
-        providerData,
-        personalInfoData,
-        requestBody.phone
+      requestBody.password = generatePasswordHash(
+        requestBody?.password ?? tempPassword
       );
+
+      const { message, success } = await createNewProvider(requestBody);
 
       // if (newAdmin.success as boolean) {
       //   await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
@@ -81,15 +44,41 @@ providersPostRequestHandler.post(
       //   });
       // }
 
-      return JsonApiResponse(
-        res,
-        <string>newAdmin?.message,
-        <boolean>newAdmin?.success,
-        null,
-        201
-      );
+      return JsonApiResponse(res, message, success, null, success ? 201 : 400);
     } catch (error) {
       next(error);
+    }
+  }
+);
+
+providersPostRequestHandler.post(
+  '/search',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchProviderRequestSchema.parse(req.body);
+
+      const { data, success, message } = await getSearchProviderData(
+        requestBody
+      );
+      return JsonApiResponse(
+        res,
+        message,
+        success,
+        {
+          providers: data[0],
+          totalRows: data[1],
+        },
+        200
+      );
+    } catch (err) {
+      next(err);
     }
   }
 );

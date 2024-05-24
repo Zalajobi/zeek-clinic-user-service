@@ -5,19 +5,21 @@ export const JsonApiResponse = (
   message: string,
   success: boolean,
   data: Record<string, any> | Record<string, any>[] | null,
-  statusCode: number
+  statusCode: number,
+  error?: Record<string, any>
 ) => {
   res.status(statusCode).json({
     message,
     success,
     data,
+    error,
   });
 };
 
 export const DefaultJsonResponse = (
   message: string,
   data: any,
-  success?: boolean
+  success: boolean
 ) => {
   return {
     message,

@@ -3,6 +3,7 @@ import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { Site } from '@typeorm/entity/site';
 import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
 import { z } from 'zod';
+import { DefaultJsonResponse } from '@util/responses';
 
 export const adminCreateSite = async (
   data: z.infer<typeof createSiteRequestSchema>
@@ -20,14 +21,11 @@ export const adminCreateSite = async (
     .getOne();
 
   if (isUnique)
-    return {
-      success: false,
-      message: 'Site with email address or phone number already exists',
-    };
-  await siteRepository.save(new Site(data));
+    throw new Error('Site with email address or phone number already exists');
 
-  return {
-    success: true,
-    message: 'New Site Created Successfully',
-  };
+  const newSite = await siteRepository.save(new Site(data));
+
+  if (!newSite) throw new Error('Failed to create new site');
+
+  return DefaultJsonResponse('Site created successfully', null, !!newSite);
 };

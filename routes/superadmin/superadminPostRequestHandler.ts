@@ -8,11 +8,12 @@ import {
   setRedisKey,
   validatePassword,
 } from '@util/index';
+import { SEVEN_DAYS_SECONDS, TWENTY_FOUR_HOURS_SECONDS } from '@util/config';
 
 const superadminPostRequest = Router();
 
 superadminPostRequest.post(
-  '/auth/login',
+  '/login',
   async (req: Request, res: Response, next: NextFunction) => {
     let responseMessage = 'Incorrect Credentials',
       success = false;
@@ -42,7 +43,9 @@ superadminPostRequest.post(
         setRedisKey(
           admin?.id ?? '',
           refreshToken,
-          requestBody?.rememberMe ? 7 * 24 * 60 * 60 : 24 * 60 * 60
+          requestBody?.rememberMe
+            ? SEVEN_DAYS_SECONDS
+            : TWENTY_FOUR_HOURS_SECONDS
         );
         res.cookie('accessToken', accessToken, {
           httpOnly: true,

@@ -9,121 +9,103 @@ import {
   TransactionNotStartedError,
   UpdateValuesMissingError,
 } from 'typeorm';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import { JsonApiResponse } from '@util/responses';
 
 export const errorMiddleware = async (
   err: any,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   console.log('Handle Middleware Error');
 
   // Schema Validation Error
   if (err instanceof ZodError) {
     console.log('Schema Validation Error');
-    res.status(400).json({
-      error: {
-        type: 'validation_error',
-        message: 'Validation error',
-        errors: err.format(),
-      },
+    return JsonApiResponse(res, 'Schema Validation Error', false, null, 400, {
+      type: 'validation_error',
+      message: 'Validation error',
+      errors: err.format(),
+      name: err.name,
     });
-    return;
   }
 
   // Query Failed Error
   if (err instanceof QueryFailedError) {
     console.log('Database Query Failed');
-    res.status(500).json({
-      error: {
-        type: 'database_error',
-        message: err.message,
-        errors: err.stack,
-        name: err.name,
-      },
+    return JsonApiResponse(res, 'Query Failed Error', false, null, 500, {
+      type: 'database_error',
+      message: err.message,
+      errors: err.stack,
+      name: err.name,
     });
-    return;
   }
 
   // Entity Not Found
   if (err instanceof EntityNotFoundError) {
     console.log('Entity Not Found');
-    res.status(404).json({
-      error: {
-        type: 'not_found',
-        message: err.message,
-        name: err.name,
-      },
+    return JsonApiResponse(res, 'Entity Not Found', false, null, 404, {
+      type: 'database_error',
+      message: err.message,
+      name: err.name,
     });
-    return;
   }
 
   // Query Runner Already Released Error
   if (err instanceof QueryRunnerAlreadyReleasedError) {
     console.log('Query Runner Already Released');
-    res.status(500).json({
-      error: {
+    return JsonApiResponse(
+      res,
+      'Query Runner Already Released',
+      false,
+      null,
+      500,
+      {
         type: 'database_error',
         message: err.message,
         name: err.name,
-      },
-    });
+      }
+    );
   }
 
   // Transaction Already Started Error
   if (err instanceof TransactionAlreadyStartedError) {
     console.log('Transaction Already Started');
-    res.status(500).json({
-      error: {
-        type: 'api_error',
-        message: 'Transaction already started',
-        // message: err.message,
-        name: err.name,
-      },
+    JsonApiResponse(res, 'Transaction Already Started', false, null, 500, {
+      type: 'database_error',
+      message: 'Transaction already started',
+      name: err.name,
     });
-    return;
   }
 
   // Transaction Not Started Error
   if (err instanceof TransactionNotStartedError) {
     console.log('Transaction Not Started');
-    res.status(500).json({
-      error: {
-        type: 'api_error',
-        // message: 'Transaction not started',
-        message: err.message,
-        name: err.name,
-        // errors: err,
-      },
+    return JsonApiResponse(res, 'Transaction Not Started', false, null, 500, {
+      type: 'database_error',
+      message: 'Transaction not started',
+      name: err.name,
     });
-    return;
   }
 
   // JWT Error
   if (err instanceof JsonWebTokenError) {
     console.log('JWT Error');
-    res.status(401).json({
-      error: {
-        type: 'jwt_error',
-        message: err.message,
-        name: err.name,
-        // errors: err,
-      },
+    return JsonApiResponse(res, 'JWT Token Error', false, null, 401, {
+      type: 'jwt_error',
+      message: err.message,
+      name: err.name,
     });
-    return;
   }
 
   // Error Updating Data - Missing Columns to update
   if (err instanceof UpdateValuesMissingError) {
     console.log('Missing Update Body');
-    res.status(500).json({
-      error: {
-        type: 'postgres_error',
-        message: err.message,
-        name: err.name,
-        // errors: err,
-      },
+    JsonApiResponse(res, 'Missing Update Body', false, null, 500, {
+      type: 'postgres_error',
+      message: err.message,
+      name: err.name,
     });
     return;
   }
@@ -131,13 +113,10 @@ export const errorMiddleware = async (
   // Entity Not Found Error - TypeORM Error
   if (err instanceof EntityPropertyNotFoundError) {
     console.log('Entity Property Not Found');
-    res.status(500).json({
-      error: {
-        type: 'postgres_error',
-        message: err.message,
-        name: err.name,
-        // errors: err,
-      },
+    JsonApiResponse(res, 'Entity Property Not Found', false, null, 500, {
+      type: 'postgres_error',
+      message: err.message,
+      name: err.name,
     });
     return;
   }
@@ -145,42 +124,31 @@ export const errorMiddleware = async (
   // Badly Formed JSON Error From Post request
   if (err instanceof SyntaxError && 'body' in err) {
     console.log('Bad JSON');
-    res.status(400).json({
-      error: {
-        type: 'bad_json',
-        message: err.message,
-        name: err.name,
-        // errors: err,
-      },
+    JsonApiResponse(res, 'Bad JSON', false, null, 400, {
+      type: 'bad_json',
+      message: err.message,
+      name: err.name,
     });
     return;
   }
 
   // JWT TOKEN Expired Error
-  if (err.name === 'TokenExpiredError') {
+  if (err instanceof TokenExpiredError) {
     console.log('JWT Token Expired');
-    res.status(401).json({
-      error: {
-        type: 'jwt_error',
-        message: 'Token Expired',
-        name: err.name,
-        // errors: err,
-      },
+    return JsonApiResponse(res, 'Token Expired', false, null, 401, {
+      type: 'jwt_error',
+      message: 'Token Expired',
+      name: err.name,
     });
-    return;
   }
 
   // Generic Error
   if (err instanceof Error) {
     console.log('General Error');
-    console.log(err);
-    res.status(500).json({
-      error: {
-        type: 'api_error',
-        message: err.message,
-        name: err.name,
-        // errors: err,
-      },
+    JsonApiResponse(res, 'Error', false, null, 500, {
+      type: 'api_error',
+      message: err.message,
+      name: err.name,
     });
     return;
   }

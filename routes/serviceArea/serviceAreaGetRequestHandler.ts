@@ -6,7 +6,7 @@ import {
 } from '@datastore/serviceArea/serviceAreaGetStore';
 import { getOrganisationServiceAreaFilterRequestSchema } from '@lib/schemas/serviceAreaSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const serviceAreaGetRequest = Router();
 
@@ -64,7 +64,7 @@ serviceAreaGetRequest.get(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+    const { siteId } = siteIdRequestSchema.parse(req.params);
 
     try {
       const count = await getServiceAreaCountBySiteId(siteId);

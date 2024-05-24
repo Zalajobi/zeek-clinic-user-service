@@ -3,6 +3,7 @@ import { HospitalStatus } from '@typeorm/entity/enums';
 import { z } from 'zod';
 import { searchHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
 import { extractPerPageAndPage } from '@util/index';
+import { DefaultJsonResponse } from '@util/responses';
 
 export const selectAllAvailableCountries = async () => {
   const hospitalRepository = hospitalRepo();
@@ -19,11 +20,15 @@ export const selectAllAvailableCountries = async () => {
 export const getHospitalDetailsById = async (hospitalId: string) => {
   const hospitalRepository = hospitalRepo();
 
-  return await hospitalRepository.findOne({
+  const hospital = await hospitalRepository.findOne({
     where: {
       id: hospitalId,
     },
   });
+
+  if (!hospital) throw new Error('Hospital not found');
+
+  return DefaultJsonResponse('Success', hospital, !!hospital);
 };
 
 export const fetchFilteredHospitalData = async (
@@ -44,10 +49,10 @@ export const fetchFilteredHospitalData = async (
 
   const hospitalQuery = hospitalRepository
     .createQueryBuilder('hospital')
-    .andWhere('hospital.created_at > :fromDate', {
+    .andWhere('hospital.createdAt > :fromDate', {
       fromDate,
     })
-    .andWhere('hospital.created_at < :toDate', {
+    .andWhere('hospital.createdAt < :toDate', {
       toDate,
     });
 
@@ -77,13 +82,13 @@ export const fetchFilteredHospitalData = async (
   if (Number(perPage) === 0) {
     hospital = await hospitalQuery
       .orderBy({
-        created_at: 'DESC',
+        createdAt: 'DESC',
       })
       .getManyAndCount();
   } else {
     hospital = await hospitalQuery
       .orderBy({
-        created_at: 'DESC',
+        createdAt: 'DESC',
       })
       .skip(skip)
       .take(take)
@@ -108,10 +113,10 @@ export const getSearchHospitalData = async (
 
   const hospitalQuery = hospitalRepository
     .createQueryBuilder('hospital')
-    .orderBy({
-      [`${requestBody.sortModel.colId}`]:
-        requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-    });
+    .orderBy(
+      `hospital.${requestBody.sortModel.colId}`,
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
+    );
 
   if (requestBody.id) {
     hospitalQuery.andWhere('hospital.id = :id', {
@@ -119,9 +124,9 @@ export const getSearchHospitalData = async (
     });
   }
 
-  if (requestBody.site_count) {
-    hospitalQuery.andWhere('hospital.site_count = :site_count', {
-      site_count: requestBody.site_count,
+  if (requestBody.siteCount) {
+    hospitalQuery.andWhere('hospital.siteCount = :siteCount', {
+      siteCount: requestBody.siteCount,
     });
   }
 
@@ -174,17 +179,17 @@ export const getSearchHospitalData = async (
   }
 
   if (requestBody.zipCode) {
-    hospitalQuery.andWhere('hospital.zip_code = :zipCode', {
+    hospitalQuery.andWhere('hospital.zipCode = :zipCode', {
       zipCode: requestBody.zipCode,
     });
   }
 
   if (requestBody?.range) {
-    hospitalQuery.andWhere('hospital.created_at > :fromDate', {
+    hospitalQuery.andWhere('hospital.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
 
-    hospitalQuery.andWhere('hospital.created_at < :toDate', {
+    hospitalQuery.andWhere('hospital.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }
