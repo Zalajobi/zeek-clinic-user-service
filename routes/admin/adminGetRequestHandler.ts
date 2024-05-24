@@ -1,18 +1,16 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
-import {
-  getAdminDetails,
-  getAdminFullProfileData,
-} from '@datastore/admin/adminGetStore';
+import { getAdminDetails } from '@datastore/admin/adminGetStore';
 import { adminCreateProviderGetDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
-import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
-import { getDepartmentUnitServiceAreaAndRoleRequestSchema } from '@lib/schemas/patientSchemas';
+import {
+  idRequestSchema,
+  siteIdRequestSchema,
+} from '@lib/schemas/commonSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { AUTHORIZE_ALL_ADMINS } from '@util/config';
-import { verifyJSONToken } from '@util/index';
 
 const adminGetRequestHandler = Router();
 
@@ -43,12 +41,7 @@ adminGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { siteId } = getDepartmentUnitServiceAreaAndRoleRequestSchema.parse(
-        {
-          ...req.headers,
-          ...req.params,
-        }
-      );
+      const { siteId } = siteIdRequestSchema.parse(req.params);
 
       const response = await Promise.all([
         adminCreateProviderGetDepartmentDataBySiteId(siteId),
@@ -82,51 +75,21 @@ adminGetRequestHandler.get(
   }
 );
 
-// Get Admin Base Data for Dashboard header
-adminGetRequestHandler.get(
-  '/profile/details',
-  authorizeRequest([
-    'ADMIN',
-    'HOSPITAL_ADMIN',
-    'SITE_ADMIN',
-    'HUMAN_RESOURCES',
-    'HMO_ADMIN',
-  ]),
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { cookie } = bearerTokenSchema.parse(req.headers);
-      const userData = verifyJSONToken(cookie, false);
-
-      const data = await getAdminFullProfileData(userData?.id as string);
-
-      if (!data)
-        return JsonApiResponse(res, 'Something Went Wrong', false, null, 401);
-
-      return JsonApiResponse(res, 'Success', true, data, 200);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
 // Get Admin Data
 adminGetRequestHandler.get(
-  '/details',
+  '/:id',
   authorizeRequest(AUTHORIZE_ALL_ADMINS),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { cookie } = bearerTokenSchema.parse(req.headers);
-      const userData = verifyJSONToken(cookie, false);
+      const { id } = idRequestSchema.parse(req.params);
 
-      const adminData = await getAdminDetails(userData?.id ?? '');
+      const { data, success, message } = await getAdminDetails(id ?? '');
 
-      return JsonApiResponse(res, 'Success', true, adminData, 200);
+      return JsonApiResponse(res, message, success, data, 200);
     } catch (error) {
       next(error);
     }
   }
 );
-
-// Get Admin Personal Info Data
 
 export default adminGetRequestHandler;

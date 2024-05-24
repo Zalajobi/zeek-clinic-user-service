@@ -13,7 +13,9 @@ import { Patients } from '@typeorm/entity/patient';
 import { z } from 'zod';
 import { createDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
 
-@Entity()
+@Entity({
+  name: 'department',
+})
 export class Departments {
   constructor(data: z.infer<typeof createDepartmentRequestSchema>) {
     this.name = data?.name;
@@ -40,18 +42,22 @@ export class Departments {
   name: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
-  @OneToMany((type) => Provider, (provider) => provider.department)
+  @OneToMany(() => Provider, (provider) => provider.department, {
+    onDelete: 'CASCADE',
+  })
   providers: Provider[];
 
-  @OneToMany((type) => Patients, (patients) => patients.department)
+  @OneToMany(() => Patients, (patients) => patients.department, {
+    onDelete: 'CASCADE',
+  })
   patients: Patients[];
 
-  @ManyToOne((type) => Site, (site) => site.departments)
+  @ManyToOne(() => Site, (site) => site.departments)
   site: Site;
 }

@@ -13,7 +13,7 @@ import { SEVEN_DAYS_SECONDS, TWENTY_FOUR_HOURS_SECONDS } from '@util/config';
 const superadminPostRequest = Router();
 
 superadminPostRequest.post(
-  '/auth/login',
+  '/login',
   async (req: Request, res: Response, next: NextFunction) => {
     let responseMessage = 'Incorrect Credentials',
       success = false;

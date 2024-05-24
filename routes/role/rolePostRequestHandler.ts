@@ -6,7 +6,6 @@ import {
   searchRoleRequestSchema,
 } from '@lib/schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { getSearchUnitData } from '@datastore/unit/unitGetStore';
 import { getSearchRoleData } from '@datastore/role/roleGetStore';
 
 const rolePostRequest = Router();
@@ -22,17 +21,14 @@ rolePostRequest.post(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createAndUpdateRoleRequestSchema.parse({
-        ...req.body,
-        ...req.headers,
-      });
+      const requestBody = createAndUpdateRoleRequestSchema.parse(req.body);
 
       const newRole = await createNewRole(requestBody);
 
       return JsonApiResponse(
         res,
         newRole.message,
-        <boolean>newRole.success,
+        newRole.success,
         null,
         newRole?.success ? 201 : 500
       );
@@ -55,15 +51,15 @@ rolePostRequest.post(
     try {
       const requestBody = searchRoleRequestSchema.parse(req.body);
 
-      const queryData = await getSearchRoleData(requestBody);
+      const { data, success, message } = await getSearchRoleData(requestBody);
 
       return JsonApiResponse(
         res,
-        'Success',
-        true,
+        message,
+        success,
         {
-          roles: queryData[0],
-          totalRows: queryData[1],
+          roles: data[0],
+          totalRows: data[1],
         },
         200
       );

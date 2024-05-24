@@ -23,10 +23,10 @@ export const fetchFilteredUnitData = async (
   const unitQuery = unitRepository
     .createQueryBuilder('unit')
     .where('unit.siteId = :siteId', { siteId })
-    .andWhere('unit.created_at > :fromDate', {
+    .andWhere('unit.createdAt > :fromDate', {
       fromDate,
     })
-    .andWhere('unit.created_at < :toDate', {
+    .andWhere('unit.createdAt < :toDate', {
       toDate,
     })
     .loadRelationCountAndMap('unit.providers', 'unit.providers', 'providers')
@@ -38,8 +38,8 @@ export const fetchFilteredUnitData = async (
       'unit.name',
       'unit.total_beds',
       'unit.occupied_beds',
-      'unit.created_at',
-      'unit.updated_at',
+      'unit.createdAt',
+      'unit.updatedAt',
     ]);
 
   if (query) {
@@ -89,10 +89,12 @@ export const getSearchUnitData = async (
     requestBody.startRow
   );
 
-  const unitQuery = unitRepository.createQueryBuilder('dept').orderBy({
-    [`${requestBody.sortModel.colId}`]:
-      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-  });
+  const unitQuery = unitRepository
+    .createQueryBuilder('dept')
+    .orderBy(
+      `dept.${requestBody.sortModel.colId}`,
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
+    );
 
   if (requestBody.siteId) {
     unitQuery.where('dept.siteId = :siteId', {
@@ -112,26 +114,26 @@ export const getSearchUnitData = async (
     });
   }
 
-  // if (requestBody.total_beds) {
-  //   unitQuery.where('dept.total_beds >= :total_beds', {
-  //     total_beds: requestBody.total_beds,
-  //   });
-  // }
-  //
-  // if (requestBody.occupied_beds) {
-  //   unitQuery.where('dept.occupied_beds >= :occupied_beds', {
-  //     occupied_beds: requestBody.occupied_beds,
-  //   });
-  // }
+  if (requestBody.totalBeds) {
+    unitQuery.where('dept.totalBeds >= :totalBeds', {
+      totalBeds: requestBody.totalBeds,
+    });
+  }
+
+  if (requestBody.occupiedBeds) {
+    unitQuery.where('dept.occupied_beds >= :occupied_beds', {
+      occupied_beds: requestBody.occupiedBeds,
+    });
+  }
 
   if (requestBody?.range && requestBody.range.from) {
-    unitQuery.andWhere('dept.created_at > :fromDate', {
+    unitQuery.andWhere('dept.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
   if (requestBody?.range && requestBody.range.to) {
-    unitQuery.andWhere('dept.created_at < :toDate', {
+    unitQuery.andWhere('dept.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }
@@ -142,10 +144,16 @@ export const getSearchUnitData = async (
     });
   }
 
-  return await unitQuery
+  const unitData = await unitQuery
     .skip(perPage * page)
     .take(perPage)
     .getManyAndCount();
+
+  return DefaultJsonResponse(
+    unitData ? 'Unit Data Retrieval Success' : 'Something Went Wrong',
+    unitData,
+    !!unitData
+  );
 };
 
 export const getUnitCountBySiteId = async (siteId: string) => {

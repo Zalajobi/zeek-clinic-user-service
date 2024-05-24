@@ -5,12 +5,12 @@ import {
   fetchFilteredProviderData,
   getProviderCountBySiteId,
 } from '@datastore/provider/providerGetStore';
-import {
-  getOrganisationProvidersFilterRequestSchema,
-  getProviderDetailsRequestSchema,
-} from '@lib/schemas/providerSchemas';
+import { getOrganisationProvidersFilterRequestSchema } from '@lib/schemas/providerSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import {
+  idRequestSchema,
+  siteIdRequestSchema,
+} from '@lib/schemas/commonSchemas';
 
 const providersGetRequestHandler = Router();
 
@@ -62,7 +62,7 @@ providersGetRequestHandler.get(
 
 // Get provider details
 providersGetRequestHandler.get(
-  `/details/:id`,
+  `/:id`,
   authorizeRequest([
     'SUPER_ADMIN',
     'HOSPITAL_ADMIN',
@@ -72,7 +72,7 @@ providersGetRequestHandler.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getProviderDetailsRequestSchema.parse(req.params);
+      const requestBody = idRequestSchema.parse(req.params);
 
       const provider = await adminGetProviderDetails(requestBody.id);
       if (provider.success) {
@@ -103,7 +103,7 @@ providersGetRequestHandler.get(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+    const { siteId } = siteIdRequestSchema.parse(req.params);
 
     try {
       const count = await getProviderCountBySiteId(siteId);

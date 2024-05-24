@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import {
-  bearerTokenSchema,
   DateRangeSchema,
-  globalStatusSchema,
   ONE_MILLION,
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
@@ -40,7 +38,7 @@ export const searchDepartmentRequestSchema = z.object({
   range: DateRangeSchema.optional(),
   sortModel: SortModelSchema.default({
     sort: 'desc',
-    colId: 'created_at',
+    colId: 'createdAt',
   }),
   startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
   endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),

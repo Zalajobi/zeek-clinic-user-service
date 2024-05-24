@@ -17,10 +17,7 @@ serviceAreaPutRequest.put(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = updateServiceAreaRequestSchema.parse({
-        ...req.body,
-        ...req.params,
-      });
+      const requestBody = updateServiceAreaRequestSchema.parse(req.body);
 
       const { serviceAreaId, ...updateBody } = requestBody;
 

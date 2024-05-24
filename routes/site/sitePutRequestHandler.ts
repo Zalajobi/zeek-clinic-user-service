@@ -11,10 +11,7 @@ sitePutRequestHandler.put(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = updateSiteRequestSchema.parse({
-        ...req.params,
-        ...req.body,
-      });
+      const requestBody = updateSiteRequestSchema.parse(req.params);
 
       // Call to update site
       await updateSingleSiteById(requestBody.id, requestBody);

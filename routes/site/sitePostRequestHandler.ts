@@ -23,7 +23,7 @@ const sitePostRequest = Router();
  *                            name (min 4 chars), email (valid email format), and various boolean
  *                            flags indicating the availability of different services at the site.
  *                            `hospital_id` and `totalSites` are required.
- *                            Optional fields include `logo`, `country_code`, and `time_zone`.
+ *                            Optional fields include `logo`, `countryCode`, and `time_zone`.
  * @returns {JSON} A JSON response indicating the success or failure of the operation.
  *                 Successful requests return the created or updated site information,
  *                 while failures return an error message and corresponding status code.
@@ -33,21 +33,12 @@ sitePostRequest.post(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createSiteRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = createSiteRequestSchema.parse(req.body);
 
       const site = await adminCreateSite(requestBody);
       if (site.success) await incrementTotalSiteCount(requestBody?.hospital_id);
 
-      return JsonApiResponse(
-        res,
-        site?.message as string,
-        site?.success as boolean,
-        null,
-        200
-      );
+      return JsonApiResponse(res, site?.message, site?.success, null, 200);
     } catch (error) {
       next(error);
     }
@@ -60,21 +51,18 @@ sitePostRequest.post(
   authorizeRequest(['SITE_ADMIN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = searchSiteRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = searchSiteRequestSchema.parse(req.body);
       const queryData = await getSearchSiteData(requestBody);
 
       return JsonApiResponse(
         res,
-        'Success',
-        true,
+        queryData.message,
+        queryData.success,
         {
-          sites: queryData[0],
-          totalRows: queryData[1],
+          sites: queryData?.data[0],
+          totalRows: queryData?.data[1],
         },
-        200
+        queryData.success ? 200 : 400
       );
     } catch (error) {
       next(error);

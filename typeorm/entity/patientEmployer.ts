@@ -12,7 +12,9 @@ import { Site } from '@typeorm/entity/site';
 import { z } from 'zod';
 import { employerSchema } from '@lib/schemas/patientSchemas';
 
-@Entity()
+@Entity({
+  name: 'patientEmployer',
+})
 export class PatientEmployer {
   constructor(data: z.infer<typeof employerSchema>) {
     this.siteId = data?.siteId as string;
@@ -53,17 +55,15 @@ export class PatientEmployer {
   company_address: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
-  // Relations
-  @OneToOne(() => Patients, (patient) => patient.employer, {
-    onDelete: 'CASCADE',
-  })
+  // // Relations
+  @OneToOne(() => Patients, (patient) => patient.employer)
   patient?: Patients;
 
-  @ManyToOne((type) => Site, (site) => site.patientEmployer)
+  @ManyToOne(() => Site, (site) => site.patientEmployer)
   site: Site;
 }

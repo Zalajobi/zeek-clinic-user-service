@@ -43,6 +43,8 @@ export const REDIS_PORT = process.env.REDIS_PORT!;
 
 export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60; // 24 hours in seconds
 
+export const SEVEN_TWO_DAYS_SECONDS = 7 * 24 * 60 * 60; // 24 hours in seconds
+
 export const SEVEN_DAYS_SECONDS = 7 * 24 * 60 * 60; // 24 hours in seconds
 
 export const FIVE_MINUTE = 5 * 60 * 1000; // 5 minutes in milliseconds

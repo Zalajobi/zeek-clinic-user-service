@@ -6,7 +6,9 @@ import {
 } from 'typeorm';
 import { AdminRoles } from '@typeorm/entity/enums';
 
-@Entity()
+@Entity({
+  name: 'superAdmin',
+})
 export class SuperAdmin {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -57,8 +59,8 @@ export class SuperAdmin {
   password: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

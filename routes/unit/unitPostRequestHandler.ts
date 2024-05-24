@@ -22,17 +22,14 @@ unitPostRequest.post(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createUnitRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = createUnitRequestSchema.parse(req.body);
 
       const newRole = await createNewUnit(requestBody);
 
       return JsonApiResponse(
         res,
         newRole.message,
-        <boolean>newRole.success,
+        newRole.success,
         null,
         newRole?.success ? 201 : 500
       );
@@ -59,11 +56,11 @@ unitPostRequest.post(
 
       return JsonApiResponse(
         res,
-        'Success',
-        true,
+        queryData.message,
+        queryData.success,
         {
-          units: queryData[0],
-          totalRows: queryData[1],
+          units: queryData?.data[0],
+          totalRows: queryData?.data[1],
         },
         200
       );

@@ -1,15 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { adminCreateNewProvider } from '@datastore/provider/providerPostStore';
+import { createNewProvider } from '@datastore/provider/providerPostStore';
 import {
   createProviderRequestSchema,
   searchProviderRequestSchema,
 } from '@lib/schemas/providerSchemas';
-import {
-  generatePasswordHash,
-  generateTemporaryPassCode,
-  remapObjectKeys,
-} from '@util/index';
+import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchProviderData } from '@datastore/provider/providerGetStore';
 
@@ -26,54 +22,16 @@ providersPostRequestHandler.post(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const providerKeys = [
-        'appointments',
-        'department',
-        'is_consultant',
-        'is_specialist',
-        'role',
-        'serviceArea',
-        'siteId',
-        'staff_id',
-        'unit',
-        'username',
-        'email',
-        'password',
-      ],
-      personalInfoKeys = [
-        'address',
-        'city',
-        'country',
-        'country_code',
-        'dob',
-        'first_name',
-        'gender',
-        'last_name',
-        'middle_name',
-        'state',
-        'title',
-        'zip_code',
-        'marital_status',
-        'phone',
-        'profile_pic',
-        'religion',
-      ];
-
     try {
       const requestBody = createProviderRequestSchema.parse(req.body);
 
+      // Set a temporary password if no password is set
       const tempPassword = generateTemporaryPassCode();
-      requestBody.password = generatePasswordHash(tempPassword);
-      requestBody.username = requestBody.username ?? requestBody.staff_id;
-
-      const providerData = remapObjectKeys(requestBody, providerKeys);
-      const personalInfoData = remapObjectKeys(requestBody, personalInfoKeys);
-
-      const newAdmin = await adminCreateNewProvider(
-        providerData,
-        personalInfoData,
-        requestBody.phone
+      requestBody.password = generatePasswordHash(
+        requestBody?.password ?? tempPassword
       );
+
+      const { message, success } = await createNewProvider(requestBody);
 
       // if (newAdmin.success as boolean) {
       //   await emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
@@ -85,13 +43,7 @@ providersPostRequestHandler.post(
       //   });
       // }
 
-      return JsonApiResponse(
-        res,
-        <string>newAdmin?.message,
-        <boolean>newAdmin?.success,
-        null,
-        201
-      );
+      return JsonApiResponse(res, message, success, null, success ? 201 : 400);
     } catch (error) {
       next(error);
     }

@@ -9,7 +9,7 @@ export const getCareGiverPrimaryPatients = async (providerId: string) => {
     .where('patient.careGiverId = :careGiverId', {
       careGiverId: providerId,
     })
-    .leftJoinAndSelect('patient.personalInfo', 'profile')
+    // .leftJoinAndSelect('patient.personalInfo', 'profile')
     .leftJoinAndSelect('patient.department', 'department')
     .leftJoinAndSelect('patient.unit', 'unit')
     .leftJoinAndSelect('patient.servicearea', 'servicearea')
@@ -17,22 +17,22 @@ export const getCareGiverPrimaryPatients = async (providerId: string) => {
       'patient.id',
       'patient.email',
       'patient.status',
-      'patient.created_at',
+      'patient.createdAt',
       'patient.siteId',
-      'patient.updated_at',
-      'profile.first_name',
-      'profile.last_name',
-      'profile.id',
-      'profile.phone',
-      'profile.dob',
-      'profile.title',
-      'profile.gender',
-      'profile.country',
-      'profile.profile_pic',
-      'profile.middle_name',
-      'profile.state',
-      'profile.city',
-      'profile.address',
+      'patient.updatedAt',
+      // 'profile.first_name',
+      // 'profile.last_name',
+      // 'profile.id',
+      // 'profile.phone',
+      // 'profile.dob',
+      // 'profile.title',
+      // 'profile.gender',
+      // 'profile.country',
+      // 'profile.profile_pic',
+      // 'profile.middle_name',
+      // 'profile.state',
+      // 'profile.city',
+      // 'profile.address',
       'department.id',
       'department.name',
       'unit.id',
