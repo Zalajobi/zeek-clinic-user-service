@@ -6,7 +6,7 @@ import {
 } from '@datastore/unit/unitGetStore';
 import { getOrganisationUnitsFilterRequestSchema } from '@lib/schemas/unitSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { getCountBySiteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
 
 const unitGetRequest = Router();
 
@@ -21,10 +21,9 @@ unitGetRequest.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = getOrganisationUnitsFilterRequestSchema.parse({
-        ...req.headers,
-        ...req.query,
-      });
+      const requestBody = getOrganisationUnitsFilterRequestSchema.parse(
+        req.query
+      );
 
       const deptData = await fetchFilteredUnitData(
         requestBody.page,
@@ -39,7 +38,7 @@ unitGetRequest.get(
         return JsonApiResponse(
           res,
           deptData.message,
-          <boolean>deptData?.success,
+          deptData?.success,
           {
             units: deptData.data[0],
             count: deptData.data[1],
@@ -64,7 +63,7 @@ unitGetRequest.get(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { siteId } = getCountBySiteIdRequestSchema.parse(req.params);
+    const { siteId } = siteIdRequestSchema.parse(req.params);
 
     try {
       const count = await getUnitCountBySiteId(siteId);

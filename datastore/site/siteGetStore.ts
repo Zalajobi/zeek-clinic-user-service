@@ -4,6 +4,7 @@ import { Site } from '@typeorm/entity/site';
 import { searchSiteRequestSchema } from '@lib/schemas/siteSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
+import { DefaultJsonResponse } from '@util/responses';
 
 export const fetchFilteredSiteData = async (
   page: number,
@@ -25,10 +26,10 @@ export const fetchFilteredSiteData = async (
 
   const sitePaginationQuery = siteRepository
     .createQueryBuilder('site')
-    .andWhere('site.created_at > :fromDate', {
+    .andWhere('site.createdAt > :fromDate', {
       fromDate,
     })
-    .andWhere('site.created_at < :toDate', {
+    .andWhere('site.createdAt < :toDate', {
       toDate,
     });
 
@@ -62,7 +63,7 @@ export const fetchFilteredSiteData = async (
         hospitalId,
       })
       .orderBy({
-        created_at: 'DESC',
+        createdAt: 'DESC',
       })
       .getManyAndCount();
   } else {
@@ -71,7 +72,7 @@ export const fetchFilteredSiteData = async (
         hospitalId,
       })
       .orderBy({
-        created_at: 'DESC',
+        createdAt: 'DESC',
       })
       .skip(skip)
       .take(take)
@@ -135,11 +136,10 @@ export const loadSiteDetailsById = async (siteId: string) => {
       state: true,
       city: true,
       phone: true,
-      created_at: true,
+      createdAt: true,
       status: true,
-      country_code: true,
-      time_zone: true,
-      zip_code: true,
+      countryCode: true,
+      zipCode: true,
     },
   });
 };
@@ -153,10 +153,12 @@ export const getSearchSiteData = async (
     requestBody.startRow
   );
 
-  const siteQuery = siteRepository.createQueryBuilder('site').orderBy({
-    [`${requestBody.sortModel.colId}`]:
-      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC',
-  });
+  const siteQuery = siteRepository
+    .createQueryBuilder('site')
+    .orderBy(
+      `site.${requestBody.sortModel.colId}`,
+      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
+    );
 
   if (requestBody.hospitalId) {
     siteQuery.where('site.hospitalId = :hospitalId', {
@@ -189,19 +191,19 @@ export const getSearchSiteData = async (
   }
 
   if (requestBody?.range && requestBody.range.from) {
-    siteQuery.andWhere('site.created_at > :fromDate', {
+    siteQuery.andWhere('site.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
   if (requestBody?.range && requestBody.range.to) {
-    siteQuery.andWhere('site.created_at < :toDate', {
+    siteQuery.andWhere('site.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }
 
   if (requestBody.zipCode) {
-    siteQuery.andWhere('site.zip_code = :zipCode', {
+    siteQuery.andWhere('site.zipCode = :zipCode', {
       zipCode: requestBody.zipCode,
     });
   }
@@ -224,10 +226,16 @@ export const getSearchSiteData = async (
     });
   }
 
-  return await siteQuery
+  const siteData = await siteQuery
     .skip(perPage * page)
     .take(perPage)
     .getManyAndCount();
+
+  return DefaultJsonResponse(
+    siteData ? 'Success' : 'Failed',
+    siteData,
+    !!siteData
+  );
 };
 
 export const getSiteStatusCountsByHospitalId = async (hospitalId: string) => {

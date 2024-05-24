@@ -1,26 +1,29 @@
 import { adminRepo } from '@typeorm/repositories/adminRepository';
 import { Admin } from '@typeorm/entity/admin';
 import { ObjectLiteral } from 'typeorm';
+import { DefaultJsonResponse } from '@util/responses';
 
-export const getAdminPrimaryLoginInformation = async (
-  value: string
-): Promise<Admin | null> => {
+export const getAdminPrimaryLoginInformation = async (value: string) => {
   const adminRepository = adminRepo();
 
-  return await adminRepository
+  const adminData = adminRepository
     .createQueryBuilder('admin')
-    .where('admin.email = :email OR admin.username = :username', {
+    .where('LOWER(admin.email) = :email OR LOWER(admin.staffId) = :staffId', {
       email: value,
-      username: value,
+      staffId: value,
     })
     .select([
-      'admin.password',
-      'admin.role',
-      'admin.email',
       'admin.id',
       'admin.siteId',
+      'admin.email',
+      'admin.password',
+      'admin.role',
     ])
     .getOne();
+
+  if (!adminData) throw new Error('Incorrect Credentials');
+
+  return adminData;
 };
 
 export const lookupPrimaryAdminInfo = async (
@@ -36,14 +39,7 @@ export const lookupPrimaryAdminInfo = async (
     .orWhere('admin.username = :username', {
       username: value,
     })
-    .leftJoinAndSelect('admin.personalInfo', 'profile')
-    .select([
-      'admin.password',
-      'admin.role',
-      'admin.email',
-      'admin.id',
-      'profile.first_name',
-    ])
+    .select(['admin.password', 'admin.role', 'admin.email', 'admin.id'])
     .getOne();
 };
 
@@ -60,9 +56,6 @@ export const getAdminBaseDataAndProfileDataByAdminId = async (id: string) => {
       role: true,
       id: true,
       // profile: true,
-    },
-    relations: {
-      personalInfo: true,
     },
   });
 };
@@ -90,64 +83,47 @@ export const getAdminAndProfileDataByEmailOrUsername = async (
     .orWhere('admin.username = :username', {
       username: value,
     })
-    .leftJoinAndSelect('admin.personalInfo', 'profile')
     .getOne();
 };
 
-export const getAdminFullProfileData = async (id: string) => {
+export const getAdminDetails = async (id: string) => {
   const adminRepository = adminRepo();
 
-  return await adminRepository
-    .createQueryBuilder('admin')
-    .where('admin.id = :id', {
-      id,
-    })
-    .leftJoinAndSelect('admin.personalInfo', 'profile')
-    .select([
-      'admin.role',
-      'admin.siteId',
-      'admin.email',
-      'admin.username',
-      'admin.created_at',
-      'admin.staff_id',
-      'admin.id',
-      'admin.staff_id',
-      'profile.first_name',
-      'profile.last_name',
-      'profile.phone',
-      'profile.title',
-      'profile.gender',
-      'profile.dob',
-      'profile.address',
-      'profile.city',
-      'profile.country',
-      'profile.zip_code',
-      'profile.profile_pic',
-      'profile.created_at',
-      'profile.middle_name',
-      'profile.religion',
-      'profile.marital_status',
-      'profile.id',
-    ])
-    .getOne();
-};
-
-export const getAdminDetails = async (id: string): Promise<Admin | null> => {
-  const adminRepository = adminRepo();
-
-  return await adminRepository.findOne({
+  const adminData = await adminRepository.findOne({
     where: {
-      id,
+      id: id,
     },
     select: {
-      siteId: true,
-      role: true,
-      email: true,
-      username: true,
-      staff_id: true,
       id: true,
-      created_at: true,
-      personalInfoId: true,
+      role: true,
+      siteId: true,
+      email: true,
+      staffId: true,
+      firstName: true,
+      lastName: true,
+      middleName: true,
+      religion: true,
+      maritalStatus: true,
+      phone: true,
+      title: true,
+      gender: true,
+      dob: true,
+      address: true,
+      alternateAddress: true,
+      city: true,
+      country: true,
+      countryCode: true,
+      zipCode: true,
+      profilePic: true,
+      createdAt: true,
     },
   });
+
+  if (!adminData) throw new Error('Admin not found');
+
+  return DefaultJsonResponse(
+    'Admin data retrieved successfully',
+    adminData,
+    true
+  );
 };

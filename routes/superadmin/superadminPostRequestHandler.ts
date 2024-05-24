@@ -12,7 +12,7 @@ import {
 const superadminPostRequest = Router();
 
 superadminPostRequest.post(
-  '/auth/login',
+  '/login',
   async (req: Request, res: Response, next: NextFunction) => {
     let responseMessage = 'Incorrect Credentials',
       success = false;

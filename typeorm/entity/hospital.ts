@@ -23,8 +23,8 @@ export class Hospital {
     this.state = data?.state;
     this.country = data?.country;
     this.logo = data?.logo;
-    this.zip_code = data?.zip_code?.toString();
-    this.country_code = data?.country_code;
+    this.zipCode = data?.zipCode?.toString();
+    this.countryCode = data?.countryCode;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -43,7 +43,7 @@ export class Hospital {
     default: 0,
     nullable: false,
   })
-  site_count: number;
+  siteCount: number;
 
   @Column({
     nullable: false,
@@ -56,9 +56,9 @@ export class Hospital {
   address: string;
 
   @Column({
-    nullable: true,
+    nullable: false,
   })
-  city?: string;
+  city: string;
 
   @Column({
     nullable: true,
@@ -71,9 +71,14 @@ export class Hospital {
   country: string;
 
   @Column({
+    nullable: false,
+  })
+  countryCode?: string;
+
+  @Column({
     nullable: true,
   })
-  logo?: string;
+  logo: string;
 
   @Column({
     nullable: false,
@@ -84,23 +89,17 @@ export class Hospital {
   status: string;
 
   @Column({
-    nullable: true,
+    nullable: false,
   })
-  zip_code?: string;
-
-  @Column({
-    nullable: true,
-  })
-  country_code?: string;
+  zipCode: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
-  @OneToMany((type) => Site, (site) => site.hospital, { onDelete: 'CASCADE' })
-  // @JoinColumn()
+  @OneToMany(() => Site, (site) => site.hospital, { onDelete: 'CASCADE' })
   sites: Site[];
 }

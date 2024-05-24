@@ -1,14 +1,11 @@
 import { patientRepo } from '@typeorm/repositories/patientRepository';
-import { getPersonalInfoCountByPhone } from '@datastore/personalInfo/personalInfoGetStore';
 import { z } from 'zod';
-import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 import {
   createPatientRequestSchema,
   emergencyContactSchema,
   employerSchema,
 } from '@lib/schemas/patientSchemas';
 import { DefaultJsonResponse } from '@util/responses';
-import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
 import { createEmployer } from '@datastore/employerStore';
 import { Patients } from '@typeorm/entity/patient';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
@@ -16,56 +13,62 @@ import { batchSaveEmergencyContacts } from '@datastore/emergencyContactsStore';
 
 export const createNewPatient = async (
   patientData: z.infer<typeof createPatientRequestSchema>,
-  personalInfoData: z.infer<typeof profileDataRequestSchema>,
   employerData?: z.infer<typeof employerSchema>,
   emergencyContactsData?: z.infer<typeof emergencyContactSchema>[]
 ) => {
+  const patientRepository = patientRepo();
   let newEmployer: PatientEmployer | null = null,
     newPatient: Patients | null = null;
-  const patientRepository = patientRepo();
 
-  const [infoCountByPhone, patientCount] = await Promise.all([
-    getPersonalInfoCountByPhone(personalInfoData.phone),
+  const [uniquePhone, uniqueEmail, uniqueCardNumber] = await Promise.all([
+    patientRepository.countBy({
+      phone: patientData.phone,
+      siteId: patientData.siteId,
+    }),
 
     patientRepository
       .createQueryBuilder('patient')
       .where('LOWER(patient.email) LIKE :email', {
-        email: patientData.email,
+        email: patientData.email.toLowerCase(),
+      })
+      .andWhere('patient.siteId = :siteId', {
+        siteId: patientData.siteId,
+      })
+      .getCount(),
+
+    patientRepository
+      .createQueryBuilder('patient')
+      .where('patient.cardNumber = :cardNumber', {
+        cardNumber: patientData.cardNumber,
+      })
+      .andWhere('patient.siteId = :siteId', {
+        siteId: patientData.siteId,
       })
       .getCount(),
   ]);
 
-  if (infoCountByPhone >= 1) {
-    return DefaultJsonResponse(
-      'User with phone number already exists',
-      null,
-      false
-    );
-  }
+  if (uniqueEmail >= 1) throw new Error('Patient with email address exist');
 
-  if (patientCount >= 1) {
-    return DefaultJsonResponse('Patient with email address exist', null, false);
-  }
+  if (uniquePhone >= 1) throw new Error('Patient with phone number exist');
 
+  if (uniqueCardNumber >= 1) throw new Error('Patient with card number exist');
+
+  // Create patient object
+  const patient = new Patients(patientData);
+
+  // Save employer data
   if (employerData) {
     newEmployer = await createEmployer(employerData);
+    patient.employer = newEmployer;
   }
-  const personalInfo = await createNewPersonalInfo(personalInfoData);
 
-  if (personalInfo) {
-    const patient = new Patients(patientData);
-    patient.personalInfo = personalInfo;
-
-    // New Employer
-    if (newEmployer) patient.employer = newEmployer;
-
-    newPatient = await patientRepository.save(patient);
-  }
+  // Save patient data
+  newPatient = await patientRepository.save(patient);
 
   if (newPatient && emergencyContactsData) {
-    emergencyContactsData?.map(
-      (contact) => (contact.patientId = newPatient?.id)
-    );
+    emergencyContactsData?.map((contact) => {
+      contact.patientId = newPatient?.id;
+    });
     await batchSaveEmergencyContacts(emergencyContactsData);
   }
 

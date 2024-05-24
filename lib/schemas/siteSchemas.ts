@@ -1,15 +1,14 @@
 import { z } from 'zod';
 import {
   ONE_MILLION,
-  bearerTokenSchema,
-  globalStatusSchema,
   SortModelSchema,
   DateRangeSchema,
 } from '@lib/schemas/commonSchemas';
+import { globalStatusSchema } from '@lib/schemas/enums';
 
-export const createSiteRequestSchema = bearerTokenSchema
-  .extend({
-    zip_code: z.coerce.number(),
+export const createSiteRequestSchema = z
+  .object({
+    zipCode: z.string(),
     country: z.string(),
     state: z.string(),
     city: z.string(),
@@ -17,8 +16,8 @@ export const createSiteRequestSchema = bearerTokenSchema
     phone: z.string(),
     name: z.string().min(4),
     email: z.string().email(),
-    logo: z.string().optional(),
-    country_code: z.string().optional(),
+    logo: z.string().default(''),
+    countryCode: z.string(),
     is_private: z.boolean().default(false),
     has_appointment: z.boolean().default(false),
     has_caregiver: z.boolean().default(false),
@@ -38,17 +37,12 @@ export const createSiteRequestSchema = bearerTokenSchema
     has_vital: z.boolean().default(false),
     has_wallet: z.boolean().default(false),
     hospital_id: z.string(),
-    time_zone: z.string().optional(),
   })
   .refine((data) => {
     return !data.email.includes('+');
   });
 
-export const getHospitalGeoDetailsRequestSchema = bearerTokenSchema.extend({
-  hospitalId: z.string(),
-});
-
-export const getOrganisationSiteFilterRequestSchema = bearerTokenSchema.extend({
+export const getOrganisationSiteFilterRequestSchema = z.object({
   page: z.coerce.number(),
   per_page: z.coerce.number(),
   search: z.string().optional(),
@@ -59,15 +53,6 @@ export const getOrganisationSiteFilterRequestSchema = bearerTokenSchema.extend({
   state: z.string().optional(),
   hospital_id: z.string(),
 });
-
-export const getSiteDetailsRequestSchema = bearerTokenSchema.extend({
-  siteId: z.string(),
-});
-
-export const getSitesOrganizationalStructuresRequestSchema =
-  bearerTokenSchema.extend({
-    siteId: z.string(),
-  });
 
 export const searchSiteRequestSchema = z
   .object({
@@ -84,7 +69,7 @@ export const searchSiteRequestSchema = z
     range: DateRangeSchema.optional(),
     sortModel: SortModelSchema.default({
       sort: 'desc',
-      colId: 'created_at',
+      colId: 'createdAt',
     }),
     greaterThan: z.string().optional(),
     status: globalStatusSchema.optional().transform((data) => {
@@ -97,14 +82,6 @@ export const searchSiteRequestSchema = z
     message: 'endRow must be greater than startRow',
     path: ['endRow'],
   });
-
-export const siteStatusCountsRequestSchema = z.object({
-  hospitalId: z.string(),
-});
-
-export const deleteSiteRequestSchema = z.object({
-  id: z.string(),
-});
 
 export const updateSiteRequestSchema = z.object({
   id: z.string(),

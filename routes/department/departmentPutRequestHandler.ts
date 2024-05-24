@@ -32,7 +32,7 @@ departmentPutRequest.put(
       return JsonApiResponse(
         res,
         updatedData.message,
-        updatedData.success as boolean,
+        updatedData.success,
         null,
         updatedData?.success ? 200 : 400
       );

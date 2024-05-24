@@ -14,7 +14,7 @@ import { createServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas'
 import { z } from 'zod';
 
 @Entity({
-  name: 'service_area',
+  name: 'serviceArea',
 })
 export class Servicearea {
   constructor(data: z.infer<typeof createServiceAreaRequestSchema>) {
@@ -49,19 +49,23 @@ export class Servicearea {
   description: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
-  @OneToMany((type) => Provider, (provider) => provider.servicearea)
+  @OneToMany(() => Provider, (provider) => provider.serviceArea, {
+    onDelete: 'CASCADE',
+  })
   providers: Provider[];
 
   // Relations
-  @OneToMany((type) => Patients, (patients) => patients.servicearea)
+  @OneToMany(() => Patients, (patients) => patients.serviceArea, {
+    onDelete: 'CASCADE',
+  })
   patients: Patients[];
 
-  @ManyToOne((type) => Site, (site) => site.serviceareas)
+  @ManyToOne(() => Site, (site) => site.serviceareas)
   site: Site;
 }

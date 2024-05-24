@@ -1,79 +1,67 @@
 import { providerRepo } from '@typeorm/repositories/providerRepository';
-import { customPromiseRequest } from '@lib/api';
-import { getPersonalInfoCountByPhone } from '@datastore/personalInfo/personalInfoGetStore';
+// import { customPromiseRequest } from '@lib/api';
 import { DefaultJsonResponse } from '@util/responses';
-import { createNewPersonalInfo } from '@datastore/personalInfo/personalInfoPost';
-import { Provider } from '@typeorm/entity/providers';
 import { z } from 'zod';
-import { profileDataRequestSchema } from '@lib/schemas/adminSchemas';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { Provider } from '@typeorm/entity/providers';
 
 // Post Requests Stores
-export const adminCreateNewProvider = async (
-  data: z.infer<typeof createProviderRequestSchema> | any,
-  personalInfoData: z.infer<typeof profileDataRequestSchema> | any,
-  phone: string
+export const createNewProvider = async (
+  data: z.infer<typeof createProviderRequestSchema>
 ) => {
   const providerRepository = providerRepo();
 
-  const [infoCountByPhone, providerCount, staffIdAndCount]: any =
-    await customPromiseRequest([
-      getPersonalInfoCountByPhone(phone),
+  const [isUniqueEmail, isUniqueStaffId, isUniquePhone] = await Promise.all([
+    providerRepository
+      .createQueryBuilder('provider')
+      .where('LOWER(provider.email) = :email', {
+        email: data.email.toLowerCase(),
+      })
+      .getCount(),
 
-      providerRepository
-        .createQueryBuilder('provider')
-        .where('LOWER(provider.email) = :email', {
-          email: data?.email?.toLowerCase(),
-        })
-        // .orWhere('LOWER(provider.username) LIKE LOWER(:username)', {
-        //   username: data.username,
-        // })
-        .getCount(),
+    providerRepository
+      .createQueryBuilder('provider')
+      .where('provider.staffId = :staffId AND provider.siteId = :siteId', {
+        staffId: data.staffId.toLowerCase(),
+        siteId: data.siteId,
+      })
+      .getCount(),
 
-      providerRepository
-        .createQueryBuilder('provider')
-        .where(
-          'LOWER(provider.staff_id) = :staffId AND provider.siteId = :siteId',
-          {
-            staffId: data.staff_id,
-            siteId: data.siteId,
-          }
-        )
-        .getCount(),
-    ]);
+    providerRepository.countBy({
+      phone: data.phone,
+      siteId: data.siteId,
+    }),
+  ]);
 
-  if (
-    infoCountByPhone.status.toString() === 'fulfilled' &&
-    providerCount.status.toString() === 'fulfilled' &&
-    staffIdAndCount.status.toString() === 'fulfilled'
-  ) {
-    if (Number(staffIdAndCount?.value.toString()) >= 1) {
-      return DefaultJsonResponse(
-        'Provider With Staff ID already exists',
-        null,
-        false
-      );
-    } else if (Number(infoCountByPhone?.value.toString()) >= 1) {
-      return DefaultJsonResponse('User with phone already exists', null, false);
-    } else if (Number(providerCount?.value.toString()) >= 1) {
-      return DefaultJsonResponse(
-        'Provider with Username or Email already exits',
-        null,
-        false
-      );
-    }
-  }
+  if (isUniqueEmail >= 1)
+    return DefaultJsonResponse(
+      'Provider with Email already exists',
+      null,
+      false
+    );
 
-  const personalInfo = await createNewPersonalInfo(personalInfoData);
+  if (isUniqueStaffId >= 1)
+    return DefaultJsonResponse(
+      'Provider with Staff ID already exists',
+      null,
+      false
+    );
 
-  if (personalInfo) {
-    const provider = new Provider(data);
-    provider.personalInfo = personalInfo;
+  if (isUniquePhone >= 1)
+    return DefaultJsonResponse(
+      'Provider with Phone Number already exists',
+      null,
+      false
+    );
 
-    const newProvider = await providerRepository.save(provider);
+  data.staffId = data.staffId.toLowerCase();
+  data.email = data.email.toLowerCase();
 
-    return DefaultJsonResponse('New Provider Added', newProvider, true);
-  }
+  const provider = await providerRepository.save(new Provider(data));
 
-  return DefaultJsonResponse('Something Went Wrong', null, false);
+  return DefaultJsonResponse(
+    provider ? 'Provider Created Successfully' : 'Failed to Create Provider',
+    provider,
+    !!provider
+  );
 };

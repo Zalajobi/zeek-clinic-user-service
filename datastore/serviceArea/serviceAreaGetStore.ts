@@ -51,10 +51,10 @@ export const fetchFilteredServiceAreaData = async (
   const deptQuery = serviceAreaRepository
     .createQueryBuilder('serviceArea')
     .where('serviceArea.siteId = :siteId', { siteId })
-    .andWhere('serviceArea.created_at > :fromDate', {
+    .andWhere('serviceArea.createdAt > :fromDate', {
       fromDate,
     })
-    .andWhere('serviceArea.created_at < :toDate', {
+    .andWhere('serviceArea.createdAt < :toDate', {
       toDate,
     })
     .loadRelationCountAndMap(
@@ -72,8 +72,8 @@ export const fetchFilteredServiceAreaData = async (
       'serviceArea.siteId',
       'serviceArea.description',
       'serviceArea.name',
-      'serviceArea.created_at',
-      'serviceArea.updated_at',
+      'serviceArea.createdAt',
+      'serviceArea.updatedAt',
       'serviceArea.type',
     ]);
 

@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { sendResetPasswordEmail } from '@messaging/email';
-import { emitNewEvent } from '@messaging/rabbitMq';
-import { CREATE_ADMIN_QUEUE_NAME } from '@util/config';
 import {
   getAdminAndProfileDataByEmailOrUsername,
   lookupPrimaryAdminInfo,
@@ -25,6 +23,10 @@ import {
   setRedisKey,
   validatePassword,
 } from '@util/index';
+import {
+  SEVEN_TWO_DAYS_SECONDS,
+  TWENTY_FOUR_HOURS_SECONDS,
+} from '@util/config';
 
 const adminPostRequestHandler = Router();
 
@@ -59,7 +61,9 @@ adminPostRequestHandler.post(
         setRedisKey(
           admin?.id ?? '',
           refreshToken,
-          requestBody?.rememberMe ? 7 * 24 * 60 * 60 : 24 * 60 * 60
+          requestBody?.rememberMe
+            ? SEVEN_TWO_DAYS_SECONDS
+            : TWENTY_FOUR_HOURS_SECONDS
         );
         res.cookie('accessToken', accessToken, {
           httpOnly: true,
@@ -90,32 +94,31 @@ adminPostRequestHandler.post(
   authorizeRequest(['SUPER_ADMIN', 'HOSPITAL_ADMIN', 'SITE_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createAdminRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const requestBody = createAdminRequestSchema.parse(req.body);
 
-      const { email, username, profileData } = requestBody;
-
+      // Set a temporary password if no password is set
       const tempPassword = generateTemporaryPassCode();
-      requestBody.password = generatePasswordHash(tempPassword);
 
-      const newAdmin = await createNewAdmin(requestBody, profileData);
+      requestBody.password = generatePasswordHash(
+        requestBody?.password ?? tempPassword
+      );
 
-      if (newAdmin.success as boolean) {
-        emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
-          email: email,
-          firstName: profileData?.first_name,
-          lastName: profileData?.last_name,
-          tempPassword: tempPassword,
-          userName: username,
-        });
-      }
+      const newAdmin = await createNewAdmin(requestBody);
+
+      // // If password is set, then do not publish the tempPassword
+      // if (newAdmin.success as boolean) {
+      //   emitNewEvent(CREATE_ADMIN_QUEUE_NAME, {
+      //     email: requestBody.email,
+      //     firstName: requestBody?.firstName,
+      //     lastName: requestBody?.lastName,
+      //     tempPassword: tempPassword,
+      //   });
+      // }
 
       return JsonApiResponse(
         res,
         newAdmin.message,
-        newAdmin.success as boolean,
+        newAdmin.success,
         null,
         200
       );
@@ -202,7 +205,7 @@ adminPostRequestHandler.post(
         //   `Your Temporary Code Is ${passwordResetCode}`
         // );
 
-        const { personalInfo, ...adminData } = user;
+        const { ...adminData } = user;
 
         const updateUser = {
           ...adminData,
@@ -249,7 +252,7 @@ adminPostRequestHandler.post(
         //   `Your Temporary Code Is ${passwordResetCode}`
         // );
 
-        const { personalInfo, ...adminData } = user;
+        const { ...adminData } = user;
 
         const updateUser = {
           ...adminData,
@@ -296,7 +299,7 @@ adminPostRequestHandler.post(
         //   `Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification. Thank you for taking the time to test with us.`
         // );
 
-        const { personalInfo, ...adminData } = user;
+        const { ...adminData } = user;
 
         const updateUser = {
           ...adminData,

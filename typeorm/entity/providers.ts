@@ -2,14 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
+  Index,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProviderStatus } from '@typeorm/entity/enums';
-import { PersonalInformation } from '@typeorm/entity/personalInfo';
+import { MartialStatus, ProviderStatus } from '@typeorm/entity/enums';
 import { Patients } from '@typeorm/entity/patient';
 import { Site } from '@typeorm/entity/site';
 import { Roles } from '@typeorm/entity/roles';
@@ -19,92 +17,233 @@ import { Servicearea } from '@typeorm/entity/servicearea';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
 import { z } from 'zod';
 
-@Entity()
+@Entity({
+  name: 'provider',
+})
 export class Provider {
   constructor(data: z.infer<typeof createProviderRequestSchema>) {
     this.siteId = data?.siteId;
-    this.primaryRoleId = data?.role;
-    this.departmentId = data?.department;
-    this.serviceareaId = data?.serviceArea;
-    this.unitId = data?.unit;
+    this.primaryRoleId = data?.roleId;
+    this.departmentId = data?.departmentId;
+    this.serviceAreaId = data?.serviceAreaId;
+    this.unitId = data?.unitId;
     this.email = data?.email;
-    this.password = data?.password;
-    this.username = data?.username ?? '';
-    this.staff_id = data?.staff_id;
-    this.is_consultant = data?.is_consultant;
-    this.is_specialist = data?.is_specialist;
+    this.password = data?.password ?? '';
+    this.staffId = data?.staffId;
+    this.isConsultant = data?.is_consultant;
+    this.isSpecialist = data?.is_specialist;
     this.appointments = data?.appointments;
+
+    // Personal Info
+    this.title = data?.title;
+    this.firstName = data?.firstName;
+    this.lastName = data?.lastName;
+    this.middleName = data?.middleName ?? '';
+    this.phone = data?.phone;
+    this.gender = data?.gender;
+    this.dob = new Date(data?.dob);
+    this.address = data?.address;
+    this.alternateAddress = data?.alternateAddress ?? '';
+    this.city = data?.city;
+    this.state = data?.state ?? '';
+    this.country = data?.country;
+    this.countryCode = data?.countryCode;
+    this.zipCode = data?.zipCode;
+    this.profilePic = data?.profilePic ?? '';
+    this.religion = data?.religion ?? '';
+    this.maritalStatus = data?.maritalStatus as MartialStatus;
   }
 
   @PrimaryGeneratedColumn('uuid')
+  @Index({
+    unique: true,
+  })
   id: string;
 
   @Column({
     nullable: false,
+  })
+  @Index({
+    unique: false,
   })
   siteId: string;
 
   @Column({
     nullable: false,
   })
+  @Index({
+    unique: false,
+  })
   primaryRoleId: string;
 
   @Column({
     nullable: false,
   })
-  personalInfoId: string;
-
-  @Column({
-    nullable: false,
+  @Index({
+    unique: false,
   })
   departmentId: string;
 
   @Column({
     nullable: false,
   })
-  serviceareaId: string;
+  @Index({
+    unique: false,
+  })
+  serviceAreaId: string;
 
   @Column({
     nullable: false,
   })
+  @Index({
+    unique: false,
+  })
   unitId: string;
 
   @Column({
-    unique: true,
     nullable: false,
+    unique: true,
+    length: 75,
+  })
+  @Index({
+    unique: true,
   })
   email: string;
 
   @Column({
     nullable: false,
+    unique: false,
   })
   password: string;
 
   @Column({
-    unique: true,
+    unique: false,
+    nullable: false,
+    length: 25,
+  })
+  @Index({
+    unique: false,
+  })
+  staffId: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  @Index({
+    unique: false,
+  })
+  phone: string;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  title: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  firstName: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  lastName: string;
+
+  @Column({
     nullable: true,
+    length: 25,
   })
-  username: string;
+  middleName: string;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  gender: string;
 
   @Column({
     nullable: false,
   })
-  staff_id: string;
+  dob: Date;
+
+  @Column({
+    nullable: false,
+    length: 150,
+  })
+  address: string;
+
+  @Column({
+    nullable: true,
+    length: 150,
+  })
+  alternateAddress: string;
+
+  @Column({
+    nullable: false,
+    length: 50,
+  })
+  city: string;
+
+  @Column({
+    nullable: true,
+    length: 50,
+  })
+  state: string;
+
+  @Column({
+    nullable: false,
+    length: 25,
+  })
+  country: string;
+
+  @Column({
+    nullable: false,
+    length: 5,
+  })
+  countryCode: string;
+
+  @Column({
+    nullable: true,
+    length: 50,
+  })
+  religion: string;
+
+  @Column({
+    type: 'enum',
+    enum: MartialStatus,
+    default: MartialStatus.OTHERS,
+    nullable: false,
+  })
+  maritalStatus: MartialStatus;
+
+  @Column({
+    nullable: false,
+    length: 10,
+  })
+  zipCode: string;
+
+  @Column({
+    nullable: true,
+    length: 150,
+  })
+  profilePic: string;
 
   @Column({
     default: false,
   })
-  is_consultant: boolean;
+  isConsultant: boolean;
 
   @Column({
     default: false,
-    nullable: false,
   })
-  is_specialist: boolean;
+  isSpecialist: boolean;
 
   @Column({
-    default: true,
-    nullable: false,
+    default: false,
   })
   appointments: boolean;
 
@@ -117,37 +256,27 @@ export class Provider {
   status: ProviderStatus;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   // Relations
-  @OneToOne(
-    () => PersonalInformation,
-    (personalInfo) => personalInfo.provider,
-    {
-      onDelete: 'CASCADE',
-    }
-  )
-  @JoinColumn()
-  personalInfo: PersonalInformation;
-
-  @OneToMany((type) => Patients, (patients) => patients.careGiver)
+  @OneToMany(() => Patients, (patients) => patients.provider)
   patients: Patients[];
 
-  @ManyToOne((type) => Site, (site) => site.roles)
+  @ManyToOne(() => Site, (site) => site.roles)
   site: Site;
 
-  @ManyToOne((type) => Roles, (roles) => roles.providers)
-  primary_role: Roles;
+  @ManyToOne(() => Roles, (roles) => roles.providers)
+  primaryRole: Roles;
 
-  @ManyToOne((type) => Departments, (department) => department.providers)
+  @ManyToOne(() => Departments, (department) => department.providers)
   department: Departments;
 
-  @ManyToOne((type) => Units, (unit) => unit.providers)
+  @ManyToOne(() => Units, (unit) => unit.providers)
   unit: Units;
 
-  @ManyToOne((type) => Servicearea, (unit) => unit.providers)
-  servicearea: Servicearea;
+  @ManyToOne(() => Servicearea, (unit) => unit.providers)
+  serviceArea: Servicearea;
 }
