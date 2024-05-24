@@ -1,6 +1,10 @@
 import { z } from 'zod';
-import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import {
+  bearerTokenSchema,
+  profileInformationSchema,
+} from '@lib/schemas/commonSchemas';
 import { globalStatusSchema, maritalStatusSchema } from '@lib/schemas/enums';
+import { PatientStatus } from '@typeorm/entity/enums';
 
 export const employerSchema = z.object({
   occupation: z.string(),
@@ -22,36 +26,18 @@ export const emergencyContactSchema = z.object({
   patientId: z.string().optional(),
 });
 
-export const createPatientRequestSchema = bearerTokenSchema
+export const createPatientRequestSchema = profileInformationSchema
   .extend({
-    email: z.string(),
     siteId: z.string(),
-    // employerId: z.string().optional(),
     departmentId: z.string(),
-    serviceareaId: z.string(),
+    serviceAreaId: z.string(),
     unitId: z.string(),
-    careGiverId: z.string(),
+    email: z.string(),
     password: z.string().optional(),
     status: globalStatusSchema.default('PENDING'),
-    phone: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-    middle_name: z.string().optional(),
-    title: z.string(),
-    gender: z.string(),
-    dob: z.string(),
-    address: z.string(),
-    address_two: z.string().optional(),
-    city: z.string(),
-    state: z.string(),
-    country: z.string(),
-    zipCode: z.coerce.string().optional(),
-    profile_pic: z.string().optional(),
-    religion: z.string().optional(),
-    marital_status: maritalStatusSchema,
-    employer: employerSchema.optional(),
-    providerId: z.string().optional(),
+    providerId: z.string(),
     emergencyContacts: z.array(emergencyContactSchema).optional(),
+    employer: employerSchema.optional(),
   })
   .refine((data) => {
     return !data.email.includes('+');

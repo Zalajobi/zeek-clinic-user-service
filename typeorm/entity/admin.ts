@@ -41,6 +41,9 @@ export class Admin {
   }
 
   @PrimaryGeneratedColumn('uuid')
+  @Index({
+    unique: true,
+  })
   id: string;
 
   @Column({

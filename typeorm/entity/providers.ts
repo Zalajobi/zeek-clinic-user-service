@@ -55,30 +55,48 @@ export class Provider {
   }
 
   @PrimaryGeneratedColumn('uuid')
+  @Index({
+    unique: true,
+  })
   id: string;
 
   @Column({
     nullable: false,
+  })
+  @Index({
+    unique: false,
   })
   siteId: string;
 
   @Column({
     nullable: false,
   })
+  @Index({
+    unique: false,
+  })
   primaryRoleId: string;
 
   @Column({
     nullable: false,
+  })
+  @Index({
+    unique: false,
   })
   departmentId: string;
 
   @Column({
     nullable: false,
   })
+  @Index({
+    unique: false,
+  })
   serviceAreaId: string;
 
   @Column({
     nullable: false,
+  })
+  @Index({
+    unique: false,
   })
   unitId: string;
 
