@@ -101,54 +101,39 @@ export const fetchFilteredProviderData = async (
 export const adminGetProviderDetails = async (id: string) => {
   const providerRepository = providerRepo();
 
-  const [provider, patientCount] = await Promise.all([
-    providerRepository
-      .createQueryBuilder('provider')
-      .where('provider.id = :id', { id })
-      // .leftJoinAndSelect('provider.personalInfo', 'profile')
-      .leftJoinAndSelect('provider.department', 'department')
-      .leftJoinAndSelect('provider.unit', 'unit')
-      .leftJoinAndSelect('provider.servicearea', 'servicearea')
-      .leftJoinAndSelect('provider.primary_role', 'role')
-      .select([
-        'provider.id',
-        'provider.email',
-        'provider.status',
-        'provider.createdAt',
-        'provider.siteId',
-        // 'profile.first_name',
-        // 'profile.last_name',
-        // 'profile.id',
-        // 'profile.phone',
-        // 'profile.dob',
-        // 'profile.title',
-        // 'profile.gender',
-        // 'profile.country',
-        // 'profile.profile_pic',
-        // 'profile.middle_name',
-        // 'profile.state',
-        // 'profile.city',
-        // 'profile.address',
-        'department.id',
-        'department.name',
-        'unit.id',
-        'unit.name',
-        'servicearea.id',
-        'servicearea.name',
-        'role.id',
-        'role.name',
-      ])
-      .getOne(),
-
-    getPatientCountByProviderId(id),
-  ]);
+  const provider = await providerRepository.findOne({
+    where: { id },
+    select: {
+      id: true,
+      email: true,
+      status: true,
+      siteId: true,
+      primaryRoleId: true,
+      departmentId: true,
+      serviceAreaId: true,
+      unitId: true,
+      firstName: true,
+      middleName: true,
+      lastName: true,
+      phone: true,
+      dob: true,
+      title: true,
+      gender: true,
+      profilePic: true,
+      country: true,
+      countryCode: true,
+      state: true,
+      city: true,
+      zipCode: true,
+      address: true,
+      alternateAddress: true,
+      createdAt: true,
+    },
+  });
 
   return DefaultJsonResponse(
-    'Provider Data Retrieval Success',
-    {
-      provider,
-      patientCount,
-    },
+    provider ? 'Provider Data Retrieval Success' : 'Provider not found',
+    provider,
     true
   );
 };
