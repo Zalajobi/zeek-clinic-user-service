@@ -5,6 +5,8 @@ import {
   getRedisKey,
   verifyJSONToken,
 } from '@util/index';
+import { FIVE_MINUTE } from '@util/config';
+import { JsonApiResponse } from '@util/responses';
 
 // Verify User has permission to access the endpoint... Skip verification for whitelisted endpoints
 export const authorizeRequest = (permissions: string[]) => {
@@ -27,22 +29,19 @@ export const authorizeRequest = (permissions: string[]) => {
 
       // If Access token is not retrieved from cookies
       if (!accessToken)
-        return res.status(401).json({
-          success: false,
-          data: null,
-          message: 'Not Authorized',
-        });
+        return JsonApiResponse(res, 'Not Authorized', false, null, 401);
 
       try {
-        const tokenUser = verifyJSONToken(accessToken);
+        const tokenUser = verifyJSONToken(accessToken, false);
         if (tokenUser) {
           const remainingTime = Number(tokenUser?.exp) * 1000 - Date.now();
 
           // If the remaining time is above 5 minutes, check if the role is authorized,
           // else, reset the accessToken and also check if permitted to visit the url
-          if (remainingTime < 5 * 60 * 1000) {
+          if (remainingTime < FIVE_MINUTE) {
+            console.log('Remaining time less than 5 minutes');
             const refreshToken = await getRedisKey(tokenUser?.id ?? '');
-            const verifiedRefreshToken = verifyJSONToken(refreshToken ?? '');
+            const verifiedRefreshToken = verifyJSONToken(refreshToken, true);
             if (verifiedRefreshToken) {
               const { exp, iat, ...tokenPayload } = verifiedRefreshToken;
               const accessToken = generateJWTAccessToken(
@@ -53,24 +52,17 @@ export const authorizeRequest = (permissions: string[]) => {
                 httpOnly: true,
                 secure: true,
               });
+              console.log('Access Token Refreshed');
 
               // Check if user has permission for the request
-              if (!roleAuthorization(tokenPayload?.role ?? '', permissions)) {
-                return res.status(401).json({
-                  success: false,
-                  data: null,
-                });
-              }
+              if (!roleAuthorization(tokenPayload?.role ?? '', permissions))
+                return JsonApiResponse(res, 'Not Authorized', false, null, 401);
             }
           } else {
+            console.log('Remaining time more than 5 minutes');
             // Check if user has permission for the request
-            if (!roleAuthorization(tokenUser?.role ?? '', permissions)) {
-              return res.status(401).json({
-                success: false,
-                data: null,
-                message: 'Not Authorized',
-              });
-            }
+            if (!roleAuthorization(tokenUser?.role ?? '', permissions))
+              return JsonApiResponse(res, 'Not Authorized', false, null, 401);
           }
         }
       } catch (err) {

@@ -11,25 +11,24 @@ import {
 } from '@lib/schemas/commonSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { AUTHORIZE_ALL_ADMINS } from '@util/config';
-import { verifyJSONToken } from '@util/index';
 
 const adminGetRequestHandler = Router();
 
-// Verify Token with JWT and update Password
-adminGetRequestHandler.get(
-  '/password/request-password/jwt_token/verify',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const verifyToken = verifyJSONToken(req.query.authorization as string);
-
-      if (verifyToken)
-        return JsonApiResponse(res, 'Token is valid', true, null, 200);
-      else return JsonApiResponse(res, 'Token is invalid', false, null, 401);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+// // Verify Token with JWT and update Password
+// adminGetRequestHandler.get(
+//   '/password/request-password/jwt_token/verify',
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const verifyToken = verifyJSONToken(req.query.authorization as string);
+//
+//       if (verifyToken)
+//         return JsonApiResponse(res, 'Token is valid', true, null, 200);
+//       else return JsonApiResponse(res, 'Token is invalid', false, null, 401);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
 
 // Get Roles, Departments, Units and Service Area of a site
 adminGetRequestHandler.get(

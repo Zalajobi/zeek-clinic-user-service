@@ -30,8 +30,8 @@ export class Provider {
     this.email = data?.email;
     this.password = data?.password ?? '';
     this.staffId = data?.staffId;
-    this.isConsultant = data?.is_consultant;
-    this.isSpecialist = data?.is_specialist;
+    this.isConsultant = data?.isConsultant;
+    this.isSpecialist = data?.isSpecialist;
     this.appointments = data?.appointments;
 
     // Personal Info

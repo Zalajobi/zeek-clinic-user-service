@@ -22,7 +22,7 @@ adminPutRequestHandler.put(
 
     let message = 'Error Updating Password';
     try {
-      const verifyToken = verifyJSONToken(requestBody.authorization);
+      const verifyToken = verifyJSONToken(requestBody.authorization, false);
 
       if (verifyToken) {
         const admin = await getAdminBaseDataAndProfileDataByAdminId(

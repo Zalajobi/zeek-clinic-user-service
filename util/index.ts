@@ -1,9 +1,13 @@
-import crypto = require('crypto');
-import jwt = require('jsonwebtoken');
-import { JWT_ACCESS_TOKEN, PASSWORD_HASH_SECRET } from '@util/config';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import {
+  JWT_ACCESS_TOKEN,
+  JWT_REFRESH_TOKEN,
+  PASSWORD_HASH_SECRET,
+} from '@util/config';
 import { JWTDataProps } from '@typeDesc/jwt';
 import { isoDateRegExp } from '@lib/patterns';
-import redisClient from '@util/redis';
+import redisClient from '@lib/redis';
 
 export const isObjectEmpty = (obj: Record<string, any>): boolean => {
   for (const key in obj) {
@@ -80,19 +84,26 @@ export const generateJWTRefreshToken = (
   data: JWTDataProps,
   rememberMe: boolean
 ) => {
-  return jwt.sign(data, JWT_ACCESS_TOKEN, {
+  return jwt.sign(data, JWT_REFRESH_TOKEN, {
     expiresIn: rememberMe ? '7d' : '1d',
   });
 };
 
-export const verifyJSONToken = (bearerToken: string): JWTDataProps | null => {
-  let jwtData: JWTDataProps | null = null;
+export const verifyJSONToken = (
+  bearerToken: string,
+  isRefreshToken: boolean
+): JWTDataProps | null => {
+  let jwtData: JWTDataProps = {};
 
-  jwt.verify(bearerToken, JWT_ACCESS_TOKEN, (err: any, user: any) => {
-    if (err) throw err;
+  jwt.verify(
+    bearerToken,
+    isRefreshToken ? JWT_REFRESH_TOKEN : JWT_ACCESS_TOKEN,
+    (err: any, user: any) => {
+      if (err) throw err;
 
-    if (user) jwtData = user;
-  });
+      if (user) jwtData = user;
+    }
+  );
 
   return jwtData;
 };
@@ -141,8 +152,13 @@ export const isISODate = (str: string) => {
   return isoDateRegExp.test(str);
 };
 
-export const getIsoDateBackdatedByMonth = (month?: number): string => {
+export const getIsoDateBackdatedByMonth = (
+  isEndOfDay: boolean,
+  month: number
+): string => {
   const currentDate = new Date();
+  if (isEndOfDay) currentDate.setHours(23, 59, 59, 999);
+  else currentDate.setHours(0, 0, 0, 0);
   currentDate.setUTCMonth(currentDate.getUTCMonth() - (month ?? 12));
   return currentDate.toISOString();
 };
@@ -155,17 +171,16 @@ export const setRedisKey = async (
   const client = redisClient.getClient();
   await client.set(key, value, {
     EX: expiry,
-    NX: true,
   });
 };
 
 export const getRedisKey = async (key: string) => {
   const client = redisClient.getClient();
 
-  return await client.get(key);
+  return (await client.get(key)) as string;
 };
 
-export const getCookieDataByKey = (cookie: string, key: string) => {
+export const getCookieDataByKey = (cookie: string, key: string): string => {
   const cookies = cookie.split(';').map((cookie) => cookie.trim());
   for (const cookie of cookies) {
     const [name, value] = cookie.split('=');
@@ -173,5 +188,5 @@ export const getCookieDataByKey = (cookie: string, key: string) => {
       return decodeURIComponent(value);
     }
   }
-  return null;
+  return '';
 };

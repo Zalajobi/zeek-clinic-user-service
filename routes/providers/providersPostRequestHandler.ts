@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { createNewProvider } from '@datastore/provider/providerPostStore';
-import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
 import {
-  generatePasswordHash,
-  generateTemporaryPassCode,
-  remapObjectKeys,
-} from '@util/index';
+  createProviderRequestSchema,
+  searchProviderRequestSchema,
+} from '@lib/schemas/providerSchemas';
+import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchProviderData } from '@datastore/provider/providerGetStore';
+import { date } from 'zod';
 
 const providersPostRequestHandler = Router();
 
@@ -46,6 +47,38 @@ providersPostRequestHandler.post(
       return JsonApiResponse(res, message, success, null, success ? 201 : 400);
     } catch (error) {
       next(error);
+    }
+  }
+);
+
+providersPostRequestHandler.post(
+  '/search',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchProviderRequestSchema.parse(req.body);
+
+      const { data, success, message } = await getSearchProviderData(
+        requestBody
+      );
+      return JsonApiResponse(
+        res,
+        message,
+        success,
+        {
+          providers: data[0],
+          totalRows: data[1],
+        },
+        200
+      );
+    } catch (err) {
+      next(err);
     }
   }
 );
