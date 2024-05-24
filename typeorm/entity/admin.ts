@@ -49,6 +49,9 @@ export class Admin {
   @Column({
     nullable: false,
   })
+  @Index({
+    unique: false,
+  })
   siteId: string;
 
   @Column({

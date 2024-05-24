@@ -57,3 +57,8 @@ export const AUTHORIZE_ALL_ADMINS = [
   'HUMAN_RESOURCES',
   'HMO_ADMIN',
 ];
+
+// Configurations here are mutable
+export const mutableConfig = {
+  TYPEORM_LOGGING_START: false,
+};

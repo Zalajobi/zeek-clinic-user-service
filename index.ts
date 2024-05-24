@@ -10,6 +10,7 @@ import 'dotenv/config';
 import { errorMiddleware } from '@middlewares/error';
 import { authorizeRequest } from '@middlewares/jwt';
 import { generatePasswordHash } from '@util/index';
+import { mutableConfig } from '@util/config';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/', rootRouter);
 app.use(authorizeRequest([]));
 app.use(errorMiddleware);
 
+mutableConfig.TYPEORM_LOGGING_START = false;
 AppDataSource.initialize()
   .then(async () => {
     console.log('Initialising TypeORM...');
@@ -49,10 +51,11 @@ AppDataSource.initialize()
     superAdmin2.phone_number = '+352-346-220-5311';
     superAdmin2.password = generatePasswordHash('password123');
 
+    console.log('Superadmin users Generated Successfully');
+    mutableConfig.TYPEORM_LOGGING_START = true;
+
     // await superAdminRepository.save(superAdmin1)
     // await superAdminRepository.save(superAdmin2)
-
-    console.log('Superadmin users Generated Successfully');
   })
   .catch((error) => console.log(error));
 
