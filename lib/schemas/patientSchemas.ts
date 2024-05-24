@@ -28,6 +28,7 @@ export const emergencyContactSchema = z.object({
 
 export const createPatientRequestSchema = profileInformationSchema
   .extend({
+    cardNumber: z.string(),
     siteId: z.string(),
     departmentId: z.string(),
     serviceAreaId: z.string(),

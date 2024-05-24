@@ -5,11 +5,11 @@ import { genderSchema, globalStatusSchema } from '@lib/schemas/enums';
 export const createProviderRequestSchema = profileInformationSchema
   .extend({
     email: z.string().email(),
-    department: z.string(),
+    departmentId: z.string(),
     staffId: z.string(),
-    role: z.string(),
-    serviceArea: z.string(),
-    unit: z.string(),
+    roleId: z.string(),
+    serviceAreaId: z.string(),
+    unitId: z.string(),
     password: z.string().optional(),
     siteId: z.string(),
     is_consultant: z.boolean().default(false),

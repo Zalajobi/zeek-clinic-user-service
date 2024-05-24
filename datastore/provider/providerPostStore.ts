@@ -1,5 +1,5 @@
 import { providerRepo } from '@typeorm/repositories/providerRepository';
-import { customPromiseRequest } from '@lib/api';
+// import { customPromiseRequest } from '@lib/api';
 import { DefaultJsonResponse } from '@util/responses';
 import { z } from 'zod';
 import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';

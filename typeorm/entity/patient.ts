@@ -25,6 +25,7 @@ import { createPatientRequestSchema } from '@lib/schemas/patientSchemas';
 })
 export class Patients {
   constructor(data: z.infer<typeof createPatientRequestSchema>) {
+    this.cardNumber = data?.cardNumber;
     this.siteId = data?.siteId;
     this.departmentId = data?.departmentId;
     this.serviceAreaId = data?.serviceAreaId;
@@ -32,9 +33,10 @@ export class Patients {
     this.email = data?.email;
     this.password = data?.password ?? '';
     this.status = data?.status as PatientStatus;
-    (this.providerId = data?.providerId),
-      // Personal Info
-      (this.title = data?.title);
+    this.providerId = data?.providerId;
+
+    // Personal Info
+    this.title = data?.title;
     this.firstName = data?.firstName;
     this.lastName = data?.lastName;
     this.middleName = data?.middleName ?? '';
@@ -58,6 +60,15 @@ export class Patients {
     unique: true,
   })
   id: string;
+
+  @Column({
+    unique: false,
+    nullable: false,
+  })
+  @Index({
+    unique: false,
+  })
+  cardNumber: string;
 
   @Column({
     nullable: false,
@@ -249,9 +260,12 @@ export class Patients {
     nullable: true,
   })
   @JoinColumn()
-  employer?: PatientEmployer;
+  employer: PatientEmployer;
 
-  @OneToMany(() => EmergencyContacts, (emergency) => emergency.patient)
+  @OneToMany(() => EmergencyContacts, (emergency) => emergency.patient, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
   emergencyContacts: EmergencyContacts[];
 
   @ManyToOne(() => Site, (site) => site.patients)

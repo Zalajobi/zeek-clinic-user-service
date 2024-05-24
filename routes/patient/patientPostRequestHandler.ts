@@ -24,68 +24,37 @@ patientPostRequestHandler.post(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const patientKeys = [
-        'email',
-        'siteId',
-        'departmentId',
-        'serviceareaId',
-        'unitId',
-        'status',
-        'password',
-      ],
-      personalInfoKeys = [
-        'address',
-        'city',
-        'country',
-        'dob',
-        'first_name',
-        'gender',
-        'last_name',
-        'middle_name',
-        'state',
-        'title',
-        'zipCode',
-        'marital_status',
-        'phone',
-        'profile_pic',
-        'religion',
-      ];
     try {
-      const requestBody = createPatientRequestSchema.parse({
-        ...req.headers,
-        ...req.body,
-      });
+      const { employer, emergencyContacts, ...patientPayload } =
+        createPatientRequestSchema.parse(req.body);
 
       // Generate temporary password and hash the password... Hash password from schema if it exists
       const tempPassword = generateTemporaryPassCode();
-      requestBody.password = generatePasswordHash(
-        requestBody.password ?? tempPassword
+      patientPayload.password = generatePasswordHash(
+        patientPayload?.password ?? tempPassword
       );
 
       const newPatient = await createNewPatient(
-        remapObjectKeys(requestBody, patientKeys) as z.infer<
-          typeof createPatientRequestSchema
-        >,
-        remapObjectKeys(requestBody, personalInfoKeys),
-        requestBody.employer,
-        requestBody.emergencyContacts
+        patientPayload,
+        employer,
+        emergencyContacts
       );
 
-      if (newPatient.success as boolean) {
-        emitNewEvent(CREATE_PATIENT_QUEUE_NAME, {
-          email: requestBody?.email,
-          firstName: requestBody.first_name,
-          lastName: requestBody.last_name,
-          tempPassword,
-        });
-      }
+      // if (newPatient.success as boolean) {
+      //   emitNewEvent(CREATE_PATIENT_QUEUE_NAME, {
+      //     email: requestBody?.email,
+      //     firstName: requestBody.first_name,
+      //     lastName: requestBody.last_name,
+      //     tempPassword,
+      //   });
+      // }
 
       return JsonApiResponse(
         res,
         newPatient?.message,
-        <boolean>newPatient?.success,
+        newPatient?.success,
         null,
-        201
+        newPatient ? 201 : 400
       );
     } catch (error) {
       next(error);

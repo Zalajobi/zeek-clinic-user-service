@@ -23,10 +23,10 @@ import { z } from 'zod';
 export class Provider {
   constructor(data: z.infer<typeof createProviderRequestSchema>) {
     this.siteId = data?.siteId;
-    this.primaryRoleId = data?.role;
-    this.departmentId = data?.department;
-    this.serviceAreaId = data?.serviceArea;
-    this.unitId = data?.unit;
+    this.primaryRoleId = data?.roleId;
+    this.departmentId = data?.departmentId;
+    this.serviceAreaId = data?.serviceAreaId;
+    this.unitId = data?.unitId;
     this.email = data?.email;
     this.password = data?.password ?? '';
     this.staffId = data?.staffId;
