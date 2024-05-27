@@ -89,7 +89,7 @@ export class Hospital {
   status: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
   })
   zipCode: string;
 
