@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { createNewRole } from '@datastore/role/rolePostStore';
 import {
-  createAndUpdateRoleRequestSchema,
+  createRoleRequestSchema,
   searchRoleRequestSchema,
 } from '@lib/schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
@@ -21,7 +21,7 @@ rolePostRequest.post(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createAndUpdateRoleRequestSchema.parse(req.body);
+      const requestBody = createRoleRequestSchema.parse(req.body);
 
       const newRole = await createNewRole(requestBody);
 

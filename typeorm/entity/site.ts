@@ -112,7 +112,7 @@ export class Site {
   phone: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
   })
   zipCode: string;
 

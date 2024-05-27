@@ -9,11 +9,11 @@ import {
 import { Provider } from '@typeorm/entity/providers';
 import { Site } from '@typeorm/entity/site';
 import { z } from 'zod';
-import { createAndUpdateRoleRequestSchema } from '@lib/schemas/roleSchemas';
+import { createRoleRequestSchema } from '@lib/schemas/roleSchemas';
 
 @Entity({ name: 'role' })
 export class Roles {
-  constructor(data: z.infer<typeof createAndUpdateRoleRequestSchema>) {
+  constructor(data: z.infer<typeof createRoleRequestSchema>) {
     this.description = data?.description as string;
     this.name = data?.name as string;
     this.siteId = data?.siteId as string;

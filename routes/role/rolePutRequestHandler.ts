@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { updateRoleDataByRoleId } from '@datastore/role/rolePutStore';
-import { createAndUpdateRoleRequestSchema } from '@lib/schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { updateRoleRequestSchema } from '@lib/schemas/roleSchemas';
 
 const rolePutRequest = Router();
 
@@ -17,7 +17,7 @@ rolePutRequest.put(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBody = createAndUpdateRoleRequestSchema.parse({
+      const requestBody = updateRoleRequestSchema.parse({
         ...req.body,
         ...req.params,
       });

@@ -42,7 +42,7 @@ export const profileInformationSchema = z.object({
   middleName: z.string().optional(),
   phone: z.string(),
   gender: genderSchema,
-  dob: z.string(),
+  dob: startDayDateSchema,
   address: z.string(),
   alternateAddress: z.string().optional(),
   city: z.string(),
@@ -103,4 +103,29 @@ export const hospitalIdRequestSchema = z.object({
 
 export const idRequestSchema = z.object({
   id: z.string(),
+});
+
+export const getChartRequestSchema = z.object({
+  siteId: z.string().optional(),
+  fromDate: z
+    .string()
+    .refine(isISODate, {
+      message: 'Not a valid ISO string date.',
+    })
+    .transform((value) => {
+      const date = new Date(value);
+      date.setHours(0, 0, 0, 0);
+      return date.toISOString();
+    }),
+  toDate: z
+    .string()
+    .refine(isISODate, {
+      message: 'Not a valid ISO string date.',
+    })
+    .transform((value) => {
+      const date = new Date(value);
+      date.setHours(23, 59, 59, 999);
+      return date.toISOString();
+    }),
+  groupBy: z.enum(['day', 'week', 'month', 'year', 'hour']).default('day'),
 });
