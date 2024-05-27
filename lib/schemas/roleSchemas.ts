@@ -19,10 +19,9 @@ export const getOrganisationRolesFilterRequestSchema = bearerTokenSchema.extend(
 );
 
 export const createRoleRequestSchema = z.object({
-  description: z.string().min(50),
+  description: z.string().min(20),
   name: z.string().min(4),
-  siteId: z.string().default(''),
-  roleId: z.string().default(''),
+  siteId: z.string(),
   prescription: z.boolean().default(false),
   note: z.boolean().default(false),
   procedure: z.boolean().default(false),

@@ -103,7 +103,7 @@ export class Provider {
   @Column({
     nullable: false,
     unique: true,
-    length: 75,
+    length: 100,
   })
   @Index({
     unique: true,
@@ -137,31 +137,31 @@ export class Provider {
 
   @Column({
     nullable: false,
-    length: 10,
+    length: 25,
   })
   title: string;
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   firstName: string;
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   lastName: string;
 
   @Column({
     nullable: true,
-    length: 25,
+    length: 50,
   })
   middleName: string;
 
   @Column({
     nullable: false,
-    length: 10,
+    length: 25,
   })
   gender: string;
 
@@ -172,13 +172,13 @@ export class Provider {
 
   @Column({
     nullable: false,
-    length: 150,
+    length: 250,
   })
   address: string;
 
   @Column({
     nullable: true,
-    length: 150,
+    length: 250,
   })
   alternateAddress: string;
 
@@ -196,7 +196,7 @@ export class Provider {
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   country: string;
 
@@ -221,14 +221,14 @@ export class Provider {
   maritalStatus: MartialStatus;
 
   @Column({
-    nullable: false,
-    length: 10,
+    nullable: true,
+    length: 25,
   })
   zipCode: string;
 
   @Column({
     nullable: true,
-    length: 150,
+    length: 500,
   })
   profilePic: string;
 
