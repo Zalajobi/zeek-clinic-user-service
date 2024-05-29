@@ -5,12 +5,12 @@ import {
   getRoleCountBySiteId,
   getRolePaginationDataWithUsersCount,
 } from '@datastore/role/roleGetStore';
-import {
-  getOrganisationRolesFilterRequestSchema,
-  getRoleChartRequestSchema,
-} from '@lib/schemas/roleSchemas';
+import { getOrganisationRolesFilterRequestSchema } from '@lib/schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import {
+  getChartRequestSchema,
+  siteIdRequestSchema,
+} from '@lib/schemas/commonSchemas';
 
 const roleGetRequest = Router();
 
@@ -101,8 +101,9 @@ roleGetRequest.get(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { fromDate, toDate, siteId, groupBy } =
-        getRoleChartRequestSchema.parse(req.query);
+      const { fromDate, toDate, siteId, groupBy } = getChartRequestSchema.parse(
+        req.query
+      );
 
       const roleData = await countRoleItemsByMonth(
         new Date(fromDate),

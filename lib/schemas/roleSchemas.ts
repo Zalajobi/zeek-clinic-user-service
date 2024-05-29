@@ -18,11 +18,10 @@ export const getOrganisationRolesFilterRequestSchema = bearerTokenSchema.extend(
   }
 );
 
-export const createAndUpdateRoleRequestSchema = z.object({
-  description: z.string().min(50),
+export const createRoleRequestSchema = z.object({
+  description: z.string().min(20),
   name: z.string().min(4),
-  siteId: z.string().default(''),
-  roleId: z.string().default(''),
+  siteId: z.string(),
   prescription: z.boolean().default(false),
   note: z.boolean().default(false),
   procedure: z.boolean().default(false),
@@ -47,6 +46,36 @@ export const createAndUpdateRoleRequestSchema = z.object({
   charts: z.boolean().default(false),
   nursing: z.boolean().default(false),
   plan: z.boolean().default(false),
+});
+
+export const updateRoleRequestSchema = z.object({
+  description: z.string().min(50).optional(),
+  name: z.string().min(4).optional(),
+  roleId: z.string().default(''),
+  prescription: z.boolean().optional(),
+  note: z.boolean().optional(),
+  procedure: z.boolean().optional(),
+  lab_test: z.boolean().optional(),
+  appointment: z.boolean().optional(),
+  vitals: z.boolean().optional(),
+  med_supply: z.boolean().optional(),
+  admit_patient: z.boolean().optional(),
+  transfer_patient: z.boolean().optional(),
+  move_patient: z.boolean().optional(),
+  discharge: z.boolean().optional(),
+  time_of_death: z.boolean().optional(),
+  review: z.boolean().optional(),
+  logs: z.boolean().optional(),
+  dental: z.boolean().optional(),
+  clerking: z.boolean().optional(),
+  radiology: z.boolean().optional(),
+  consult: z.boolean().optional(),
+  referral: z.boolean().optional(),
+  refer_outpx: z.boolean().optional(),
+  upload: z.boolean().optional(),
+  charts: z.boolean().optional(),
+  nursing: z.boolean().optional(),
+  plan: z.boolean().optional(),
 });
 
 export const searchRoleRequestSchema = z.object({
@@ -87,29 +116,4 @@ export const searchRoleRequestSchema = z.object({
   }),
   startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
   endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
-});
-
-export const getRoleChartRequestSchema = z.object({
-  siteId: z.string().optional(),
-  fromDate: z
-    .string()
-    .refine(isISODate, {
-      message: 'Not a valid ISO string date.',
-    })
-    .transform((value) => {
-      const date = new Date(value);
-      date.setHours(0, 0, 0, 0);
-      return date.toISOString();
-    }),
-  toDate: z
-    .string()
-    .refine(isISODate, {
-      message: 'Not a valid ISO string date.',
-    })
-    .transform((value) => {
-      const date = new Date(value);
-      date.setHours(23, 59, 59, 999);
-      return date.toISOString();
-    }),
-  groupBy: z.enum(['day', 'week', 'month', 'year', 'hour']).default('day'),
 });

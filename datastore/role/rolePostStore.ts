@@ -1,11 +1,11 @@
 import { roleRepo } from '@typeorm/repositories/roleRepository';
 import { Roles } from '@typeorm/entity/roles';
 import { DefaultJsonResponse } from '@util/responses';
-import { createAndUpdateRoleRequestSchema } from '@lib/schemas/roleSchemas';
 import { z } from 'zod';
+import { createRoleRequestSchema } from '@lib/schemas/roleSchemas';
 
 export const createNewRole = async (
-  data: z.infer<typeof createAndUpdateRoleRequestSchema>
+  data: z.infer<typeof createRoleRequestSchema>
 ) => {
   const roleRepository = roleRepo();
 

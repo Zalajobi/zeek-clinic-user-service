@@ -48,7 +48,7 @@ export const fetchFilteredServiceAreaData = async (
   const fromDate = from ? new Date(from) : new Date('1900-01-01'),
     toDate = to ? new Date(to) : new Date();
 
-  const deptQuery = serviceAreaRepository
+  const serviceAreaQuery = serviceAreaRepository
     .createQueryBuilder('serviceArea')
     .where('serviceArea.siteId = :siteId', { siteId })
     .andWhere('serviceArea.createdAt > :fromDate', {
@@ -78,7 +78,7 @@ export const fetchFilteredServiceAreaData = async (
     ]);
 
   if (query) {
-    deptQuery.where(
+    serviceAreaQuery.where(
       'LOWER(serviceArea.name) LIKE :name OR LOWER(serviceArea.description) LIKE :description',
       {
         name: `%${query.toLowerCase()}%`,
@@ -88,9 +88,12 @@ export const fetchFilteredServiceAreaData = async (
   }
 
   if (Number(perPage) === 0) {
-    serviceAreas = await deptQuery.getManyAndCount();
+    serviceAreas = await serviceAreaQuery.getManyAndCount();
   } else {
-    serviceAreas = await deptQuery.skip(skip).take(take).getManyAndCount();
+    serviceAreas = await serviceAreaQuery
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
   }
 
   return DefaultJsonResponse(

@@ -1,12 +1,7 @@
 import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { getSiteCountByEmail } from '@datastore/site/siteGetStore';
-import { updateSiteRequestSchema } from '@lib/schemas/siteSchemas';
-import { z } from 'zod';
 
-export const updateSingleSiteById = async (
-  siteId: string,
-  data: z.infer<typeof updateSiteRequestSchema>
-) => {
+export const updateSingleSiteById = async (siteId: string, data: any) => {
   const siteRepository = siteRepo();
 
   if (data.email) {
@@ -22,7 +17,6 @@ export const updateSingleSiteById = async (
       {
         id: siteId,
       },
-      // @ts-ignore
       data
     );
   } catch (error) {

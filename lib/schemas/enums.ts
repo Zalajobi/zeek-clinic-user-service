@@ -23,3 +23,9 @@ export const genderSchema = z.preprocess((val) => {
 
   return val;
 }, z.enum(['MALE', 'FEMALE', 'OTHERS']));
+
+export const siteStatusSchema = z.preprocess((val) => {
+  if (typeof val === 'string') return val.toUpperCase();
+
+  return val;
+}, z.enum(['ACTIVE', 'CLOSED', 'PENDING', 'DEACTIVATED']));

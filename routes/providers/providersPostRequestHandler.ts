@@ -8,7 +8,6 @@ import {
 import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchProviderData } from '@datastore/provider/providerGetStore';
-import { date } from 'zod';
 
 const providersPostRequestHandler = Router();
 
@@ -72,8 +71,8 @@ providersPostRequestHandler.post(
         message,
         success,
         {
-          providers: data[0],
-          totalRows: data[1],
+          providers: data.provider,
+          totalRows: data.totalRows,
         },
         200
       );

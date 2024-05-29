@@ -4,7 +4,7 @@ import {
   SortModelSchema,
   DateRangeSchema,
 } from '@lib/schemas/commonSchemas';
-import { globalStatusSchema } from '@lib/schemas/enums';
+import { globalStatusSchema, siteStatusSchema } from '@lib/schemas/enums';
 
 export const createSiteRequestSchema = z
   .object({
@@ -89,7 +89,7 @@ export const updateSiteRequestSchema = z.object({
   logo: z.string().optional(),
   email: z.string().optional(),
   phone: z.string().optional(),
-  status: globalStatusSchema.optional(),
+  status: siteStatusSchema.optional(),
   is_private: z.boolean().optional(),
   has_appointment: z.boolean().optional(),
   has_caregiver: z.boolean().optional(),
