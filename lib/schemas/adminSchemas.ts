@@ -21,7 +21,9 @@ export const getDepartmentsBySiteIdRequestSchema = bearerTokenSchema.extend({
 export const createAdminRequestSchema = profileInformationSchema
   .extend({
     siteId: z.string(),
-    role: adminRoleSchema,
+    role: adminRoleSchema.transform((data) => {
+      if (data !== 'ALL') return data;
+    }),
     email: z.string(),
     password: z.string().optional(),
     staffId: z.string(),

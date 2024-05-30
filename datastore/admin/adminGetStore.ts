@@ -203,8 +203,8 @@ export const getSearchAdminData = async (
     });
 
   if (requestBody.role)
-    baseQuery.andWhere('LOWER(admin.role) = :role', {
-      role: requestBody.role.toLowerCase(),
+    baseQuery.andWhere('admin.role = :role', {
+      role: requestBody.role,
     });
 
   if (requestBody.phone)

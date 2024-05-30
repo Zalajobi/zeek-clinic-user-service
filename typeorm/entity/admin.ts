@@ -78,6 +78,8 @@ export class Admin {
 
   @Column({
     nullable: false,
+    length: 25,
+    unique: false,
   })
   @Index({
     unique: false,
@@ -95,31 +97,31 @@ export class Admin {
 
   @Column({
     nullable: false,
-    length: 10,
+    length: 25,
   })
   title: string;
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   firstName: string;
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   lastName: string;
 
   @Column({
     nullable: true,
-    length: 25,
+    length: 50,
   })
   middleName: string;
 
   @Column({
     nullable: false,
-    length: 10,
+    length: 25,
   })
   gender: string;
 
@@ -130,18 +132,18 @@ export class Admin {
 
   @Column({
     nullable: false,
-    length: 150,
+    length: 250,
   })
   address: string;
 
   @Column({
     nullable: true,
-    length: 150,
+    length: 250,
   })
   alternateAddress: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     length: 50,
   })
   city: string;
@@ -154,7 +156,7 @@ export class Admin {
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   country: string;
 
@@ -180,13 +182,13 @@ export class Admin {
 
   @Column({
     nullable: false,
-    length: 10,
+    length: 25,
   })
   zipCode: string;
 
   @Column({
     nullable: true,
-    length: 150,
+    length: 500,
   })
   profilePic: string;
 
