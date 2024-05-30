@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { adminCreateProviderGetServiceAreaDataBySiteId } from '@datastore/serviceArea/serviceAreaGetStore';
-import { getAdminDetails } from '@datastore/admin/adminGetStore';
+import {
+  getAdminCountBySiteId,
+  getAdminDetails,
+} from '@datastore/admin/adminGetStore';
 import { adminCreateProviderGetDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getRoleDataBySiteId } from '@datastore/role/roleGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
@@ -86,6 +89,36 @@ adminGetRequestHandler.get(
       const { data, success, message } = await getAdminDetails(id ?? '');
 
       return JsonApiResponse(res, message, success, data, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Get count of Admin(s) in a site
+adminGetRequestHandler.get(
+  '/count/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { siteId } = siteIdRequestSchema.parse(req.params);
+
+    try {
+      const count = await getAdminCountBySiteId(siteId);
+
+      return JsonApiResponse(
+        res,
+        'Success',
+        true,
+        {
+          totalRows: count,
+        },
+        200
+      );
     } catch (error) {
       next(error);
     }

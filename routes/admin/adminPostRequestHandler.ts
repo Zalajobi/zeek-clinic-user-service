@@ -5,6 +5,7 @@ import {
   getAdminAndProfileDataByEmailOrUsername,
   lookupPrimaryAdminInfo,
   getAdminPrimaryLoginInformation,
+  getSearchAdminData,
 } from '@datastore/admin/adminGetStore';
 import { createNewAdmin } from '@datastore/admin/adminPostStore';
 import { updateAdminData } from '@datastore/admin/adminPutStore';
@@ -12,6 +13,7 @@ import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
 import {
   createAdminRequestSchema,
   passwordResetRequestSchema,
+  searchAdminRequestSchema,
 } from '@lib/schemas/adminSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import {
@@ -120,6 +122,37 @@ adminPostRequestHandler.post(
         newAdmin.message,
         newAdmin.success,
         null,
+        200
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Search Admin
+adminPostRequestHandler.post(
+  '/search',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'SITE_ADMIN',
+    'HUMAN_RESOURCES',
+    'HOSPITAL_ADMIN',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchAdminRequestSchema.parse(req.body);
+
+      const { data, success, message } = await getSearchAdminData(requestBody);
+
+      return JsonApiResponse(
+        res,
+        message,
+        success,
+        {
+          admins: data[0],
+          totalRows: data[1],
+        },
         200
       );
     } catch (error) {

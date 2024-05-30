@@ -33,7 +33,8 @@ export const createNewAdmin = async (
   ]);
 
   adminData.staffId = adminData.staffId.toLowerCase();
-  adminData.role = adminData.role.replace(' ', '_') as AdminRoles;
+  if (adminData?.role)
+    adminData.role = adminData?.role.replace('_', '_') as AdminRoles;
 
   if (isUniqueEmail >= 1)
     return DefaultJsonResponse('Admin with Email already exists', null, false);

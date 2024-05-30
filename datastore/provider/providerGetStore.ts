@@ -2,7 +2,6 @@
 import { HospitalStatus } from '@typeorm/entity/enums';
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { DefaultJsonResponse } from '@util/responses';
-import { getPatientCountByProviderId } from '@datastore/patient/patientGetStore';
 import { z } from 'zod';
 import { searchProviderRequestSchema } from '@lib/schemas/providerSchemas';
 import { extractPerPageAndPage } from '@util/index';
