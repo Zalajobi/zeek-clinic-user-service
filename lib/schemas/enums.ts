@@ -4,7 +4,7 @@ export const adminRoleSchema = z.preprocess((val) => {
   if (typeof val === 'string') return val.toUpperCase();
 
   return val;
-}, z.enum(['ADMIN', 'SUPER_ADMIN', 'RECORDS', 'CASHIER', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES', 'HMO_ADMIN']));
+}, z.enum(['ALL', 'ADMIN', 'SUPER_ADMIN', 'RECORDS', 'CASHIER', 'HOSPITAL_ADMIN', 'SITE_ADMIN', 'HUMAN_RESOURCES', 'HMO_ADMIN']));
 
 export const globalStatusSchema = z.preprocess((val) => {
   if (typeof val === 'string') return val.toUpperCase();
