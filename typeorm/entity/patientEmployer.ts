@@ -20,9 +20,9 @@ export class PatientEmployer {
     this.siteId = data?.siteId as string;
     this.occupation = data?.occupation;
     this.department = data?.department ?? '';
-    this.company_name = data?.company_name;
-    this.company_phone = data?.company_phone ?? '';
-    this.company_address = data?.company_address;
+    this.companyName = data?.companyName;
+    this.companyPhone = data?.companyPhone ?? '';
+    this.companyAddress = data?.companyAddress;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -44,15 +44,15 @@ export class PatientEmployer {
   department: string;
 
   @Column()
-  company_name: string;
+  companyName: string;
 
   @Column({
     nullable: true,
   })
-  company_phone?: string;
+  companyPhone?: string;
 
   @Column()
-  company_address: string;
+  companyAddress: string;
 
   @CreateDateColumn()
   createdAt: Date;

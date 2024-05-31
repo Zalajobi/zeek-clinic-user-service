@@ -1,16 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { createPatientRequestSchema } from '@lib/schemas/patientSchemas';
-import { JsonApiResponse } from '@util/responses';
 import {
-  generatePasswordHash,
-  generateTemporaryPassCode,
-  remapObjectKeys,
-} from '@util/index';
+  createPatientRequestSchema,
+  searchPatientRequestSchema,
+} from '@lib/schemas/patientSchemas';
+import { JsonApiResponse } from '@util/responses';
+import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
 import { createNewPatient } from '@datastore/patient/patientPostStore';
-import { z } from 'zod';
-import { emitNewEvent } from '@messaging/rabbitMq';
-import { CREATE_PATIENT_QUEUE_NAME } from '@util/config';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchPatientData } from '@datastore/patient/patientGetStore';
 
 const patientPostRequestHandler = Router();
 
@@ -55,6 +52,38 @@ patientPostRequestHandler.post(
         newPatient?.success,
         null,
         newPatient ? 201 : 400
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+patientPostRequestHandler.post(
+  '/search',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = searchPatientRequestSchema.parse(req.body);
+
+      const { data, success, message } = await getSearchPatientData(
+        requestBody
+      );
+      return JsonApiResponse(
+        res,
+        message,
+        success,
+        {
+          patients: data.patient,
+          totalRows: data.totalRows,
+        },
+        200
       );
     } catch (error) {
       next(error);
