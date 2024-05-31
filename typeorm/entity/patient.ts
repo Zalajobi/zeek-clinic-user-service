@@ -64,6 +64,7 @@ export class Patients {
   @Column({
     unique: false,
     nullable: false,
+    length: 25,
   })
   @Index({
     unique: false,
@@ -116,8 +117,9 @@ export class Patients {
   providerId: string;
 
   @Column({
-    unique: true,
     nullable: false,
+    unique: true,
+    length: 100,
   })
   @Index({
     unique: true,
@@ -149,31 +151,31 @@ export class Patients {
 
   @Column({
     nullable: false,
-    length: 10,
+    length: 25,
   })
   title: string;
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   firstName: string;
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   lastName: string;
 
   @Column({
     nullable: true,
-    length: 25,
+    length: 50,
   })
   middleName: string;
 
   @Column({
     nullable: false,
-    length: 10,
+    length: 25,
   })
   gender: string;
 
@@ -184,13 +186,13 @@ export class Patients {
 
   @Column({
     nullable: false,
-    length: 150,
+    length: 250,
   })
   address: string;
 
   @Column({
     nullable: true,
-    length: 150,
+    length: 250,
   })
   alternateAddress: string;
 
@@ -208,7 +210,7 @@ export class Patients {
 
   @Column({
     nullable: false,
-    length: 25,
+    length: 50,
   })
   country: string;
 
@@ -240,7 +242,7 @@ export class Patients {
 
   @Column({
     nullable: true,
-    length: 150,
+    length: 500,
   })
   profilePic: string;
 

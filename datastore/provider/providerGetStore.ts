@@ -379,10 +379,6 @@ export const getSearchProviderData = async (
     baseQuery.clone().getCount(),
   ]);
 
-  // console.log({
-  //   ...requestBody,
-  // })
-
   return DefaultJsonResponse(
     totalRows >= 1 ? 'Provider Data Retrieval Success' : 'No Provider Found',
     {
