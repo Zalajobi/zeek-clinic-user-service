@@ -9,8 +9,8 @@ export const getCareGiverPrimaryPatients = async (providerId: string) => {
 
   const patientData = await patientRepository
     .createQueryBuilder('patient')
-    .where('patient.careGiverId = :careGiverId', {
-      careGiverId: providerId,
+    .where('patient.providerId = :providerId', {
+      providerId: providerId,
     })
     // .leftJoinAndSelect('patient.personalInfo', 'profile')
     .leftJoinAndSelect('patient.department', 'department')
@@ -54,16 +54,16 @@ export const getCareGiverPrimaryPatients = async (providerId: string) => {
   );
 };
 
-export const getPatientCountByProviderId = async (providerId: string) => {
-  const patientRepository = patientRepo();
-
-  return patientRepository
-    .createQueryBuilder('patient')
-    .where('patient.careGiverId = :careGiverId', {
-      careGiverId: providerId,
-    })
-    .getCount();
-};
+// export const getPatientCountByProviderId = async (providerId: string) => {
+//   const patientRepository = patientRepo();
+//
+//   return patientRepository
+//     .createQueryBuilder('patient')
+//     .where('patient.careGiverId = :careGiverId', {
+//       careGiverId: providerId,
+//     })
+//     .getCount();
+// };
 
 export const getPatientCountByEmail = async (email: string) => {
   const patientRepository = patientRepo();
@@ -93,12 +93,11 @@ export const getSearchPatientData = async (
   const baseQuery = patientRepository
     .createQueryBuilder('patient')
     .orderBy(
-      `provider.${requestBody.sortModel.colId}`,
+      `patient.${requestBody.sortModel.colId}`,
       requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
     )
     .innerJoin('patient.provider', 'provider')
     .innerJoin('patient.unit', 'unit')
-    .innerJoin('patient.employer', 'employer')
     .innerJoin('patient.department', 'department')
     .innerJoin('patient.serviceArea', 'servicearea')
     .select([
@@ -114,7 +113,7 @@ export const getSearchPatientData = async (
       'patient.maritalStatus AS "maritalStatus"',
       'patient.zipCode AS "zipCode"',
       'patient.cardNumber AS "cardNumber"',
-      'patient.email',
+      'patient.email AS email',
       'patient.title AS title',
       'patient.firstName AS "firstName"',
       'patient.lastName AS "lastName"',
@@ -124,8 +123,6 @@ export const getSearchPatientData = async (
       'patient.alternateAddress AS "alternateAddress"',
       'patient.country AS country',
       'patient.profilePic AS "profilePic"',
-      'patient.employerId AS "employerId"',
-      'employer.companyName AS "companyName"',
       'patient.departmentId AS "departmentId"',
       'department.name AS "departmentName"',
       'patient.serviceAreaId AS "serviceAreaId"',
@@ -136,8 +133,8 @@ export const getSearchPatientData = async (
       'provider.title AS "providerTitle"',
       'provider.firstName AS "providerFirstName"',
       'provider.lastName AS "providerLastName"',
-      'patient.createdAt',
-      'patient.updatedAt',
+      'patient.createdAt AS "createdAt"',
+      'patient.updatedAt AS "updatedAt"',
     ]);
 
   if (requestBody.search && requestBody.searchKey)
@@ -284,12 +281,12 @@ export const getSearchPatientData = async (
     });
 
   if (requestBody?.range && requestBody.range.from)
-    baseQuery.andWhere('provider.createdAt > :fromDate', {
+    baseQuery.andWhere('patient.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
 
   if (requestBody?.range && requestBody.range.to)
-    baseQuery.andWhere('provider.createdAt < :toDate', {
+    baseQuery.andWhere('patient.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
 

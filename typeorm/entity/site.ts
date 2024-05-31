@@ -113,6 +113,7 @@ export class Site {
 
   @Column({
     nullable: true,
+    length: 25,
   })
   zipCode: string;
 

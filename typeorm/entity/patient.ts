@@ -236,7 +236,7 @@ export class Patients {
 
   @Column({
     nullable: false,
-    length: 10,
+    length: 25,
   })
   zipCode: string;
 
