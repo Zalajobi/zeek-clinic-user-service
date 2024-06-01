@@ -309,3 +309,36 @@ export const getSearchPatientData = async (
     !!patient
   );
 };
+
+export const getPatientChartData = async (
+  fromDate: Date,
+  toDate: Date,
+  groupBy: string,
+  siteId?: string | undefined
+) => {
+  const patientRepository = patientRepo();
+
+  const patientQuery = patientRepository
+    .createQueryBuilder('patient')
+    .select(`DATE_TRUNC('${groupBy}', patient.createdAt) AS date`)
+    .addSelect('COUNT(*) AS count')
+    .where('patient.createdAt >= :fromDate', { fromDate })
+    .andWhere('patient.createdAt <= :toDate', { toDate });
+
+  if (siteId) {
+    patientQuery.andWhere('patient.siteId = :siteId', { siteId });
+  }
+
+  const chartData = await patientQuery
+    .groupBy(`DATE_TRUNC('${groupBy}', patient.createdAt)`)
+    .orderBy('date', 'ASC')
+    .getRawMany();
+
+  return DefaultJsonResponse(
+    chartData
+      ? 'Patient Chart Data Retrieval Success'
+      : 'Something went wrong while retrieving data',
+    chartData,
+    !!chartData
+  );
+};
