@@ -2,10 +2,12 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import {
   getCareGiverPrimaryPatients,
+  getPatientChartData,
   getPatientCountBySiteId,
 } from '@datastore/patient/patientGetStore';
 import { authorizeRequest } from '@middlewares/jwt';
 import {
+  getChartRequestSchema,
   idRequestSchema,
   siteIdRequestSchema,
 } from '@lib/schemas/commonSchemas';
@@ -63,6 +65,48 @@ patientGetRequestHandler.get(
           totalRows: count,
         },
         200
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Get Chart Data
+patientGetRequestHandler.get(
+  '/chart',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Parse request Body
+      const { fromDate, toDate, siteId, groupBy } = getChartRequestSchema.parse(
+        req.query
+      );
+
+      // Get chart data
+      const {
+        data: chartData,
+        message,
+        success,
+      } = await getPatientChartData(
+        new Date(fromDate),
+        new Date(toDate),
+        groupBy,
+        siteId
+      );
+
+      return JsonApiResponse(
+        res,
+        message,
+        success,
+        chartData,
+        success ? 200 : 400
       );
     } catch (error) {
       next(error);

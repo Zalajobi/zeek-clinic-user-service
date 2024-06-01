@@ -413,7 +413,7 @@ export const countRoleItemsByMonth = async (
 
   const roleQuery = roleRepository
     .createQueryBuilder('role')
-    .select(`DATE_TRUNC('${groupBy}', role.createdAt) AS date_group`)
+    .select(`DATE_TRUNC('${groupBy}', role.createdAt) AS date`)
     .addSelect('COUNT(*) AS count')
     .where('role.createdAt >= :fromDate', { fromDate })
     .andWhere('role.createdAt <= :toDate', { toDate });
@@ -424,5 +424,6 @@ export const countRoleItemsByMonth = async (
 
   return await roleQuery
     .groupBy(`DATE_TRUNC('${groupBy}', role.createdAt)`)
+    .orderBy('date', 'ASC')
     .getRawMany();
 };
