@@ -4,10 +4,15 @@ import {
   DateRangeSchema,
   ONE_MILLION,
   profileInformationSchema,
+  siteIdRequestSchema,
   SortModelSchema,
   startDayDateSchema,
 } from '@lib/schemas/commonSchemas';
-import { globalStatusSchema, maritalStatusSchema } from '@lib/schemas/enums';
+import {
+  distributionSchema,
+  globalStatusSchema,
+  maritalStatusSchema,
+} from '@lib/schemas/enums';
 import { PatientStatus } from '@typeorm/entity/enums';
 
 export const employerSchema = z.object({
@@ -120,4 +125,8 @@ export const searchPatientRequestSchema = z.object({
   }),
   startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
   endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
+});
+
+export const getPatientDistributionRequestSchema = siteIdRequestSchema.extend({
+  type: distributionSchema,
 });

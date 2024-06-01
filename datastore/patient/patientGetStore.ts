@@ -342,3 +342,27 @@ export const getPatientChartData = async (
     !!chartData
   );
 };
+
+export const retrievePatientDistributionForSite = async (
+  siteId: string,
+  type: string
+) => {
+  const patientRepository = patientRepo();
+
+  const patientData = await patientRepository
+    .createQueryBuilder('patient')
+    .where('patient.siteId = :siteId', { siteId })
+    .innerJoin(`patient.${type}`, type)
+    .select(`${type}.name`, 'name')
+    .addSelect('COUNT(patient.id)', 'count')
+    .groupBy(`${type}.name`)
+    .getRawMany();
+
+  return DefaultJsonResponse(
+    patientData
+      ? 'Patient Data Retrieval Success'
+      : 'Something went wrong while retrieving data',
+    patientData,
+    !!patientData
+  );
+};

@@ -4,6 +4,7 @@ import {
   getCareGiverPrimaryPatients,
   getPatientChartData,
   getPatientCountBySiteId,
+  retrievePatientDistributionForSite,
 } from '@datastore/patient/patientGetStore';
 import { authorizeRequest } from '@middlewares/jwt';
 import {
@@ -11,6 +12,7 @@ import {
   idRequestSchema,
   siteIdRequestSchema,
 } from '@lib/schemas/commonSchemas';
+import { getPatientDistributionRequestSchema } from '@lib/schemas/patientSchemas';
 
 const patientGetRequestHandler = Router();
 
@@ -108,6 +110,32 @@ patientGetRequestHandler.get(
         chartData,
         success ? 200 : 400
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Get patient Distribution
+patientGetRequestHandler.get(
+  '/distribution/:type/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { siteId, type } = getPatientDistributionRequestSchema.parse(
+      req.params
+    );
+
+    try {
+      const { data, success, message } =
+        await retrievePatientDistributionForSite(siteId, type);
+
+      return JsonApiResponse(res, message, success, data, 200);
     } catch (error) {
       next(error);
     }
