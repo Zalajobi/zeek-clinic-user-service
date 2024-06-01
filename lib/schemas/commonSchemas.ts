@@ -4,7 +4,11 @@ import {
   getIsoDateBackdatedByMonth,
   isISODate,
 } from '@util/index';
-import { genderSchema, maritalStatusSchema } from '@lib/schemas/enums';
+import {
+  distributionSchema,
+  genderSchema,
+  maritalStatusSchema,
+} from '@lib/schemas/enums';
 
 export const ONE_MILLION = 1000000;
 
@@ -128,4 +132,8 @@ export const getChartRequestSchema = z.object({
       return date.toISOString();
     }),
   groupBy: z.enum(['day', 'week', 'month', 'year', 'hour']).default('day'),
+});
+
+export const getDistributionRequestSchema = siteIdRequestSchema.extend({
+  type: distributionSchema,
 });

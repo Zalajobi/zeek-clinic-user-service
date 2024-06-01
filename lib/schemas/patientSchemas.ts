@@ -126,7 +126,3 @@ export const searchPatientRequestSchema = z.object({
   startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
   endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
 });
-
-export const getPatientDistributionRequestSchema = siteIdRequestSchema.extend({
-  type: distributionSchema,
-});

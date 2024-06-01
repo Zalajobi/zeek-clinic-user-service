@@ -9,10 +9,10 @@ import {
 import { authorizeRequest } from '@middlewares/jwt';
 import {
   getChartRequestSchema,
+  getDistributionRequestSchema,
   idRequestSchema,
   siteIdRequestSchema,
 } from '@lib/schemas/commonSchemas';
-import { getPatientDistributionRequestSchema } from '@lib/schemas/patientSchemas';
 
 const patientGetRequestHandler = Router();
 
@@ -127,9 +127,7 @@ patientGetRequestHandler.get(
     'HUMAN_RESOURCES',
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    const { siteId, type } = getPatientDistributionRequestSchema.parse(
-      req.params
-    );
+    const { siteId, type } = getDistributionRequestSchema.parse(req.params);
 
     try {
       const { data, success, message } =
