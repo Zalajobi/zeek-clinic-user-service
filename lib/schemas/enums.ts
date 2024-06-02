@@ -35,9 +35,11 @@ export const distributionSchema = z
     if (typeof val === 'string') return val.toLowerCase();
 
     return val;
-  }, z.enum(['department', 'unit', 'service area']))
+  }, z.enum(['department', 'unit', 'service area', 'role']))
   .transform((val) => {
     if (val === 'service area') return 'serviceArea';
+
+    if (val === 'role') return 'primaryRole';
 
     return val;
   });
