@@ -29,3 +29,17 @@ export const siteStatusSchema = z.preprocess((val) => {
 
   return val;
 }, z.enum(['ACTIVE', 'CLOSED', 'PENDING', 'DEACTIVATED']));
+
+export const distributionSchema = z
+  .preprocess((val) => {
+    if (typeof val === 'string') return val.toLowerCase();
+
+    return val;
+  }, z.enum(['department', 'unit', 'service area', 'role']))
+  .transform((val) => {
+    if (val === 'service area') return 'serviceArea';
+
+    if (val === 'role') return 'primaryRole';
+
+    return val;
+  });

@@ -388,3 +388,28 @@ export const getSearchProviderData = async (
     !!provider
   );
 };
+
+// Get Provider Distribution Data
+export const retrieveProviderDistributionForSite = async (
+  siteId: string,
+  type: string
+) => {
+  const providerRepository = providerRepo();
+
+  const patientData = await providerRepository
+    .createQueryBuilder('provider')
+    .where('provider.siteId = :siteId', { siteId })
+    .innerJoin(`provider.${type}`, type)
+    .select(`${type}.name`, 'name')
+    .addSelect('COUNT(provider.id)', 'count')
+    .groupBy(`${type}.name`)
+    .getRawMany();
+
+  return DefaultJsonResponse(
+    patientData
+      ? 'Provider Data Retrieval Success'
+      : 'Something went wrong while retrieving data',
+    patientData,
+    !!patientData
+  );
+};

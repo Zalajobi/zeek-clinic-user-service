@@ -4,10 +4,12 @@ import {
   adminGetProviderDetails,
   fetchFilteredProviderData,
   getProviderCountBySiteId,
+  retrieveProviderDistributionForSite,
 } from '@datastore/provider/providerGetStore';
 import { getOrganisationProvidersFilterRequestSchema } from '@lib/schemas/providerSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import {
+  getDistributionRequestSchema,
   idRequestSchema,
   siteIdRequestSchema,
 } from '@lib/schemas/commonSchemas';
@@ -117,6 +119,29 @@ providersGetRequestHandler.get(
         },
         200
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+providersGetRequestHandler.get(
+  '/distribution/:type/:siteId',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { siteId, type } = getDistributionRequestSchema.parse(req.params);
+
+    try {
+      const { data, success, message } =
+        await retrieveProviderDistributionForSite(siteId, type);
+
+      return JsonApiResponse(res, message, success, data, 200);
     } catch (error) {
       next(error);
     }
