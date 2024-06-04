@@ -52,15 +52,15 @@ unitPostRequest.post(
     try {
       const requestBody = searchUnitRequestSchema.parse(req.body);
 
-      const queryData = await getSearchUnitData(requestBody);
+      const { data, success, message } = await getSearchUnitData(requestBody);
 
       return JsonApiResponse(
         res,
-        queryData.message,
-        queryData.success,
+        message,
+        success,
         {
-          units: queryData?.data[0],
-          totalRows: queryData?.data[1],
+          units: data?.units,
+          totalRows: data?.totalRows,
         },
         200
       );
