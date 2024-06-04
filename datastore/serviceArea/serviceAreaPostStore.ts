@@ -1,12 +1,8 @@
 import { serviceAreaRepo } from '@typeorm/repositories/serviceAreaRepository';
 import { Servicearea } from '@typeorm/entity/servicearea';
 import { DefaultJsonResponse } from '@util/responses';
-import {
-  createServiceAreaRequestSchema,
-  searchServiceAreaRequestSchema,
-} from '@lib/schemas/serviceAreaSchemas';
+import { createServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas';
 import { z } from 'zod';
-import { extractPerPageAndPage } from '@util/index';
 
 export const createServiceArea = async (
   data: z.infer<typeof createServiceAreaRequestSchema>
@@ -42,82 +38,5 @@ export const createServiceArea = async (
       : 'Something happened. Error happened while creating Department',
     null,
     !!units
-  );
-};
-
-// Search Service Area
-export const getSearchServiceAreaData = async (
-  requestBody: z.infer<typeof searchServiceAreaRequestSchema>
-) => {
-  const serviceAreaRepository = serviceAreaRepo();
-
-  const { page, perPage } = extractPerPageAndPage(
-    requestBody.endRow,
-    requestBody.startRow
-  );
-
-  const serviceAreaQuery = serviceAreaRepository
-    .createQueryBuilder('service-area')
-    .orderBy(
-      `service-area.${requestBody.sortModel.colId}`,
-      requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
-    );
-
-  if (requestBody.siteId) {
-    serviceAreaQuery.where('service-area.siteId = :siteId', {
-      siteId: requestBody.siteId,
-    });
-  }
-
-  if (requestBody.id) {
-    serviceAreaQuery.where('service-area.id = :id', {
-      id: requestBody.id,
-    });
-  }
-
-  if (requestBody.name) {
-    serviceAreaQuery.where('service-area.name = :name', {
-      name: requestBody.name,
-    });
-  }
-
-  if (requestBody.type) {
-    serviceAreaQuery.where('service-area.type = :type', {
-      type: requestBody.type,
-    });
-  }
-
-  if (requestBody?.range && requestBody.range.from) {
-    serviceAreaQuery.andWhere('service-area.createdAt > :fromDate', {
-      fromDate: requestBody.range.from,
-    });
-  }
-
-  if (requestBody?.range && requestBody.range.to) {
-    serviceAreaQuery.andWhere('service-area.createdAt < :toDate', {
-      toDate: requestBody.range.to,
-    });
-  }
-
-  if (requestBody.search && requestBody.searchKey) {
-    serviceAreaQuery.andWhere(
-      `LOWER(service-area.${requestBody.searchKey}) LIKE :search`,
-      {
-        search: `%${requestBody.search.toLowerCase()}%`,
-      }
-    );
-  }
-
-  const areaData = await serviceAreaQuery
-    .skip(perPage * page)
-    .take(perPage)
-    .getManyAndCount();
-
-  return DefaultJsonResponse(
-    areaData
-      ? 'Service Area Data Retrieved Successfully'
-      : 'Something Went Wrong',
-    areaData,
-    !!areaData
   );
 };
