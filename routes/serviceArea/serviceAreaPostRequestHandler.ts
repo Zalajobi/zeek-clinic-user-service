@@ -1,14 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import {
-  createServiceArea,
-  getSearchServiceAreaData,
-} from '@datastore/serviceArea/serviceAreaPostStore';
+import { createServiceArea } from '@datastore/serviceArea/serviceAreaPostStore';
 import {
   createServiceAreaRequestSchema,
   searchServiceAreaRequestSchema,
 } from '@lib/schemas/serviceAreaSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
+import { getSearchServiceAreaData } from '@datastore/serviceArea/serviceAreaGetStore';
 
 const serviceAreaPostRequest = Router();
 
@@ -52,15 +50,17 @@ serviceAreaPostRequest.post(
     try {
       const requestBody = searchServiceAreaRequestSchema.parse(req.body);
 
-      const queryData = await getSearchServiceAreaData(requestBody);
+      const { data, message, success } = await getSearchServiceAreaData(
+        requestBody
+      );
 
       return JsonApiResponse(
         res,
-        queryData.message,
-        queryData.success,
+        message,
+        success,
         {
-          serviceAreas: queryData?.data[0],
-          totalRows: queryData?.data[1],
+          serviceAreas: data?.serviceAreas,
+          totalRows: data?.totalRows,
         },
         200
       );
