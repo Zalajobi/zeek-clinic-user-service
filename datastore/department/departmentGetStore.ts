@@ -117,9 +117,6 @@ export const getSearchDepartmentData = async (
     requestBody.startRow
   );
 
-  // .select(`DATE_TRUNC('${groupBy}', patient.createdAt) AS date`)
-  //     .addSelect('COUNT(*) AS count')
-
   const baseQuery = deptRepository
     .createQueryBuilder('dept')
     .leftJoin('dept.providers', 'provider')
