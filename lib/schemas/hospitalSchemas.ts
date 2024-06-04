@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   DateRangeSchema,
   ONE_MILLION,
+  searchRequestSchema,
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
 import { globalStatusSchema } from '@lib/schemas/enums';
@@ -37,11 +38,8 @@ export const getOrganisationHospitalsFilterRequestSchema = z.object({
   status: globalStatusSchema.optional(),
 });
 
-export const searchHospitalRequestSchema = z
-  .object({
-    id: z.string().optional(),
-    search: z.string().optional(),
-    searchKey: z.string().optional(),
+export const searchHospitalRequestSchema = searchRequestSchema
+  .extend({
     name: z.string().optional(),
     email: z.string().optional(),
     phone: z.string().optional(),
@@ -54,13 +52,6 @@ export const searchHospitalRequestSchema = z
       if (data !== 'ALL') return data;
     }),
     zipCode: z.string().optional(),
-    range: DateRangeSchema.optional(),
-    sortModel: SortModelSchema.default({
-      sort: 'desc',
-      colId: 'createdAt',
-    }),
-    startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
-    endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
   })
   .refine((data) => data.endRow > data.startRow, {
     message: 'endRow must be greater than startRow',

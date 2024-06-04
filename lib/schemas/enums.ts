@@ -43,3 +43,12 @@ export const distributionSchema = z
 
     return val;
   });
+
+export const serviceAreaTypeSchema = z
+  .string()
+  .transform((val) => val.toUpperCase())
+  .refine((val) =>
+    ['INPATIENT', 'PROCEDURE', 'OUTPATIENT', 'EMERGENCY', 'OTHERS'].includes(
+      val
+    )
+  );

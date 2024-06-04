@@ -1,10 +1,6 @@
 import { z } from 'zod';
-import {
-  ONE_MILLION,
-  SortModelSchema,
-  DateRangeSchema,
-} from '@lib/schemas/commonSchemas';
 import { globalStatusSchema, siteStatusSchema } from '@lib/schemas/enums';
+import { searchRequestSchema } from '@lib/schemas/commonSchemas';
 
 export const createSiteRequestSchema = z
   .object({
@@ -54,11 +50,8 @@ export const getOrganisationSiteFilterRequestSchema = z.object({
   hospital_id: z.string(),
 });
 
-export const searchSiteRequestSchema = z
-  .object({
-    id: z.string().optional(),
-    search: z.string().optional(),
-    searchKey: z.string().optional(),
+export const searchSiteRequestSchema = searchRequestSchema
+  .extend({
     zipCode: z.string().optional(),
     hospitalId: z.string().optional(),
     country: z.string().optional(),
@@ -66,17 +59,10 @@ export const searchSiteRequestSchema = z
     city: z.string().optional(),
     name: z.string().optional(),
     email: z.string().optional(),
-    range: DateRangeSchema.optional(),
-    sortModel: SortModelSchema.default({
-      sort: 'desc',
-      colId: 'createdAt',
-    }),
     greaterThan: z.string().optional(),
     status: globalStatusSchema.optional().transform((data) => {
       if (data !== 'ALL') return data;
     }),
-    startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
-    endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
   })
   .refine((data) => data.endRow > data.startRow, {
     message: 'endRow must be greater than startRow',
