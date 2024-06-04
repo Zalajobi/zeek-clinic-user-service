@@ -214,3 +214,24 @@ export const getSearchServiceAreaData = async (
     !!serviceAreas
   );
 };
+
+export const getServiceAreaCountBySiteIdNameType = async (
+  siteId: string,
+  name: string,
+  type: string
+) => {
+  const serviceAreaRepository = serviceAreaRepo();
+
+  return await serviceAreaRepository
+    .createQueryBuilder('service-area')
+    .where('LOWER(service-area.name) LIKE LOWER(:name)', {
+      name: name,
+    })
+    .andWhere('service-area.siteId = :siteId', {
+      siteId: siteId,
+    })
+    .andWhere('service-area.type = :type', {
+      type: type,
+    })
+    .getCount();
+};

@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { ServiceAreaType } from '@typeorm/entity/enums';
 import { Site } from '@typeorm/entity/site';
@@ -16,6 +17,7 @@ import { z } from 'zod';
 @Entity({
   name: 'serviceArea',
 })
+@Unique(['siteId', 'name', 'type'])
 export class Servicearea {
   constructor(data: z.infer<typeof createServiceAreaRequestSchema>) {
     this.name = data?.name;
