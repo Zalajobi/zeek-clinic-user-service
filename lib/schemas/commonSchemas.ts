@@ -137,3 +137,17 @@ export const getChartRequestSchema = z.object({
 export const getDistributionRequestSchema = siteIdRequestSchema.extend({
   type: distributionSchema,
 });
+
+export const searchRequestSchema = z.object({
+  search: z.string().optional(),
+  searchKey: z.string().optional(),
+  id: z.string().optional(),
+  siteId: z.string().optional(),
+  range: DateRangeSchema.optional(),
+  sortModel: SortModelSchema.default({
+    sort: 'desc',
+    colId: 'createdAt',
+  }),
+  startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
+  endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
+});

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   DateRangeSchema,
   ONE_MILLION,
+  searchRequestSchema,
   SortModelSchema,
 } from '@lib/schemas/commonSchemas';
 
@@ -29,17 +30,11 @@ export const getOrganisationDepartmentsFilterRequestSchema = z.object({
   to_date: z.string().optional(),
 });
 
-export const searchDepartmentRequestSchema = z.object({
-  search: z.string().optional(),
-  searchKey: z.string().optional(),
-  id: z.string().optional(),
-  siteId: z.string().optional(),
-  name: z.string().optional(),
-  range: DateRangeSchema.optional(),
-  sortModel: SortModelSchema.default({
-    sort: 'desc',
-    colId: 'createdAt',
-  }),
-  startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
-  endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
-});
+export const searchDepartmentRequestSchema = searchRequestSchema
+  .extend({
+    name: z.string().optional(),
+  })
+  .refine((data) => data.endRow > data.startRow, {
+    message: 'endRow must be greater than startRow',
+    path: ['endRow'],
+  });

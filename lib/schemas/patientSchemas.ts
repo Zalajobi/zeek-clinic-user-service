@@ -4,6 +4,7 @@ import {
   DateRangeSchema,
   ONE_MILLION,
   profileInformationSchema,
+  searchRequestSchema,
   siteIdRequestSchema,
   SortModelSchema,
   startDayDateSchema,
@@ -86,43 +87,37 @@ export const updatePatientDetailsRequestSchema = z
     return true;
   });
 
-export const searchPatientRequestSchema = z.object({
-  search: z.string().optional(),
-  searchKey: z.string().optional(),
-  id: z.string().optional(),
-  siteId: z.string().optional(),
-  providerId: z.string().optional(),
-  departmentId: z.string().optional(),
-  serviceAreaId: z.string().optional(),
-  employerId: z.string().optional(),
-  unitId: z.string().optional(),
-  cardNumber: z.string().optional(),
-  phone: z.string().optional(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  middleName: z.string().optional(),
-  title: z.string().optional(),
-  gender: z.string().optional(),
-  dob: startDayDateSchema.optional(),
-  address: z.string().optional(),
-  alternateAddress: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  country: z.string().optional(),
-  countryCode: z.string().optional(),
-  religion: z.string().optional(),
-  maritalStatus: maritalStatusSchema.optional(),
-  zipCode: maritalStatusSchema.optional(),
-  profilePic: maritalStatusSchema.optional(),
-  email: z.string().optional(),
-  status: globalStatusSchema.optional().transform((data) => {
-    if (data !== 'ALL') return data;
-  }),
-  range: DateRangeSchema.optional(),
-  sortModel: SortModelSchema.default({
-    sort: 'desc',
-    colId: 'createdAt',
-  }),
-  startRow: z.coerce.number().min(0).max(ONE_MILLION).default(0),
-  endRow: z.coerce.number().min(0).max(ONE_MILLION).default(10),
-});
+export const searchPatientRequestSchema = searchRequestSchema
+  .extend({
+    providerId: z.string().optional(),
+    departmentId: z.string().optional(),
+    serviceAreaId: z.string().optional(),
+    employerId: z.string().optional(),
+    unitId: z.string().optional(),
+    cardNumber: z.string().optional(),
+    phone: z.string().optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    middleName: z.string().optional(),
+    title: z.string().optional(),
+    gender: z.string().optional(),
+    dob: startDayDateSchema.optional(),
+    address: z.string().optional(),
+    alternateAddress: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    country: z.string().optional(),
+    countryCode: z.string().optional(),
+    religion: z.string().optional(),
+    maritalStatus: maritalStatusSchema.optional(),
+    zipCode: maritalStatusSchema.optional(),
+    profilePic: maritalStatusSchema.optional(),
+    email: z.string().optional(),
+    status: globalStatusSchema.optional().transform((data) => {
+      if (data !== 'ALL') return data;
+    }),
+  })
+  .refine((data) => data.endRow > data.startRow, {
+    message: 'endRow must be greater than startRow',
+    path: ['endRow'],
+  });

@@ -117,58 +117,78 @@ export const getSearchDepartmentData = async (
     requestBody.startRow
   );
 
-  const deptQuery = deptRepository
+  const baseQuery = deptRepository
     .createQueryBuilder('dept')
+    .leftJoin('dept.providers', 'provider')
+    .leftJoin('dept.patients', 'patient')
+    .select([
+      'dept.id AS id',
+      'dept.name AS name',
+      'dept.description AS description',
+      'dept.siteId AS "siteId"',
+      'dept.createdAt AS "createdAt"',
+      'dept.updatedAt AS "updatedAt"',
+    ])
+    .addSelect('COUNT(DISTINCT provider.id)', 'providerCount')
+    .addSelect('COUNT(DISTINCT patient.id)', 'patientCount')
+    .groupBy('dept.id')
     .orderBy(
       `dept.${requestBody.sortModel.colId}`,
       requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
     );
 
   if (requestBody.siteId) {
-    deptQuery.where('dept.siteId = :siteId', {
+    baseQuery.where('dept.siteId = :siteId', {
       siteId: requestBody.siteId,
     });
   }
 
   if (requestBody.id) {
-    deptQuery.where('dept.id = :id', {
+    baseQuery.where('dept.id = :id', {
       id: requestBody.id,
     });
   }
 
   if (requestBody.name) {
-    deptQuery.where('dept.name = :name', {
+    baseQuery.where('dept.name = :name', {
       name: requestBody.name,
     });
   }
 
   if (requestBody?.range && requestBody.range.from) {
-    deptQuery.andWhere('dept.createdAt > :fromDate', {
+    baseQuery.andWhere('dept.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
   if (requestBody?.range && requestBody.range.to) {
-    deptQuery.andWhere('dept.createdAt < :toDate', {
+    baseQuery.andWhere('dept.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }
 
   if (requestBody.search && requestBody.searchKey) {
-    deptQuery.andWhere(`LOWER(dept.${requestBody.searchKey}) LIKE :search`, {
+    baseQuery.andWhere(`LOWER(dept.${requestBody.searchKey}) LIKE :search`, {
       search: `%${requestBody.search.toLowerCase()}%`,
     });
   }
 
-  const department = await deptQuery
-    .skip(perPage * page)
-    .take(perPage)
-    .getManyAndCount();
+  const [rawQuery, parameters] = baseQuery.clone().getQueryAndParameters();
+  const modifiedQuery = `${rawQuery} LIMIT ${perPage} OFFSET ${perPage * page}`;
+
+  const [departments, totalRows] = await Promise.all([
+    deptRepository.query(modifiedQuery, parameters),
+
+    baseQuery.clone().getCount(),
+  ]);
 
   return DefaultJsonResponse(
-    department ? 'Department Data Retrieval Success' : 'Something Went Wong',
-    department,
-    !!department
+    departments ? 'Department Data Retrieval Success' : 'Something Went Wong',
+    {
+      departments,
+      totalRows,
+    },
+    !!departments
   );
 };
 

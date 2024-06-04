@@ -51,15 +51,17 @@ departmentPostRequest.post(
     try {
       const requestBody = searchDepartmentRequestSchema.parse(req.body);
 
-      const queryData = await getSearchDepartmentData(requestBody);
+      const { data, success, message } = await getSearchDepartmentData(
+        requestBody
+      );
 
       return JsonApiResponse(
         res,
-        queryData?.message,
-        queryData?.success,
+        message,
+        success,
         {
-          depts: queryData?.data[0],
-          totalRows: queryData?.data[1],
+          depts: data?.departments,
+          totalRows: data?.totalRows,
         },
         200
       );
