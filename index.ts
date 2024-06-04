@@ -2,7 +2,6 @@ import 'module-alias/register';
 import 'reflect-metadata';
 import express = require('express');
 import cors = require('cors');
-
 import { AppDataSource } from './data-source';
 import { SuperAdmin } from '@typeorm/entity/superAdmin';
 import rootRouter from './routes';
@@ -14,7 +13,8 @@ import { mutableConfig } from '@util/config';
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(
   cors({
     origin: [
