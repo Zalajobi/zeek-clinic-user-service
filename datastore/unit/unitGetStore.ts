@@ -89,70 +89,93 @@ export const getSearchUnitData = async (
     requestBody.startRow
   );
 
-  const unitQuery = unitRepository
-    .createQueryBuilder('dept')
+  const baseQuery = unitRepository
+    .createQueryBuilder('unit')
+    .leftJoin('unit.providers', 'provider')
+    .leftJoin('unit.patients', 'patient')
+    .select([
+      'unit.id AS id',
+      'unit.name AS name',
+      'unit.description AS description',
+      'unit.siteId AS "siteId"',
+      'unit.totalBeds AS "totalBeds"',
+      'unit.occupiedBeds AS "occupiedBeds"',
+      'unit.createdAt AS "createdAt"',
+      'unit.updatedAt AS "updatedAt"',
+    ])
+    .addSelect('COUNT(DISTINCT provider.id)', 'providerCount')
+    .addSelect('COUNT(DISTINCT patient.id)', 'patientCount')
+    .groupBy('unit.id')
     .orderBy(
-      `dept.${requestBody.sortModel.colId}`,
+      `unit.${requestBody.sortModel.colId}`,
       requestBody.sortModel.sort === 'asc' ? 'ASC' : 'DESC'
     );
 
   if (requestBody.siteId) {
-    unitQuery.where('dept.siteId = :siteId', {
+    baseQuery.where('unit.siteId = :siteId', {
       siteId: requestBody.siteId,
     });
   }
 
   if (requestBody.id) {
-    unitQuery.where('dept.id = :id', {
+    baseQuery.where('unit.id = :id', {
       id: requestBody.id,
     });
   }
 
   if (requestBody.name) {
-    unitQuery.where('dept.name = :name', {
+    baseQuery.where('unit.name = :name', {
       name: requestBody.name,
     });
   }
 
   if (requestBody.totalBeds) {
-    unitQuery.where('dept.totalBeds >= :totalBeds', {
+    baseQuery.where('unit.totalBeds >= :totalBeds', {
       totalBeds: requestBody.totalBeds,
     });
   }
 
   if (requestBody.occupiedBeds) {
-    unitQuery.where('dept.occupied_beds >= :occupied_beds', {
+    baseQuery.where('unit.occupiedBeds >= :occupiedBeds', {
       occupied_beds: requestBody.occupiedBeds,
     });
   }
 
   if (requestBody?.range && requestBody.range.from) {
-    unitQuery.andWhere('dept.createdAt > :fromDate', {
+    baseQuery.andWhere('unit.createdAt > :fromDate', {
       fromDate: requestBody.range.from,
     });
   }
 
   if (requestBody?.range && requestBody.range.to) {
-    unitQuery.andWhere('dept.createdAt < :toDate', {
+    baseQuery.andWhere('unit.createdAt < :toDate', {
       toDate: requestBody.range.to,
     });
   }
 
   if (requestBody.search && requestBody.searchKey) {
-    unitQuery.andWhere(`LOWER(dept.${requestBody.searchKey}) LIKE :search`, {
+    baseQuery.andWhere(`LOWER(unit.${requestBody.searchKey}) LIKE :search`, {
       search: `%${requestBody.search.toLowerCase()}%`,
     });
   }
 
-  const unitData = await unitQuery
-    .skip(perPage * page)
-    .take(perPage)
-    .getManyAndCount();
+  // Get the raw query and parameter... Edit with the offset and limit and get raw data
+  const [rawQuery, parameters] = baseQuery.clone().getQueryAndParameters();
+  const modifiedQuery = `${rawQuery} LIMIT ${perPage} OFFSET ${perPage * page}`;
+
+  const [units, totalRows] = await Promise.all([
+    unitRepository.query(modifiedQuery, parameters),
+
+    baseQuery.clone().getCount(),
+  ]);
 
   return DefaultJsonResponse(
-    unitData ? 'Unit Data Retrieval Success' : 'Something Went Wrong',
-    unitData,
-    !!unitData
+    units ? 'Unit Data Retrieval Success' : 'Something Went Wrong',
+    {
+      units,
+      totalRows,
+    },
+    !!units
   );
 };
 
