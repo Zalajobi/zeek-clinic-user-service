@@ -201,3 +201,21 @@ export const getDepartmentCountBySiteId = async (siteId: string) => {
     },
   });
 };
+
+export const getDepartmentCountBySiteIdAndName = async (
+  siteId: string,
+  name: string
+) => {
+  const departmentRepository = departmentRepo();
+
+  return await departmentRepository
+    .createQueryBuilder('department')
+    .where(
+      'LOWER(department.name) = LOWER(:name) AND department.siteId = :siteId',
+      {
+        name: name,
+        siteId: siteId,
+      }
+    )
+    .getCount();
+};

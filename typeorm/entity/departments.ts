@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 
 import { Site } from '@typeorm/entity/site';
@@ -16,6 +17,7 @@ import { createDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
 @Entity({
   name: 'department',
 })
+@Unique(['siteId', 'name'])
 export class Departments {
   constructor(data: z.infer<typeof createDepartmentRequestSchema>) {
     this.name = data?.name;

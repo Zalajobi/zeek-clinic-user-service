@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { createNewDepartment } from '@datastore/department/departmentPostStore';
 import {
+  batchCreateDepartment,
+  createNewDepartment,
+} from '@datastore/department/departmentPostStore';
+import {
+  createBulkDepartmentRequestSchema,
   createDepartmentRequestSchema,
   searchDepartmentRequestSchema,
 } from '@lib/schemas/departmentSchemas';
@@ -65,6 +69,30 @@ departmentPostRequest.post(
         },
         200
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+departmentPostRequest.post(
+  '/create/batch',
+  authorizeRequest([
+    'SUPER_ADMIN',
+    'HOSPITAL_ADMIN',
+    'SITE_ADMIN',
+    'ADMIN',
+    'HUMAN_RESOURCES',
+  ]),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestBody = createBulkDepartmentRequestSchema.parse(req.body);
+
+      const { data, message, success } = await batchCreateDepartment(
+        requestBody
+      );
+
+      return JsonApiResponse(res, message, success, data, success ? 201 : 400);
     } catch (error) {
       next(error);
     }

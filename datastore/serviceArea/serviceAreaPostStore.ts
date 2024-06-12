@@ -65,7 +65,7 @@ export const batchCreateServiceArea = async (
 
   // Filter out service areas that already exist
   const uniqueServiceAreas = serviceAreas.filter(
-    (serviceArea, index) => existingServiceAreasCounts[index] === 0
+    (_serviceArea, index) => existingServiceAreasCounts[index] === 0
   );
 
   // Insert the unique service areas

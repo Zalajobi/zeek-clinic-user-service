@@ -1,10 +1,5 @@
 import { z } from 'zod';
-import {
-  DateRangeSchema,
-  ONE_MILLION,
-  searchRequestSchema,
-  SortModelSchema,
-} from '@lib/schemas/commonSchemas';
+import { searchRequestSchema } from '@lib/schemas/commonSchemas';
 
 export const createDepartmentRequestSchema = z.object({
   siteId: z.string(),
@@ -38,3 +33,13 @@ export const searchDepartmentRequestSchema = searchRequestSchema
     message: 'endRow must be greater than startRow',
     path: ['endRow'],
   });
+
+export const createBulkDepartmentRequestSchema = z.object({
+  siteId: z.string(),
+  data: z.array(
+    z.object({
+      name: z.string().min(4),
+      description: z.string().min(20),
+    })
+  ),
+});
