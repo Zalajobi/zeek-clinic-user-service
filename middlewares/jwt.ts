@@ -1,13 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { bearerTokenSchema } from '../schemas/commonSchemas';
-import {
-  generateJWTAccessToken,
-  getRedisKey,
-  verifyJSONToken,
-} from '@util/index';
-import { FIVE_MINUTE } from '@util/config';
+import { generateJWTAccessToken, verifyJSONToken } from '@util/index';
 
 import { JsonApiResponse } from '@util/responses';
+import redisClient from '@lib/redis';
+import jwtClient from '@lib/jwt';
+import { FIVE_MINUTE } from '@util/constants';
 
 const whitelistedEndpoints = [
   '/admin/login',
@@ -41,8 +39,13 @@ export const authorizeRequest = (permissions: string[]) => {
 
         if (remainingTime < FIVE_MINUTE) {
           console.log('Remaining time less than 5 minutes');
-          const refreshToken = await getRedisKey(tokenUser?.id ?? '');
-          const verifiedRefreshToken = verifyJSONToken(refreshToken, true);
+          const refreshToken = await redisClient.getRedisKey(
+            tokenUser?.id ?? ''
+          );
+          const verifiedRefreshToken = jwtClient.verifyJSONToken(
+            refreshToken as string,
+            true
+          );
 
           if (verifiedRefreshToken) {
             const { exp, iat, ...tokenPayload } = verifiedRefreshToken;

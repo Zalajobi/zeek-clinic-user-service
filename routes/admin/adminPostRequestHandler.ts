@@ -16,19 +16,15 @@ import {
   searchAdminRequestSchema,
 } from '../../schemas/adminSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import {
-  generateJSONTokenCredentials,
-  generateJWTAccessToken,
-  generateJWTRefreshToken,
-  generatePasswordHash,
-  generateTemporaryPassCode,
-  validatePassword,
-} from '@util/index';
+import { generateTemporaryPassCode } from '@util/index';
 import {
   SEVEN_TWO_DAYS_SECONDS,
   TWENTY_FOUR_HOURS_SECONDS,
 } from '@util/config';
 import redisClient from '@lib/redis';
+import cryptoClient from '@lib/crypto';
+import jwtClient from '@lib/jwt';
+import { ACCESS_TOKEN_HEADER_NAME } from '@util/constants';
 
 const adminPostRequestHandler = Router();
 
@@ -42,7 +38,12 @@ adminPostRequestHandler.post(
 
       const admin = await getAdminPrimaryLoginInformation(requestBody.email);
 
-      if (validatePassword(requestBody.password, admin?.password ?? '')) {
+      if (
+        cryptoClient.validatePassword(
+          requestBody.password,
+          admin?.password ?? ''
+        )
+      ) {
         const jwtData = {
           id: admin?.id,
           email: admin?.email,
@@ -51,14 +52,8 @@ adminPostRequestHandler.post(
           rememberMe: requestBody.rememberMe,
         };
 
-        const accessToken = generateJWTAccessToken(
-          jwtData,
-          requestBody.rememberMe
-        );
-        const refreshToken = generateJWTRefreshToken(
-          jwtData,
-          requestBody.rememberMe
-        );
+        const accessToken = jwtClient.generateJWTAccessToken(jwtData);
+        const refreshToken = jwtClient.generateJWTRefreshToken(jwtData);
 
         await redisClient.setRedisKey(
           admin?.id ?? '',
@@ -67,10 +62,7 @@ adminPostRequestHandler.post(
             ? SEVEN_TWO_DAYS_SECONDS
             : TWENTY_FOUR_HOURS_SECONDS
         );
-        res.cookie('accessToken', accessToken, {
-          httpOnly: true,
-          secure: true,
-        });
+        res.setHeader(ACCESS_TOKEN_HEADER_NAME, accessToken);
         responseMessage = 'Login Successful';
         success = true;
       }
@@ -101,7 +93,7 @@ adminPostRequestHandler.post(
       // Set a temporary password if no password is set
       const tempPassword = generateTemporaryPassCode();
 
-      requestBody.password = generatePasswordHash(
+      requestBody.password = cryptoClient.generatePasswordHash(
         requestBody?.password ?? tempPassword
       );
 
@@ -184,14 +176,11 @@ adminPostRequestHandler.post(
       const user = await lookupPrimaryAdminInfo(requestBody.email);
 
       if (user) {
-        const token = generateJSONTokenCredentials(
-          {
-            id: user?.id,
-            email: user?.email,
-            role: user?.role,
-          },
-          Math.floor(Date.now() / 1000) + 60 * 10
-        );
+        const token = jwtClient.generateJWTAccessToken({
+          id: user?.id,
+          email: user?.email,
+          role: user?.role,
+        });
 
         const passwordResetEmailResponse = await sendResetPasswordEmail(
           user?.email,

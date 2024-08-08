@@ -1,6 +1,6 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { JWT_ACCESS_TOKEN, JWT_REFRESH_TOKEN } from '../util/config';
-import { JWTDataProperties } from '../types/index.types';
+import { JWTDataProps } from '@typeDesc/jwt';
 
 class JWTClient {
   private static instance: JWTClient;
@@ -16,8 +16,8 @@ class JWTClient {
   }
 
   // Verify JSON Token
-  verifyJSONToken(token: string, isRefreshToken: boolean): JWTDataProperties {
-    let jwtData: JWTDataProperties | null = null;
+  verifyJSONToken(token: string, isRefreshToken: boolean): JWTDataProps {
+    let jwtData: JWTDataProps | null = null;
 
     jwt.verify(
       token,
@@ -29,11 +29,11 @@ class JWTClient {
       }
     );
 
-    return jwtData as unknown as JWTDataProperties;
+    return jwtData as unknown as JWTDataProps;
   }
 
   // Generate JWT Access Token
-  generateJWTAccessToken(data: JWTDataProperties) {
+  generateJWTAccessToken(data: JWTDataProps) {
     const options: SignOptions = {
       // expiresIn: "15m",
       // expiresIn: "365d", // For Dev Purpose
@@ -43,7 +43,7 @@ class JWTClient {
   }
 
   // Generate JWT Refresh Token
-  generateJWTRefreshToken = (data: JWTDataProperties) => {
+  generateJWTRefreshToken = (data: JWTDataProps) => {
     const options: SignOptions = {
       expiresIn: '1d',
     };

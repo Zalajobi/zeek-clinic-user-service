@@ -134,10 +134,6 @@ export const generateTemporaryPassCode = (length: number = 12): string => {
   return result;
 };
 
-// export const generateTemporaryPassword = () => {
-//   return crypto.randomBytes(5).toString('hex').toUpperCase();
-// };
-
 export const extractPerPageAndPage = (endRow: number, startRow = 10) => {
   const perPage = endRow - startRow;
   const page = Math.ceil(startRow / perPage);
@@ -161,23 +157,6 @@ export const getIsoDateBackdatedByMonth = (
   else currentDate.setHours(0, 0, 0, 0);
   currentDate.setUTCMonth(currentDate.getUTCMonth() - (month ?? 12));
   return currentDate.toISOString();
-};
-
-export const setRedisKey = async (
-  key: string,
-  value: string,
-  expiry: number
-) => {
-  const client = redisClient.getClient();
-  await client.set(key, value, {
-    EX: expiry,
-  });
-};
-
-export const getRedisKey = async (key: string) => {
-  const client = redisClient.getClient();
-
-  return (await client.get(key)) as string;
 };
 
 export const getCookieDataByKey = (cookie: string, key: string): string => {
