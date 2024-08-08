@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { updateUnitDataByUnitId } from '@datastore/unit/unitPutStore';
-import { updateUnitRequestSchema } from '@lib/schemas/unitSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { updateUnitRequestSchema } from '../../schemas/unitSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 
 const unitPutRequest = Router();
 

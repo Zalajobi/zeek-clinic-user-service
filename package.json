@@ -21,7 +21,8 @@
     "@typeorm": "typeorm",
     "@types": "types",
     "@util": "util",
-    "@middlewares": "middlewares"
+    "@middlewares": "middlewares",
+    "@schema": "schema"
   },
   "keywords": [],
   "author": "",

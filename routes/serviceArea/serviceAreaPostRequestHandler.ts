@@ -8,8 +8,8 @@ import {
   batchCreateServiceAreaRequestSchema,
   createServiceAreaRequestSchema,
   searchServiceAreaRequestSchema,
-} from '@lib/schemas/serviceAreaSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+} from '../../schemas/serviceAreaSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchServiceAreaData } from '@datastore/serviceArea/serviceAreaGetStore';
 
 const serviceAreaPostRequest = Router();

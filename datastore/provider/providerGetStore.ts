@@ -3,7 +3,7 @@ import { HospitalStatus } from '@typeorm/entity/enums';
 import { providerRepo } from '@typeorm/repositories/providerRepository';
 import { DefaultJsonResponse } from '@util/responses';
 import { z } from 'zod';
-import { searchProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { searchProviderRequestSchema } from '../../schemas/providerSchemas';
 import { extractPerPageAndPage } from '@util/index';
 
 // Get Providers Pagination Data

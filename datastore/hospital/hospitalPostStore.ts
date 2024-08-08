@@ -1,7 +1,7 @@
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { Hospital } from '@typeorm/entity/hospital';
 import { z } from 'zod';
-import { createHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
+import { createHospitalRequestSchema } from '../../schemas/hospitalSchemas';
 import { DefaultJsonResponse } from '@util/responses';
 
 export const createNewHospital = async (

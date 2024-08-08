@@ -10,12 +10,12 @@ import {
   getSiteStatusCountsByHospitalId,
 } from '@datastore/site/siteGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
-import { getOrganisationSiteFilterRequestSchema } from '@lib/schemas/siteSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { getOrganisationSiteFilterRequestSchema } from '../../schemas/siteSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 import {
   hospitalIdRequestSchema,
   siteIdRequestSchema,
-} from '@lib/schemas/commonSchemas';
+} from '../../schemas/commonSchemas';
 
 const siteGetRequest = Router();
 

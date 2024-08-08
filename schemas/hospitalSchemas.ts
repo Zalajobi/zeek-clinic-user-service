@@ -4,8 +4,8 @@ import {
   ONE_MILLION,
   searchRequestSchema,
   SortModelSchema,
-} from '@lib/schemas/commonSchemas';
-import { globalStatusSchema } from '@lib/schemas/enums';
+} from './commonSchemas';
+import { globalStatusSchema } from './enums';
 
 export const createHospitalRequestSchema = z
   .object({

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
-import { generatePasswordHash, remapObjectKeys } from '@util/index';
 import { updateProviderDetails } from '@datastore/provider/providerPutStore';
-import { updateProviderRequestSchema } from '@lib/schemas/providerSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { updateProviderRequestSchema } from '../../schemas/providerSchemas';
+import { authorizeRequest } from '@middlewares/auth';
+import cryptoClient from '@lib/crypto';
 
 const providersPutRequestHandler = Router();
 
@@ -24,7 +24,9 @@ providersPutRequestHandler.put(
       });
 
       if (updateData?.password) {
-        updateData.password = generatePasswordHash(updateData.password);
+        updateData.password = cryptoClient.generatePasswordHash(
+          updateData.password
+        );
       }
 
       const updateProviderResponse = await updateProviderDetails(

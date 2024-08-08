@@ -6,13 +6,13 @@ import {
   getPatientCountBySiteId,
   retrievePatientDistributionForSite,
 } from '@datastore/patient/patientGetStore';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import {
   getChartRequestSchema,
   getDistributionRequestSchema,
   idRequestSchema,
   siteIdRequestSchema,
-} from '@lib/schemas/commonSchemas';
+} from '../../schemas/commonSchemas';
 
 const patientGetRequestHandler = Router();
 

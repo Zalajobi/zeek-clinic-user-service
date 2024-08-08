@@ -11,8 +11,8 @@ import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 import {
   idRequestSchema,
   siteIdRequestSchema,
-} from '@lib/schemas/commonSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+} from '../../schemas/commonSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 import { AUTHORIZE_ALL_ADMINS } from '@util/config';
 
 const adminGetRequestHandler = Router();

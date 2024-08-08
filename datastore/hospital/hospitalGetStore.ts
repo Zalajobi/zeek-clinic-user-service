@@ -1,7 +1,7 @@
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { HospitalStatus } from '@typeorm/entity/enums';
 import { z } from 'zod';
-import { searchHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
+import { searchHospitalRequestSchema } from '../../schemas/hospitalSchemas';
 import { extractPerPageAndPage } from '@util/index';
 import { DefaultJsonResponse } from '@util/responses';
 

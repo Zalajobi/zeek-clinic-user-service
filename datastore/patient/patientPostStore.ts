@@ -4,7 +4,7 @@ import {
   createPatientRequestSchema,
   emergencyContactSchema,
   employerSchema,
-} from '@lib/schemas/patientSchemas';
+} from '../../schemas/patientSchemas';
 import { DefaultJsonResponse } from '@util/responses';
 import { createEmployer } from '@datastore/employerStore';
 import { Patients } from '@typeorm/entity/patient';

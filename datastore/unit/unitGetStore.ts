@@ -1,6 +1,6 @@
 import { unitRepo } from '@typeorm/repositories/unitRepositories';
 import { DefaultJsonResponse } from '@util/responses';
-import { searchUnitRequestSchema } from '@lib/schemas/unitSchemas';
+import { searchUnitRequestSchema } from '../../schemas/unitSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
 

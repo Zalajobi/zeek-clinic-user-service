@@ -4,7 +4,7 @@ import {
   ONE_MILLION,
   searchRequestSchema,
   SortModelSchema,
-} from '@lib/schemas/commonSchemas';
+} from './commonSchemas';
 
 export const createUnitRequestSchema = z.object({
   siteId: z.string(),

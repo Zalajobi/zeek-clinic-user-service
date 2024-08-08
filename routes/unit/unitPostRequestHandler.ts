@@ -4,8 +4,8 @@ import { createNewUnit } from '@datastore/unit/unitPostStore';
 import {
   createUnitRequestSchema,
   searchUnitRequestSchema,
-} from '@lib/schemas/unitSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+} from '../../schemas/unitSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchUnitData } from '@datastore/unit/unitGetStore';
 
 const unitPostRequest = Router();

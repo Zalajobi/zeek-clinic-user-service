@@ -1,6 +1,6 @@
 import { serviceAreaRepo } from '@typeorm/repositories/serviceAreaRepository';
 import { DefaultJsonResponse } from '@util/responses';
-import { searchServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas';
+import { searchServiceAreaRequestSchema } from '../../schemas/serviceAreaSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
 

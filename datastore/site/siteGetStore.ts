@@ -1,7 +1,7 @@
 import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { SiteStatus } from '@typeorm/entity/enums';
 import { Site } from '@typeorm/entity/site';
-import { searchSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import { searchSiteRequestSchema } from '../../schemas/siteSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
 import { DefaultJsonResponse } from '@util/responses';

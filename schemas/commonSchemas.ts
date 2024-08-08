@@ -1,14 +1,7 @@
 import { z } from 'zod';
-import {
-  getCookieDataByKey,
-  getIsoDateBackdatedByMonth,
-  isISODate,
-} from '@util/index';
-import {
-  distributionSchema,
-  genderSchema,
-  maritalStatusSchema,
-} from '@lib/schemas/enums';
+import { getCookieDataByKey } from '@util/index';
+import { distributionSchema, genderSchema, maritalStatusSchema } from './enums';
+import dateClient from '@lib/date';
 
 export const ONE_MILLION = 1000000;
 
@@ -19,7 +12,7 @@ export const SortModelSchema = z.object({
 
 export const startDayDateSchema = z
   .string()
-  .refine(isISODate, {
+  .refine(dateClient.isISODate, {
     message: 'Not a valid ISO string date.',
   })
   .transform((value) => {
@@ -30,7 +23,7 @@ export const startDayDateSchema = z
 
 export const endDayDateSchema = z
   .string()
-  .refine(isISODate, {
+  .refine(dateClient.isISODate, {
     message: 'Not a valid ISO string date.',
   })
   .transform((value) => {
@@ -62,17 +55,17 @@ export const profileInformationSchema = z.object({
 export const DateRangeSchema = z.object({
   from: z
     .string()
-    .refine(isISODate, {
+    .refine(dateClient.isISODate, {
       message: 'Not a valid ISO string date.',
     })
-    .default(getIsoDateBackdatedByMonth(false, 12)),
+    .default(dateClient.getIsoDateBackdatedByMonth(false, 12)),
   to: z
     .string()
-    .refine(isISODate, {
+    .refine(dateClient.isISODate, {
       message: 'Not a valid ISO string date.',
     })
     .optional()
-    .default(getIsoDateBackdatedByMonth(true, 0)),
+    .default(dateClient.getIsoDateBackdatedByMonth(true, 0)),
 });
 
 export const LoginRequestSchema = z
@@ -86,15 +79,15 @@ export const LoginRequestSchema = z
   });
 
 export const bearerTokenSchema = z.object({
-  // authorization: z
-  //   .string()
-  //   .refine((data) => data.startsWith('Bearer '), {
-  //     message: "Authorization header must start with 'Bearer '",
-  //   })
-  //   .transform((data) => data.replace('Bearer ', '')),
-  cookie: z
+  authorization: z
     .string()
-    .transform((data) => getCookieDataByKey(data, 'accessToken')),
+    .refine((data) => data.startsWith('Bearer '), {
+      message: "Authorization header must start with 'Bearer '",
+    })
+    .transform((data) => data.replace('Bearer ', '')),
+  // cookie: z
+  //   .string()
+  //   .transform((data) => getCookieDataByKey(data, 'accessToken')),
 });
 
 export const siteIdRequestSchema = z.object({
@@ -113,7 +106,7 @@ export const getChartRequestSchema = z.object({
   siteId: z.string().optional(),
   fromDate: z
     .string()
-    .refine(isISODate, {
+    .refine(dateClient.isISODate, {
       message: 'Not a valid ISO string date.',
     })
     .transform((value) => {
@@ -123,7 +116,7 @@ export const getChartRequestSchema = z.object({
     }),
   toDate: z
     .string()
-    .refine(isISODate, {
+    .refine(dateClient.isISODate, {
       message: 'Not a valid ISO string date.',
     })
     .transform((value) => {

@@ -8,8 +8,8 @@ import {
   createBulkDepartmentRequestSchema,
   createDepartmentRequestSchema,
   searchDepartmentRequestSchema,
-} from '@lib/schemas/departmentSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+} from '../../schemas/departmentSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchDepartmentData } from '@datastore/department/departmentGetStore';
 
 const departmentPostRequest = Router();

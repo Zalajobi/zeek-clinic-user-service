@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { globalStatusSchema, siteStatusSchema } from '@lib/schemas/enums';
-import { searchRequestSchema } from '@lib/schemas/commonSchemas';
+import { globalStatusSchema, siteStatusSchema } from './enums';
+import { searchRequestSchema } from './commonSchemas';
 
 export const createSiteRequestSchema = z
   .object({

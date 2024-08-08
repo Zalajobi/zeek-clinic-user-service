@@ -1,5 +1,5 @@
 import { emergencyContactsRepo } from '@typeorm/repositories/emergencyContactsRepository';
-import { emergencyContactSchema } from '@lib/schemas/patientSchemas';
+import { emergencyContactSchema } from '../schemas/patientSchemas';
 import { z } from 'zod';
 
 export const batchSaveEmergencyContacts = async (

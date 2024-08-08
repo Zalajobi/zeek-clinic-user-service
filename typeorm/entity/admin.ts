@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Site } from '@typeorm/entity/site';
 import { AdminRoles, MartialStatus } from '@typeorm/entity/enums';
-import { createAdminRequestSchema } from '@lib/schemas/adminSchemas';
+import { createAdminRequestSchema } from '../../schemas/adminSchemas';
 import { z } from 'zod';
 
 @Entity()

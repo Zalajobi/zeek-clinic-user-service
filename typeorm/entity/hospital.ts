@@ -9,7 +9,7 @@ import {
 import { HospitalStatus } from '@typeorm/entity/enums';
 
 import { Site } from '@typeorm/entity/site';
-import { createHospitalRequestSchema } from '@lib/schemas/hospitalSchemas';
+import { createHospitalRequestSchema } from '../../schemas/hospitalSchemas';
 import { z } from 'zod';
 
 @Entity()

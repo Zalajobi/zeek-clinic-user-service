@@ -4,8 +4,8 @@ import { adminCreateSite } from '@datastore/site/sitePostStore';
 import {
   createSiteRequestSchema,
   searchSiteRequestSchema,
-} from '@lib/schemas/siteSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+} from '../../schemas/siteSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchSiteData } from '@datastore/site/siteGetStore';
 import { incrementTotalSiteCount } from '@datastore/hospital/hospitalPutStore';
 

@@ -4,8 +4,8 @@ import { createNewRole } from '@datastore/role/rolePostStore';
 import {
   createRoleRequestSchema,
   searchRoleRequestSchema,
-} from '@lib/schemas/roleSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+} from '../../schemas/roleSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchRoleData } from '@datastore/role/roleGetStore';
 
 const rolePostRequest = Router();

@@ -2,12 +2,13 @@ import { NextFunction, Request, Response, Router } from 'express';
 import {
   createPatientRequestSchema,
   searchPatientRequestSchema,
-} from '@lib/schemas/patientSchemas';
+} from '../../schemas/patientSchemas';
 import { JsonApiResponse } from '@util/responses';
-import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
+import { generateTemporaryPassCode } from '@util/index';
 import { createNewPatient } from '@datastore/patient/patientPostStore';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchPatientData } from '@datastore/patient/patientGetStore';
+import cryptoClient from '@lib/crypto';
 
 const patientPostRequestHandler = Router();
 
@@ -27,7 +28,7 @@ patientPostRequestHandler.post(
 
       // Generate temporary password and hash the password... Hash password from schema if it exists
       const tempPassword = generateTemporaryPassCode();
-      patientPayload.password = generatePasswordHash(
+      patientPayload.password = cryptoClient.generatePasswordHash(
         patientPayload?.password ?? tempPassword
       );
 

@@ -7,9 +7,9 @@ import { SuperAdmin } from '@typeorm/entity/superAdmin';
 import rootRouter from './routes';
 import 'dotenv/config';
 import { errorMiddleware } from '@middlewares/error';
-import { authorizeRequest } from '@middlewares/jwt';
-import { generatePasswordHash } from '@util/index';
+import { authorizeRequest } from '@middlewares/auth';
 import { mutableConfig } from '@util/config';
+import cryptoClient from '@lib/crypto';
 
 const app = express();
 
@@ -19,8 +19,19 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:5173',
       'https://zeek-clinic-frontend.vercel.app',
     ],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Credentials',
+      'Access-Control-Allow-Methods',
+      'Access-Control-Allow-Headers',
+    ],
+    exposedHeaders: ['X-Access-Token'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
 );
@@ -41,7 +52,7 @@ AppDataSource.initialize()
     superAdmin1.first_name = 'Mathian';
     superAdmin1.last_name = 'Schaumaker';
     superAdmin1.phone_number = '+62-829-604-5743';
-    superAdmin1.password = generatePasswordHash('password123');
+    superAdmin1.password = cryptoClient.generatePasswordHash('password123');
 
     const superAdmin2 = new SuperAdmin();
     superAdmin2.email = 'zalajobi@gmail.com';
@@ -49,7 +60,7 @@ AppDataSource.initialize()
     superAdmin2.first_name = 'Zhikrullah';
     superAdmin2.last_name = 'IGBALAJOBI';
     superAdmin2.phone_number = '+352-346-220-5311';
-    superAdmin2.password = generatePasswordHash('password123');
+    superAdmin2.password = cryptoClient.generatePasswordHash('password123');
 
     console.log('Superadmin users Generated Successfully');
     mutableConfig.TYPEORM_LOGGING_START = true;

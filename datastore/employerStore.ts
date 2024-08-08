@@ -1,6 +1,6 @@
 import { employerRepo } from '@typeorm/repositories/employerRepository';
 import { z } from 'zod';
-import { employerSchema } from '@lib/schemas/patientSchemas';
+import { employerSchema } from '../schemas/patientSchemas';
 import { PatientEmployer } from '@typeorm/entity/patientEmployer';
 
 export const createEmployer = async (

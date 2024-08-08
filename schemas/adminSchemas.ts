@@ -7,12 +7,12 @@ import {
   searchRequestSchema,
   SortModelSchema,
   startDayDateSchema,
-} from '@lib/schemas/commonSchemas';
+} from './commonSchemas';
 import {
   adminRoleSchema,
   globalStatusSchema,
   maritalStatusSchema,
-} from '@lib/schemas/enums';
+} from './enums';
 
 export const getDepartmentsBySiteIdRequestSchema = bearerTokenSchema.extend({
   siteId: z.string(),

@@ -4,7 +4,7 @@ import { DefaultJsonResponse } from '@util/responses';
 import {
   batchCreateServiceAreaRequestSchema,
   createServiceAreaRequestSchema,
-} from '@lib/schemas/serviceAreaSchemas';
+} from '../../schemas/serviceAreaSchemas';
 import { z } from 'zod';
 import { getServiceAreaCountBySiteIdNameType } from '@datastore/serviceArea/serviceAreaGetStore';
 import { EntityManager } from 'typeorm';

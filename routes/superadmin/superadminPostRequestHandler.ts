@@ -1,14 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getSuperAdminLoginData } from '@datastore/superAdmin/superadminGetStore';
 import { JsonApiResponse } from '@util/responses';
-import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
-import {
-  generateJWTAccessToken,
-  generateJWTRefreshToken,
-  setRedisKey,
-  validatePassword,
-} from '@util/index';
-import { SEVEN_DAYS_SECONDS, TWENTY_FOUR_HOURS_SECONDS } from '@util/config';
+import { LoginRequestSchema } from '../../schemas/commonSchemas';
+import redisClient from '@lib/redis';
+import { SEVEN_DAYS_SECONDS, TWENTY_FOUR_HOURS_SECONDS } from '@util/constants';
+import jwtClient from '@lib/jwt';
+import cryptoClient from '@lib/crypto';
 
 const superadminPostRequest = Router();
 
@@ -23,7 +20,12 @@ superadminPostRequest.post(
 
       const admin = await getSuperAdminLoginData(requestBody.email);
 
-      if (validatePassword(requestBody.password, admin?.password ?? '')) {
+      if (
+        cryptoClient.validatePassword(
+          requestBody.password,
+          admin?.password ?? ''
+        )
+      ) {
         const jwtData = {
           id: admin?.id,
           email: admin?.email,
@@ -31,16 +33,10 @@ superadminPostRequest.post(
           rememberMe: requestBody.rememberMe,
         };
 
-        const accessToken = generateJWTAccessToken(
-          jwtData,
-          requestBody.rememberMe
-        );
-        const refreshToken = generateJWTRefreshToken(
-          jwtData,
-          requestBody.rememberMe
-        );
+        const accessToken = jwtClient.generateJWTAccessToken(jwtData);
+        const refreshToken = jwtClient.generateJWTRefreshToken(jwtData);
 
-        setRedisKey(
+        await redisClient.setRedisKey(
           admin?.id ?? '',
           refreshToken,
           requestBody?.rememberMe

@@ -2,12 +2,9 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { getAdminBaseDataAndProfileDataByAdminId } from '@datastore/admin/adminGetStore';
 import { updateAdminPasswordByAdminId } from '@datastore/admin/adminPutStore';
-import { updatePasswordRequestSchema } from '@lib/schemas/adminSchemas';
-import {
-  generatePasswordHash,
-  validatePassword,
-  verifyJSONToken,
-} from '@util/index';
+import { updatePasswordRequestSchema } from '../../schemas/adminSchemas';
+import jwtClient from '@lib/jwt';
+import cryptoClient from '@lib/crypto';
 
 const adminPutRequestHandler = Router();
 
@@ -22,15 +19,25 @@ adminPutRequestHandler.put(
 
     let message = 'Error Updating Password';
     try {
-      const verifyToken = verifyJSONToken(requestBody.authorization, false);
+      const verifyToken = jwtClient.verifyJSONToken(
+        requestBody.authorization,
+        false
+      );
 
       if (verifyToken) {
         const admin = await getAdminBaseDataAndProfileDataByAdminId(
           verifyToken?.id ?? ''
         );
 
-        if (validatePassword(requestBody.old_password, admin?.password ?? '')) {
-          const password = generatePasswordHash(requestBody.new_password);
+        if (
+          cryptoClient.validatePassword(
+            requestBody.old_password,
+            admin?.password ?? ''
+          )
+        ) {
+          const password = cryptoClient.generatePasswordHash(
+            requestBody.new_password
+          );
 
           if (
             await updateAdminPasswordByAdminId(verifyToken?.id ?? '', password)

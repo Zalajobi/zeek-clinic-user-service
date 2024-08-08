@@ -1,6 +1,6 @@
 import { patientRepo } from '@typeorm/repositories/patientRepository';
 import { DefaultJsonResponse } from '@util/responses';
-import { searchPatientRequestSchema } from '@lib/schemas/patientSchemas';
+import { searchPatientRequestSchema } from '../../schemas/patientSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
 

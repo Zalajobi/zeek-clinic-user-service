@@ -1,6 +1,6 @@
 import { roleRepo } from '@typeorm/repositories/roleRepository';
 import { DefaultJsonResponse } from '@util/responses';
-import { searchRoleRequestSchema } from '@lib/schemas/roleSchemas';
+import { searchRoleRequestSchema } from '../../schemas/roleSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
 

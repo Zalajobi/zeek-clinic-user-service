@@ -4,7 +4,7 @@ import { Departments } from '@typeorm/entity/departments';
 import {
   createBulkDepartmentRequestSchema,
   createDepartmentRequestSchema,
-} from '@lib/schemas/departmentSchemas';
+} from '../../schemas/departmentSchemas';
 import { z } from 'zod';
 import { AppDataSource } from '../../data-source';
 import { EntityManager } from 'typeorm';

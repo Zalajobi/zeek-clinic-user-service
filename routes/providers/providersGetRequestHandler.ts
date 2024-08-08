@@ -6,13 +6,13 @@ import {
   getProviderCountBySiteId,
   retrieveProviderDistributionForSite,
 } from '@datastore/provider/providerGetStore';
-import { getOrganisationProvidersFilterRequestSchema } from '@lib/schemas/providerSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { getOrganisationProvidersFilterRequestSchema } from '../../schemas/providerSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 import {
   getDistributionRequestSchema,
   idRequestSchema,
   siteIdRequestSchema,
-} from '@lib/schemas/commonSchemas';
+} from '../../schemas/commonSchemas';
 
 const providersGetRequestHandler = Router();
 

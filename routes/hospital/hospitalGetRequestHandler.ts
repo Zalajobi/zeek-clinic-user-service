@@ -8,8 +8,8 @@ import {
 import {
   getOrganisationHospitalsFilterRequestSchema,
   hospitalDetailsRequestSchema,
-} from '@lib/schemas/hospitalSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+} from '../../schemas/hospitalSchemas';
+import { authorizeRequest } from '@middlewares/auth';
 
 const hospitalGetRequest = Router();
 

@@ -4,9 +4,9 @@ import {
   fetchFilteredUnitData,
   getUnitCountBySiteId,
 } from '@datastore/unit/unitGetStore';
-import { getOrganisationUnitsFilterRequestSchema } from '@lib/schemas/unitSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
-import { siteIdRequestSchema } from '@lib/schemas/commonSchemas';
+import { getOrganisationUnitsFilterRequestSchema } from '../../schemas/unitSchemas';
+import { authorizeRequest } from '@middlewares/auth';
+import { siteIdRequestSchema } from '../../schemas/commonSchemas';
 
 const unitGetRequest = Router();
 

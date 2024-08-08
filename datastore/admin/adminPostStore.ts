@@ -3,7 +3,7 @@ import { AdminRoles } from '@typeorm/entity/enums';
 import { DefaultJsonResponse } from '@util/responses';
 import { Admin } from '@typeorm/entity/admin';
 import { z } from 'zod';
-import { createAdminRequestSchema } from '@lib/schemas/adminSchemas';
+import { createAdminRequestSchema } from '../../schemas/adminSchemas';
 
 export const createNewAdmin = async (
   adminData: z.infer<typeof createAdminRequestSchema>
