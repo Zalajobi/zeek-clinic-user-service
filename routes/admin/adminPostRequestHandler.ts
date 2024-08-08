@@ -17,14 +17,14 @@ import {
 } from '../../schemas/adminSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { generateTemporaryPassCode } from '@util/index';
-import {
-  SEVEN_TWO_DAYS_SECONDS,
-  TWENTY_FOUR_HOURS_SECONDS,
-} from '@util/config';
 import redisClient from '@lib/redis';
 import cryptoClient from '@lib/crypto';
 import jwtClient from '@lib/jwt';
-import { ACCESS_TOKEN_HEADER_NAME } from '@util/constants';
+import {
+  ACCESS_TOKEN_HEADER_NAME,
+  SEVEN_TWO_DAYS_SECONDS,
+  TWENTY_FOUR_HOURS_SECONDS,
+} from '@util/constants';
 
 const adminPostRequestHandler = Router();
 

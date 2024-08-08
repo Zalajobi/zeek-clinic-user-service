@@ -6,7 +6,7 @@ import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetSt
 import { getDepartmentsBySiteIdRequestSchema } from '../../schemas/adminSchemas';
 import { bearerTokenSchema } from '../../schemas/commonSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
-import { verifyJSONToken } from '@util/index';
+import jwtClient from '@lib/jwt';
 
 const superadminGetRouter = Router();
 
@@ -28,7 +28,7 @@ superadminGetRouter.get(
     try {
       const { cookie } = bearerTokenSchema.parse(req.headers);
 
-      const user = verifyJSONToken(cookie, false);
+      const user = jwtClient.verifyJSONToken(cookie, false);
 
       const data = await getSuperAdminBaseData(user?.id ?? '');
 

@@ -8,8 +8,8 @@ import rootRouter from './routes';
 import 'dotenv/config';
 import { errorMiddleware } from '@middlewares/error';
 import { authorizeRequest } from '@middlewares/jwt';
-import { generatePasswordHash } from '@util/index';
 import { mutableConfig } from '@util/config';
+import cryptoClient from '@lib/crypto';
 
 const app = express();
 
@@ -52,7 +52,7 @@ AppDataSource.initialize()
     superAdmin1.first_name = 'Mathian';
     superAdmin1.last_name = 'Schaumaker';
     superAdmin1.phone_number = '+62-829-604-5743';
-    superAdmin1.password = generatePasswordHash('password123');
+    superAdmin1.password = cryptoClient.generatePasswordHash('password123');
 
     const superAdmin2 = new SuperAdmin();
     superAdmin2.email = 'zalajobi@gmail.com';
@@ -60,7 +60,7 @@ AppDataSource.initialize()
     superAdmin2.first_name = 'Zhikrullah';
     superAdmin2.last_name = 'IGBALAJOBI';
     superAdmin2.phone_number = '+352-346-220-5311';
-    superAdmin2.password = generatePasswordHash('password123');
+    superAdmin2.password = cryptoClient.generatePasswordHash('password123');
 
     console.log('Superadmin users Generated Successfully');
     mutableConfig.TYPEORM_LOGGING_START = true;

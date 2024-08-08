@@ -5,9 +5,10 @@ import {
   createProviderRequestSchema,
   searchProviderRequestSchema,
 } from '../../schemas/providerSchemas';
-import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
+import { generateTemporaryPassCode } from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchProviderData } from '@datastore/provider/providerGetStore';
+import cryptoClient from '@lib/crypto';
 
 const providersPostRequestHandler = Router();
 
@@ -27,7 +28,7 @@ providersPostRequestHandler.post(
 
       // Set a temporary password if no password is set
       const tempPassword = generateTemporaryPassCode();
-      requestBody.password = generatePasswordHash(
+      requestBody.password = cryptoClient.generatePasswordHash(
         requestBody?.password ?? tempPassword
       );
 

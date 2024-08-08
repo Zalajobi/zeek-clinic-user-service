@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import superadminRouter from '@routes/superadmin';
-import { BASE_URL } from '@util/config';
 import siteRouter from '@routes/site';
 import hospitalRouter from '@routes/hospital';
 import roleRouter from '@routes/role';
@@ -10,6 +9,7 @@ import providersRouter from '@routes/providers';
 import patientRouter from '@routes/patient';
 import unitRouter from '@routes/unit';
 import serviceAreaRouter from '@routes/serviceArea';
+import { BASE_URL } from '@util/constants';
 
 let rootRouter = Router();
 

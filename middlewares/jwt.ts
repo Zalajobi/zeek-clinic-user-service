@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { bearerTokenSchema } from '../schemas/commonSchemas';
-import { generateJWTAccessToken, verifyJSONToken } from '@util/index';
 
 import { JsonApiResponse } from '@util/responses';
 import redisClient from '@lib/redis';
@@ -32,7 +31,7 @@ export const authorizeRequest = (permissions: string[]) => {
     }
 
     try {
-      const tokenUser = verifyJSONToken(accessToken, false);
+      const tokenUser = jwtClient.verifyJSONToken(accessToken, false);
 
       if (tokenUser) {
         const remainingTime = Number(tokenUser?.exp) * 1000 - Date.now();
@@ -49,10 +48,8 @@ export const authorizeRequest = (permissions: string[]) => {
 
           if (verifiedRefreshToken) {
             const { exp, iat, ...tokenPayload } = verifiedRefreshToken;
-            const newAccessToken = generateJWTAccessToken(
-              tokenPayload,
-              tokenPayload.rememberMe ?? false
-            );
+            const newAccessToken =
+              jwtClient.generateJWTAccessToken(tokenPayload);
 
             res.cookie('accessToken', newAccessToken, {
               httpOnly: true,
