@@ -4,7 +4,7 @@ import { createNewProvider } from '@datastore/provider/providerPostStore';
 import {
   createProviderRequestSchema,
   searchProviderRequestSchema,
-} from '@lib/schemas/providerSchemas';
+} from '../../schemas/providerSchemas';
 import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchProviderData } from '@datastore/provider/providerGetStore';

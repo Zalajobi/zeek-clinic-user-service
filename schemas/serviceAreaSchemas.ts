@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { searchRequestSchema } from '@lib/schemas/commonSchemas';
-import { serviceAreaTypeSchema } from '@lib/schemas/enums';
+import { searchRequestSchema } from './commonSchemas';
+import { serviceAreaTypeSchema } from './enums';
 
 export const getOrganisationServiceAreaFilterRequestSchema = z.object({
   siteId: z.string(),

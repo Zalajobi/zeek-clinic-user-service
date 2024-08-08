@@ -2,7 +2,7 @@ import { providerRepo } from '@typeorm/repositories/providerRepository';
 // import { customPromiseRequest } from '@lib/api';
 import { DefaultJsonResponse } from '@util/responses';
 import { z } from 'zod';
-import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { createProviderRequestSchema } from '../../schemas/providerSchemas';
 import { Provider } from '@typeorm/entity/providers';
 
 // Post Requests Stores

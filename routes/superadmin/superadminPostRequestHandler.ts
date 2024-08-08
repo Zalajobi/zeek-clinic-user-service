@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getSuperAdminLoginData } from '@datastore/superAdmin/superadminGetStore';
 import { JsonApiResponse } from '@util/responses';
-import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
+import { LoginRequestSchema } from '../../schemas/commonSchemas';
 import {
   generateJWTAccessToken,
   generateJWTRefreshToken,

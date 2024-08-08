@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from 'redis';
-import { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT } from '@util/config';
+import { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT } from '../util/config';
 
 class RedisClient {
   private client: RedisClientType;
@@ -27,9 +27,6 @@ class RedisClient {
       .on('error', (err: any) => {
         console.error('Redis Error: ', err);
       })
-      .on('end', () => {
-        console.log('Redis disconnected');
-      })
       .connect()) as RedisClientType;
   }
 
@@ -41,8 +38,31 @@ class RedisClient {
     return RedisClient.instance;
   }
 
-  getClient() {
-    return this.client;
+  async setRedisKey(key: string, value: string, expiry: number) {
+    await this.client.set(key, value, {
+      EX: expiry,
+    });
+  }
+
+  async getRedisKey(key: string): Promise<string | null> {
+    return await this.client.get(key);
+  }
+
+  async storeJsonData(key: string, value: any, expiry: number) {
+    await this.client.set(key, JSON.stringify(value), {
+      EX: expiry,
+    });
+  }
+
+  async getJsonData(key: string): Promise<any> {
+    const jsonString = await this.client.get(key);
+    if (jsonString) {
+      console.log('Data found in Redis Store');
+      return JSON.parse(jsonString);
+    } else {
+      console.log(`No data found for key: ${key}`);
+      return null;
+    }
   }
 }
 

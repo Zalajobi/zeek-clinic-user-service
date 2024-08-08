@@ -9,12 +9,12 @@ import {
 } from '@datastore/admin/adminGetStore';
 import { createNewAdmin } from '@datastore/admin/adminPostStore';
 import { updateAdminData } from '@datastore/admin/adminPutStore';
-import { LoginRequestSchema } from '@lib/schemas/commonSchemas';
+import { LoginRequestSchema } from '../../schemas/commonSchemas';
 import {
   createAdminRequestSchema,
   passwordResetRequestSchema,
   searchAdminRequestSchema,
-} from '@lib/schemas/adminSchemas';
+} from '../../schemas/adminSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import {
   generateJSONTokenCredentials,
@@ -22,13 +22,13 @@ import {
   generateJWTRefreshToken,
   generatePasswordHash,
   generateTemporaryPassCode,
-  setRedisKey,
   validatePassword,
 } from '@util/index';
 import {
   SEVEN_TWO_DAYS_SECONDS,
   TWENTY_FOUR_HOURS_SECONDS,
 } from '@util/config';
+import redisClient from '@lib/redis';
 
 const adminPostRequestHandler = Router();
 
@@ -60,7 +60,7 @@ adminPostRequestHandler.post(
           requestBody.rememberMe
         );
 
-        setRedisKey(
+        await redisClient.setRedisKey(
           admin?.id ?? '',
           refreshToken,
           requestBody?.rememberMe

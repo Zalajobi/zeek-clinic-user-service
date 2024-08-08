@@ -14,7 +14,7 @@ import { Roles } from '@typeorm/entity/roles';
 import { Departments } from '@typeorm/entity/departments';
 import { Units } from '@typeorm/entity/units';
 import { Servicearea } from '@typeorm/entity/servicearea';
-import { createProviderRequestSchema } from '@lib/schemas/providerSchemas';
+import { createProviderRequestSchema } from '../../schemas/providerSchemas';
 import { z } from 'zod';
 
 @Entity({

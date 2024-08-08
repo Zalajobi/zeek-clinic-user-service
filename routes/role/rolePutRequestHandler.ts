@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { updateRoleDataByRoleId } from '@datastore/role/rolePutStore';
 import { authorizeRequest } from '@middlewares/jwt';
-import { updateRoleRequestSchema } from '@lib/schemas/roleSchemas';
+import { updateRoleRequestSchema } from '../../schemas/roleSchemas';
 
 const rolePutRequest = Router();
 

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { updatePatientDetails } from '@datastore/patient/patientPutStore';
-import { updatePatientDetailsRequestSchema } from '@lib/schemas/patientSchemas';
+import { updatePatientDetailsRequestSchema } from '../../schemas/patientSchemas';
 import { getPatientCountByEmail } from '@datastore/patient/patientGetStore';
 import { authorizeRequest } from '@middlewares/jwt';
 

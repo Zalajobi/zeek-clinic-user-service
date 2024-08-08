@@ -11,7 +11,7 @@ import { ServiceAreaType } from '@typeorm/entity/enums';
 import { Site } from '@typeorm/entity/site';
 import { Provider } from '@typeorm/entity/providers';
 import { Patients } from '@typeorm/entity/patient';
-import { createServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas';
+import { createServiceAreaRequestSchema } from '../../schemas/serviceAreaSchemas';
 import { z } from 'zod';
 
 @Entity({

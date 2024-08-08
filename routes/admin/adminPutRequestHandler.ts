@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { getAdminBaseDataAndProfileDataByAdminId } from '@datastore/admin/adminGetStore';
 import { updateAdminPasswordByAdminId } from '@datastore/admin/adminPutStore';
-import { updatePasswordRequestSchema } from '@lib/schemas/adminSchemas';
+import { updatePasswordRequestSchema } from '../../schemas/adminSchemas';
 import {
   generatePasswordHash,
   validatePassword,

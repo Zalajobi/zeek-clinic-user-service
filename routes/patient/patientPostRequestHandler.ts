@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import {
   createPatientRequestSchema,
   searchPatientRequestSchema,
-} from '@lib/schemas/patientSchemas';
+} from '../../schemas/patientSchemas';
 import { JsonApiResponse } from '@util/responses';
 import { generatePasswordHash, generateTemporaryPassCode } from '@util/index';
 import { createNewPatient } from '@datastore/patient/patientPostStore';

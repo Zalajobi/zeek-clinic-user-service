@@ -4,7 +4,7 @@ import { createNewUnit } from '@datastore/unit/unitPostStore';
 import {
   createUnitRequestSchema,
   searchUnitRequestSchema,
-} from '@lib/schemas/unitSchemas';
+} from '../../schemas/unitSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchUnitData } from '@datastore/unit/unitGetStore';
 

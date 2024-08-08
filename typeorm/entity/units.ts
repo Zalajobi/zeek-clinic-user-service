@@ -9,7 +9,7 @@ import {
 import { Patients } from '@typeorm/entity/patient';
 import { Provider } from '@typeorm/entity/providers';
 import { Site } from '@typeorm/entity/site';
-import { createUnitRequestSchema } from '@lib/schemas/unitSchemas';
+import { createUnitRequestSchema } from '../../schemas/unitSchemas';
 import { z } from 'zod';
 
 @Entity({

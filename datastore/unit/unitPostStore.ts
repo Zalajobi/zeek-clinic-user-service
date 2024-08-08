@@ -1,7 +1,7 @@
 import { unitRepo } from '@typeorm/repositories/unitRepositories';
 import { DefaultJsonResponse } from '@util/responses';
 import { Units } from '@typeorm/entity/units';
-import { createUnitRequestSchema } from '@lib/schemas/unitSchemas';
+import { createUnitRequestSchema } from '../../schemas/unitSchemas';
 import { z } from 'zod';
 
 export const createNewUnit = async (

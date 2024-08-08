@@ -18,7 +18,7 @@ import { Departments } from '@typeorm/entity/departments';
 import { Units } from '@typeorm/entity/units';
 import { Servicearea } from '@typeorm/entity/servicearea';
 import { z } from 'zod';
-import { createPatientRequestSchema } from '@lib/schemas/patientSchemas';
+import { createPatientRequestSchema } from '../../schemas/patientSchemas';
 
 @Entity({
   name: 'patient',

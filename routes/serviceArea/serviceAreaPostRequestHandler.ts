@@ -8,7 +8,7 @@ import {
   batchCreateServiceAreaRequestSchema,
   createServiceAreaRequestSchema,
   searchServiceAreaRequestSchema,
-} from '@lib/schemas/serviceAreaSchemas';
+} from '../../schemas/serviceAreaSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchServiceAreaData } from '@datastore/serviceArea/serviceAreaGetStore';
 

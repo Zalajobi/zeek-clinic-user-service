@@ -4,7 +4,7 @@ import { createNewRole } from '@datastore/role/rolePostStore';
 import {
   createRoleRequestSchema,
   searchRoleRequestSchema,
-} from '@lib/schemas/roleSchemas';
+} from '../../schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchRoleData } from '@datastore/role/roleGetStore';
 

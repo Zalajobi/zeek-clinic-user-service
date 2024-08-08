@@ -19,7 +19,7 @@ import { BankAccount } from '@typeorm/entity/bankAccount';
 import { Hospital } from '@typeorm/entity/hospital';
 import { Admin } from '@typeorm/entity/admin';
 import { SiteStatus } from '@typeorm/entity/enums';
-import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import { createSiteRequestSchema } from '../../schemas/siteSchemas';
 import { z } from 'zod';
 import { EmergencyContacts } from '@typeorm/entity/emergencyContacts';
 

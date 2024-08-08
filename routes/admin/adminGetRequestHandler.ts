@@ -11,7 +11,7 @@ import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 import {
   idRequestSchema,
   siteIdRequestSchema,
-} from '@lib/schemas/commonSchemas';
+} from '../../schemas/commonSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { AUTHORIZE_ALL_ADMINS } from '@util/config';
 

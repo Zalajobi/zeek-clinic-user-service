@@ -10,7 +10,7 @@ import {
 import { Patients } from '@typeorm/entity/patient';
 import { Site } from '@typeorm/entity/site';
 import { z } from 'zod';
-import { employerSchema } from '@lib/schemas/patientSchemas';
+import { employerSchema } from '../../schemas/patientSchemas';
 
 @Entity({
   name: 'patientEmployer',

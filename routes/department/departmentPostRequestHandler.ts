@@ -8,7 +8,7 @@ import {
   createBulkDepartmentRequestSchema,
   createDepartmentRequestSchema,
   searchDepartmentRequestSchema,
-} from '@lib/schemas/departmentSchemas';
+} from '../../schemas/departmentSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchDepartmentData } from '@datastore/department/departmentGetStore';
 

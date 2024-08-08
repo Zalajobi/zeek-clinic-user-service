@@ -12,7 +12,7 @@ import {
   getDistributionRequestSchema,
   idRequestSchema,
   siteIdRequestSchema,
-} from '@lib/schemas/commonSchemas';
+} from '../../schemas/commonSchemas';
 
 const patientGetRequestHandler = Router();
 

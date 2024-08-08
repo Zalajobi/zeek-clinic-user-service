@@ -2,7 +2,7 @@ import { adminRepo } from '@typeorm/repositories/adminRepository';
 import { Admin } from '@typeorm/entity/admin';
 import { ObjectLiteral } from 'typeorm';
 import { DefaultJsonResponse } from '@util/responses';
-import { searchAdminRequestSchema } from '@lib/schemas/adminSchemas';
+import { searchAdminRequestSchema } from '../../schemas/adminSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
 

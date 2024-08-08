@@ -6,12 +6,8 @@ import {
   SortModelSchema,
   startDayDateSchema,
   searchRequestSchema,
-} from '@lib/schemas/commonSchemas';
-import {
-  genderSchema,
-  globalStatusSchema,
-  maritalStatusSchema,
-} from '@lib/schemas/enums';
+} from './commonSchemas';
+import { genderSchema, globalStatusSchema, maritalStatusSchema } from './enums';
 
 export const createProviderRequestSchema = profileInformationSchema
   .extend({

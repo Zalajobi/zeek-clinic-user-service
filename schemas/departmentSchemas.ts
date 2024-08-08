@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { searchRequestSchema } from '@lib/schemas/commonSchemas';
+import { searchRequestSchema } from './commonSchemas';
 
 export const createDepartmentRequestSchema = z.object({
   siteId: z.string(),

@@ -1,7 +1,7 @@
 import { departmentRepo } from '@typeorm/repositories/departmentRepository';
 import { DefaultJsonResponse } from '@util/responses';
 import { Departments } from '@typeorm/entity/departments';
-import { searchDepartmentRequestSchema } from '@lib/schemas/departmentSchemas';
+import { searchDepartmentRequestSchema } from '../../schemas/departmentSchemas';
 import { z } from 'zod';
 import { extractPerPageAndPage } from '@util/index';
 

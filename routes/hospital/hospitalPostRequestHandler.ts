@@ -4,7 +4,7 @@ import { createNewHospital } from '@datastore/hospital/hospitalPostStore';
 import {
   createHospitalRequestSchema,
   searchHospitalRequestSchema,
-} from '@lib/schemas/hospitalSchemas';
+} from '../../schemas/hospitalSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { getSearchHospitalData } from '@datastore/hospital/hospitalGetStore';
 

@@ -8,7 +8,7 @@ import {
 
 import { Patients } from '@typeorm/entity/patient';
 import { Site } from '@typeorm/entity/site';
-import { emergencyContactSchema } from '@lib/schemas/patientSchemas';
+import { emergencyContactSchema } from '../../schemas/patientSchemas';
 import { z } from 'zod';
 
 @Entity({

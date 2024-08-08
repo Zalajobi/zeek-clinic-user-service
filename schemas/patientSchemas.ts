@@ -8,12 +8,12 @@ import {
   siteIdRequestSchema,
   SortModelSchema,
   startDayDateSchema,
-} from '@lib/schemas/commonSchemas';
+} from './commonSchemas';
 import {
   distributionSchema,
   globalStatusSchema,
   maritalStatusSchema,
-} from '@lib/schemas/enums';
+} from './enums';
 import { PatientStatus } from '@typeorm/entity/enums';
 
 export const employerSchema = z.object({

@@ -1,7 +1,7 @@
 import { siteRepo } from '@typeorm/repositories/siteRepository';
 import { hospitalRepo } from '@typeorm/repositories/hospitalRepository';
 import { Site } from '@typeorm/entity/site';
-import { createSiteRequestSchema } from '@lib/schemas/siteSchemas';
+import { createSiteRequestSchema } from '../../schemas/siteSchemas';
 import { z } from 'zod';
 import { DefaultJsonResponse } from '@util/responses';
 

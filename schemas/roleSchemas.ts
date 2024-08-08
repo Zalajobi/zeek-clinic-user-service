@@ -5,7 +5,7 @@ import {
   ONE_MILLION,
   searchRequestSchema,
   SortModelSchema,
-} from '@lib/schemas/commonSchemas';
+} from './commonSchemas';
 import { isISODate } from '@util/index';
 
 export const getOrganisationRolesFilterRequestSchema = bearerTokenSchema.extend(

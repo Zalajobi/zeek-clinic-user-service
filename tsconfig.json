@@ -18,7 +18,8 @@
       "@typeorm/*": ["./typeorm/*"],
       "@typeDesc/*": ["./types/*"],
       "@util/*": ["./util/*"],
-      "@middlewares/*": ["./middlewares/*"]
+      "@middlewares/*": ["./middlewares/*"],
+      "@schema/*": ["./schema/*"]
     },
 
     /* JavaScript Support */

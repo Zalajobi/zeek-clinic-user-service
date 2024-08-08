@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { updateServiceAreaDataByUnitId } from '@datastore/serviceArea/serviceAreaPutStore';
-import { updateServiceAreaRequestSchema } from '@lib/schemas/serviceAreaSchemas';
+import { updateServiceAreaRequestSchema } from '../../schemas/serviceAreaSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 
 const serviceAreaPutRequest = Router();

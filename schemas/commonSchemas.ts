@@ -4,11 +4,7 @@ import {
   getIsoDateBackdatedByMonth,
   isISODate,
 } from '@util/index';
-import {
-  distributionSchema,
-  genderSchema,
-  maritalStatusSchema,
-} from '@lib/schemas/enums';
+import { distributionSchema, genderSchema, maritalStatusSchema } from './enums';
 
 export const ONE_MILLION = 1000000;
 

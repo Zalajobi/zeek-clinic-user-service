@@ -19,8 +19,19 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:5173',
       'https://zeek-clinic-frontend.vercel.app',
     ],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Credentials',
+      'Access-Control-Allow-Methods',
+      'Access-Control-Allow-Headers',
+    ],
+    exposedHeaders: ['X-Access-Token'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
 );

@@ -5,12 +5,12 @@ import {
   getRoleCountBySiteId,
   getRolePaginationDataWithUsersCount,
 } from '@datastore/role/roleGetStore';
-import { getOrganisationRolesFilterRequestSchema } from '@lib/schemas/roleSchemas';
+import { getOrganisationRolesFilterRequestSchema } from '../../schemas/roleSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import {
   getChartRequestSchema,
   siteIdRequestSchema,
-} from '@lib/schemas/commonSchemas';
+} from '../../schemas/commonSchemas';
 
 const roleGetRequest = Router();
 

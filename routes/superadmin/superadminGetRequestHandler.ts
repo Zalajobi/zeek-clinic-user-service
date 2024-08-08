@@ -3,8 +3,8 @@ import { JsonApiResponse } from '@util/responses';
 import { getSuperAdminBaseData } from '@datastore/superAdmin/superadminGetStore';
 import { AdminRoles } from '@typeorm/entity/enums';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
-import { getDepartmentsBySiteIdRequestSchema } from '@lib/schemas/adminSchemas';
-import { bearerTokenSchema } from '@lib/schemas/commonSchemas';
+import { getDepartmentsBySiteIdRequestSchema } from '../../schemas/adminSchemas';
+import { bearerTokenSchema } from '../../schemas/commonSchemas';
 import { authorizeRequest } from '@middlewares/jwt';
 import { verifyJSONToken } from '@util/index';
 

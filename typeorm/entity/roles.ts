@@ -9,7 +9,7 @@ import {
 import { Provider } from '@typeorm/entity/providers';
 import { Site } from '@typeorm/entity/site';
 import { z } from 'zod';
-import { createRoleRequestSchema } from '@lib/schemas/roleSchemas';
+import { createRoleRequestSchema } from '../../schemas/roleSchemas';
 
 @Entity({ name: 'role' })
 export class Roles {
