@@ -15,7 +15,7 @@ import {
   passwordResetRequestSchema,
   searchAdminRequestSchema,
 } from '../../schemas/adminSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { generateTemporaryPassCode } from '@util/index';
 import redisClient from '@lib/redis';
 import cryptoClient from '@lib/crypto';

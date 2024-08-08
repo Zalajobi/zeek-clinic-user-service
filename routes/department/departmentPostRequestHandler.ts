@@ -9,7 +9,7 @@ import {
   createDepartmentRequestSchema,
   searchDepartmentRequestSchema,
 } from '../../schemas/departmentSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchDepartmentData } from '@datastore/department/departmentGetStore';
 
 const departmentPostRequest = Router();

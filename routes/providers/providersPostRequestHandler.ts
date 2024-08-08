@@ -6,7 +6,7 @@ import {
   searchProviderRequestSchema,
 } from '../../schemas/providerSchemas';
 import { generateTemporaryPassCode } from '@util/index';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchProviderData } from '@datastore/provider/providerGetStore';
 import cryptoClient from '@lib/crypto';
 

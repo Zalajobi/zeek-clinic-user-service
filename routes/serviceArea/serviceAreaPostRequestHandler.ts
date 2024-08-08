@@ -9,7 +9,7 @@ import {
   createServiceAreaRequestSchema,
   searchServiceAreaRequestSchema,
 } from '../../schemas/serviceAreaSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchServiceAreaData } from '@datastore/serviceArea/serviceAreaGetStore';
 
 const serviceAreaPostRequest = Router();

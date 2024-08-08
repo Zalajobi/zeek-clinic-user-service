@@ -5,7 +5,7 @@ import { AdminRoles } from '@typeorm/entity/enums';
 import { getDepartmentDataBySiteId } from '@datastore/department/departmentGetStore';
 import { getDepartmentsBySiteIdRequestSchema } from '../../schemas/adminSchemas';
 import { bearerTokenSchema } from '../../schemas/commonSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import jwtClient from '@lib/jwt';
 
 const superadminGetRouter = Router();
@@ -26,9 +26,9 @@ superadminGetRouter.get(
   authorizeRequest(['SUPER_ADMIN']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { cookie } = bearerTokenSchema.parse(req.headers);
+      const { authorization } = bearerTokenSchema.parse(req.headers);
 
-      const user = jwtClient.verifyJSONToken(cookie, false);
+      const user = jwtClient.verifyJSONToken(authorization, false);
 
       const data = await getSuperAdminBaseData(user?.id ?? '');
 

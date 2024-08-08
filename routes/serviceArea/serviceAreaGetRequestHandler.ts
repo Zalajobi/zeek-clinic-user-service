@@ -5,7 +5,7 @@ import {
   getServiceAreaCountBySiteId,
 } from '@datastore/serviceArea/serviceAreaGetStore';
 import { getOrganisationServiceAreaFilterRequestSchema } from '../../schemas/serviceAreaSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { siteIdRequestSchema } from '../../schemas/commonSchemas';
 
 const serviceAreaGetRequest = Router();

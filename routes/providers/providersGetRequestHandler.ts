@@ -7,7 +7,7 @@ import {
   retrieveProviderDistributionForSite,
 } from '@datastore/provider/providerGetStore';
 import { getOrganisationProvidersFilterRequestSchema } from '../../schemas/providerSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import {
   getDistributionRequestSchema,
   idRequestSchema,

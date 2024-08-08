@@ -5,7 +5,7 @@ import {
   createHospitalRequestSchema,
   searchHospitalRequestSchema,
 } from '../../schemas/hospitalSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchHospitalData } from '@datastore/hospital/hospitalGetStore';
 
 const hospitalPostRequest = Router();

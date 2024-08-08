@@ -7,7 +7,7 @@ import { SuperAdmin } from '@typeorm/entity/superAdmin';
 import rootRouter from './routes';
 import 'dotenv/config';
 import { errorMiddleware } from '@middlewares/error';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { mutableConfig } from '@util/config';
 import cryptoClient from '@lib/crypto';
 

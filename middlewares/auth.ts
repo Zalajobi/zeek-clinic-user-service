@@ -4,7 +4,7 @@ import { bearerTokenSchema } from '../schemas/commonSchemas';
 import { JsonApiResponse } from '@util/responses';
 import redisClient from '@lib/redis';
 import jwtClient from '@lib/jwt';
-import { FIVE_MINUTE } from '@util/constants';
+import { ACCESS_TOKEN_HEADER_NAME, FIVE_MINUTE } from '@util/constants';
 
 const whitelistedEndpoints = [
   '/admin/login',
@@ -24,7 +24,7 @@ export const authorizeRequest = (permissions: string[]) => {
       return next();
     }
 
-    const { cookie: accessToken } = bearerTokenSchema.parse(req.headers);
+    const { authorization: accessToken } = bearerTokenSchema.parse(req.headers);
 
     if (!accessToken) {
       return JsonApiResponse(res, 'Not Authorized', false, null, 401);
@@ -34,7 +34,7 @@ export const authorizeRequest = (permissions: string[]) => {
       const tokenUser = jwtClient.verifyJSONToken(accessToken, false);
 
       if (tokenUser) {
-        const remainingTime = Number(tokenUser?.exp) * 1000 - Date.now();
+        const remainingTime = Number(tokenUser.exp) * 1000 - Date.now();
 
         if (remainingTime < FIVE_MINUTE) {
           console.log('Remaining time less than 5 minutes');
@@ -51,10 +51,7 @@ export const authorizeRequest = (permissions: string[]) => {
             const newAccessToken =
               jwtClient.generateJWTAccessToken(tokenPayload);
 
-            res.cookie('accessToken', newAccessToken, {
-              httpOnly: true,
-              secure: true,
-            });
+            res.setHeader(ACCESS_TOKEN_HEADER_NAME, newAccessToken);
 
             console.log('Access Token Refreshed');
 

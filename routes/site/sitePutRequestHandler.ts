@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { updateSiteRequestSchema } from '../../schemas/siteSchemas';
 import { JsonApiResponse } from '@util/responses';
 import { updateSingleSiteById } from '@datastore/site/sitePutStore';

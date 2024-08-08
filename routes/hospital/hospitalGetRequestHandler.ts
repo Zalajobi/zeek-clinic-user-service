@@ -9,7 +9,7 @@ import {
   getOrganisationHospitalsFilterRequestSchema,
   hospitalDetailsRequestSchema,
 } from '../../schemas/hospitalSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 
 const hospitalGetRequest = Router();
 

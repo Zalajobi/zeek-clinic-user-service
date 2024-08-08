@@ -5,7 +5,7 @@ import {
   createSiteRequestSchema,
   searchSiteRequestSchema,
 } from '../../schemas/siteSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchSiteData } from '@datastore/site/siteGetStore';
 import { incrementTotalSiteCount } from '@datastore/hospital/hospitalPutStore';
 

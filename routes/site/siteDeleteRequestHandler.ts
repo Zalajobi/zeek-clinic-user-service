@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { deleteSingleSiteById } from '@datastore/site/siteDeleteStore';
 import { JsonApiResponse } from '@util/responses';
 import { idRequestSchema } from '../../schemas/commonSchemas';

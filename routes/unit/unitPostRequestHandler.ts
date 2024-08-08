@@ -5,7 +5,7 @@ import {
   createUnitRequestSchema,
   searchUnitRequestSchema,
 } from '../../schemas/unitSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchUnitData } from '@datastore/unit/unitGetStore';
 
 const unitPostRequest = Router();

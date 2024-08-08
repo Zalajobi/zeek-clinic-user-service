@@ -11,7 +11,7 @@ import {
 } from '@datastore/site/siteGetStore';
 import { getUnitDataBySiteID } from '@datastore/unit/unitGetStore';
 import { getOrganisationSiteFilterRequestSchema } from '../../schemas/siteSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import {
   hospitalIdRequestSchema,
   siteIdRequestSchema,

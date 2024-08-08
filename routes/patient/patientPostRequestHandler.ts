@@ -6,7 +6,7 @@ import {
 import { JsonApiResponse } from '@util/responses';
 import { generateTemporaryPassCode } from '@util/index';
 import { createNewPatient } from '@datastore/patient/patientPostStore';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { getSearchPatientData } from '@datastore/patient/patientGetStore';
 import cryptoClient from '@lib/crypto';
 

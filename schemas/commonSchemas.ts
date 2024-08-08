@@ -79,15 +79,15 @@ export const LoginRequestSchema = z
   });
 
 export const bearerTokenSchema = z.object({
-  // authorization: z
-  //   .string()
-  //   .refine((data) => data.startsWith('Bearer '), {
-  //     message: "Authorization header must start with 'Bearer '",
-  //   })
-  //   .transform((data) => data.replace('Bearer ', '')),
-  cookie: z
+  authorization: z
     .string()
-    .transform((data) => getCookieDataByKey(data, 'accessToken')),
+    .refine((data) => data.startsWith('Bearer '), {
+      message: "Authorization header must start with 'Bearer '",
+    })
+    .transform((data) => data.replace('Bearer ', '')),
+  // cookie: z
+  //   .string()
+  //   .transform((data) => getCookieDataByKey(data, 'accessToken')),
 });
 
 export const siteIdRequestSchema = z.object({

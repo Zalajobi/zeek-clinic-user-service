@@ -12,7 +12,7 @@ import {
   idRequestSchema,
   siteIdRequestSchema,
 } from '../../schemas/commonSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { AUTHORIZE_ALL_ADMINS } from '@util/config';
 
 const adminGetRequestHandler = Router();

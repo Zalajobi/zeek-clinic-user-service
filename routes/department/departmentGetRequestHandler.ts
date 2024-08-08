@@ -6,7 +6,7 @@ import {
   getDepartmentDataBySiteId,
 } from '@datastore/department/departmentGetStore';
 import { getOrganisationDepartmentsFilterRequestSchema } from '../../schemas/departmentSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import { siteIdRequestSchema } from '../../schemas/commonSchemas';
 
 const departmentGetRequest = Router();

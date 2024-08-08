@@ -6,7 +6,7 @@ import {
   getRolePaginationDataWithUsersCount,
 } from '@datastore/role/roleGetStore';
 import { getOrganisationRolesFilterRequestSchema } from '../../schemas/roleSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import {
   getChartRequestSchema,
   siteIdRequestSchema,

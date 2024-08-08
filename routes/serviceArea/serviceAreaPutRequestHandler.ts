@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { updateServiceAreaDataByUnitId } from '@datastore/serviceArea/serviceAreaPutStore';
 import { updateServiceAreaRequestSchema } from '../../schemas/serviceAreaSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 
 const serviceAreaPutRequest = Router();
 

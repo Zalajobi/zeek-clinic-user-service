@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { JsonApiResponse } from '@util/responses';
 import { updateProviderDetails } from '@datastore/provider/providerPutStore';
 import { updateProviderRequestSchema } from '../../schemas/providerSchemas';
-import { authorizeRequest } from '@middlewares/jwt';
+import { authorizeRequest } from '@middlewares/auth';
 import cryptoClient from '@lib/crypto';
 
 const providersPutRequestHandler = Router();
